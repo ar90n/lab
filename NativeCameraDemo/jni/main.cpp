@@ -108,6 +108,8 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
                 engine->animating = 1;
             }
 
+            engine->capture->open( CV_CAP_ANDROID + 0 );
+
             break;
         case APP_CMD_TERM_WINDOW:
             engine_term_display(engine);

@@ -1,0 +1,72 @@
+﻿<phone:PhoneApplicationPage 
+    x:Class="CartoonEffect.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="696" 
+    d:DataContext="{d:DesignData SampleData/MainViewModelSampleData.xaml}"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait"  Orientation="Portrait"
+    shell:SystemTray.IsVisible="True">
+	<phone:PhoneApplicationPage.ApplicationBar>
+		<shell:ApplicationBar>
+			<shell:ApplicationBar.MenuItems>
+				<shell:ApplicationBarMenuItem x:Name="menuItemVersion" Text="バージョン情報" Click="menuItemVersion_Click" />
+			</shell:ApplicationBar.MenuItems>
+			<shell:ApplicationBarIconButton x:Name="iconButtonCamera" IconUri="/icons/appbar.feature.camera.rest.png" Text="カメラ" Click="iconButtonCamera_Click" />
+			<shell:ApplicationBarIconButton x:Name="iconButtonLoad" IconUri="/icons/appbar.folder.rest.png" Text="ロード" Click="iconButtonLoad_Click" />
+		</shell:ApplicationBar>
+	</phone:PhoneApplicationPage.ApplicationBar>
+
+    <!--LayoutRoot は、すべてのページ コンテンツが配置されるルート グリッドです-->
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <!--ピボット コントロール-->
+            <controls:Pivot Name="rootPivot" SelectionChanged="rootPivot_SelectionChanged">
+                <!--ピボット アイテム 1-->
+                <controls:PivotItem Header="Cartoon Effect">
+                    <Grid Name="cartoonImgGrid" >
+                        <Image Name="cartoonImgPhoto" Stretch="Fill" Source="/CartoonEffect;component/image/Logo.png" />
+                    </Grid>
+                </controls:PivotItem>
+
+                <!--
+                <controls:PivotItem Header="Oil Painting">
+                    <Grid Name="oldImgGrid" >
+                        <Image Name="oilImgPhoto" Stretch="Fill" Source="/CartoonEffect;component/image/Logo.png" />
+                    </Grid>
+                </controls:PivotItem>
+
+                <controls:PivotItem Header="Watercolor">
+                    <Grid Name="watercolorImgGrid" >
+                        <Image Name="watercolorImgPhoto" Stretch="Fill" Source="/CartoonEffect;component/image/Logo.png" />
+                    </Grid>
+                </controls:PivotItem>
+
+                <controls:PivotItem Header="Pastel">
+                    <Grid Name="pastelImgGrid" >
+                        <Image Name="pastelImgPhoto" Stretch="Fill" Source="/CartoonEffect;component/image/Logo.png" />
+                    </Grid>
+                </controls:PivotItem>
+                -->
+            </controls:Pivot>
+    </Grid>
+ 
+    <!--ApplicationBar の使用法を示すサンプル コード-->
+    <!--<phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar_button1.png" Text="Button 1"/>
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar_button2.png" Text="Button 2"/>
+            <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem Text="MenuItem 1"/>
+                <shell:ApplicationBarMenuItem Text="MenuItem 2"/>
+            </shell:ApplicationBar.MenuItems>
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>-->
+
+</phone:PhoneApplicationPage>

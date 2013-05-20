@@ -4,6 +4,6 @@ namespace Section1
 {
     public interface Aggregate
     {
-        Iterator iterator();
+        Iterator Iterator();
     }
 }

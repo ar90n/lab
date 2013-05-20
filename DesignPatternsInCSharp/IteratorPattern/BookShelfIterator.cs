@@ -15,7 +15,7 @@ namespace Section1
 
         public bool HasNext()
         {
-            if( m_Index < m_BookShelf.getLength() )
+            if( m_Index < m_BookShelf.GetLength() )
             {
                 return true;
             }

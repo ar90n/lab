@@ -1,23 +1,41 @@
 #!/usr/bin/env python
 
+import fractions
+
 if __name__=='__main__':
-    flags = [[0] * 101] * 101
-    prime = [ p for p in range( 2, 100 ) if 0 not in [ p %d for d in range(2, p) ] ]
 
-    num = [1] + prime
+    res_num = 1
+    res_den = 1
+    for den in range( 10, 100 ):
+        for num in range( 10, den ):
+            ln = list( str( num ) )
+            ld = list( str( den ) )
+            sn = set( ln )
+            sd = set( ld )
+            for i in sn.intersection( sd ):
+                if i == '0':
+                    continue;
 
-    for i in range(1 , len(num)):
-        denom = num[i]
-        #print 'denom:', denom
-        for nume in  num[:i]:
-            count = 100 / denom
-        #    print count
-            for j in range( count ):
-                flags[ nume * j ][ denom * j ] = 1
+                if ln[0] == i:
+                    nn = int( ln[1] )
+                else:
+                    nn = int( ln[0] )
 
-    for i in range(1, 101):
-        for j in range(2, 101):
-            if( flags[i][j] == 0 ):
-                if( j % i == 0 ):
-                    print i, j
-                    pass
+                if ld[0] == i:
+                    nd = int( ld[1] )
+                else:
+                    nd = int( ld[0] )
+
+                if nd == 0:
+                    break;
+
+                if num * nd  == nn * den:
+                    res_num *= num
+                    res_den *= den
+                    com = fractions.gcd( res_num, res_den )
+                    res_num //= com
+                    res_den //= com
+                pass
+
+    print( res_den )
+

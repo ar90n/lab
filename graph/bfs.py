@@ -34,6 +34,10 @@ def bfs_impl( graph, vertex, target ):
         if current_vertex == target:
             return True
 
+        if current_vertex in visited:
+            continue
+        visited.add( current_vertex )
+
         for next_vertex in graph.get_edges( current_vertex ):
             vertex_queue.append( next_vertex )
 

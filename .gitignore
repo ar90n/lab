@@ -1,1 +1,5 @@
+*.cmi
+*.cmc
+*.cmo
+*.obj
 a.out

@@ -1,7 +1,5 @@
-let rec replicate l n =
-let rec ext c n = if n = 0 then [] else c :: ext c ( n - 1 ) in
-match l with
+let rec duplicate = function
 | [] as l -> l
-| h :: r -> ( ext h n ) @ replicate r n;;
+| h :: r -> h :: h :: duplicate r;;
 
-replicate ["a";"b";"c"] 3;;
+duplicate ["a";"b";"c";"c";"d"];;

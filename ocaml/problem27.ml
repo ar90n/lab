@@ -1,30 +1,23 @@
-let test_func1 list ns =
-  let rec aux acc emit ns = function
-  | [] -> acc
-  | [x] as l -> ( match ns with
-                    | [1] -> (
-                        emit l acc
-                      )
-                    | _ -> (
-                        emit [] acc
-                      ) )
-  | h::t -> ( let new_emit x = emit ( h :: x ) in
-              match ns with
-              | [] as l -> acc
-              | [0] -> (
-                  emit [] acc
-                )
-              | [hn] -> (
-                  aux ( aux acc emit [hn] t ) new_emit [( hn - 1 )] t
-                )
-              | 0::tn -> (
-                  aux ( emit [] acc ) ( fun x acc -> (x::acc)) tn (h::t)
-                )
-              | hn::tn -> (
-                  aux ( aux acc emit (hn::tn) t ) new_emit (( hn - 1 )::tn) t
-                )
-            ) in
-  let emit x acc = ( x :: acc ) in
-  aux [] emit ns list ;;
+let group list sizes =
+let initial = List.map (fun size -> size, []) sizes in
 
-test_func1 [ "a"; "b"; "c"; "d" ] [2;1];;
+let prepend p list =
+let emit l acc = l :: acc in
+let rec aux emit acc = function
+| [] -> emit [] acc
+| (n,l) as h :: t ->
+let acc = if n > 0 then emit ((n-1, p::l) :: t) acc
+else acc in
+aux (fun l acc -> emit (h :: l) acc) acc t
+in
+aux emit [] list
+in
+let rec aux = function
+| [] -> [ initial ]
+| h :: t -> List.concat (List.map (prepend h) (aux t))
+in
+let all = aux list in
+let complete = List.filter (List.for_all (fun (x,_) -> x = 0)) all in
+List.map (List.map snd) complete;;
+
+group ["a";"b";"c";"d"] [2;1];;

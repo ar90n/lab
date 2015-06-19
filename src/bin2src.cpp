@@ -2,11 +2,13 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <iomanip>
 
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/range/iterator_range.hpp>
 #include <boost/program_options.hpp>
+#include <boost/program_options/parsers.hpp>
 #include <boost/regex.hpp>
 
 namespace po = boost::program_options;
@@ -22,15 +24,24 @@ int main(int argc, char const* argv[])
         ( "help,h", "Print this message and exit." )
         ( "list", "list of supported languages" )
         ( "lang,l", po::value<std::string>()->default_value("raw"), "type of language" )
+        ( "line,L", po::value<int>()->default_value(INT_MAX), "data line width" )
         ( "name,n", po::value<std::string>()->default_value("data"), "name of variable" )
-        ( "d", po::value<std::string>()->default_value(","), "delimiter" )
+        ( "deli,d", po::value<std::string>()->default_value(","), "delimiter" )
     ;
 
+    std::string input_file_path;
     po::variables_map vm;
     try
     {
-        po::store(po::parse_command_line( argc, argv, desc ), vm );
+        const auto parsing_result = po::parse_command_line( argc, argv, desc );
+        po::store( parsing_result, vm );
         po::notify(vm);
+
+        const auto unrecognized_options =  po::collect_unrecognized( parsing_result.options, po::collect_unrecognized_mode::include_positional );
+        if( !unrecognized_options.empty() )
+        {
+            input_file_path = unrecognized_options.front();
+        }
     }
     catch ( std::exception &e )
     {
@@ -40,19 +51,22 @@ int main(int argc, char const* argv[])
 
     if( vm.count("help") )
     {
-        std::cerr << desc << "\n";
+        std::cerr << desc << std::endl;;
         return -1;
     }
 
     if( vm.count("list") )
     {
-        std::cerr << "not supported" << "\n";
+        std::cerr << "not supported" << std::endl;;
         return -1;
     }
 
+    std::ifstream f( input_file_path );
+    std::istream& input_stream = input_file_path.empty() ? std::cin : f;
     std::string lang = vm[ "lang" ].as< std::string >();
     std::string name_str = vm[ "name" ].as< std::string >();
-    std::string delimiter = vm[ "d" ].as< std::string >();
+    std::string delimiter = vm[ "deli" ].as< std::string >();
+    int line_width = vm[ "line" ].as< int >();
 
     boost::system::error_code error;
     const fs::path home_dir_path( getenv("HOME") );
@@ -86,11 +100,18 @@ int main(int argc, char const* argv[])
         return -1;
     }
 
-    std::stringstream ss;
     char c;
-    while( std::cin.read( &c, 1 ) )
+    int pos = 0;
+    std::stringstream ss;
+    while( input_stream.read( &c, 1 ) )
     {
-        ss << std::hex << "0x" << +(uint8_t)c << ',';
+        ss << std::hex << "0x" << std::setfill('0') << std::setw(2) << +(uint8_t)c << delimiter;
+        if( ( ( pos + 1 ) % line_width ) == 0 )
+        {
+            ss << std::endl;
+        }
+
+        ++pos;
     }
     std::string data_str = ss.str();
 

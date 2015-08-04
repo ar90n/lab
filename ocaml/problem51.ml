@@ -6,10 +6,12 @@ let example_tree =
     Node('a', Node('b', Node('d', Empty, Empty), Node('e', Empty, Empty)),
          Node('c', Empty, Node('f', Node('g', Empty, Empty), Empty)));;
 
-let rec count_leaves = function
-| Empty -> 0
-| Node( _, Empty, Empty ) -> 1
-| Node( _, lh, rh ) -> ( count_leaves lh ) + ( count_leaves rh );;
+let rec leaves list =
+let rec aux acc = function
+| Empty -> acc
+| Node( x, Empty, Empty ) as n -> x::acc
+| Node( _, lh, rh ) -> aux ( aux acc lh ) rh in
+aux [] list;;
 
-count_leaves Empty;;
-count_leaves example_tree;;
+leaves Empty;;
+leaves example_tree;;

@@ -6,12 +6,12 @@ let example_tree =
     Node('a', Node('b', Node('d', Empty, Empty), Node('e', Empty, Empty)),
          Node('c', Empty, Node('f', Node('g', Empty, Empty), Empty)));;
 
-let rec leaves list =
+let internals list =
 let rec aux acc = function
 | Empty -> acc
-| Node( x, Empty, Empty ) as n -> x::acc
-| Node( _, lh, rh ) -> aux ( aux acc lh ) rh in
+| Node( _, Empty, Empty ) -> acc
+| Node( x, lh, rh ) -> aux ( aux (x::acc) lh ) rh in
 aux [] list;;
 
-leaves Empty;;
-leaves example_tree;;
+internals Empty;;
+internals example_tree;;

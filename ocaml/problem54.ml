@@ -1,17 +1,31 @@
 type 'a binary_tree =
-| Empty
-| Node of 'a * 'a binary_tree * 'a binary_tree;;
+    | Empty
+    | Node of 'a * 'a binary_tree * 'a binary_tree;;
 
-let example_tree =
-    Node('a', Node('b', Node('d', Empty, Empty), Node('e', Empty, Empty)),
-         Node('c', Empty, Node('f', Node('g', Empty, Empty), Empty)));;
+let take n l =
+    let rec aux acc n l = match ( n, l ) with
+        | ( 0, _ ) -> ( acc, l )
+        | ( _, [] ) -> ( acc, [] )
+        | ( n, h::t ) -> aux (h::acc)  (n-1) t in
+    let t,r = aux [] n l in
+    ( List.rev t, r ) in
 
-let at_level list n =
-let rec aux acc n = function
-| Empty -> acc
-| Node( x, _, _ ) when n = 1 -> x::acc
-| Node( _, lh, rh ) -> aux ( aux acc ( n - 1 ) lh ) ( n - 1 ) rh in
-aux [] n list;;
+let split_node lst =
+    let take_rl n l = 
+        let elms = ( 1 lsl n ) in
+        let lh,r = take elms l in
+        let rh,r = take elms r in
+        ( lh, rh, r ) in
+    let rec aux lh rh n l = match l with
+        | [] -> ( lh, rh )
+        | _ -> let ( clh, crh, cr ) = take_rl n l in
+            aux ( lh @ clh ) ( rh @ crh ) ( n + 1 ) cr in
+    aux [] [] 0 lst in
 
-at_level example_tree 2;;
-at_level example_tree 5;;
+let rec complete_binary_tree = function
+    | [] -> Empty
+    | [h] -> Node( h, Empty, Empty )
+    | h::t -> let lh,rh = split_node t in
+              Node( h, complete_binary_tree lh, complete_binary_tree rh ) in
+
+complete_binary_tree [1;2;3;4;5;6];;

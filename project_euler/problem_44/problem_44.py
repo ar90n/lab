@@ -1,27 +1,21 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 
-
 def main():
-    ts = {}
-    ps = {}
-    hs = {}
-    n = 144
+    memo = {}
+    n = 1
     while True:
-        t = ( n * ( n + 1 ) ) / 2
-        p = ( n * ( 3 * n - 1 ) ) / 2
-        h = n * ( 2 * n - 1 )
-        ts[ t ] = n
-        ps[ p ] = n
-        hs[ h ] = n
-
-        if ps.has_key( t ) and hs.has_key( t ):
-            print( t, ps[ t ], hs[ t ], n )
-            break
-
+        s = n * ( 3 * n - 1 ) / 2
+        memo[s] = 1
+        for i in range(1,n):
+            pi = i * ( 3 * i - 1 ) / 2
+            pj = s - pi
+            if memo.has_key( pj ):
+                D = abs( pi - pj )
+                if memo.has_key( D ):
+                    print D
+                    return
         n += 1
-
-    return
 
 if __name__ == '__main__':
     main()

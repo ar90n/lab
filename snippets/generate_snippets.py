@@ -14,9 +14,10 @@ suffix_map = {
     "cpp" : ".cpp"
 }
 
-def convert_module( module_name ):
+def convert_module( lang, module_name ):
     module_dir = os.path.join('.', module_name)
-    funcs = [func for func in glob.glob(os.path.join(module_dir,'*'))]
+    func_pattern = '*' + suffix_map[lang]
+    funcs = [func for func in glob.glob(os.path.join(module_dir,func_pattern))]
 
     res = []
     for func_path in funcs:
@@ -38,8 +39,7 @@ def main():
         lang_dir = os.path.join( root_dir, lang )
         os.chdir( lang_dir )
 
-        module_pattern = '*' + suffix_map[lang]
-        modules = [ convert_module( module ) for module in glob.glob(module_pattern) if os.path.isdir( module ) and module != 'test']
+        modules = [ convert_module( lang, module ) for module in glob.glob('*') if os.path.isdir( module ) and module != 'test']
         snippets_str = '\n\n'.join( modules )
 
         os.chdir( root_dir )

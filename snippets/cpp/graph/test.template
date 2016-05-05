@@ -1,0 +1,89 @@
+#include <algorithm>
+#include <bitset>
+#include <complex>
+#include <deque>
+#include <exception>
+#include <fstream>
+#include <functional>
+#include <iomanip>
+#include <ios>
+#include <iosfwd>
+#include <iostream>
+#include <istream>
+#include <iterator>
+#include <limits>
+#include <list>
+#include <locale>
+#include <map>
+#include <memory>
+#include <new>
+#include <numeric>
+#include <ostream>
+#include <queue>
+#include <set>
+#include <sstream>
+#include <stack>
+#include <stdexcept>
+#include <streambuf>
+#include <string>
+#include <typeinfo>
+#include <utility>
+#include <valarray>
+#include <vector>
+#include <unordered_map>
+#include <unordered_set>
+#include <random>
+#include <ratio>
+#include <regex>
+
+template< typename T1, typename T2 >
+std::ostream& operator <<( std::ostream& _os, std::pair< T1, T2 > const& _p )
+{
+    _os << "(" << _p.first << "," << _p.second << ")";
+    return _os;
+}
+
+template< typename ContainerType,
+          class = typename ContainerType::size_type >
+std::ostream& operator <<( std::ostream& _os, ContainerType const& _c )
+{
+    using vc = typename ContainerType::value_type;
+    std::for_each( std::begin( _c ),
+                   std::end( _c ),
+                   [&_os]( vc const v ) { _os << v << std::endl;; } );
+    return _os;
+}
+
+//------------------------------------------------------------------------------
+
+{- %%MODULE%% -}
+
+//------------------------------------------------------------------------------
+
+int main( int args, char* argv[] )
+{
+    std::vector< edge > const e{ {0,1,40}, {0,2,15}, {1,0,40}, {1,2,20}, {1,3,10}, {1,4,25}, {1,5,6}, {2,0,15}, {2,1,20}, {2,3,100}, {3,1,10}, {3,2,100}, {4,1,25}, {4,5,8}, {5,1,6}, {5,4,8} };
+    auto const g = build_dgraph( 6, e );
+    auto const sssp = bellman_ford( g, 0 );
+    auto const sssp1 = dijkstra( g, 0 );
+    auto const gg = warshall_floyd( g );
+    std::cout << sssp << std::endl;
+    std::cout << sssp1 << std::endl;
+
+    std::vector< edge > const e1{ {0,3,0}, {0,4,0}, {1,3,0}, {2,4,0}, {2,7,0}, {3,5,0}, {3,6,0}, {3,7,0}, {4,6,0} };
+    auto const g1 = build_dgraph( 8, e1 );
+    auto const rrr = top_sort( g1 );
+    std::cout << rrr << std::endl;;
+
+    std::vector< edge > const e2{ {0,1,4}, {0,2,8}, {1,3,8}, {1,2,11}, {2,4,7}, {2,5,1}, {3,4,2}, {3,6,7}, {3,7,4}, {4,5,6}, {5,7,2}, {6,7,14}, {6,8,9}, {7,8,10} };
+    auto const g2 = build_graph( 9, e2 );
+    auto const rrr2 = prim( g2, 0 );
+    std::cout <<  rrr2 << std::endl;;
+
+    std::vector< edge > const e3{ {0,1,16}, {0,2,13}, {1,2,10}, {1,3,12}, {2,1,4}, {2,4,14}, {3,2,9}, {3,5,20}, {4,3,7}, {4,5,4} };
+    auto const g3 = build_dgraph( 6, e3 );
+    auto const mf = edmonds_karp( g3, 0, 5 );
+    std::cout << mf << std::endl;;
+
+    //0,0 1,35 2,15 3,45 4,49 5,41
+}

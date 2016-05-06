@@ -15,9 +15,10 @@ warshall_floyd g = checkResult $ runSTArray $ do
             writeArray costs (f,t) (min c c')
         updateCost :: STArray s (Vertex, Vertex) Cost -> Vertex -> (Vertex,Vertex)-> ST s ()
         updateCost costs k (f,t) = do
-            c <- readArray costs (f,t)
-            c' <- (+) <$> readArray costs (f,k) <*> readArray costs (k,t)
-            writeArray costs (f,t) (min c c')
+            c0 <- readArray costs (f,t)
+            c1 <- readArray costs (f,k)
+            c2 <- readArray costs (k,t)
+            when ((c1 /= maxBound) && (c2 /= maxBound)) $ writeArray costs (f,t) (min c0 (c1+c2))
         doit :: STArray s (Vertex, Vertex) Cost -> [Vertex] -> ST s (STArray s (Vertex, Vertex) Cost)
         doit costs [] = return costs
         doit costs (v:vs) = do

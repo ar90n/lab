@@ -7,4 +7,4 @@ bellman_ford s g = if ak==go ak then Just ak else Nothing where
     gt = transposeG g
     go :: Array Vertex Cost -> Array Vertex Cost
     go a = a // [(v, f v) | v<-vertices g] where
-        f v = minimum $ a!v : [a!w+c | (w,c)<-gt!v]
+        f v = minimum $ a!v : [a!w+c | (w,c)<-gt!v, a!w /= maxBound]

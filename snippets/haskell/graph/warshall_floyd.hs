@@ -1,6 +1,6 @@
 warshall_floyd :: Graph -> Maybe(Array (Vertex, Vertex) Cost)
 warshall_floyd g = checkResult $ runSTArray $ do
-    costs <- newArray ((l,l),(h,h)) (div maxBound 2) :: ST s (STArray s (Vertex, Vertex) Cost)
+    costs <- newArray ((l,l),(h,h)) maxBound :: ST s (STArray s (Vertex, Vertex) Cost)
     mapM_ (initCost costs) $ [((v,v), 0) | v<-vertices g] ++ [((u,v), c) | (u,v,c)<-edges g]
     return costs
     doit costs (vertices g)

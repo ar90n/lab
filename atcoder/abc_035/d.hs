@@ -136,7 +136,7 @@ toList (PriorityQueue f h) = toList' f h where
 
 dijkstra :: Vertex -> Graph -> Maybe (Array Vertex Cost)
 dijkstra s g = Just $ runSTArray $ do
-    costs <- newArray (bounds g) ( 1000000000 ) :: (ST s (STArray s Vertex Cost))
+    costs <- newArray (bounds g) maxBound :: (ST s (STArray s Vertex Cost))
     let pqueue = singleton (\(v0,c0) (v1,c1) -> c0 < c1) (s,0)
     doit costs pqueue where
     doit :: STArray s Vertex Cost -> PriorityQueue (Vertex,Cost) -> ST s (STArray s Vertex Cost)
@@ -158,11 +158,9 @@ main = do
     d <- replicateM m ((\s -> readInt3 s) <$> BS.getLine )
     let g = buildG (1,n) d
         g' = transposeG g
-        (Just c) = dijkstra 1 g
-        (Just c') = dijkstra 1 g'
-        s' = listArray (1,n) s :: Array Int Int
-        s2' = [ (s'!i) * (t - ((c!i) + (c'!i))) | i <- (indices c) ] :: [Int]
-        s2 = maximum $ s2'
+        (Just c) = Data.Array.IArray.assocs <$> dijkstra 1 g
+        (Just c') = Data.Array.IArray.assocs <$> dijkstra 1 g'
+        s2 = maximum [ ss * ( t -  (c0 + c1) )  | ((_,c0),(_,c1), ss) <- (zip3 c c' s) , c0 /= (maxBound :: Cost) , c1 /= (maxBound :: Cost) ]
     putStrLn ( show s2 )
 
 --------------------------------------------------------------------------------

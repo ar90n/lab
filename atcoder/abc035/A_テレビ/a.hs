@@ -1,6 +1,6 @@
 import Data.List
 import Control.Monad
-
+ 
 main = do
     line <- getLine
     let xs = sort . map (\a -> read a::Int) . words $  line

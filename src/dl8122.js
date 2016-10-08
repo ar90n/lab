@@ -3,7 +3,7 @@
 import RSVP from 'rsvp'
 import prompt from 'prompt'
 import fs from 'fs-extra'
-import http from 'http'
+import https from 'https'
 import client from 'cheerio-httpcli'
 import program from 'commander'
 
@@ -107,7 +107,7 @@ prompt.get( properties, (err,result) => {
                                         const image_name = `${obj.n}-${obj.p}.jpg`;
                                         const image_path = `${dir_path}/${image_name}`;
                                         let file = fs.createWriteStream( image_path );
-                                        http.get(obj.m, function(response) {
+                                        https.get(obj.m, function(response) {
                                             response.pipe(file);
                                             console.log( 'donwloaded ' + image_path );
                                             get_image(i + 1 );

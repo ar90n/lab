@@ -19,6 +19,6 @@ module.exports.webhook = (event, context, callback) => {
     });
 
     const body = event.body;
-    const headers = event.headers;
-    bot.handleEventRequest( body, headers );
+    const signature = event.headers["X-Line-Signature"];
+    bot.handleEventRequest( body, signature );
 };

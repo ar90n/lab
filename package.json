@@ -1,0 +1,14 @@
+{
+  "name": "serverless-line-messaging-example",
+  "version": "0.1.0",
+  "description": "line-messaging example in serverless environment",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Masahiro Wada",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^2.0.0",
+    "line-messaging": "git+https://github.com/ar90n/line-messaging.git"
+  }
+}

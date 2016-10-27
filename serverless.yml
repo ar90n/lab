@@ -3,7 +3,6 @@ service: serverless-line-messaging-example
 package:
   exclude:
     - .env.sample
-    - .envrc
 
 provider:
   name: aws

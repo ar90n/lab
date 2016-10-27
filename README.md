@@ -1,6 +1,6 @@
 # serverless-line-messaging-example
 
-line-messaging example in serverless environment.   
+[line-messaging](https://github.com/snlangsuan/line-messaging) example in serverless environment.   
 This project acts as echo server in your LINE Talk.
 
 ### usage
@@ -16,7 +16,7 @@ $npm install
 $serverless deploy
 ```
 
-### ackonowledge
+### see also
 
 - [line-messaging](https://github.com/snlangsuan/line-messaging)
 

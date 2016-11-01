@@ -1,0 +1,27 @@
+{
+  "name": "serverless-line-login-example",
+  "version": "0.0.1",
+  "description": "Line Login example in serverless environment",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ar90n/serverless-line-login-example.git"
+  },
+  "author": "Masahiro Wada",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ar90n/serverless-line-login-example/issues"
+  },
+  "homepage": "https://github.com/ar90n/serverless-line-login-example#readme",
+  "devDependencies": {
+    "serverless-offline": "^3.2.1"
+  },
+  "dependencies": {
+    "axios": "^0.15.2",
+    "dotenv": "^2.0.0",
+    "locutus": "^2.0.5"
+  }
+}

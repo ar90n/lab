@@ -1,0 +1,10 @@
+siteTitle = "希瓦斯製作所"
+siteDescr = "日々のメモをつらつらと."
+siteAuthor = "Masahiro Wada"
+
+siteTwitterUrl = "https://twitter.com/ar90n"
+siteGithubUrl = "https://github.com/ar90n/"
+
+googleAnalyticsId = ""
+
+linkPrefix = "/lab"

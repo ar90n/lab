@@ -1,0 +1,16 @@
+service: serverless-line-login-example
+
+provider:
+  name: aws
+  runtime: nodejs4.3
+
+plugins:
+  - serverless-offline
+
+functions:
+  login:
+    handler: handler.auth
+    events:
+      - http:
+          path: auth
+          method: get

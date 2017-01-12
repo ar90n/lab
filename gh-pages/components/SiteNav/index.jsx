@@ -13,6 +13,10 @@ class SiteNav extends React.Component {
                   <Link to={ prefixLink('/')} activeClassName="current" onlyActiveOnIndex> Articles
                   </Link>
                 </li>
+                <li>
+                  <Link to={ prefixLink('/privacy-policy/')} activeClassName="current" onlyActiveOnIndex> Privacy Policy
+                  </Link>
+                </li>
               </ul>
             </nav>
             );

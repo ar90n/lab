@@ -6,6 +6,7 @@ import fs from 'fs-extra'
 import https from 'https'
 import client from 'cheerio-httpcli'
 import program from 'commander'
+import * as url2 from 'url'
 
 program
     .option('-u, --user [user]', 'user' )
@@ -35,16 +36,17 @@ const url_8122 = "https://8122.jp";
 prompt.get( properties, (err,result) => {
     const mail = program.user ? program.user : result.mail;
     const password = program.password ? program.password : result.password;
-    client.fetch( url_8122, ( err, $, res ) => {
-        let form = $('div.login_form_input').find('form');
+    client.fetch( url_8122, ( err, $, res, body ) => {
+        let form = $('div.p-globalBeforeLoginHeader_loginForm').find('form');
         form.field({
             'mailaddress' : mail,
             'passwd' : password
         });
 
-        form.find('input[type=submit]').click( ( err, $, res, body ) => {
-            const event_nos = $('table.eventList').find('tr[href-data]').map( (i,elem) => {
-                const strs = $(elem).attr('href-data').split('=');
+        form.find('button[type=submit]').click( ( err, $, res, body ) => {
+            const cookies = res.cookies;
+            const event_nos = $('div#content').find('a.p-eventList_listItemLink').map( (i,elem) => {
+                const strs = $(elem).attr('href').split('=');
                 return strs[strs.length-1];
             }).get();
 
@@ -71,12 +73,13 @@ prompt.get( properties, (err,result) => {
                     const choose_number = result['Choose number'];
                     const choose_event = event_info[choose_number];
 
-                    const url = `${url_8122}/?action_user_FastViewer=true&eventno=${choose_event.event_no}`;
+                    const url = `${url_8122}/?action_user_FastViewer=t&eventno=${choose_event.event_no}`;
                     client.fetch( url, ( err, $, res, body ) => {
-                        const category_nos = $('.shouCategory').map( (i,elem) => $(elem).find('a').attr('categoryno'));
+                        const category_nos = $('div.p-categoryList').find('li').map( (i,elem) => $(elem).attr('data-categoryno'));
 
                         const category_info = category_nos.map((i,category_no) => {
                             const api_url = `${url_8122}/?action_Api_FastViewer_PhotoList=true&eventno=${choose_event.event_no}&categoryno=${category_no}`;
+
                             let res_json = JSON.parse(client.fetchSync( api_url ).body).message;
                             const result = {
                                 photos: res_json.photos,
@@ -95,6 +98,7 @@ prompt.get( properties, (err,result) => {
 
                             return result;
                         });
+                        console.log( category_info );
 
                         const save_path = './' + choose_event.eventname ;
                         category_info.map((i,info) => {
@@ -107,7 +111,17 @@ prompt.get( properties, (err,result) => {
                                         const image_name = `${obj.n}-${obj.p}.jpg`;
                                         const image_path = `${dir_path}/${image_name}`;
                                         let file = fs.createWriteStream( image_path );
-                                        https.get(obj.m, function(response) {
+                                        const urlObj = new url2.URL( obj.m );
+                                        let cookies_str = Object.keys(cookies).reduce( (acc,key) => acc.concat( key + '=' + cookies[key] + ';' ), '' );
+                                        cookies_str = cookies_str.substr( 0, cookies_str.length - 1 );
+                                        const options = {
+                                                hostname: urlObj.hostname,
+                                                path: urlObj.pathname + urlObj.search,
+                                                headers: {
+                                                    'Cookie': cookies_str,
+                                                }
+                                        };
+                                        https.get( options, function(response) {
                                             response.pipe(file);
                                             console.log( 'donwloaded ' + image_path );
                                             get_image(i + 1 );

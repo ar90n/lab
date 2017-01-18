@@ -2,7 +2,7 @@
 title: Python for RESAS-API
 date: "2017-01-12T02:45:50.564Z"
 layout: post
-path: "/2017-01-12T02:45:50.564Z/"
+path: "/blog/2017-01-12T02:45:50.564Z/"
 category: "Python"
 description: "PythonからRESAS-APIにアクセスするライブラリ(resaspy)を作ってみました．"
 ---

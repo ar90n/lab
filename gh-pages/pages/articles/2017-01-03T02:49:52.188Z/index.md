@@ -2,7 +2,7 @@
 title: ブログを始めてみる
 date: "2017-01-03T02:49:52.188Z"
 layout: post
-path: "/2017-01-03T02:49:52.188Z/"
+path: "/blog/2017-01-03T02:49:52.188Z/"
 category: "その他"
 description: "ブログを始めてみる"
 ---

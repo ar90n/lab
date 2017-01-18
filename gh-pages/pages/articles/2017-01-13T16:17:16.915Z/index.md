@@ -2,7 +2,7 @@
 title: RancherOSをConohaのVPSに導入する 
 aate: "2017-01-13T16:17:16.915Z"
 layout: post
-path: "/2017-01-13T16:17:16.915Z/"
+path: "/blog/2017-01-13T16:17:16.915Z/"
 category: "Conoha"
 description: "RancherOSをConohaに導入してDcoker環境を作ってみました．"
 ---

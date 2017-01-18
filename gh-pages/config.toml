@@ -5,6 +5,6 @@ siteAuthor = "Masahiro Wada"
 siteTwitterUrl = "https://twitter.com/ar90n"
 siteGithubUrl = "https://github.com/ar90n/"
 
-googleAnalyticsId = ""
+googleAnalyticsId = "UA-90473091-1"
 
 linkPrefix = ""

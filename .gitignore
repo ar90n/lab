@@ -1,6 +1,7 @@
 node_modules/
 public
 
+.DS_Store
 .gatsby-context.js
 pages/.manifest
 .idea

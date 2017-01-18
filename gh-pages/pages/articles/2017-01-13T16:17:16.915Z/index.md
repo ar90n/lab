@@ -16,7 +16,7 @@ AWSやGCPなどでも良いのですが，経済的事情により１円でも�
 同種のものにはCoreOSやCentOS Atomic Hostなどがあります．
 
 RancherOSの特徴の一つに，全ての機能がDockerコンテナとして提供されていることがあげられます．
-これは，以下の図のようにカーネルの上にDocker(System Docker)プロセスがあり，その上にシステムが提供する機能が
+これは，以下の図^[http://rancher.com/rancher-os/]のようにカーネルの上にDocker(System Docker)プロセスがあり，その上にシステムが提供する機能が
 コンテナとして存在しています．ユーザアプリケーションは前述のDocker(System Docker)上に存在するDocker(User Docker)上動作します．
 
 ![rancheros-container](./rancheros_container.png)

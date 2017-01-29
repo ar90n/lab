@@ -10,6 +10,10 @@ declare module 'mobx-router' {
   declare module.exports : any;
 }
 
+declare module 'mobx-utils' {
+  declare module.exports : any;
+}
+
 declare module 'material-ui' {
   declare module.exports : any;
 }

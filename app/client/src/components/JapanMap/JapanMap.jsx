@@ -1,43 +1,31 @@
 // @flow
 import React from 'react';
-import {observer, inject} from 'mobx-react';
-//import DevTools from 'mobx-react-devtools';
+import {reaction} from 'mobx';
+import {observer} from 'mobx-react';
 import * as d3 from 'd3';
 import * as topojson from 'topojson';
 
 import * as japan from './japan'
 
-function flatten(array) {
-  return Array.isArray(array) ? [].concat.apply([], array.map(flatten)) : array;
-}
-
+@observer
 class JapanMap extends React.Component {
   japanTotalArea: number;
   japanPrefFeatures: any;
   projection: any;
   svg: any;
 
-  constructor( props, context ) {
+  constructor( props: any, context: any ) {
     super( props, context );
     this.japanPrefFeatures = topojson.feature( japan, japan.objects.japan ).features;
     this.japanTotalArea = japan.objects.japan.area;
     this.projection = d3.geoMercator()
-        .center([137, 34])
+        .rotate([-138, -32, -35])
         .translate([1250, 750])
-        .scale(2400);
+        .scale(4000);
   }
 
-  calcPrefTransform( feature, ratios ) {
-    const flat_coordinates = flatten( feature.geometry.coordinates );
-    const num_of_coordinates = flat_coordinates.length / 2;
-
-    const [accX, accY] = flat_coordinates.reduce( (a,b,i) => {
-        a[i%2] += b;
-        return a;
-    },[0,0]);
-    const center = [ accX / num_of_coordinates, accY / num_of_coordinates ];
-    const proj_center = this.projection( center );
-
+  calcPrefTransform( feature: any, ratios: any ) {
+    const proj_center = this.projection( feature.properties.centroid );
     const area_ratio = this.japanTotalArea * ratios[ feature.properties.id ] / feature.properties.area;
     const scale = Math.sqrt( area_ratio );
 
@@ -47,36 +35,43 @@ class JapanMap extends React.Component {
              .translate( -proj_center[0], -proj_center[1] );
   }
 
-  updateMap( info ) {
-    const acc_value = Object.values( info.info_records ).reduce( ( acc, val ) => acc + val, 0.0 );
-    const ratios = Object.keys( info.info_records ).reduce( ( obj, key ) => {
-        obj[key] = info.info_records[ key ] / acc_value;
+  updateMap( value ) {
+    const acc_value = Object.values( value ).reduce( ( acc, val ) => acc + val, 0.0 );
+    const ratios = Object.keys( value ).reduce( ( obj, key ) => {
+        obj[key] = value[ key ] / acc_value;
         return obj;
     },{});
 
+    const data = ( [...Array( this.japanPrefFeatures.length ).keys()].sort( (l,r) => {
+      return value[this.japanPrefFeatures[r].properties.id] - value[this.japanPrefFeatures[l].properties.id];
+    })).map( (i) => this.japanPrefFeatures[i] );
+
     const path = d3.geoPath().projection(this.projection);
-    const svg = d3.select('svg').selectAll('path')
-        .data( this.japanPrefFeatures )
-        .enter()
-        .append( 'path' )
-        .attr( 'd', path )
-        .attr( 'stroke', '#333' )
-        .attr( 'transform', ( feature ) => this.calcPrefTransform( feature, ratios) )
-        .style( 'fill', '#FFF3d5' );
+    d3.select( this.svg ).selectAll('path')
+      .data( data, ( d ) => d.properties.id )
+      .enter()
+       .append( 'path' )
+       .attr( 'd', path )
+       .attr( 'stroke', '#333' )
+       .attr( 'transform', ( feature ) => this.calcPrefTransform( feature, ratios) )
+       .style( 'fill', '#FFF3d5' );
+
+    d3.select( this.svg ).selectAll('path')
+      .transition()
+        .duration( 750 )
+        .attr( 'transform', ( feature ) => this.calcPrefTransform( feature, ratios) );
   }
 
   componentDidMount() {
-      this.updateMap( this.props.store.info );
-  }
-
-  componentDidUpdate( props ) {
-      this.updateMap( props.store.info );
+    this.updateMap( this.props.store.current_value.value );
+    reaction(
+      () => this.props.store.current_value.value,
+      value => this.updateMap( value )
+    );
   }
 
   render() {
-    const width = this.props.width;
-    const height = this.props.height;
-    return <svg viewBox="0 0 2500 1500" ></svg>;
+    return <svg viewBox="0 0 2500 1300" ref={d => this.svg = d}></svg>;
   }
 }
-export default inject( 'store' )( observer( JapanMap ) );
+export default JapanMap;

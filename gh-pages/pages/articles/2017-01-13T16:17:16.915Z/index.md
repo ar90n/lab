@@ -64,7 +64,7 @@ $ sudo ros install -c cloud-config.yml -d /dev/vda
 ```
 ### 動作確認用コンテナをデプロイ
 
-動作確認として，(nginx-proxy)[https://github.com/jwilder/nginx-proxy]のサンプルを動作させてみる．
+動作確認として，[nginx-proxy](https://github.com/jwilder/nginx-proxy)のサンプルを動作させてみる．
 RancherOSはDocker composeのV2フォーマットには対応していないため，以下のように一部をコメントアウトした．
 
 ```yml

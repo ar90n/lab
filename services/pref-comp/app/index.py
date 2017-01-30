@@ -7,9 +7,9 @@ api_key = os.environ['RESAS_API_KEY']
 cache_name = os.environ['RESAS_CACHE_NAME'] if 'RESAS_CACHE_NAME' in os.environ else None
 resaspy = Resaspy( api_key, cache_name )
 
-@route('/static/js/<filepath:re:.*\.js>')
+@route('/static/<filepath:path>')
 def js(filepath):
-    return static_file(filepath, root="./client/build/static/js")
+    return static_file(filepath, root="./client/build/static/")
 
 @route('/')
 @route('/index.html')

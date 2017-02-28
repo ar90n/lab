@@ -14,6 +14,7 @@ replace_str = "{- %%MODULE%% -}"
 suffix_map = {
     "haskell" : ".hs",
     "cpp" : ".cpp",
+    "fsharp" : ".fsx"
 }
 
 def convert_module( lang, module_name ):

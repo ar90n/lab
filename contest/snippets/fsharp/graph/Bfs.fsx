@@ -1,15 +1,19 @@
-let Bfs (g : graph) (root : vertex) : vertex list = 
+let Bfs (g : graph) (root : vertex) : vertex list * cost array = 
     let nodes = Nodes g
     let visited = Array.create nodes false
     let mutable result = []
-    let queue = new System.Collections.Generic.Queue< vertex >()
-    queue.Enqueue root
+    let mutable costs = Array.create nodes 0.0
+    let queue = new System.Collections.Generic.Queue< vertex * cost >()
+    queue.Enqueue (root, 0.0)
     while( queue.Count <> 0 ) do
-        let c = queue.Dequeue()
+        let c,cc = queue.Dequeue()
         if not visited.[c] then
             visited.[c] <- true
             result <- c :: result
-            g.[c].Keys |> Seq.iter queue.Enqueue
+            costs.[c] <- cc
+            Seq.zip g.[c].Keys g.[c].Values
+            |> Seq.map (fun (i,c) -> (i, cc + c))
+            |> Seq.iter queue.Enqueue
     done
 
-    List.rev result
+    List.rev result, costs

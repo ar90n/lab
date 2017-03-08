@@ -1,15 +1,19 @@
-let Dfs (g : graph) (root : vertex) : vertex list = 
+let Dfs (g : graph) (root : vertex) : vertex list * cost array = 
     let nodes = Nodes g
     let visited = Array.create nodes false
     let mutable result = []
-    let stack = new System.Collections.Generic.Stack< vertex >()
-    stack.Push root
+    let mutable costs = Array.create nodes 0.0
+    let stack = new System.Collections.Generic.Stack< vertex * cost >()
+    stack.Enstack (root, 0.0)
     while( stack.Count <> 0 ) do
-        let c = stack.Pop()
+        let c,cc = stack.Pop()
         if not visited.[c] then
             visited.[c] <- true
             result <- c :: result
-            g.[c].Keys |> Seq.iter stack.Push
+            costs.[c] <- cc
+            Seq.zip g.[c].Keys g.[c].Values
+            |> Seq.map (fun (i,c) -> (i, cc + c))
+            |> Seq.iter stack.Push
     done
 
-    List.rev result
+    List.rev result, costs

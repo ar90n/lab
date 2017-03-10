@@ -1,8 +1,8 @@
 module BinaryTreeDfs =
+    open BinaryTree
     type ContStep<'a> =
         | Finished
         | Step of 'a * (unit -> ContStep<'a>)
-
     let TreeDfs (select : ('a bintree -> (unit -> ContStep<'a>) -> ContStep<'a>) -> 'a -> 'a bintree -> 'a bintree -> (unit -> ContStep<'a>) -> ContStep<'a>) (tree : 'a bintree) : 'a list =
         let rec traverse (tree : 'a bintree) (cont : unit -> ContStep<'a>) =
             match tree with

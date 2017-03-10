@@ -1,59 +1,60 @@
 module BinarySearchTree =
-    type 'a binsearchtree = ('a -> 'a -> int) * 'a BinaryTree.bintree
+    open BinaryTree
+    type 'a binsearchtree = ('a -> 'a -> int) * 'a bintree
 
     let init (comp : 'a -> 'a -> int) : 'a binsearchtree =
-        (comp, BinaryTree.Empty ) 
+        (comp, Empty ) 
 
     let rec contain (bstree : 'a binsearchtree) (v : 'a) : bool =
         let (comp, tree) = bstree
-        let rec contain' (tree : 'a BinaryTree.bintree) (v : 'a) : bool =
+        let rec contain' (tree : 'a bintree) (v : 'a) : bool =
             match tree with
-            | BinaryTree.Empty -> false
-            | BinaryTree.Node( v', lh, rh) when comp v' v <  0 -> contain' rh v
-            | BinaryTree.Node( v', lh, rh) when comp v  v'<  0 -> contain' lh v
+            | Empty -> false
+            | Node( v', lh, rh) when comp v' v <  0 -> contain' rh v
+            | Node( v', lh, rh) when comp v  v'<  0 -> contain' lh v
             | _ -> true
         contain' tree v
 
     let rec min (bstree : 'a binsearchtree) : 'a option =
         let (comp, tree) = bstree
-        let rec min' (tree : 'a BinaryTree.bintree) : 'a option =
+        let rec min' (tree : 'a bintree) : 'a option =
             match tree with
-            | BinaryTree.Empty -> None
-            | BinaryTree.Node( v, BinaryTree.Empty, _) -> Some v
-            | BinaryTree.Node( _, lh, _) -> min' lh
+            | Empty -> None
+            | Node( v, Empty, _) -> Some v
+            | Node( _, lh, _) -> min' lh
         min' tree
 
     let rec max (bstree : 'a binsearchtree) : 'a option =
         let (comp, tree) = bstree
-        let rec max' (tree : 'a BinaryTree.bintree) : 'a option =
+        let rec max' (tree : 'a bintree) : 'a option =
             match tree with
-            | BinaryTree.Empty -> None
-            | BinaryTree.Node( v, _, BinaryTree.Empty) -> Some v
-            | BinaryTree.Node( _, _, rh) -> max' rh
+            | Empty -> None
+            | Node( v, _, Empty) -> Some v
+            | Node( _, _, rh) -> max' rh
         max' tree
 
     let rec insert (bstree : 'a binsearchtree) (v : 'a) : 'a binsearchtree=
         let (comp, tree) = bstree
-        let rec insert' (tree : 'a BinaryTree.bintree) (v : 'a) : 'a BinaryTree.bintree =
+        let rec insert' (tree : 'a bintree) (v : 'a) : 'a bintree =
             match tree with
-            | BinaryTree.Empty -> BinaryTree.Node( v, BinaryTree.Empty, BinaryTree.Empty)
-            | BinaryTree.Node( v', lh, rh) when comp v' v  < 0 -> BinaryTree.Node( v', lh, insert' rh v)
-            | BinaryTree.Node( v', lh, rh) when comp v  v' < 0 -> BinaryTree.Node( v', insert' lh v, rh)
+            | Empty -> Node( v, Empty, Empty)
+            | Node( v', lh, rh) when comp v' v  < 0 -> Node( v', lh, insert' rh v)
+            | Node( v', lh, rh) when comp v  v' < 0 -> Node( v', insert' lh v, rh)
             | n -> n
         insert' tree v |> (fun t -> (comp, t))
 
     let rec delete (bstree : 'a binsearchtree) (v : 'a) =
         let (comp, tree) = bstree
-        let rec delete' (tree : 'a BinaryTree.bintree) (v : 'a) =
+        let rec delete' (tree : 'a bintree) (v : 'a) =
             match tree with
-            | BinaryTree.Empty -> BinaryTree.Empty
-            | BinaryTree.Node( v', lh, rh) when comp v' v  < 0 -> BinaryTree.Node( v', lh, delete' rh v)
-            | BinaryTree.Node( v', lh, rh) when comp v  v' < 0 -> BinaryTree.Node( v', delete' lh v, rh)
-            | BinaryTree.Node( v', lh, BinaryTree.Empty) when comp v  v' = 0 -> lh
-            | BinaryTree.Node( v', BinaryTree.Empty, rh) when comp v  v' = 0 -> rh
-            | BinaryTree.Node( v', BinaryTree.Empty, BinaryTree.Empty) when comp v  v' = 0 -> BinaryTree.Empty
-            | BinaryTree.Node( v', lh, rh) when comp v  v' = 0 -> match min (comp, rh) with
-                                                                  | Some nv -> BinaryTree.Node( nv, lh, delete' rh nv )
+            | Empty -> Empty
+            | Node( v', lh, rh) when comp v' v  < 0 -> Node( v', lh, delete' rh v)
+            | Node( v', lh, rh) when comp v  v' < 0 -> Node( v', delete' lh v, rh)
+            | Node( v', lh, Empty) when comp v  v' = 0 -> lh
+            | Node( v', Empty, rh) when comp v  v' = 0 -> rh
+            | Node( v', Empty, Empty) when comp v  v' = 0 -> Empty
+            | Node( v', lh, rh) when comp v  v' = 0 -> match min (comp, rh) with
+                                                                  | Some nv -> Node( nv, lh, delete' rh nv )
                                                                   | None -> failwith "Error"
             | _ -> failwith "Error"
         delete' tree v

@@ -5,7 +5,7 @@ let Dfs (g : graph) (root : vertex) : vertex list * cost array =
     let mutable result = []
     let mutable costs = Array.create nodes 0.0
     let stack = new System.Collections.Generic.Stack< vertex * cost >()
-    stack.Enstack (root, 0.0)
+    stack.Push (root, 0.0)
     while( stack.Count <> 0 ) do
         let c,cc = stack.Pop()
         if not visited.[c] then

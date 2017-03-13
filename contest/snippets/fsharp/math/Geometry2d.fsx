@@ -21,9 +21,3 @@ module Geometry2d =
     let inline isParallel (v0 : ^a vec) (v1 : ^a vec) : bool = cross v0 v1 |> ((=) Core.LanguagePrimitives.GenericZero)
     let inline project (v0 : ^a vec) (v1 : ^a vec) : float vec = (float (dot v0 v1)) / (normL2 v0) * ({x = float v0.x; y = float v0.y})
     let inline reflect (v0 : ^a vec) (v1 : ^a vec) : float vec = (project v0 v1) + (project v0 v1) - ({x = float v1.x; y = float v1.y})
-
-open Geometry2d
-let v0 = { x = 10; y = 20 }
-let v1 = { x = 3; y = 4 }
-let v2 = v0 + v1
-printfn "%A" (dot v0 v1)

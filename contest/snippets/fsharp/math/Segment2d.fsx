@@ -1,3 +1,5 @@
+// math/Geometry2d.fsx
+// math/Point2d.fsx
 module Segment2d =
     open Geometry2d
     open Point2d

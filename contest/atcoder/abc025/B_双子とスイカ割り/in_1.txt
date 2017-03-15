@@ -1,0 +1,4 @@
+3 5 10
+East 7
+West 3
+West 11

@@ -1,0 +1,5 @@
+4 5 2
+ooooo
+oxoox
+oooox
+oxxoo

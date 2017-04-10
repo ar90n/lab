@@ -358,7 +358,6 @@ hr {
 	background-size: 100% 26px;
 	background-size: 100% 1.625rem;
 	background-image: linear-gradient(to bottom, transparent 1px, transparent 11px, #222 11px, #222 15px, transparent 15px, transparent 26px);
-	width: 100px;
 }
 @media screen and (min-width:40em) {
 	hr {

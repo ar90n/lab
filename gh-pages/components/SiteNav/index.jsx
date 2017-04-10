@@ -1,30 +1,20 @@
 import React from 'react'
-import { RouteHandler, Link } from 'react-router'
 import { prefixLink } from 'gatsby-helpers'
-import './style.css'
+import { List, ListItem, makeSelectable } from 'material-ui'
 
-class SiteNav extends React.Component {
-    render() {
-        const {location} = this.props
-        return (
-            <nav className='blog-nav'>
-              <ul>
-                <li>
-                  <Link to={ prefixLink('/')} activeClassName="current" onlyActiveOnIndex> Articles
-                  </Link>
-                </li>
-                <li>
-                  <Link to={ prefixLink('/privacy-policy/')} activeClassName="current" onlyActiveOnIndex> Privacy Policy
-                  </Link>
-                </li>
-              </ul>
-            </nav>
-            );
-    }
+const SelectableList = makeSelectable( List );
+
+const SiteNav = (props) => {
+  return (
+    <SelectableList onChange={props.onChange} >
+      <ListItem primaryText="Articles" value={prefixLink('/')} />
+      <ListItem primaryText="PrivacyPolicy" value={prefixLink('/privacy-policy/')} />
+    </SelectableList>
+  )
 }
 
 SiteNav.propTypes = {
-    location: React.PropTypes.object,
+  onChange: React.PropTypes.object,
 }
 
 export default SiteNav

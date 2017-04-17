@@ -7,10 +7,9 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 ReactGA.initialize(config.googleAnalyticsId);
 injectTapEventPlugin();
 
-exports.onRouteUpdate = (state, page, pages) => {
+exports.onRouteUpdate = (state) => {
   ReactGA.pageview(state.pathname);
 };
-    //</MuiThemeProvider>
 
 exports.wrapRootComponent = (root) => () => {
   return (
@@ -18,4 +17,4 @@ exports.wrapRootComponent = (root) => () => {
       {root()}
     </MuiThemeProvider>
   )
-}
+};

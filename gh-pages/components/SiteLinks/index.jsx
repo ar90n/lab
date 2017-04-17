@@ -1,29 +1,64 @@
 import React from 'react'
+import { StyleSheet, css } from 'aphrodite'
 import { RouteHandler, Link } from 'react-router'
 import { prefixLink } from 'gatsby-helpers'
 import { config } from 'config'
-import './style.css'
+import FontaAwesome from 'react-fontawesome'
+import * as colors from 'material-ui/styles/colors';
 import '../../static/fonts/fontawesome/style.css'
 
-class SiteLinks extends React.Component {
-    render() {
-
-        return (
-            <div className='blog-social'>
-              <ul>
-                <li>
-                  <a href={ config.siteTwitterUrl }><i className='fa fa-twitter'></i></a>
-                </li>
-                <li>
-                  <a href={ config.siteGithubUrl }><i className='fa fa-github-alt'></i></a>
-                </li>
-                <li>
-                  <a href={ config.siteRssUrl }><i className='fa fa-rss'></i></a>
-                </li>
-              </ul>
-            </div>
-            );
+const styles = StyleSheet.create({
+    common: {
+        marginLeft: '16px'
+    },
+    list: {
+        listStyle: 'none',
+        padding: '0',
+        margin: '10px 0',
+        clear: 'fix-legacy'
+    },
+    container: {
+        float: 'left',
+        marginRight: '5px',
+        textAlign: 'center',
+        height: '24px',
+        width: '24px',
+        ':hover': {
+            background: colors.grey300
+        }
+    },
+    icon: {
+        color: '#606060',
+        fontSize: '21px',
+        lineHeight: '24px',
+        ':hover': {
+            color: '#444',
+        }
     }
+})
+
+const SiteLinks = ( props ) => {
+    return (
+        <div className={css(styles.common)}>
+            <ul className={css(styles.list)}>
+                <li className={css(styles.container)}>
+                    <a href={config.siteTwitterUrl}>
+                        <FontaAwesome name='fa fa-twitter' className={css(styles.icon)}/>
+                    </a>
+                </li>
+                <li className={css(styles.container)}>
+                    <a href={config.siteGithubUrl}>
+                        <FontaAwesome name='fa fa-github-alt' className={css(styles.icon)}/>
+                    </a>
+                </li>
+                <li className={css(styles.container)}>
+                    <a href={`mailto:${config.siteEmailUrl}`}>
+                        <FontaAwesome name='fa fa-envelope-o' className={css(styles.icon)}/>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    );
 }
 
 export default SiteLinks

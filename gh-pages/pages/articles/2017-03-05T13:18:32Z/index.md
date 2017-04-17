@@ -3,7 +3,9 @@ title: 「Deep Learning×画像解析」ライトニングトークイベント 
 date: "2017-03-05T13:18:32Z"
 layout: post
 path: "/blog/2017-03-05T13:18:32Z/"
-category: "Deep Learning"
+category:
+- "Deep Learning"
+- "Medical"
 description: "DeepMedicについてLTしてきました"
 ---
 先日行われた[「Deep Learning×画像解析」ライトニングトークイベント by LP-tech](https://lp-tech.net/articles/qND6n)というイベントでLTしてきました．  

@@ -1,10 +1,11 @@
 siteTitle = "希瓦斯製作所"
-siteDescr = "日々のメモをつらつらと."
+siteDescr = "日々のメモつらつらと.\nC++と画像処理が好きです."
 siteAuthor = "Masahiro Wada"
+
+siteBackgroundColor = "grey200"
 
 siteTwitterUrl = "https://twitter.com/ar90n"
 siteGithubUrl = "https://github.com/ar90n/"
+siteEmailUrl = "argon.argon.argon@gmail.com"
 
 googleAnalyticsId = "UA-90473091-1"
-
-linkPrefix = ""

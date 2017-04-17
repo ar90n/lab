@@ -3,7 +3,8 @@ title: Sierraで日本語入力ON/OFFをShift+Spaceに設定する
 date: "2017-01-22T13:47:08.324Z"
 layout: post
 path: "/blog/2017-01-22T13:47:08.324Z/"
-category: "その他"
+category:
+- "環境構築"
 description: "Karabinerが動かなくてもShift+Spaceで日本語入力を切り替える"
 ---
 Sierraになって一番困ったのがKarabinerが動かなくなってしまったこと．

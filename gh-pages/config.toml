@@ -9,3 +9,5 @@ siteGithubUrl = "https://github.com/ar90n/"
 siteEmailUrl = "argon.argon.argon@gmail.com"
 
 googleAnalyticsId = "UA-90473091-1"
+
+linkPrefix = ""

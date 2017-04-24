@@ -17,16 +17,16 @@ GPGPU環境はCUDA一択な感じがしてきたので，CUDAの勉強するた�
 [参考サイト](http://musyoku.github.io/2016/08/12/Jetson-TX1%E3%81%AE%E4%BB%A3%E3%82%8F%E3%82%8A%E3%81%ABSHIELD-Android-TV%E3%81%A7Tegra-X1%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83%E3%82%92%E6%A7%8B%E7%AF%89%E3%81%99%E3%82%8B/)ではmicroSDに対してルートファイルシステムを構築していますが，手元にあるSATVではmicroSDを認識してくれなかったため，USBドライブに構築します．  
 各コマンドが何を表しているかは[参考サイト](http://musyoku.github.io/2016/08/12/Jetson-TX1%E3%81%AE%E4%BB%A3%E3%82%8F%E3%82%8A%E3%81%ABSHIELD-Android-TV%E3%81%A7Tegra-X1%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83%E3%82%92%E6%A7%8B%E7%AF%89%E3%81%99%E3%82%8B/)を参照してください．
 ```bash
-$parted -s -a optimal /dev/sda mklabel msdos
-$parted -s -a optimal /dev/sda -- mkpart primary ext4 1 -1
-$mkfs.ext4 /dev/sda1
-$tar -jxvf Tegra210_Linux_R24.2.1_aarch64.tbz2
-$cd Linux_for_Tegra
-$mount /dev/sda1 ./rootfs
-$tar -jxpf Tegra_Linux_Sample-Root-Filesystem_R24.2.1_aarch64.tbz2
-$./apply_binaries.sh
-$sync
-$umount /dev/sda1
+$ parted -s -a optimal /dev/sda mklabel msdos
+$ parted -s -a optimal /dev/sda -- mkpart primary ext4 1 -1
+$ mkfs.ext4 /dev/sda1
+$ tar -jxvf Tegra210_Linux_R24.2.1_aarch64.tbz2
+$ cd Linux_for_Tegra
+$ mount /dev/sda1 ./rootfs
+$ tar -jxpf Tegra_Linux_Sample-Root-Filesystem_R24.2.1_aarch64.tbz2
+$ ./apply_binaries.sh
+$ sync
+$ umount /dev/sda1
 ```
 
 ### ブートローダの書き込み
@@ -38,31 +38,31 @@ $umount /dev/sda1
 
 ブートローダの書き込み際して，事前にSATVのブートローダをアンロックしておく必要があります．  アンロックは，ホストとSATVをOTGケーブルで接続の後に以下のコマンドを実行します．
 ```bash
-$fastboot oem unlock
+$ fastboot oem unlock
 ```
 
 ブートローダの書き込み手順は，バージョン24.2.1のシステムを用いるため，[参考サイト](http://musyoku.github.io/2016/08/12/Jetson-TX1%E3%81%AE%E4%BB%A3%E3%82%8F%E3%82%8A%E3%81%ABSHIELD-Android-TV%E3%81%A7Tegra-X1%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83%E3%82%92%E6%A7%8B%E7%AF%89%E3%81%99%E3%82%8B/)と若干異なります．
 [bootimages.zip](https://drive.google.com/file/d/0Bz5kaPQJx_AgZ3lvWWZFNmJFcmM/view)を取得後，以下のコマンドを実行します．
 ```bash
-$unzip bootimages.zip
-$cd bootimages
-$fastboot flash boot sda1.img
-$fastboot flash path/to/Linux_for_Tegra/kernel/dtb/tegra210-foster-e-p2530-0930-e02-00.dtb
+$ unzip bootimages.zip
+$ cd bootimages
+$ fastboot flash boot sda1.img
+$ fastboot flash path/to/Linux_for_Tegra/kernel/dtb/tegra210-foster-e-p2530-0930-e02-00.dtb
 ```
 
 ### JetPackの導入
 SATVへJetPackを導入するためには，Ubuntuホストから[JetPack-L4T-3.0-linux-x64.run]()を起動し，必要なファイルを転送する必要があります．  
 今回，Ubuntuがインストール済みのコンピュータを所持していないためDockerを用いてこの作業を行いました．
 ```bash
-$docker pull dorowu/ubuntu-desktop-lxde-vnc
-$docker run -it --rm -p 6080:80 dorowu/ubuntu-desktop-lxde-vnc
+$ docker pull dorowu/ubuntu-desktop-lxde-vnc
+$ docker run -it --rm -p 6080:80 dorowu/ubuntu-desktop-lxde-vnc
 ```
 そして，ブラウザでhttp://localhost:6080に接続することでコンテナをVNC経由で操作可能となります．  
 VNC内のターミナルで以下のコマンドを実行しJetPackのインストーラーを起動しました．
 ```bash
-$apt-get update
-$apt-get -y install sshpass xterm
-$./JetPack-L4T-3.0-linux-x64.run
+$ apt-get update
+$ apt-get -y install sshpass xterm
+$ ./JetPack-L4T-3.0-linux-x64.run
 ```
 
 ![jetpack](./jetpack.png)
@@ -70,10 +70,17 @@ $./JetPack-L4T-3.0-linux-x64.run
 
 以降，[参考サイト](http://musyoku.github.io/2016/08/12/Jetson-TX1%E3%81%AE%E4%BB%A3%E3%82%8F%E3%82%8A%E3%81%ABSHIELD-Android-TV%E3%81%A7Tegra-X1%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83%E3%82%92%E6%A7%8B%E7%AF%89%E3%81%99%E3%82%8B/)を参照のこと．
 
+### ユーザの追加
+```bash
+$ sudo adduser argon
+$ sudo addgroup argon sudo
+$ sudo addgroup argon video
+```
+
 ### サンプルプログラムのビルド
 以下のサンプルをビルドして実行しました．
 ```bash
-ubuntu@tegra-ubuntu:~/samples/6_Advanced/mergeSort$ make
+$ make
 /usr/local/cuda-8.0/bin/nvcc -ccbin g++ -I../../common/inc  -m64    -gencode arch=compute_53,code=sm_53 -gencode arch=compute_53,code=compute_53 -o bitonic.o -c bitonic.cu
 /usr/local/cuda-8.0/bin/nvcc -ccbin g++ -I../../common/inc  -m64    -gencode arch=compute_53,code=sm_53 -gencode arch=compute_53,code=compute_53 -o main.o -c main.cpp
 /usr/local/cuda-8.0/bin/nvcc -ccbin g++ -I../../common/inc  -m64    -gencode arch=compute_53,code=sm_53 -gencode arch=compute_53,code=compute_53 -o mergeSort.o -c mergeSort.cu

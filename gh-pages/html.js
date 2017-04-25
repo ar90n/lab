@@ -1,8 +1,11 @@
 import React from 'react'
 import Helmet from 'react-helmet'
+import {config} from 'config'
 import { prefixLink } from 'gatsby-helpers'
 
 const BUILD_TIME = new Date().getTime()
+
+const GA_JS_CODE = `(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','https://www.google-analytics.com/analytics.js','ga'); ga('create', '${config.googleAnalyticsId}', 'auto'); ga('send', 'pageview');`
 
 module.exports = React.createClass({
     displayName: 'HTML',
@@ -27,6 +30,7 @@ module.exports = React.createClass({
               { title.toComponent() }
               { font }
               { css }
+              <script dangerouslySetInnerHTML={ {    __html: GA_JS_CODE} } />
             </head>
             <body>
               <div id="react-mount" dangerouslySetInnerHTML={ {    __html: this.props.body} } />

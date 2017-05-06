@@ -20,7 +20,8 @@ appbar: {
         width: '256px'
     },
     main: {
-        margin: `${ spacing.desktopGutter * 2 }px ${ spacing.desktopGutter * 3 }px`
+        marginTop: `${ spacing.desktopGutter * 2 }px`,
+        marginBottom: `${ spacing.desktopGutter * 2 }px`
     },
     footer: {
         //    backgroundColor: grey900,
@@ -65,8 +66,11 @@ class SiteRoot extends React.Component {
     };
 
     onChangePage = ( event, value ) => {
-        this.context.router.push( value );
         this.onChangeRequestDrawer( false );
+        if(!this.context.router.isActive(value))
+        {
+            this.context.router.push( value );
+        }
     }
 
     onCloseOverlayDrawer = ( ) => {
@@ -102,16 +106,18 @@ const overlayDrawerOpen = forSmallDisplay && this.state.overlayDrawerOpen
         })
         const overlayDrawerContainerStyle = styles.drawerContainer
         const mainStyle = Object.assign({}, styles.main, {
-             paddingLeft: ( drawerOpen && !forSmallDisplay ) ? parseInt( styles.drawerContainer.width ) : 0,
-              paddingTop: this.context.muiTheme.appBar.height
+            paddingLeft: ( drawerOpen && !forSmallDisplay ) ? parseInt( styles.drawerContainer.width ) : 0,
+            paddingTop: this.context.muiTheme.appBar.height,
+            marginLeft: forSmallDisplay ? '8px': `${ spacing.desktopGutter * 3 }px`,
+            marginRight: forSmallDisplay ? '8px': `${ spacing.desktopGutter * 3 }px`,
         })
 
         return (
             <div>
                 <Helmet title={config.siteTitle}/>
-    <SiteAppbar style={appStyle} onLeftIconButtonTouchTap={this.onTouchTapLeftIconButton} showMenuIconButton={forSmallDisplay}/>
+                <SiteAppbar style={appStyle} onLeftIconButtonTouchTap={this.onTouchTapLeftIconButton} showMenuIconButton={forSmallDisplay}/>
                 <SiteSidebar style={drawerStyle} containerStyle={drawerContainerStyle} open={drawerOpen} onChange={this.onChangePage}/>
-                <SiteOverlaySidebar style={overlayDrawerStyle} containerStyle={overlayDrawerContainerStyle} appbarHeight={this.context.muiTheme.appBar.height} open={overlayDrawerOpen} onChange={this.onChangePage} onClose={this.onCloseOverlayDrawer}/>
+                <SiteOverlaySidebar style={overlayDrawerStyle} containerStyle={overlayDrawerContainerStyle} appbarHeight={this.context.muiTheme.appBar.height} open={overlayDrawerOpen} docked={false} onChange={this.onChangePage} onClose={this.onCloseOverlayDrawer}/>
                 <SiteContents style={mainStyle}>
                     {this.props.children}
                 </SiteContents>

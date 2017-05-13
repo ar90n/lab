@@ -1,4 +1,10 @@
 bottle==0.12.13
+circus==0.14.0
+gunicorn==19.6.0
+iowait==0.2
+psutil==5.0.1
+pyzmq==16.0.2
 requests==2.12.5
 requests-cache==0.4.13
 resaspy==0.2.0
+tornado==4.4.2

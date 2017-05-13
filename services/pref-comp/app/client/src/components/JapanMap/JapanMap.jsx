@@ -7,12 +7,6 @@ import * as topojson from 'topojson';
 
 import * as japan from './japan'
 
-const styles = {
-  reference: {
-    textAlign: 'right'
-  }
-}
-
 @observer
 class JapanMap extends React.Component {
   japanTotalArea: number;
@@ -77,15 +71,7 @@ class JapanMap extends React.Component {
   }
 
   render() {
-    return (
-      <div>
-        <svg viewBox="0 0 2500 1300" ref={d => this.svg = d}></svg>
-        <p style={styles.reference}>
-          本地図は地球地図日本を加工して作成しています<br />
-          出典：地球地図日本(<a href="http://www.gsi.go.jp/kankyochiri/gm_jpn.html">http://www.gsi.go.jp/kankyochiri/gm_jpn.html</a>)
-        </p>
-      </div>
-    );
+    return <svg viewBox="0 0 2500 1300" ref={d => this.svg = d}></svg>;
   }
 }
 export default JapanMap;

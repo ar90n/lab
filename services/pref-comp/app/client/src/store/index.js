@@ -3,8 +3,6 @@ import {observable, action, computed} from 'mobx';
 import {RouterStore} from 'mobx-router';
 import {fromPromise} from 'mobx-utils';
 
-const API_HOST = 'pref-comp.ar90n.net';
-
 class PrefInfoStore {
   //global store
   @observable value_store: any;
@@ -15,8 +13,8 @@ class PrefInfoStore {
   @observable selected_year_index: number;
 
   constructor() {
-    this.value_store = fromPromise( fetch(`http://${API_HOST}/api/area`).then( (res) => res.json()), [] );
-    this.category_store = fromPromise( fetch(`http://${API_HOST}/api/category`).then((res)=>res.json()), [] );
+    this.value_store = fromPromise( fetch('http://localhost:8080/api/area').then( (res) => res.json()), [] );
+    this.category_store = fromPromise( fetch('http://localhost:8080/api/category').then((res)=>res.json()), [] );
 
     this.selected_category_index = 0;
     this.selected_year_index = 0;
@@ -24,7 +22,7 @@ class PrefInfoStore {
 
   @action
   updateCategory() {
-    this.category_store = fromPromise( fetch(`http://${API_HOST}/api/category`).then( ( res ) => res.json() ), this.category );
+    this.category_store = fromPromise( fetch('http://localhost:8080/api/category').then( ( res ) => res.json() ), this.category );
     this.selected_category_index = 0;
   }
 
@@ -36,7 +34,7 @@ class PrefInfoStore {
 
     this.selected_category_index = index;
     const resource = this.category[ index ].resource
-    const api_url = `http://${API_HOST}/api/${resource}`
+    const api_url = `http://localhost:8080/api/${resource}`
     this.value_store = fromPromise( fetch(api_url).then( (res) => res.json()), this.value );
     this.selected_year_index = 0;
   }

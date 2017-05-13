@@ -10,7 +10,7 @@ function App( props ) {
   const right_elements = (
     <IconButton
       iconClassName="muidocs-icon-custom-github"
-      href="https://github.com/callemall/material-ui"
+      href="https://github.com/ar90n/lab/tree/master/services/pref-comp"
     />
   );
 

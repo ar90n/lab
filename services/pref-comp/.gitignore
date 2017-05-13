@@ -12,7 +12,48 @@ build
 # misc
 .DS_Store
 .env
+.env.yml
 .envrc
 npm-debug.log
 cache.sqlite
 .vscode
+
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+*.dist-info/
+.installed.cfg
+*.egg
+__pycache__
+
+# Serverless directories
+.serverless
+
+# python modules
+boto3/
+botocore/
+dateutil/
+docutils/
+jmespath/
+requests/
+requests_cache/
+resaspy/
+s3transfer/
+six.py
+six.pyc
+
+# generated data
+client/src/assets/endpoints.json
+

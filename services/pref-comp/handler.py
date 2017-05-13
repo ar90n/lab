@@ -1,29 +1,22 @@
-from bottle import route, run, static_file
-
 from resaspy import Resaspy
 import os
 
 api_key = os.environ['RESAS_API_KEY']
 cache_name = os.environ['RESAS_CACHE_NAME'] if 'RESAS_CACHE_NAME' in os.environ else None
-resaspy = Resaspy( api_key, cache_name )
-
-@route('/static/js/<filepath:re:.*\.js>')
-def js(filepath):
-    return static_file(filepath, root="./client/build/static/js")
-
-@route('/')
-@route('/index.html')
-def index():
-    return static_file("index.html", root="./client/build/")
+endpoint_url = os.environ['DYNAMODB_ENDPOINT_URL'] if 'DYNAMODB_ENDPOINT_URL' in os.environ else None
+region_name = os.environ['DYNAMODB_REGION_NAME'] if 'DYNAMODB_REGION_NAME' in os.environ else None
+resaspy = Resaspy( api_key, cache_name, 'dynamodb', endpoint_url=endpoint_url, region_name=region_name )
 
 def create_response( payload ):
-    from bottle import response
     from json import dumps
-    response.content_type = 'application/json'
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, OPTIONS'
-    response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
-    return dumps( payload )
+    response = {
+        "statusCode": 200,
+        "headers": {
+            "Access-Control-Allow-Origin" : "*"
+        },
+        "body": dumps( payload )
+    }
+    return response
 
 def convert_to_payload( tmp ):
     payload = []
@@ -41,11 +34,9 @@ def fetch_manicipality_resource( fetcher ):
             if not year_key in tmp:
                 tmp[year_key] = {}
             tmp[year_key][pref_code] = data['value']
-
     return tmp
 
-@route('/api/category')
-def category():
+def category(event, context):
     payload = [
         {
             'title': '総面積',
@@ -115,8 +106,7 @@ def category():
 
     return create_response( payload )
 
-@route('/api/area')
-def area():
+def area(event, context):
     payload = {
       'value': {
           '26':4612.190000, '41':2440.680000, '43':7409.350000, '37':1876.720000, '23':5172.480000, '9':6408.090000, '19':4465.270000, '25':4017.380000,
@@ -130,62 +120,52 @@ def area():
 
     return create_response( [ payload ] )
 
-@route('/api/companies')
-def companies():
+def companies(event,context):
     fetcher = lambda pref_code: resaspy.municipality.company.per_year( pref_code, '-', '-', '-' )['result']
     payload = convert_to_payload( fetch_manicipality_resource( fetcher ) )
     return create_response( payload )
 
-@route('/api/plants')
-def plants():
+def plants(event,context):
     fetcher = lambda pref_code: resaspy.municipality.plant.per_year( pref_code, '-', '-', '-' )['result']
     payload = convert_to_payload( fetch_manicipality_resource( fetcher ) )
     return create_response( payload )
 
-@route('/api/foundation')
-def foundation():
+def foundation(event,context):
     fetcher = lambda pref_code: resaspy.municipality.foundation.per_year( pref_code, '-' )['result']
     payload = convert_to_payload( fetch_manicipality_resource( fetcher ) )
     return create_response( payload )
 
-@route('/api/taxes')
-def taxes():
+def taxes(event,context):
     fetcher = lambda pref_code: resaspy.municipality.taxes.per_year( pref_code, '-' )['result']
     payload = convert_to_payload( fetch_manicipality_resource( fetcher ) )
     return create_response( payload )
 
-@route('/api/job')
-def job():
+def job(event,context):
     fetcher = lambda pref_code: resaspy.municipality.job.per_year( pref_code, '-', '-' )['result']
     payload = convert_to_payload( fetch_manicipality_resource( fetcher ) )
     return create_response( payload )
 
-@route('/api/manufacture')
-def manufacture():
+def manufacture(event,context):
     fetcher = lambda pref_code: resaspy.municipality.manufacture.per_year( pref_code, '-', '-', '-' )['result']
     payload = convert_to_payload( fetch_manicipality_resource( fetcher ) )
     return create_response( payload )
 
-@route('/api/employee')
-def employee():
+def employee(event,context):
     fetcher = lambda pref_code: resaspy.municipality.employee.per_year( pref_code, '-', '-', '-' )['result']
     payload = convert_to_payload( fetch_manicipality_resource( fetcher ) )
     return create_response( payload )
 
-@route('/api/value')
-def value():
+def value(event,context):
     fetcher = lambda pref_code: resaspy.municipality.value.per_year( year=2012, pref_code=pref_code, city_code='-', sic_code='-', simc_code='-' )['result']
     payload = convert_to_payload( fetch_manicipality_resource( fetcher ) )
     return create_response( payload )
 
-@route('/api/labor')
-def labor():
+def labor(event,context):
     fetcher = lambda pref_code: resaspy.municipality.labor.per_year( year=2012, pref_code=pref_code, city_code='-', sic_code='-', simc_code='-' )['result']
     payload = convert_to_payload( fetch_manicipality_resource( fetcher ) )
     return create_response( payload )
 
-@route('/api/surplus')
-def surplus():
+def surplus(event,context):
     tmp = {}
     for pref_code in range( 1, 48 ):
         res = resaspy.municipality.surplus.per_year( year=2012, pref_code=pref_code, city_code='-', sic_code='-', simc_code='-' )['result']
@@ -202,20 +182,17 @@ def surplus():
     payload = convert_to_payload( tmp )
     return create_response( payload )
 
-@route('/api/wages')
-def wages():
+def wages(event,context):
     fetcher = lambda pref_code: resaspy.municipality.wages.per_year( pref_code, sic_code='-', simc_code='-', wages_age=1 )['result']
     payload = convert_to_payload( fetch_manicipality_resource( fetcher ) )
     return create_response( payload )
 
-@route('/api/sales')
-def sales():
+def sales(event,context):
     fetcher = lambda pref_code: resaspy.municipality.sales.per_year( pref_code, '-', '-', '-', 1 )['result']
     payload = convert_to_payload( fetch_manicipality_resource( fetcher ) )
     return create_response( payload )
 
-@route('/api/forestry_income')
-def forestry_income():
+def forestry_income(event,context):
     tmp = {}
     for pref_code in range( 1, 48 ):
         res = resaspy.forestry.income.for_stacked( pref_code, '-' )['result']
@@ -228,8 +205,7 @@ def forestry_income():
     payload = convert_to_payload( tmp )
     return create_response( payload )
 
-@route('/api/fishery_sales')
-def fishery_sales():
+def fishery_sales(event,context):
     tmp = {}
     for pref_code in range( 1, 48 ):
         res = resaspy.fishery.sea.total_sales( pref_code, '-' )['result']
@@ -246,8 +222,7 @@ def fishery_sales():
     payload = convert_to_payload( tmp )
     return create_response( payload )
 
-@route('/api/aquaculture_sales')
-def aquaculture_sales():
+def aquaculture_sales(event,context):
     tmp = {}
     for pref_code in range( 1, 48 ):
         res = resaspy.fishery.sea.aquaculture_total_sales( pref_code, '-' )['result']
@@ -263,5 +238,3 @@ def aquaculture_sales():
 
     payload = convert_to_payload( tmp )
     return create_response( payload )
-
-run(host='0.0.0.0', port=8080, debug=True)

@@ -1,0 +1,4 @@
+requests
+git+https://github.com/ar90n/requests-cache@add_dynamodb_backend
+resaspy
+boto3

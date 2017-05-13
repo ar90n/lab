@@ -29,7 +29,7 @@ const styles = {
 };
 
 function MapView( props ) {
-    if( props.store.info.category_state !== 'fulfilled' ) {
+    if( (props.store.info.category_state !== 'fulfilled' ) || (props.store.info.value === []) ) {
         return (
           <div style={styles.loading}>
             <CircularProgress size={64} thickness={5}/>

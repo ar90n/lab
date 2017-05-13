@@ -1,0 +1,26 @@
+{
+  "name": "pref_comp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "devDependencies": {
+    "serverless-dynamodb-local": "^0.2.21",
+    "serverless-offline": "^3.13.5",
+    "serverless-plugin-export-endpoints": "git+https://github.com/ar90n/serverless-plugin-export-endpoints.git",
+    "serverless-plugin-scripts": "^1.0.2",
+    "serverless-single-page-app-plugin": "file:serverless-single-page-app-plugin"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ar90n/pref_comp.git"
+  },
+  "author": "Masahiro Wada <argon.argon.argon@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ar90n/pref_comp/issues"
+  },
+  "homepage": "https://github.com/ar90n/pref_comp#readme"
+}

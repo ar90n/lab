@@ -35,10 +35,6 @@ class SiteRoot extends React.Component {
         router: PropTypes.object
     };
 
-    //
-    //SiteIndex.propTypes = {
-    //    route : React.PropTypes.object
-    //}
     constructor( props )
     {
         super( props );
@@ -67,7 +63,8 @@ class SiteRoot extends React.Component {
 
     onChangePage = ( event, value ) => {
         this.onChangeRequestDrawer( false );
-        if(!this.context.router.isActive(value))
+        const shouldPush = (!this.props.isRoot && value === '/') || !this.context.router.isActive( value );
+        if(shouldPush)
         {
             this.context.router.push( value );
         }
@@ -84,12 +81,16 @@ class SiteRoot extends React.Component {
     componentWillReceiveProps( nextProps ) {
         const forSmallDisplay = nextProps.width === SMALL
         const drawerOpen = !forSmallDisplay && ( this.state.forSmallDisplay || this.state.drawerOpen )
-const overlayDrawerOpen = forSmallDisplay && this.state.overlayDrawerOpen
-    this.setState({ drawerOpen, overlayDrawerOpen, forSmallDisplay });
+        const overlayDrawerOpen = forSmallDisplay && this.state.overlayDrawerOpen
+        this.setState({ drawerOpen, overlayDrawerOpen, forSmallDisplay });
     }
 
     componentWillUnmount( ) {
         document.body.style.backgroundColor = null;
+    }
+
+    shouldComponentUpdate() {
+        return true;
     }
 
     render( ) {

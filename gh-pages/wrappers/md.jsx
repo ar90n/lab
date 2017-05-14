@@ -5,7 +5,7 @@ import {SitePost} from '../components/SitePost'
 
 const MarkdownWrapper = (props) => {
     return (
-        <SiteRoot>
+        <SiteRoot isRoot={false}>
             <SitePost {...props}/>
         </SiteRoot>
     );

@@ -1,0 +1,11 @@
+cxx_binary(
+  name = 'sample1',
+  srcs = [
+    'sample1_unittest.cc',
+    'sample1.cc'
+  ],
+  link_style = 'static',
+  deps = [
+    '//gtest:googletest'
+  ]
+)

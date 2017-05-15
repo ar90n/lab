@@ -1,1 +1,2 @@
-.buckd
+[httpserver]
+  port = 9999

@@ -1,0 +1,22 @@
+cxx_binary(
+  name = 'hello_world',
+  srcs = [
+    'hello_world.cpp',
+  ],
+  headers = [
+    'hello_world.h',
+  ],
+  deps = [
+    ':util',
+  ]
+)
+
+cxx_library(
+  name = 'util',
+  srcs = [
+    'util.cpp',
+  ],
+  headers = [
+    'util.h',
+  ],
+)

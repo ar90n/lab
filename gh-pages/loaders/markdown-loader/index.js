@@ -30,6 +30,9 @@ var md = markdownIt({
   .use(require('markdown-it-deflist'))
   .use(require('markdown-it-abbr'))
   .use(require('markdown-it-attrs'))
+  .use(require('markdown-it-synapse-table'))
+  .use(require('markdown-it-imsize'))
+  .use(require('markdown-it-mathjax')())
 
 module.exports = function (content) {
   this.cacheable()

@@ -1,0 +1,14 @@
+include_defs('//BUCKAROO_DEPS')
+
+cxx_binary(
+  name = 'msgpack11_test',
+  header_namespace = 'msgpack11_test',
+  srcs = glob([
+    'msgpack11_test/src/**/*.cpp',
+  ]),
+  compiler_flags = [
+    '-std=c++11'
+  ],
+  deps = BUCKAROO_DEPS,
+)
+

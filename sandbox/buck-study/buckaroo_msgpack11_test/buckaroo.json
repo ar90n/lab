@@ -1,0 +1,7 @@
+{
+  "name": "msgpack11_test",
+  "dependencies": {
+    "ar90n/msgpack11": "0.0.6",
+    "google/gtest": "1.8.0"
+  }
+}

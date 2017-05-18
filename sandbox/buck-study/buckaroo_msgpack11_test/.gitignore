@@ -1,0 +1,12 @@
+.clang
+*.o
+build
+.envrc
+*.gch
+
+# buckaroo
+.buckd
+buck-out
+buckaroo
+BUCKAROO_DEPS
+.buckconfig.local

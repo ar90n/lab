@@ -1,0 +1,15 @@
+include_defs('//BUCKAROO_DEPS')
+
+cxx_binary(
+  name = 'issue_42',
+  header_namespace = 'issue_42',
+  srcs = glob([
+    'issue_42/src/**/*.cpp',
+  ]),
+  headers = subdir_glob([
+    ('issue_42/include', '**/*.hpp'),
+    ('issue_42/include', '**/*.h'),
+  ]),
+  deps = BUCKAROO_DEPS,
+)
+

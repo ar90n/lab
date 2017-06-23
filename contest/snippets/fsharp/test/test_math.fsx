@@ -110,6 +110,8 @@ module Line2d =
         |> abs
 
 
+let PI : float = 2.0 * asin(1.0)
+
 type ContainStatus =
     | OUT
     | ON

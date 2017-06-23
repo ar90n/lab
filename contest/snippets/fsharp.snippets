@@ -1,3 +1,113 @@
+snippet ____Array ""
+module Array =
+    let evenodd a = Array.foldBack (fun (l,r) x -> x::r,l) a ([],[])
+endsnippet
+
+snippet ____List ""
+module List =
+    let evenodd a = List.foldBack (fun (l,r) x -> x::r,l) a ([],[])
+    let splitBy2 f xs =
+        List.fold (fun acc x -> match acc with
+                                | [] -> [[x]]
+                                | (h::t) when  f (List.head h) x -> [x]::h::t
+                                | (h::t) -> (x::h)::t) [] xs
+        |> List.rev
+endsnippet
+
+snippet ____PriorityQueue ""
+module PriorityQueue =
+    type 'a _heap =
+        | Empty
+        | Node of int * int * 'a * 'a _heap * 'a _heap
+
+    let _makeHeap (x : 'a) (l : 'a _heap) (r : 'a _heap ) =
+        (l,r) |> function | (Node(ls, lh, _ , _, _ ), Node(rs, rh, _, _, _ )) -> Node(ls + rs + 1, (max lh rh) + 1, x, l, r )
+                          | (Node(ls, lh, _ , _, _ ), Empty) -> Node(ls + 1, lh + 1, x, l, r)
+                          | (Empty, Node(rs, rh, _ ,_, _)) -> Node(rs + 1, rh + 1, x, l,r ) 
+                          | (Empty, Empty) -> Node(1, 1, x, l,r ) 
+
+    let _bubbleUp (comp : 'a -> 'a -> int)  (x : 'a) (l : 'a _heap) (r : 'a _heap) =
+        (l,r) |> function | (Node(_, _, y, ll, lr), _) when ((comp y x) < 0) -> _makeHeap y (_makeHeap x ll lr) r
+                          | (_, Node(_, _, z, rl, rr)) when ((comp z x) < 0) -> _makeHeap z l (_makeHeap x rl rr)
+                          | (_, _) -> _makeHeap x l r
+
+    let rec _bubbleDown (comp : 'a -> 'a -> int)  (x : 'a) (l : 'a _heap) (r : 'a _heap) =
+        (l,r) |> function | (Node(_, _, y, ll, lr), Node(_, _, z, rl, rr)) when (((comp z x) < 0) && ((comp z y) < 0)) -> _makeHeap z  l (_bubbleDown comp x rl rr)
+                          | (Node(_, _, y, ll, lr), Node(_, _, z, rl, rr)) when ((comp y x) < 0) -> _makeHeap y  (_bubbleDown comp x ll lr) r
+                          | _ -> _makeHeap x l r
+
+    let _floatRight (x : 'a) (l : 'a _heap) (r : 'a _heap) =
+        r |> function | Empty -> _makeHeap x l r
+                      | Node( _, _, y, rl, rr) -> _makeHeap y l (_makeHeap x rl rr)
+
+    let _floatLeft (x : 'a) (l : 'a _heap) (r : 'a _heap) =
+        l |> function | Empty -> _makeHeap x l r
+                      | Node( _, _, y, ll, lr) -> _makeHeap y (_makeHeap x ll lr) r
+
+    let rec _merge (l : 'a _heap) (r : 'a _heap) =
+        (l,r) |> function | (Empty, Empty) -> Empty
+                          | ( _, Empty) -> l
+                          | ( Empty, _) -> r
+                          | (Node(ls,lh, x, ll, lr) , _) when (ls < ((pown 2 lh) - 1)) -> _floatLeft x (_merge ll lr) r
+                          | (_, Node(rs,rh, x, rl, rr)) when (rs < ((pown 2 rh) - 1)) -> _floatRight x l (_merge rl rr)
+                          | (Node(_,lh, x, ll, lr), Node(_, rh, _, _, _)) when (rh < lh) -> _floatLeft x (_merge ll lr) r
+                          | (_, Node(rs,rh, x, rl, rr)) -> _floatRight x l (_merge rl rr)
+
+    let rec _insert (comp : 'a -> 'a -> int) (h : 'a _heap) (v : 'a) =
+        h |> function | Empty -> _makeHeap v Empty Empty
+                      | Node(s, h, x, l, r) -> (l,r) |> function | (Empty, _) -> _bubbleUp comp x (_insert comp l v) r
+                                                                 | (Node(ls,lh, _, _, _), _) when (ls < ((pown 2 lh) - 1)) -> _bubbleUp comp x (_insert comp l v) r
+                                                                 | (_, Empty) -> _bubbleUp comp x l (_insert comp r v)
+                                                                 | (_, Node(rs,rh, _, _, _)) when (rs < ((pown 2 rh) - 1)) -> _bubbleUp comp x l (_insert comp r v)
+                                                                 | (Node(_,lh,_, _, _), Node(_, rh, _, _, _)) when (rh < lh) -> _bubbleUp comp x l (_insert comp r v)
+                                                                 | (_, _) -> _bubbleUp comp x (_insert comp l v) r
+
+    let _head (h : 'a _heap) =
+        h |> function | Empty -> failwith "empty"
+                      | Node( _ , _, x, _, _) -> x
+
+    let _tail (comp : 'a -> 'a -> int) (h : 'a _heap) =
+        h |> function | Empty -> failwith "empty"
+                      | Node( _, _, _, l, r ) -> _merge l r |> function | Empty -> Empty
+                                                                        | Node( _, _, x, l2, r2 ) -> _bubbleDown comp x l2 r2
+
+    type 'a pqueue = ('a -> 'a -> int)  * 'a _heap
+    let init (comp : 'a -> 'a -> int)  =
+        ( comp , Empty )
+
+    let isEmpty (q : 'a pqueue) : bool =
+        q |> function | ( _ , h )  -> h = Empty
+
+    let top (q : 'a pqueue) =
+        q |> function | ( _ , h )  -> _head h
+
+    let push (q : 'a pqueue) (v : 'a) =
+        q |> function | ( c , h )  -> v |> _insert c h |> fun h' -> ( c, h' )
+
+    let pop (q : 'a pqueue) =
+        q |> function | ( c , h )  -> (_head h, ( c, _tail c h) )
+
+    let rec toSeq (q : 'a pqueue) =
+        q |> pop |> fun (h,t) -> seq{ yield h; yield! toSeq t }
+endsnippet
+
+snippet ____Lcs ""
+let Lcs (xs : 'a array) =
+    let n = Array.length xs
+    let dp = Array2D.create (n+1) (n+1) -1
+    for i = 0 to n do
+        dp.[i,0] <- 0
+        dp.[0,i] <- 0
+    done
+    for i = 1 to n do
+        for j = 1 to n do
+            let c = if xs.[i-1] = xs.[n - j] then 1 else 0
+            dp.[i,j] <- max (max (dp.[i-1,j-1] + c) dp.[i-1,j]) dp.[i,j-1]
+        done
+    done
+    dp.[n,n]
+endsnippet
+
 snippet ____Graph ""
 type cost = float
 type vertex = int
@@ -54,6 +164,49 @@ let Path (g : graph) (src : vertex) (dst : vertex) : vertex list option =
     if (List.head result <> -1) then Some result else None
 endsnippet
 
+snippet ____BellmanFord ""
+let BellmanFord (g : graph) (root : vertex) : cost list option =
+    let nodes = Nodes g
+    let result = Array.init nodes ( fun _ -> System.Double.PositiveInfinity)
+
+    let changed = ref false
+    result.[root] <- 0.0
+    for i = 0 to (nodes - 1) do
+        changed := false
+        for f = 0 to (nodes - 1) do
+            Seq.zip g.[f].Keys g.[f].Values 
+            |> Seq.iter (fun (t,c) -> let nc = result.[f] + c
+                                      if nc < result.[t] then 
+                                        result.[t] <- nc
+                                        changed := true )
+        done
+    done
+
+    if !changed then None else Some (Array.toList result)
+endsnippet
+
+snippet ____Bfs ""
+let Bfs (g : graph) (root : vertex) : vertex list * cost array = 
+    let nodes = Nodes g
+    let visited = Array.create nodes false
+    let mutable result = []
+    let mutable costs = Array.create nodes 0.0
+    let queue = new System.Collections.Generic.Queue< vertex * cost >()
+    queue.Enqueue (root, 0.0)
+    while( queue.Count <> 0 ) do
+        let c,cc = queue.Dequeue()
+        if not visited.[c] then
+            visited.[c] <- true
+            result <- c :: result
+            costs.[c] <- cc
+            Seq.zip g.[c].Keys g.[c].Values
+            |> Seq.map (fun (i,c) -> (i, cc + c))
+            |> Seq.iter queue.Enqueue
+    done
+
+    List.rev result, costs
+endsnippet
+
 snippet ____Dfs ""
 let Dfs (g : graph) (root : vertex) : vertex list * cost array = 
     let nodes = Nodes g
@@ -76,8 +229,144 @@ let Dfs (g : graph) (root : vertex) : vertex list * cost array =
     List.rev result, costs
 endsnippet
 
-snippet ____Pi ""
-let PI : float = 2.0 * asin(1.0)
+snippet ____Diameter ""
+let Diameter (g : graph) : cost =
+    Bfs g 0
+    |> snd
+    |> Seq.mapi (fun i u -> i,u)
+    |> Seq.maxBy snd
+    |> fst
+    |> Bfs g
+    |> snd
+    |> Array.max
+endsnippet
+
+snippet ____Dijkstra ""
+let Dijkstra (g : graph) (root : vertex) : (graph * cost array) =
+    let nodes = Nodes g
+    let costs = Array.create nodes System.Double.PositiveInfinity
+
+    let comp (_,a) (_,b) = 
+        match a,b with
+        | _ when a < b -> -1
+        | _ when a > b ->  1
+        | _ -> 0
+    let pqueue = Seq.zip g.[root].Keys g.[root].Values
+                 |> Seq.map (fun (t',c') -> (root,t',c'))
+                 |> Seq.fold (fun q (f,t,c) -> PriorityQueue.push q ((f,t,c),c)) (PriorityQueue.init comp)
+    costs.[root] <- 0.0
+    let rec doit (costs : cost array) (edges : edge list) (pqueue : (edge * cost) PriorityQueue.pqueue) : cost array * edge list =
+        if PriorityQueue.isEmpty pqueue then
+            costs, edges
+        else
+            let (((_,t,c) as e,ac),pqueue') = PriorityQueue.pop pqueue
+            if ac < costs.[t] then
+                let edges' = e :: edges
+                costs.[t] <- ac
+                Seq.zip g.[t].Keys g.[t].Values
+                |> Seq.filter (fun (t',c') -> (ac + c') < costs.[t'] )
+                |> Seq.map (fun (t',c') -> (t,t',c'))
+                |> Seq.fold ( fun q (f,t,c) -> PriorityQueue.push q ((f,t,c), ac + c) ) pqueue'
+                |> doit costs edges'
+            else
+                doit costs edges pqueue'
+    let (rc,re ) = doit costs [] pqueue
+    DGraph nodes re, rc
+endsnippet
+
+snippet ____Prim ""
+let Prim (g : graph) (root : vertex) : graph =
+    let nodes = Nodes g
+    let visited = Array.create nodes false
+    let comp (_,_,a) (_,_,b) = 
+        match a,b with
+        | _ when a < b -> -1
+        | _ when a > b ->  1
+        | _ -> 0
+    let pqueue = ref <| PriorityQueue.init comp
+    visited.[root] <- true
+    let mutable edges = []
+    Seq.zip g.[root].Keys g.[root].Values |> Seq.iter (fun (t,c) -> pqueue := PriorityQueue.push !pqueue (root,t,c) )
+    while( not (PriorityQueue.isEmpty !pqueue) ) do
+        let (e,npqueue) = PriorityQueue.pop !pqueue
+        let (f,t,c) = e
+        pqueue := npqueue
+
+        if not visited.[t] then
+            visited.[t] <- true
+            edges <- e :: edges
+            Seq.zip g.[t].Keys g.[t].Values
+            |> Seq.toList
+            |> List.filter (fun (tt,c) -> not visited.[tt])
+            |> List.iter (fun (tt,c) -> pqueue := PriorityQueue.push !pqueue (t,tt,c) )
+    done
+    DGraph nodes edges
+endsnippet
+
+snippet ____TopoSort ""
+let TopoSort (g : graph) : vertex list option = 
+    let nodes = Nodes g
+    let status = Array.create nodes 0
+    let result = ref []
+    let rec visit (v : vertex) = 
+        match status.[v] with
+        | 0 -> status.[v] <- 1
+               g.[v].Keys |> Seq.iter visit
+               status.[v] <- 2
+               result := v :: !result
+        | 1 -> failwith "has cyclic"
+        | _ -> ignore()
+
+    try
+        seq {0..(nodes-1)} |> Seq.iter (fun v -> if status.[v] = 0 then visit v)
+        Some <| List.rev !result
+    with
+        | Failure "has cyclic" -> None
+endsnippet
+
+snippet ____UnionFind ""
+type UnionFind = int[] * int[]
+
+let Root ( uf : UnionFind ) ( i : int ) =
+    let (id,sz) = uf
+    let mutable q = i
+    while ( q <> id.[q] ) do
+        id.[q] <- id.[id.[q]]
+        q <- id.[q]
+    q
+
+let Find ( uf : UnionFind ) ( p : int ) ( q : int ) =
+    (Root uf p) = (Root uf q)
+
+let Unite ( uf : UnionFind ) ( p : int ) ( q : int ) =
+    let (id,sz) = uf
+    let i = Root uf p
+    let j = Root uf q
+    if sz.[i] < sz.[j] then id.[i] <- j; sz.[j] <- sz.[j] + sz.[i]
+    else id.[j] <- i; sz.[i] <- sz.[i] + sz.[j]
+endsnippet
+
+snippet ____WarshallFloyd ""
+let WarshallFloyd (g : graph) : cost[,] =
+    let nodes = Nodes g
+    let costs = Array2D.init nodes nodes (fun f t -> if g.[f].ContainsKey t then g.[f].[t] else System.Double.PositiveInfinity)
+    for m = 0 to (nodes - 1) do
+        for f = 0 to (nodes - 1) do
+            for t = 0 to (nodes - 1) do
+                costs.[f,t] <- min  costs.[f, t] (costs.[f,m] + costs.[m,t])
+            done
+        done
+    done
+    costs
+endsnippet
+
+snippet ____Gcd ""
+let rec Gcd a b =
+    let (minv, maxv) = (min a b, max a b)
+    if minv = 0 then maxv else Gcd (maxv % minv) minv
+
+let Lcm a b =
+    a * b / (Gcd a b)
 endsnippet
 
 snippet ____Vector2d ""
@@ -146,6 +435,94 @@ module Point2d =
         | _ -> ONLINE_FRONT
 endsnippet
 
+snippet ____Line2d ""
+type line2d< ^a when ^a : (static member (+) : ^a * ^a -> ^a)
+                 and ^a : (static member (-) : ^a * ^a -> ^a)
+                 and ^a : (static member (*) : ^a * ^a -> ^a)
+                 and ^a : (static member (/) : ^a * ^a -> ^a)
+                 and ^a : (static member (~-) : ^a -> ^a)
+                 and ^a : (static member Abs : ^a -> ^a)
+                 and ^a : (static member op_Explicit : ^a -> float)
+                 and ^a : comparison> =  ^a point2d * ^a vector2d
+module Line2d =
+    open Vector2d
+    open Point2d
+    let inline distanceFromPointL2 (line : ^a line2d) (point  : ^a point2d) : float =
+        let (p, v0) = line
+        direction p point
+        |> cross v0
+        |> (fun s -> (float s) / (normL2 v0))
+        |> abs
+
+endsnippet
+
+snippet ____Pi ""
+let PI : float = 2.0 * asin(1.0)
+endsnippet
+
+snippet ____PolygonContains ""
+type ContainStatus =
+    | OUT
+    | ON
+    | IN
+let inline PolygonContains (polygon : (^a point2d) list) (point : ^a point2d) : ContainStatus =
+    let eps = 1e-12
+    let h = List.head polygon
+    let doit (p0 : 'a point2d) (p1 : 'a point2d) =
+        let a = if p0.y < p1.y then p0 else p1
+        let b = if p0.y < p1.y then p1 else p0
+        if ((((float >> abs) (Vector2d.cross a b)) < eps) && ((float (Vector2d.dot a b)) < eps)) then (1,0)
+        else if ( ((float a.y) < eps) && (eps < (float b.y)) && (eps < (float (Vector2d.cross a b)))) then (0,1)
+        else (0,0)
+
+    List.rev polygon
+    |> List.fold (fun (l,p0) p1 -> ((p0,p1)::l,p1)) ([],h)
+    |> fst
+    |> List.fold (fun (oc,cc) (p0,p1) -> let (no,nc) = doit p0 p1
+                                         (oc + no, cc + nc)) (0,0)
+    |> (fun (oc,cc) -> match (oc,cc) with
+                       | _ when 0 < oc -> ON
+                       | _ when 0 < cc -> IN
+                       | _ -> OUT)
+endsnippet
+
+snippet ____PowMod ""
+let rec PowMod (a: int64) (b : int64) (c : int64) =
+    if b = 0L then 1L
+    else if ( b % 2L ) = 1L then ( a * ( PowMod a (b - 1L) c ) ) % c
+    else 
+        let d = PowMod a (b / 2L) c
+        ( d * d ) % c
+endsnippet
+
+snippet ____Primes ""
+module Primes =
+    let mutable primes = [7; 5; 3; 2]
+    let mutable upper_bound = 7
+
+    let rec create (n : int) : int list =
+        for i = upper_bound + 1 to n do
+            if isPrime i then
+                primes <- i :: primes
+            upper_bound <- i
+        done
+        List.filter ((>=) n) primes
+
+    and isPrime (n : int) : bool = 
+        n / 2
+        |> create
+        |> List.forall (fun p -> n % p <> 0)
+
+    let factorize (n : int) : int list =
+        let rec doit (n : int) (primes : int list) (factors : int list) : int list =
+            match primes with
+            | hp::tp when n % hp = 0 -> doit (n / hp) primes (hp::factors)
+            | hp::tp -> doit n tp factors
+            | [] -> factors
+        let primes = create n
+        doit n primes []
+endsnippet
+
 snippet ____Segment2d ""
 type segment2d< ^a when ^a : (static member (+) : ^a * ^a -> ^a)
                     and ^a : (static member (-) : ^a * ^a -> ^a)
@@ -200,34 +577,18 @@ module Segment2d =
             Some ((toFloat p2) + v1 * t)
 endsnippet
 
-snippet ____Gcd ""
-let rec Gcd a b =
-    let (minv, maxv) = (min a b, max a b)
-    if minv = 0 then maxv else Gcd (maxv % minv) minv
-
-let Lcm a b =
-    a * b / (Gcd a b)
-endsnippet
-
-snippet ____Line2d ""
-type line2d< ^a when ^a : (static member (+) : ^a * ^a -> ^a)
-                 and ^a : (static member (-) : ^a * ^a -> ^a)
-                 and ^a : (static member (*) : ^a * ^a -> ^a)
-                 and ^a : (static member (/) : ^a * ^a -> ^a)
-                 and ^a : (static member (~-) : ^a -> ^a)
-                 and ^a : (static member Abs : ^a -> ^a)
-                 and ^a : (static member op_Explicit : ^a -> float)
-                 and ^a : comparison> =  ^a point2d * ^a vector2d
-module Line2d =
-    open Vector2d
-    open Point2d
-    let inline distanceFromPointL2 (line : ^a line2d) (point  : ^a point2d) : float =
-        let (p, v0) = line
-        direction p point
-        |> cross v0
-        |> (fun s -> (float s) / (normL2 v0))
-        |> abs
-
+snippet ____BinarySearch ""
+let BinarySearch (haystack : 'a array) (needle : 'a) : int option =
+    let (lo,hi) = (0, Array.length haystack - 1)
+    let rec BinarySearch' (lo : int) (hi : int) =
+        if hi < lo then None
+        else
+            let mid = lo + (hi - lo) / 2
+            let pivot = fst  (haystack.[mid])
+            if pivot > needle then BinarySearch' lo (mid - 1)
+            else if pivot < needle then BinarySearch' (mid+1) hi
+            else Some mid
+    BinarySearch' lo hi
 endsnippet
 
 snippet ____CountingSort ""
@@ -245,333 +606,6 @@ let CountingSort (minv : int) (maxv : int) (vs : int list) =
     |> List.iter (fun v -> res.[cs.[v]-1] <- v
                            cs.[v] <- cs.[v] - 1)
     Array.toList res
-endsnippet
-
-snippet ____PriorityQueue ""
-module PriorityQueue =
-    type 'a _heap =
-        | Empty
-        | Node of int * 'a * 'a _heap * 'a _heap
-
-    let rec _merge (comp : 'a -> 'a -> int) (h1 : 'a _heap) (h2 : 'a _heap) =
-        let Height = function
-            | Empty -> 0
-            | Node(h, _, _, _) -> h
-        let MakeTree x a b =
-            let ha = Height a 
-            let hb = Height b
-            if ha >= hb then Node(hb + 1, x, a, b) else Node(ha + 1, x, b, a)
-        match h1,h2 with
-        | x, Empty -> x
-        | Empty, x -> x
-        | (Node(_, x, l1, r1) as n1), (Node(_, y, l2, r2) as n2) when comp x y <= 0 -> MakeTree x l1 (_merge comp r1 n2)
-        | (Node(_, x, l1, r1) as n1), (Node(_, y, l2, r2) as n2) when comp x y > 0 -> MakeTree y l2 (_merge comp n1 r2)
-        | _,_ -> failwith "empty"
-
-    let _head (h : 'a _heap) =
-        match h with
-        | Empty -> failwith "empty"
-        | Node(h, x, l, r) -> x
-
-    let _tail (comp : 'a -> 'a -> int) (h : 'a _heap) =
-        match h with
-        | Empty -> failwith "empty"
-        | Node(_, _, l, r) -> _merge comp l r
-
-    type 'a pqueue = ('a -> 'a -> int)  * 'a _heap
-    let init (comp : 'a -> 'a -> int)  =
-        ( comp , Empty )
-
-    let isEmpty (q : 'a pqueue) : bool =
-        q |> function | ( _ , h )  -> h = Empty
-
-    let top (q : 'a pqueue) =
-        q |> function | ( _ , h )  -> _head h
-
-    let push (q : 'a pqueue) (v : 'a) =
-        q |> function | ( c , h )  -> Node(1,v,Empty,Empty) |> _merge c h |> fun h' -> ( c, h' )
-
-    let pop (q : 'a pqueue) =
-        q |> function | ( c , h )  -> (_head h, ( c, _tail c h) )
-
-    let rec toSeq (q : 'a pqueue) =
-        q |> pop |> fun (h,t) -> seq{ yield h; yield! toSeq t }
-endsnippet
-
-snippet ____Prim ""
-let Prim (g : graph) (root : vertex) : graph =
-    let nodes = Nodes g
-    let visited = Array.create nodes false
-    let comp (_,_,a) (_,_,b) = 
-        match a,b with
-        | _ when a < b -> -1
-        | _ when a > b ->  1
-        | _ -> 0
-    let pqueue = ref <| PriorityQueue.init comp
-    Seq.zip g.[root].Keys g.[root].Values |> Seq.iter (fun (t,c) -> pqueue := PriorityQueue.push !pqueue (root,t,c) )
-
-    visited.[root] <- true
-    let mutable edges = []
-    while( not (PriorityQueue.isEmpty !pqueue) ) do
-        let (e,npqueue) = PriorityQueue.pop !pqueue
-        let (f,t,c) = e
-        pqueue := npqueue
-
-        if not visited.[t] then
-            visited.[t] <- true
-            edges <- e :: edges
-            Seq.zip g.[t].Keys g.[t].Values |> Seq.iter (fun (tt,c) -> pqueue := PriorityQueue.push !pqueue (t,tt,c) )
-    done
-    DGraph nodes edges
-endsnippet
-
-snippet ____BinaryTreeDfs ""
-module BinaryTreeDfs =
-    open BinaryTree
-    type ContStep<'a> =
-        | Finished
-        | Step of 'a * (unit -> ContStep<'a>)
-    let TreeDfs (select : ('a bintree -> (unit -> ContStep<'a>) -> ContStep<'a>) -> 'a -> 'a bintree -> 'a bintree -> (unit -> ContStep<'a>) -> ContStep<'a>) (tree : 'a bintree) : 'a list =
-        let rec traverse (tree : 'a bintree) (cont : unit -> ContStep<'a>) =
-            match tree with
-            | Empty -> cont()
-            | Node( x, l, r ) as n ->  select traverse x l r cont
-        let rec doit res step : 'a list =
-            match step with
-            | Finished -> res
-            | Step(x, cont) -> doit (x::res) (cont())
-        doit [] (traverse tree (fun () -> Finished)) |> List.rev
-
-    let PostOrder = TreeDfs (fun f x l r cont -> f l (fun () -> f r (fun () -> Step( x,cont))) )
-    let InOrder = TreeDfs (fun f x l r cont -> f l (fun () -> Step( x, (fun () -> f r cont))))
-    let PreOrder = TreeDfs (fun f x l r cont -> Step (x, (fun () -> f l (fun () -> f r cont))))
-endsnippet
-
-snippet ____String ""
-module String =
-    let explode (s:string) =
-        [for c in s -> c]
-
-    let implode (xs:char list) =
-        let sb = System.Text.StringBuilder(xs.Length)
-        xs |> List.iter (sb.Append >> ignore)
-        sb.ToString()
-endsnippet
-
-snippet ____UnionFind ""
-type UnionFind = int[] * int[]
-
-let Root ( uf : UnionFind ) ( i : int ) =
-    let (id,sz) = uf
-    let mutable q = i
-    while ( q <> id.[q] ) do
-        id.[q] <- id.[id.[q]]
-        q <- id.[q]
-    q
-
-let Find ( uf : UnionFind ) ( p : int ) ( q : int ) =
-    (Root uf p) = (Root uf q)
-
-let Unite ( uf : UnionFind ) ( p : int ) ( q : int ) =
-    let (id,sz) = uf
-    let i = Root uf p
-    let j = Root uf q
-    if sz.[i] < sz.[j] then id.[i] <- j; sz.[j] <- sz.[j] + sz.[i]
-    else id.[j] <- i; sz.[i] <- sz.[i] + sz.[j]
-endsnippet
-
-snippet ____PowMod ""
-let rec PowMod (a: int64) (b : int64) (c : int64) =
-    if b = 0L then 1L
-    else if ( b % 2L ) = 1L then ( a * ( PowMod a (b - 1L) c ) ) % c
-    else 
-        let d = PowMod a (b / 2L) c
-        ( d * d ) % c
-endsnippet
-
-snippet ____Array ""
-module Array =
-    let evenodd a = Array.foldBack (fun (l,r) x -> x::r,l) a ([],[])
-endsnippet
-
-snippet ____List ""
-module List =
-    let evenodd a = List.foldBack (fun (l,r) x -> x::r,l) a ([],[])
-endsnippet
-
-snippet ____PolygonContains ""
-type ContainStatus =
-    | OUT
-    | ON
-    | IN
-let inline PolygonContains (polygon : (^a point2d) list) (point : ^a point2d) : ContainStatus =
-    let eps = 1e-12
-    let h = List.head polygon
-    let doit (p0 : 'a point2d) (p1 : 'a point2d) =
-        let a = if p0.y < p1.y then p0 else p1
-        let b = if p0.y < p1.y then p1 else p0
-        if ((((float >> abs) (Vector2d.cross a b)) < eps) && ((float (Vector2d.dot a b)) < eps)) then (1,0)
-        else if ( ((float a.y) < eps) && (eps < (float b.y)) && (eps < (float (Vector2d.cross a b)))) then (0,1)
-        else (0,0)
-
-    List.rev polygon
-    |> List.fold (fun (l,p0) p1 -> ((p0,p1)::l,p1)) ([],h)
-    |> fst
-    |> List.fold (fun (oc,cc) (p0,p1) -> let (no,nc) = doit p0 p1
-                                         (oc + no, cc + nc)) (0,0)
-    |> (fun (oc,cc) -> match (oc,cc) with
-                       | _ when 0 < oc -> ON
-                       | _ when 0 < cc -> IN
-                       | _ -> OUT)
-endsnippet
-
-snippet ____Primes ""
-module Primes =
-    let mutable primes = [7; 5; 3; 2]
-    let mutable upper_bound = 7
-
-    let rec create (n : int) : int list =
-        for i = upper_bound + 1 to n do
-            if isPrime i then
-                primes <- i :: primes
-            upper_bound <- i
-        done
-        List.filter ((>=) n) primes
-
-    and isPrime (n : int) : bool = 
-        n / 2
-        |> create
-        |> List.forall (fun p -> n % p <> 0)
-
-    let factorize (n : int) : int list =
-        let rec doit (n : int) (primes : int list) (factors : int list) : int list =
-            match primes with
-            | hp::tp when n % hp = 0 -> doit (n / hp) primes (hp::factors)
-            | hp::tp -> doit n tp factors
-            | [] -> factors
-        let primes = create n
-        doit n primes []
-endsnippet
-
-snippet ____TopoSort ""
-let TopoSort (g : graph) : vertex list option = 
-    let nodes = Nodes g
-    let status = Array.create nodes 0
-    let result = ref []
-    let rec visit (v : vertex) = 
-        match status.[v] with
-        | 0 -> status.[v] <- 1
-               g.[v].Keys |> Seq.iter visit
-               status.[v] <- 2
-               result := v :: !result
-        | 1 -> failwith "has cyclic"
-        | _ -> ignore()
-
-    try
-        seq {0..(nodes-1)} |> Seq.iter (fun v -> if status.[v] = 0 then visit v)
-        Some <| List.rev !result
-    with
-        | Failure "has cyclic" -> None
-endsnippet
-
-snippet ____Dijkstra ""
-let Dijkstra (g : graph) (root : vertex) : (graph * cost array) =
-    let nodes = Nodes g
-    let costs = Array.create nodes System.Double.PositiveInfinity
-
-    let comp (_,a) (_,b) = 
-        match a,b with
-        | _ when a < b -> -1
-        | _ when a > b ->  1
-        | _ -> 0
-    let pqueue = Edges g |> List.fold (fun q (f,t,c) -> PriorityQueue.push q ((f,t,c),c)) (PriorityQueue.init comp)
-    costs.[root] <- 0.0
-    let rec doit (costs : cost array) (edges : edge list) (pqueue : (edge * cost) PriorityQueue.pqueue) : cost array * edge list =
-        if PriorityQueue.isEmpty pqueue then
-            costs, edges
-        else
-            let (((_,t,c) as e,ac),pqueue') = PriorityQueue.pop pqueue
-            if ac < costs.[t] then
-                let edges' = e :: edges
-                costs.[t] <- ac
-                Seq.zip g.[t].Keys g.[t].Values
-                |> Seq.map (fun (t',c') -> (t,t',c'))
-                |> Seq.fold ( fun q (f,t,c) -> PriorityQueue.push q ((f,t,c), ac + c) ) pqueue'
-                |> doit costs edges'
-            else
-                doit costs edges pqueue'
-    let (rc,re ) = doit costs [] pqueue
-    DGraph nodes re, rc
-endsnippet
-
-snippet ____WarshallFloyd ""
-let WarshallFloyd (g : graph) : cost[,] =
-    let nodes = Nodes g
-    let costs = Array2D.init nodes nodes (fun f t -> if g.[f].ContainsKey t then g.[f].[t] else System.Double.PositiveInfinity)
-    for m = 0 to (nodes - 1) do
-        for f = 0 to (nodes - 1) do
-            for t = 0 to (nodes - 1) do
-                costs.[f,t] <- min  costs.[f, t] (costs.[f,m] + costs.[m,t])
-            done
-        done
-    done
-    costs
-endsnippet
-
-snippet ____BinarySearch ""
-let BinarySearch (haystack : 'a array) (needle : 'a) : int option =
-    let (lo,hi) = (0, Array.length haystack - 1)
-    let rec BinarySearch' (lo : int) (hi : int) =
-        let mid = lo + (hi - lo) / 2
-        let pivot = haystack.[mid]
-        if hi < lo then None
-        else if pivot > needle then BinarySearch' lo (mid - 1)
-        else if pivot < needle then BinarySearch' (mid+1) hi
-        else Some mid
-    BinarySearch' lo hi
-endsnippet
-
-snippet ____Diameter ""
-let Diameter (g : graph) : cost =
-    Bfs g 0
-    |> snd
-    |> Seq.mapi (fun i u -> i,u)
-    |> Seq.maxBy snd
-    |> fst
-    |> Bfs g
-    |> snd
-    |> Array.max
-endsnippet
-
-snippet ____BellmanFord ""
-let BellmanFord (g : graph) (root : vertex) : cost list option =
-    let nodes = Nodes g
-    let result = Array.init nodes ( fun _ -> System.Double.PositiveInfinity)
-
-    let changed = ref false
-    result.[root] <- 0.0
-    for i = 0 to (nodes - 1) do
-        changed := false
-        for f = 0 to (nodes - 1) do
-            Seq.zip g.[f].Keys g.[f].Values 
-            |> Seq.iter (fun (t,c) -> let nc = result.[f] + c
-                                      if nc < result.[t] then 
-                                        result.[t] <- nc
-                                        changed := true )
-        done
-    done
-
-    if !changed then None else Some (Array.toList result)
-endsnippet
-
-snippet ____BinaryTree ""
-module BinaryTree =
-    type 'a bintree =
-        | Empty
-        | Node of 'a * 'a bintree * 'a bintree
-
-    let init =
-        Empty
 endsnippet
 
 snippet ____BinarySearchTree ""
@@ -644,24 +678,45 @@ module BinarySearchTree =
         snd
 endsnippet
 
-snippet ____Bfs ""
-let Bfs (g : graph) (root : vertex) : vertex list * cost array = 
-    let nodes = Nodes g
-    let visited = Array.create nodes false
-    let mutable result = []
-    let mutable costs = Array.create nodes 0.0
-    let queue = new System.Collections.Generic.Queue< vertex * cost >()
-    queue.Enqueue (root, 0.0)
-    while( queue.Count <> 0 ) do
-        let c,cc = queue.Dequeue()
-        if not visited.[c] then
-            visited.[c] <- true
-            result <- c :: result
-            costs.[c] <- cc
-            Seq.zip g.[c].Keys g.[c].Values
-            |> Seq.map (fun (i,c) -> (i, cc + c))
-            |> Seq.iter queue.Enqueue
-    done
+snippet ____BinaryTree ""
+module BinaryTree =
+    type 'a bintree =
+        | Empty
+        | Node of 'a * 'a bintree * 'a bintree
 
-    List.rev result, costs
+    let init =
+        Empty
+endsnippet
+
+snippet ____BinaryTreeDfs ""
+module BinaryTreeDfs =
+    open BinaryTree
+    type ContStep<'a> =
+        | Finished
+        | Step of 'a * (unit -> ContStep<'a>)
+    let TreeDfs (select : ('a bintree -> (unit -> ContStep<'a>) -> ContStep<'a>) -> 'a -> 'a bintree -> 'a bintree -> (unit -> ContStep<'a>) -> ContStep<'a>) (tree : 'a bintree) : 'a list =
+        let rec traverse (tree : 'a bintree) (cont : unit -> ContStep<'a>) =
+            match tree with
+            | Empty -> cont()
+            | Node( x, l, r ) as n ->  select traverse x l r cont
+        let rec doit res step : 'a list =
+            match step with
+            | Finished -> res
+            | Step(x, cont) -> doit (x::res) (cont())
+        doit [] (traverse tree (fun () -> Finished)) |> List.rev
+
+    let PostOrder = TreeDfs (fun f x l r cont -> f l (fun () -> f r (fun () -> Step( x,cont))) )
+    let InOrder = TreeDfs (fun f x l r cont -> f l (fun () -> Step( x, (fun () -> f r cont))))
+    let PreOrder = TreeDfs (fun f x l r cont -> Step (x, (fun () -> f l (fun () -> f r cont))))
+endsnippet
+
+snippet ____String ""
+module String =
+    let explode (s:string) =
+        [for c in s -> c]
+
+    let implode (xs:char list) =
+        let sb = System.Text.StringBuilder(xs.Length)
+        xs |> List.iter (sb.Append >> ignore)
+        sb.ToString()
 endsnippet

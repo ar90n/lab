@@ -1,4 +1,40 @@
-snippet ____bellman_ford ""
+{-# OPTIONS_GHC -O2 -funbox-strict-fields #-}
+{-# LANGUAGE OverloadedStrings #-}
+-- {-# LANGUAGE BangPatterns #-}
+-- {-# LANGUAGE ViewPatterns #-}
+-- {-# LANGUAGE TupleSections #-}
+
+import           System.IO hiding (char8)
+import           Control.Applicative
+import           Control.Monad
+import           Data.List
+import           Data.Tuple
+import           Data.Tree
+import           Data.Int
+import           Data.Char
+import           Data.Function (on)
+-- import           Data.Array
+import           Data.Array.Unboxed
+import           Data.Array.IArray
+import           Data.Ix
+import           Data.Maybe
+import           Data.Monoid hiding ((<>))
+import qualified Data.ByteString.Char8 as BS
+import qualified Data.ByteString.Lazy.Char8 as BL
+import           Data.ByteString.Builder
+import           Control.Monad.ST
+import           Data.Array.ST
+-- import           Data.Array.Unsafe
+-- import           Data.Vector.Unboxed ((//), (++), (!), (!?))
+-- import qualified Data.Vector.Unboxed as U
+-- import           Data.IntMap.Strict (IntMap)
+-- import qualified Data.IntMap.Strict as IntMap
+import           Data.Sequence ((|>), (<|), (><),ViewR((:>)), ViewL((:<)))
+import qualified Data.Sequence as S
+import           Debug.Trace
+
+--------------------------------------------------------------------------------
+
 bellman_ford :: Vertex -> Graph -> Maybe (Array Vertex Cost)
 bellman_ford s g = if ak==go ak then Just ak else Nothing where
     k = uncurry subtract $ bounds g
@@ -9,9 +45,7 @@ bellman_ford s g = if ak==go ak then Just ak else Nothing where
     go :: Array Vertex Cost -> Array Vertex Cost
     go a = a // [(v, f v) | v<-vertices g] where
         f v = minimum $ a!v : [a!w+c | (w,c)<-gt!v, a!w /= maxBound]
-endsnippet
 
-snippet ____bfs ""
 bfs :: Graph -> [Vertex] -> [Vertex]
 bfs g vs = runST $ do
     visited <- newArray (bounds g) False :: (ST s (STArray s Vertex Bool ))
@@ -29,9 +63,7 @@ bfs g vs = runST $ do
                     let candidates' = cs >< (S.fromList $ map fst (g!c))
                     ncs <- doit visited candidates'
                     return (c : ncs)
-endsnippet
 
-snippet ____dff ""
 dff :: Graph -> [Vertex] -> Forest Vertex
 dff g vs = prune (bounds g) (map (generate g) vs) where
     generate :: Graph -> Vertex -> Tree Vertex
@@ -51,9 +83,7 @@ dff g vs = prune (bounds g) (map (generate g) vs) where
             as <- chop visited ts
             bs <- chop visited us
             return (Node v as : bs)
-endsnippet
 
-snippet ____dfs ""
 dfs :: Graph -> [Vertex] -> [Vertex]
 dfs g vs = runST $ do
     visited <- newArray (bounds g) False :: (ST s (STArray s Vertex Bool ))
@@ -71,9 +101,7 @@ dfs g vs = runST $ do
                     let candidates' = (S.fromList $ map fst (g!c)) >< cs
                     ncs <- doit visited candidates'
                     return (c : ncs)
-endsnippet
 
-snippet ____dijkstra ""
 dijkstra :: Vertex -> Graph -> Maybe (Array Vertex Cost)
 dijkstra s g = Just $ runSTArray $ do
     costs <- newArray (bounds g) maxBound :: (ST s (STArray s Vertex Cost))
@@ -90,9 +118,7 @@ dijkstra s g = Just $ runSTArray $ do
                                 doit costs queue''
                             else do
                                 doit costs queue'
-endsnippet
 
-snippet ____graph ""
 type Edge = (Vertex, Vertex, Cost)
 type Cost = Int
 type Vertex = Int
@@ -135,9 +161,7 @@ outdegree = mapT (const length)
 
 indegree :: Graph -> Table Int
 indegree = outdegree . transposeG
-endsnippet
 
-snippet ____path ""
 reachable :: Graph -> Vertex -> [Vertex]
 reachable g v = preorderF (dff g [v]) where
     preorder' :: Tree a -> [a] -> [a]
@@ -149,9 +173,7 @@ reachable g v = preorderF (dff g [v]) where
 
 path :: Graph -> Vertex -> Vertex -> Bool
 path g v w = elem w (reachable g v)
-endsnippet
 
-snippet ____priority_queue ""
 data Heap a = Empty | Heap Int a (Heap a) (Heap a) deriving Show
 
 merge' :: (a -> a -> Bool) -> Heap a -> Heap a -> Heap a
@@ -208,9 +230,7 @@ toList (PriorityQueue f h) = toList' f h where
     toList' :: (a -> a -> Bool) -> Heap a -> [a]
     toList' f h = let (x, h') = pop' f h
                   in x : toList' f h'
-endsnippet
 
-snippet ____topsort ""
 topSort :: Graph -> [Vertex]
 topSort = reverse . postOrd where
     postOrd :: Graph -> [Vertex]
@@ -219,9 +239,7 @@ topSort = reverse . postOrd where
     postorder (Node a ts) = postorderF ts . (a :)
     postorderF   :: Forest a -> [a] -> [a]
     postorderF ts = foldr (.) id $ map postorder ts
-endsnippet
 
-snippet ____warshall_floyd ""
 warshall_floyd :: Graph -> Maybe(Array (Vertex, Vertex) Cost)
 warshall_floyd g = checkResult $ runSTArray $ do
     costs <- newArray ((l,l),(h,h)) maxBound :: ST s (STArray s (Vertex, Vertex) Cost)
@@ -248,64 +266,46 @@ warshall_floyd g = checkResult $ runSTArray $ do
         doit costs (v:vs) = do
             mapM_ (updateCost costs v) $ [(i,j) | i <- [l..h], j <- [l..h]]
             doit costs vs
-endsnippet
 
-snippet ____powMod ""
-powMod :: Int -> Int -> Int -> Int
-powMod a b p
-    | b == 0 = 1
-    | odd b  = ( a * (powMod a (b - 1) p)) `mod` p
-    | even b = ( d * d ) `mod` p where
-        d = powMod a (b `div` 2) p
-endsnippet
+--------------------------------------------------------------------------------
 
-snippet ____binarySearch ""
-binarySearch :: Ord a => Array Int a -> a -> Maybe Int
-binarySearch haystack needle = binarySearch' haystack needle lo hi where
-    (lo,hi) = bounds haystack
-    binarySearch' :: Ord a => Array Int a -> a -> Int -> Int -> Maybe Int
-    binarySearch' haystack needle lo hi
-        | hi < lo        = Nothing
-        | pivot > needle = binarySearch' haystack needle lo (mid-1)
-        | pivot < needle = binarySearch' haystack needle (mid+1) hi
-        | otherwise      = Just mid
-        where
-            mid   = lo + (hi-lo) `div` 2
-            pivot = haystack!mid
-endsnippet
+main :: IO ()
+main = do
+    let g = buildG (0,5) [(0,1,40), (0,2,15), (1,0,40), (1,2,20), (1,3,10), (1,4,25), (1,5,6), (2,0,15), (2,1,20), (2,3,100), (3,1,10), (3,2,100), (4,1,25), (4,5,8), (5,1,6), (5,4,8) ]
+    let sssp_exp = listArray (0,5) [0,35,15,45,49,41] :: (Array Int Int)
+    let Just bellman_ford_result = (\a -> a == sssp_exp) <$> bellman_ford 0 g
+    let Just dijkstra_result = (\a -> a == sssp_exp) <$> dijkstra 0 g
+    let wr = warshall_floyd g
+    putStr "OK\n"
 
-snippet ____lowerBound ""
-lowerBound :: Ord a => Array Int a -> a -> Int
-lowerBound haystack needle = lowerBound' haystack needle lo hi where
-    (lo,hi) = bounds haystack
-    lowerBound' :: Ord a => Array Int a -> a -> Int -> Int -> Int
-    lowerBound' haystack needle lo hi
-        | lo == (hi-1) = hi
-        | needle <= pivot = lowerBound' haystack needle lo mid
-        | pivot < needle = lowerBound' haystack needle mid hi
-        where
-            mid   = lo + (hi-lo) `div` 2
-            pivot = haystack!mid
-endsnippet
+--------------------------------------------------------------------------------
 
-snippet ____upperBound ""
-upperBound :: Ord a => Array Int a -> a -> Int
-upperBound haystack needle = upperBound' haystack needle lo hi where
-    (lo,hi) = bounds haystack
-    upperBound' :: Ord a => Array Int a -> a -> Int -> Int -> Int
-    upperBound' haystack needle lo hi
-        | lo == (hi-1) = hi
-        | needle < pivot = upperBound' haystack needle lo mid
-        | pivot <= needle = upperBound' haystack needle mid hi
-        where
-            mid   = lo + (hi-lo) `div` 2
-            pivot = haystack!mid
-endsnippet
+readInt1 :: BS.ByteString -> Int
+readInt1 = fst . fromJust . BS.readInt 
 
-snippet ____wordsWhen ""
-wordsWhen     :: (Char -> Bool) -> String -> [String]
-wordsWhen p s =  case dropWhile p s of
-                      "" -> []
-                      s' -> w : wordsWhen p s''
-                            where (w, s'') = break p s'
-endsnippet
+readInt2 :: BS.ByteString -> (Int,Int)
+readInt2 = toTuple . readIntN
+
+readInt3 :: BS.ByteString -> (Int,Int,Int)
+readInt3 = toTriple . readIntN
+
+readIntN :: BS.ByteString -> [Int]
+readIntN =  map readInt1 . BS.words
+
+toTuple :: [a] -> (a, a)
+toTuple [x, y] = (x, y)
+
+toTriple :: [a] -> (a, a, a)
+toTriple [x, y, z] =(x, y, z)
+
+fromTuple :: (a, a) -> [a]
+fromTuple (x, y) = [x, y]
+
+fromTriple :: (a, a, a) -> [a]
+fromTriple (x, y, z) = [x, y, z]
+
+applyTuple :: (a -> a') -> (b -> b') -> (a, b) -> (a', b')
+applyTuple f g (x, y) = (f x, g y)
+
+applyTriple :: (a -> a') -> (b -> b') -> (c -> c') -> (a, b, c) -> (a', b', c')
+applyTriple f g h (x, y, z) = (f x, g y, h z)

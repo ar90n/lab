@@ -1,4 +1,61 @@
-snippet ____bellman_ford ""
+#include <algorithm>
+#include <bitset>
+#include <complex>
+#include <deque>
+#include <exception>
+#include <fstream>
+#include <functional>
+#include <iomanip>
+#include <ios>
+#include <iosfwd>
+#include <iostream>
+#include <istream>
+#include <iterator>
+#include <limits>
+#include <list>
+#include <locale>
+#include <map>
+#include <memory>
+#include <new>
+#include <numeric>
+#include <ostream>
+#include <queue>
+#include <set>
+#include <sstream>
+#include <stack>
+#include <stdexcept>
+#include <streambuf>
+#include <string>
+#include <typeinfo>
+#include <utility>
+#include <valarray>
+#include <vector>
+#include <unordered_map>
+#include <unordered_set>
+#include <random>
+#include <ratio>
+#include <regex>
+
+template< typename T1, typename T2 >
+std::ostream& operator <<( std::ostream& _os, std::pair< T1, T2 > const& _p )
+{
+    _os << "(" << _p.first << "," << _p.second << ")";
+    return _os;
+}
+
+template< typename ContainerType,
+          class = typename ContainerType::size_type >
+std::ostream& operator <<( std::ostream& _os, ContainerType const& _c )
+{
+    using vc = typename ContainerType::value_type;
+    std::for_each( std::begin( _c ),
+                   std::end( _c ),
+                   [&_os]( vc const v ) { _os << v << std::endl;; } );
+    return _os;
+}
+
+//------------------------------------------------------------------------------
+
 std::vector< cost > bellman_ford( graph const& _graph, vertex const _origin )
 {
     int const max_bound = std::numeric_limits<int>::max() / 2;
@@ -36,9 +93,7 @@ std::vector< cost > bellman_ford( graph const& _graph, vertex const _origin )
 
     return res;
 }
-endsnippet
 
-snippet ____bfs ""
 std::vector< vertex > bfs( graph const& _graph, vertex const _origin )
 {
     std::vector< vertex > res;
@@ -70,9 +125,7 @@ std::vector< vertex > bfs( graph const& _graph, vertex const _origin )
 
     return res;
 }
-endsnippet
 
-snippet ____dfs ""
 std::vector< vertex > dfs( graph const& _graph, vertex const _origin )
 {
     std::vector< vertex > res;
@@ -104,9 +157,7 @@ std::vector< vertex > dfs( graph const& _graph, vertex const _origin )
 
     return res;
 }
-endsnippet
 
-snippet ____dijkstra ""
 std::vector< cost > dijkstra( graph const& _graph, vertex const _origin )
 {
     using vertex_cost = std::tuple< vertex, cost >;
@@ -146,9 +197,7 @@ std::vector< cost > dijkstra( graph const& _graph, vertex const _origin )
 
     return res;
 }
-endsnippet
 
-snippet ____edmonds_karp ""
 std::vector< std::vector< cost > > edmonds_karp( graph const& _graph, vertex const _source, vertex const _sink )
 {
     if( ( _graph.size() <= static_cast< graph::size_type >( _source ) )
@@ -200,9 +249,7 @@ std::vector< std::vector< cost > > edmonds_karp( graph const& _graph, vertex con
     return flow;
 }
 
-endsnippet
 
-snippet ____get_path ""
 std::vector< vertex > get_path( graph const& _graph, vertex const _src, vertex const _dst )
 {
     std::vector< vertex > res;
@@ -249,9 +296,7 @@ std::vector< vertex > get_path( graph const& _graph, vertex const _src, vertex c
 
     return res;
 }
-endsnippet
 
-snippet ____graph ""
 using vertex   = int;
 using cost     = int;
 using edge     = std::tuple< vertex, vertex, cost >;
@@ -344,9 +389,7 @@ std::vector< int > get_in_degeree( graph const& _graph )
     graph tmp = transpose( _graph );
     return get_out_degree( tmp );
 }
-endsnippet
 
-snippet ____prim ""
 graph prim( graph const& _graph, vertex const _origin )
 {
     std::vector< edge > edges;
@@ -386,9 +429,7 @@ graph prim( graph const& _graph, vertex const _origin )
     graph res = build_graph( _graph.size(), edges );
     return res;
 }
-endsnippet
 
-snippet ____topsort ""
 std::vector< vertex > top_sort( graph const& _graph )
 {
     std::vector< vertex > res;
@@ -421,9 +462,7 @@ std::vector< vertex > top_sort( graph const& _graph )
     std::reverse( std::begin( res ), std::end( res ) );
     return res;
 }
-endsnippet
 
-snippet ____warshall_floyd ""
 std::vector< std::vector< cost > > warshall_floyd( graph const& _graph )
 {
     int const max_bound = std::numeric_limits< int >::max() / 2;
@@ -453,4 +492,33 @@ std::vector< std::vector< cost > > warshall_floyd( graph const& _graph )
 
     return res;
 }
-endsnippet
+
+//------------------------------------------------------------------------------
+
+int main( int args, char* argv[] )
+{
+    std::vector< edge > const e{ {0,1,40}, {0,2,15}, {1,0,40}, {1,2,20}, {1,3,10}, {1,4,25}, {1,5,6}, {2,0,15}, {2,1,20}, {2,3,100}, {3,1,10}, {3,2,100}, {4,1,25}, {4,5,8}, {5,1,6}, {5,4,8} };
+    auto const g = build_dgraph( 6, e );
+    auto const sssp = bellman_ford( g, 0 );
+    auto const sssp1 = dijkstra( g, 0 );
+    auto const gg = warshall_floyd( g );
+    std::cout << sssp << std::endl;
+    std::cout << sssp1 << std::endl;
+
+    std::vector< edge > const e1{ {0,3,0}, {0,4,0}, {1,3,0}, {2,4,0}, {2,7,0}, {3,5,0}, {3,6,0}, {3,7,0}, {4,6,0} };
+    auto const g1 = build_dgraph( 8, e1 );
+    auto const rrr = top_sort( g1 );
+    std::cout << rrr << std::endl;;
+
+    std::vector< edge > const e2{ {0,1,4}, {0,2,8}, {1,3,8}, {1,2,11}, {2,4,7}, {2,5,1}, {3,4,2}, {3,6,7}, {3,7,4}, {4,5,6}, {5,7,2}, {6,7,14}, {6,8,9}, {7,8,10} };
+    auto const g2 = build_graph( 9, e2 );
+    auto const rrr2 = prim( g2, 0 );
+    std::cout <<  rrr2 << std::endl;;
+
+    std::vector< edge > const e3{ {0,1,16}, {0,2,13}, {1,2,10}, {1,3,12}, {2,1,4}, {2,4,14}, {3,2,9}, {3,5,20}, {4,3,7}, {4,5,4} };
+    auto const g3 = build_dgraph( 6, e3 );
+    auto const mf = edmonds_karp( g3, 0, 5 );
+    std::cout << mf << std::endl;;
+
+    //0,0 1,35 2,15 3,45 4,49 5,41
+}

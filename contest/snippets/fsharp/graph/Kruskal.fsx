@@ -1,4 +1,4 @@
-// graph/Kruskal.fsx
+// graph/Graph.fsx
 // graph/UnionFind.fsx
 let Kruskal (g : graph) (root : vertex) : graph =
     let uf = Nodes g |> UnionFind.create

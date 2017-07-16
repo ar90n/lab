@@ -18,15 +18,13 @@ let Dijkstra (g : graph) (root : vertex) : (graph * cost array) =
             costs, edges
         else
             let (((_,t,c) as e,ac),pqueue') = PriorityQueue.pop pqueue
-            if ac < costs.[t] then
-                let edges' = e :: edges
-                costs.[t] <- ac
-                Seq.zip g.[t].Keys g.[t].Values
-                |> Seq.filter (fun (t',c') -> (ac + c') < costs.[t'] )
-                |> Seq.map (fun (t',c') -> (t,t',c'))
-                |> Seq.fold ( fun q (f,t,c) -> PriorityQueue.push q ((f,t,c), ac + c) ) pqueue'
-                |> doit costs edges'
-            else
-                doit costs edges pqueue'
+            let q'' = if ac < costs.[t,b] then
+                        costs.[t,b] <- ac
+                        Seq.zip g.[t].Keys g.[t].Values
+                        |> Seq.filter (fun (t',c') -> (ac + c') < costs.[t',b ||| fs.[t']] )
+                        |> Seq.fold (fun q (t',c') -> PriorityQueue.push q ((t,t',c'),b ||| fs.[t'], ac + c') ) pqueue'
+                      else
+                        pqueue'
+            doit costs q''
     let (rc,re ) = doit costs [] pqueue
     DGraph nodes re, rc

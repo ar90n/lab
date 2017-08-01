@@ -6,9 +6,12 @@ import functools
 
 snippet_prefix = "____"
 
-snippet_template = """snippet %s%s "%s"
+ultsnippet_template = """snippet %s%s "%s"
 %s
 endsnippet"""
+
+neosnippets_template = """snippet %s%s
+%s"""
 
 suffix_map = {
     "haskell" : ".hs",
@@ -21,6 +24,11 @@ comment_prefix_map = {
     "cpp" : "//",
     "fsharp" : "//"
 }
+
+def render_snippet( prefix, name, option, content):
+    return ultsnippet_template % ( prefix, name, "", content )
+#    content = '    ' + content.replace('\n', '\n    ')
+#    return neosnippets_template % ( prefix, name, content )
 
 def remove_comment( str_array, lang ):
     return filter( lambda l: not l.startswith(comment_prefix_map[lang]), str_array)
@@ -61,7 +69,7 @@ def convert_module( lang, module_name ):
         func_name = os.path.basename(func_path).split('.')[0]
         lines = open(func_path).readlines()
         content = ''.join( remove_comment( lines, lang ) )[:-1]
-        snippet_element = snippet_template % ( snippet_prefix, func_name, "", content )
+        snippet_element = render_snippet( snippet_prefix, func_name, "", content )
         snippet_key = os.path.join(module_name,os.path.basename(func_path))
         res[snippet_key] = snippet_element
         dep[snippet_key] = get_deps(lines, lang)

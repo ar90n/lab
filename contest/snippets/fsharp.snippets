@@ -260,18 +260,47 @@ let Dijkstra (g : graph) (root : vertex) : (graph * cost array) =
             costs, edges
         else
             let (((_,t,c) as e,ac),pqueue') = PriorityQueue.pop pqueue
-            if ac < costs.[t] then
-                let edges' = e :: edges
-                costs.[t] <- ac
-                Seq.zip g.[t].Keys g.[t].Values
-                |> Seq.filter (fun (t',c') -> (ac + c') < costs.[t'] )
-                |> Seq.map (fun (t',c') -> (t,t',c'))
-                |> Seq.fold ( fun q (f,t,c) -> PriorityQueue.push q ((f,t,c), ac + c) ) pqueue'
-                |> doit costs edges'
-            else
-                doit costs edges pqueue'
+            let q'' = if ac < costs.[t,b] then
+                        costs.[t,b] <- ac
+                        Seq.zip g.[t].Keys g.[t].Values
+                        |> Seq.filter (fun (t',c') -> (ac + c') < costs.[t',b ||| fs.[t']] )
+                        |> Seq.fold (fun q (t',c') -> PriorityQueue.push q ((t,t',c'),b ||| fs.[t'], ac + c') ) pqueue'
+                      else
+                        pqueue'
+            doit costs q''
     let (rc,re ) = doit costs [] pqueue
     DGraph nodes re, rc
+endsnippet
+
+snippet ____UnionFind ""
+type UnionFind = int[] * int[]
+
+let Root ( uf : UnionFind ) ( i : int ) =
+    let (id,sz) = uf
+    let mutable q = i
+    while ( q <> id.[q] ) do
+        id.[q] <- id.[id.[q]]
+        q <- id.[q]
+    q
+
+let Find ( uf : UnionFind ) ( p : int ) ( q : int ) =
+    (Root uf p) = (Root uf q)
+
+let Unite ( uf : UnionFind ) ( p : int ) ( q : int ) =
+    let (id,sz) = uf
+    let i = Root uf p
+    let j = Root uf q
+    if sz.[i] < sz.[j] then id.[i] <- j; sz.[j] <- sz.[j] + sz.[i]
+    else id.[j] <- i; sz.[i] <- sz.[i] + sz.[j]
+endsnippet
+
+snippet ____Kruskal ""
+let Kruskal (g : graph) (root : vertex) : graph =
+    let uf = Nodes g |> UnionFind.create
+    Edges g
+    |> List.sortBy (fun (_,_,c) -> c)
+    |> List.fold (fun acc (a,b,c) -> if UnionFind.connected uf a b then acc else UnionFind.unite uf a b; (a,b,c)::acc) []
+    |> DGraph (Nodes g)
 endsnippet
 
 snippet ____Prim ""
@@ -322,28 +351,6 @@ let TopoSort (g : graph) : vertex list option =
         Some <| List.rev !result
     with
         | Failure "has cyclic" -> None
-endsnippet
-
-snippet ____UnionFind ""
-type UnionFind = int[] * int[]
-
-let Root ( uf : UnionFind ) ( i : int ) =
-    let (id,sz) = uf
-    let mutable q = i
-    while ( q <> id.[q] ) do
-        id.[q] <- id.[id.[q]]
-        q <- id.[q]
-    q
-
-let Find ( uf : UnionFind ) ( p : int ) ( q : int ) =
-    (Root uf p) = (Root uf q)
-
-let Unite ( uf : UnionFind ) ( p : int ) ( q : int ) =
-    let (id,sz) = uf
-    let i = Root uf p
-    let j = Root uf q
-    if sz.[i] < sz.[j] then id.[i] <- j; sz.[j] <- sz.[j] + sz.[i]
-    else id.[j] <- i; sz.[i] <- sz.[i] + sz.[j]
 endsnippet
 
 snippet ____WarshallFloyd ""

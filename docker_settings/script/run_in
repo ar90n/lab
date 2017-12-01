@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+
+_DOCKER=${DOCKER_CMD:-'docker'}
+_PWD=`pwd`
+_USER=`whoami`
+_DATE=`date +"%Y-%m-%d %R:%S"`
+_IMAGE=$1
+
+shift
+docker run -it --rm -u $_USER -w $_PWD $_IMAGE faketime "$_DATE" $@

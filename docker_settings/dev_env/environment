@@ -1,0 +1,2 @@
+PATH="/opt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games"
+XDG_CONFIG_HOME="/opt"

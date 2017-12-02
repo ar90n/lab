@@ -7,4 +7,4 @@ _DATE=`date +"%Y-%m-%d %R:%S"`
 _IMAGE=$1
 
 shift
-docker run -it --rm -u $_USER -w $_PWD $_IMAGE faketime "$_DATE" $@
+docker run -it --rm -u $_USER -w $_PWD -v $HOME:/home/$_USER $_IMAGE faketime "$_DATE" $@

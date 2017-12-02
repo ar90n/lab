@@ -9,5 +9,5 @@ RUN set -x && \
     sed  -i -e 's/\(PATH=\)"\(.*\)"/\1"\/opt\/miniconda\/bin\/:\2"/g' /etc/environment && \
     rm  Miniconda2-latest-Linux-x86_64.sh
 
-
 ENV PATH /opt/miniconda2/bin:$PATH
+CMD ["python"]

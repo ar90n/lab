@@ -23,6 +23,24 @@ RUN set -x && \
     update-locale LANG=ja_JP.UTF-8 && \
     apt-get clean
 
+# neovim
+ENV XDG_CONFIG_HOME /opt/
+ENV XDG_DATA_HOME /opt/
+ADD init.vim /opt/nvim/init.vim
+ADD dein.toml /opt/nvim/dein.toml
+ADD template /opt/nvim/template/
+RUN set -x && \
+    add-apt-repository ppa:neovim-ppa/unstable && \
+    apt-get update && \
+    apt-get -y install neovim && \
+    apt-get -y install python-dev python-pip python3-dev python3-pip && \
+    apt-get clean && \
+    pip2 install --upgrade neovim && \
+    pip3 install --upgrade neovim && \
+    mkdir /opt/nvim/specs && \
+    nvim -c 'call dein#install()' -c 'q' && \
+    nvim -c 'UpdateRemotePlugins' -c 'q'
+
 # opt
 RUN set -x && \
     chmod 755 /opt && \

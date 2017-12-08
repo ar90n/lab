@@ -1,0 +1,75 @@
+[[plugins]]
+repo = 'Shougo/dein.vim'
+
+[[plugins]]
+repo = 'Shougo/vimfiler.vim'
+hook_add = '''
+    let g:vimfiler_as_default_explorer = 1
+    let g:vimfiler_safe_mode_by_default = 0
+    if has('mac')
+      let g:vimfiler_quick_look_command = 'qlmanage -p'
+    endif
+    nnoremap <C-e> :<C-u>VimFilerExplore<CR>
+'''
+
+[[plugins]]
+repo = 'cespare/vim-toml'
+on_ft=['toml']
+
+[[plugins]]
+repo = 'Shougo/unite.vim'
+depends = ['vimfiler.vim']
+
+[[plugins]]
+repo = 'Shougo/vimproc.vim'
+build = 'make'
+
+[[plugins]]
+repo = 'honza/vim-snippets'
+
+[[plugins]]
+repo = 'kana/vim-submode'
+hook_post_source = '''
+  call submode#enter_with('bufmove', 'n', '', 's>', '<C-w>>')
+  call submode#enter_with('bufmove', 'n', '', 's<', '<C-w><')
+  call submode#enter_with('bufmove', 'n', '', 's+', '<C-w>+')
+  call submode#enter_with('bufmove', 'n', '', 's-', '<C-w>-')
+  call submode#map('bufmove', 'n', '', '>', '<C-w>>')
+  call submode#map('bufmove', 'n', '', '<', '<C-w><')
+  call submode#map('bufmove', 'n', '', '+', '<C-w>+')
+  call submode#map('bufmove', 'n', '', '-', '<C-w>-')
+'''
+
+[[plugins]]
+repo = 'terryma/vim-expand-region'
+hook_post_source = '''
+  map K <Plug>(expand_region_expand)
+  map J <Plug>(expand_region_shrink)
+'''
+
+[[plugins]]
+repo = 'vim-scripts/twilight'
+hook_source = '''
+    syntax on
+    colorscheme twilight
+'''
+
+[[plugins]]
+repo = 'Shougo/deoplete.nvim'
+hook_source = '''
+    let g:ulti_expand_or_jump_res = 0 "default value, just set once
+    function! Ulti_ExpandOrJump_and_getRes()
+      call UltiSnips#ExpandSnippet()
+      return g:ulti_expand_res
+    endfunction
+    let g:deoplete#enable_at_startup = 1
+    inoremap <C-k> <C-R>=(Ulti_ExpandOrJump_and_getRes() > 0)?"":deoplete#close_popup()<CR>
+    set completeopt=menuone
+'''
+on_i = 1
+
+[[plugins]]
+repo = 'SirVer/ultisnips'
+hook_source = '''
+    let g:UltiSnipsSnippetDirectories=["mysnippets","dein/repos/github.com/honza/vim-snippets/UltiSnips"]
+'''

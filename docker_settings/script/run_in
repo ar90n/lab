@@ -14,6 +14,14 @@ if [ -t 1 ] ; then
     RUN_ARGS="-t $RUN_ARGS"
 fi
 
+PORT_ARGS=""
+IFS=,
+for PORT_MAP in $RUN_IN_PORT_MAPS
+do
+    PORT_ARGS="$PORT_ARGS -p $PORT_MAP"
+done
+unset IFS
+
 shift
 #docker run -it --rm -u $_USER -w $_PWD -v $HOME:/home/$_USER $_IMAGE faketime "$_DATE" $@
-docker run $RUN_ARGS --rm -u $_USER -w $_PWD -v $HOME:/home/$_USER $_IMAGE $@
+docker run $RUN_ARGS --rm -u $_USER -w $_PWD -v $HOME:/home/$_USER $PORT_ARGS $_IMAGE $@

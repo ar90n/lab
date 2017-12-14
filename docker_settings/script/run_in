@@ -22,6 +22,11 @@ do
 done
 unset IFS
 
+NET_ARG=""
+if [ -n "$RUN_IN_NETWORK" ] ; then
+    NET_ARG=" --net $RUN_IN_NETWORK"
+fi
+
 shift
 #docker run -it --rm -u $_USER -w $_PWD -v $HOME:/home/$_USER $_IMAGE faketime "$_DATE" $@
-docker run $RUN_ARGS --rm -u $_USER -w $_PWD -v $HOME:/home/$_USER $PORT_ARGS $_IMAGE $@
+docker run $RUN_ARGS --rm -u $_USER -w $_PWD -v $HOME:/home/$_USER $PORT_ARGS $NET_ARG $_IMAGE $@

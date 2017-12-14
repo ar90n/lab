@@ -1,0 +1,13 @@
+alias_dir=$HOME/.direnv/aliases
+rm -rf "$alias_dir"
+
+export_alias() {
+  local name=$1
+  shift
+  local target="$alias_dir/$name"
+  mkdir -p "$alias_dir"
+  PATH_add "$alias_dir"
+  echo "#!/usr/bin/env bash" > "$target"
+  echo "$@ \"\$@\"" >> "$target"
+  chmod +x "$target"
+}

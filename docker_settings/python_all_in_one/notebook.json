@@ -1,0 +1,10 @@
+{
+  "load_extensions": {
+    "usability/runtools/main": true,
+    "publishing/printview/main": true,
+    "config/config_menu/main": true,
+    "usability/latex_envs/latex_envs": true,
+    "usability/code_font_size/code_font_size": true,
+    "usability/vim_binding/vim_binding": true
+  }
+}

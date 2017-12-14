@@ -1,0 +1,18 @@
+[[plugins]]
+repo = 'Rip-Rip/clang_complete'
+hook_source = '''
+    let g:clang_library_path='/usr/lib/x86_64-linux-gnu/libclang-4.0.so'
+'''
+on_ft=['cpp','c']
+
+[[plugins]]
+repo = 'lyuts/vim-rtags'
+hook_source = '''
+    " 定義へジャンプ
+    nnoremap <silent> tt :call rtags#JumpTo()<CR>
+    " 参照へジャンプ
+    nnoremap <silent> rr :<C-u>Unite<Space>rtags/references<CR>
+    " クラス・関数定義内にいたらその先頭へジャンプ
+    " nnoremap <silent> <F5> :call rtags#JumpToParent()<CR>
+'''
+on_ft=['cpp','c']

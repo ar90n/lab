@@ -19,7 +19,7 @@ RUN set -x && \
     apt-get install -y software-properties-common && \
     apt-get install -y language-pack-ja && \
     apt-get install -y build-essential && \
-    apt-get install -y curl faketime tzdata && \
+    apt-get install -y git curl faketime tzdata && \
     update-locale LANG=ja_JP.UTF-8 && \
     apt-get clean
 

@@ -7,10 +7,8 @@ _DATE=`date +"%Y-%m-%d %R:%S"`
 _IMAGE=$1
 
 RUN_ARGS=""
+RUN_ARGS="-i $RUN_ARGS"
 if [ -t 0 ] ; then
-    RUN_ARGS="-i $RUN_ARGS"
-fi
-if [ -t 1 ] ; then
     RUN_ARGS="-t $RUN_ARGS"
 fi
 

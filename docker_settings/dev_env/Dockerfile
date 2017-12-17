@@ -20,8 +20,10 @@ RUN set -x && \
     apt-get install -y language-pack-ja && \
     apt-get install -y build-essential && \
     apt-get install -y git curl faketime tzdata && \
-    update-locale LANG=ja_JP.UTF-8 && \
+    update-locale LANG=C.UTF-8 && \
     apt-get clean
+ENV LANG C.UTF-8
+ENV LC_ALL C.UTF-8
 
 # neovim
 ENV XDG_CONFIG_HOME /opt/

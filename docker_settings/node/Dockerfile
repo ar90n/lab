@@ -1,6 +1,7 @@
 FROM ar90n/dev_env
 MAINTAINER Masahiro Wada <argon.argon.argon@gmail.com>
 
+ARG user
 ARG node_version
 
 USER root
@@ -19,12 +20,12 @@ RUN set -x && \
     apt-get -y purge nodejs
 
 RUN set -x && \
-    npm install webpack@beta webpack-dev-server -g && \
+    npm install webpack webpack-dev-server -g && \
     npm install flow-bin flow-typed typescript -g && \
     npm install tslint babel-eslint eslint eslint-config-airbnb eslint-plugin-import eslint-plugin-jsx-a11y eslint-plugin-react eslint-plugin-flowtype -g && \
     npm install mocha chai
 
-USER $USER
+USER $user
 ADD node_dein.toml /opt/nvim/specs/node_dein.toml
 RUN set -x && \
     nvim -c 'call dein#install()' -c 'q' && \

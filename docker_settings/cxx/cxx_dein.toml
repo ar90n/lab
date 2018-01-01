@@ -7,12 +7,4 @@ on_ft=['cpp','c']
 
 [[plugins]]
 repo = 'lyuts/vim-rtags'
-hook_source = '''
-    " 定義へジャンプ
-    nnoremap <silent> tt :call rtags#JumpTo()<CR>
-    " 参照へジャンプ
-    nnoremap <silent> rr :<C-u>Unite<Space>rtags/references<CR>
-    " クラス・関数定義内にいたらその先頭へジャンプ
-    " nnoremap <silent> <F5> :call rtags#JumpToParent()<CR>
-'''
 on_ft=['cpp','c']

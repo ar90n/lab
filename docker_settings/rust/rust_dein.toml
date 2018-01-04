@@ -1,0 +1,33 @@
+[[plugins]]
+repo = 'sebastianmarkow/deoplete-rust'
+hook_add = '''
+    let g:deoplete#sources#rust#racer_binary = '/opt/cargo/bin/racer'
+    let g:deoplete#sources#rust#rust_source_path = g:dein_dir . '/repos/github.com/sebastianmarkow/deoplete-rust/rust/src'
+    let g:deoplete#sources#rust#disable_keymap=1
+'''
+build = '''
+    git clone --depth=1 https://github.com/rust-lang/rust.git
+'''
+on_ft = ['rust']
+
+[[plugins]]
+repo = 'rust-lang/rust.vim'
+hook_add = '''
+    let g:rustfmt_autosave = 1
+'''
+on_ft = ['rust']
+depends = ['syntastic']
+
+[[plugins]]
+repo = 'vim-syntastic/syntastic'
+hook_add = '''
+"    usline+=%#warningmsg#
+"    set statusline+=%{SyntasticStatuslineFlag()}
+"    set statusline+=%*
+
+    let g:syntastic_always_populate_loc_list = 1
+    let g:syntastic_auto_loc_list = 1
+    let g:syntastic_check_on_open = 1
+    let g:syntastic_check_on_wq = 0
+'''
+on_ft = ['rust']

@@ -1,10 +1,21 @@
 {
   "load_extensions": {
-    "usability/runtools/main": true,
-    "publishing/printview/main": true,
-    "config/config_menu/main": true,
-    "usability/latex_envs/latex_envs": true,
-    "usability/code_font_size/code_font_size": true,
-    "usability/vim_binding/vim_binding": true
+    "code_font_size/code_font_size": true,
+    "publishing/printview/main": false,
+    "usability/code_font_size/code_font_size": false,
+    "contrib_nbextensions_help_item/main": true,
+    "config/config_menu/main": false,
+    "nbextensions_configurator/config_menu/main": true,
+    "zenmode/main": true,
+    "usability/runtools/main": false,
+    "latex_envs/latex_envs": true,
+    "code_prettify/code_prettify": true,
+    "vim_binding/vim_binding": true,
+    "runtools/main": true,
+    "select_keymap/main": true,
+    "python-markdown/main": true,
+    "printview/main": true,
+    "jupyter-js-widgets/extension": true,
+    "code_prettify/autopep8": true
   }
 }

@@ -1,8 +1,8 @@
 "-------------------------------------------------------------------------------
 " dein
 "-------------------------------------------------------------------------------
-let s:dein_dir = expand('/opt/nvim/dein')
-let s:dein_repo_dir = s:dein_dir . '/repos/github.com/Shougo/dein.vim'
+let g:dein_dir = expand('/opt/nvim/dein')
+let s:dein_repo_dir = g:dein_dir . '/repos/github.com/Shougo/dein.vim'
 let g:dein#install_process_timeout = 3600
 
 " dein.vim がなければ github から落としてくる
@@ -17,7 +17,7 @@ let g:python_host_prog = '/usr/bin/python'
 let g:python3_host_prog = '/usr/bin/python3'
 
 " 設定開始
-call dein#begin(s:dein_dir)
+call dein#begin(g:dein_dir)
 
 " プラグインリストを収めた TOML ファイル
 let s:toml      = '/opt/nvim/dein.toml'

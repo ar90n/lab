@@ -19,5 +19,6 @@ RUN set -x && \
     nvim -c 'call dein#install()' -c 'q' && \
     nvim -c 'UpdateRemotePlugins' -c 'q'
 
+ENV LD_LIBRARY_PATH /opt/rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib:$LD_LIBRARY_PATH
 ENV PATH /opt/cargo/bin:$PATH
 CMD ["cargo"]

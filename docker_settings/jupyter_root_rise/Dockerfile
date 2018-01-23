@@ -6,9 +6,7 @@ ARG user
 ARG uid
 ARG group
 ARG gid
-ARG port
 
-RUN echo $gid $group
 RUN groupadd -g $gid $group
 RUN useradd -u $uid -g $group -M $user -s /bin/nologin
 
@@ -40,18 +38,18 @@ ENV XDG_DATA_HOME /opt/
 ENV JUPYTER_CONFIG_DIR /opt/jupyter_config
 ENV JUPYTER_PATH /opt/jupyter
 ADD notebook.json $JUPYTER_CONFIG_DIR/nbconfig/
-ADD jupyter-server /opt/bin/jupyter-server
 RUN set -x && \
-    mkdir -p $JUPYTER_PATH/nbextensions && \
-    cd $JUPYTER_PATH/nbextensions && \
-    git clone https://github.com/lambdalisue/jupyter-vim-binding.git vim_binding && \
-    chmod -R go-w vim_binding && \
     jupyter contrib nbextension install --user && \
     jupyter nbextensions_configurator enable --user && \
     jupyter-nbextension enable vim_binding/vim_binding && \
     jupyter-nbextension enable --py widgetsnbextension --user && \
     jupyter-nbextension install rise --py --user && \
     jupyter-nbextension enable rise --py --user && \
+    mkdir -p $JUPYTER_PATH/nbextensions && \
+    cd $JUPYTER_PATH/nbextensions && \
+    git clone https://github.com/lambdalisue/jupyter-vim-binding.git vim_binding && \
+    chmod -R go-w vim_binding && \
+    jupyter nbextension enable vim_binding/vim_binding && \
     chown -R $user:$group $JUPYTER_CONFIG_DIR && \
     chown -R $user:$group $JUPYTER_PATH
 
@@ -62,5 +60,5 @@ RUN rm /etc/localtime && \
 RUN dpkg-reconfigure --frontend noninteractive tzdata
 
 USER ${user}
-EXPOSE ${port}
-CMD ["jupyter-server", "${port}"]
+EXPOSE 8008
+CMD jupyter-notebook --port=8008 --no-browser --ip=0.0.0.0

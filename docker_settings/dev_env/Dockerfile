@@ -19,7 +19,8 @@ RUN set -x && \
     apt-get install -y software-properties-common && \
     apt-get install -y language-pack-ja && \
     apt-get install -y build-essential && \
-    apt-get install -y git curl faketime tzdata && \
+    apt-get install -y sudo git curl faketime tzdata && \
+    echo "$user ALL=NOPASSWD: ALL" > /etc/sudoers.d/$user && \
     update-locale LANG=C.UTF-8 && \
     apt-get clean
 ENV LANG C.UTF-8

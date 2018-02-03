@@ -16,3 +16,4 @@ ${DOCKER_CMD} build --build-arg user=$_USER -t ar90n/cxx_improc ./cxx_improc
 ${DOCKER_CMD} build --build-arg user=$_USER -t ar90n/rust ./rust
 
 ${DOCKER_CMD} build --build-arg user=$_USER --build-arg uid=$_UID --build-arg group=$_GROUP --build-arg gid=$_GID -t ar90n/jupyter_root_rise ./jupyter_root_rise
+${DOCKER_CMD} build --build-arg user=$_USER -t ar90n/madoko ./madoko

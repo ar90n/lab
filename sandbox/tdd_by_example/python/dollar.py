@@ -9,8 +9,7 @@ class Dollar:
         pass
 
     def times(self, multiplier):
-        self.amount *= multiplier
-        pass
+        return Dollar(self.amount * multiplier)
 
 
 def main():

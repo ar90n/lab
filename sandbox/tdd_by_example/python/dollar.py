@@ -1,18 +1,16 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from .money import Money
 
-class Dollar:
+
+class Dollar(Money):
 
     def __init__(self, amount):
-        self._amount = amount
-        pass
+        super().__init__(amount)
 
     def times(self, multiplier):
         return Dollar(self._amount * multiplier)
-
-    def __eq__(self, object):
-        return self._amount == object._amount
 
 
 def main():

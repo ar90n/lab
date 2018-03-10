@@ -5,14 +5,14 @@
 class Dollar:
 
     def __init__(self, amount):
-        self.amount = amount
+        self._amount = amount
         pass
 
     def times(self, multiplier):
-        return Dollar(self.amount * multiplier)
+        return Dollar(self._amount * multiplier)
 
     def __eq__(self, object):
-        return self.amount == object.amount
+        return self._amount == object._amount
 
 
 def main():

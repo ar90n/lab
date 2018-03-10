@@ -8,7 +8,8 @@ class Money:
         self._amount = amount
 
     def __eq__(self, object):
-        return self._amount == object._amount
+        return self._amount == object._amount \
+            and type(self) == type(object)
 
 
 def main():

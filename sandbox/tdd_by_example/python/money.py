@@ -8,6 +8,9 @@ class Money:
         self._amount = amount
         self.currency = currency
 
+    def __add__(self, money):
+        return Money(self._amount + money._amount, self.currency)
+
     def __eq__(self, money):
         return self._amount == money._amount \
             and self.currency == money.currency

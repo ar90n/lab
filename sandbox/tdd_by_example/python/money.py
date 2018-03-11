@@ -17,13 +17,11 @@ class Money:
 
     @classmethod
     def dollar(cls, amount):
-        from .dollar import Dollar
-        return Dollar(amount, 'USD')
+        return Money(amount, 'USD')
 
     @classmethod
     def franc(cls, amount):
-        from .franc import Franc
-        return Franc(amount, 'CHF')
+        return Money(amount, 'CHF')
 
 
 def main():

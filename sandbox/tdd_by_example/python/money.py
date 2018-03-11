@@ -4,8 +4,9 @@
 
 class Money:
 
-    def __init__(self, amount):
+    def __init__(self, amount, currency):
         self._amount = amount
+        self.currency = currency
 
     def __eq__(self, object):
         return self._amount == object._amount \
@@ -14,12 +15,12 @@ class Money:
     @classmethod
     def dollar(cls, amount):
         from .dollar import Dollar
-        return Dollar(amount)
+        return Dollar(amount, 'USD')
 
     @classmethod
     def franc(cls, amount):
         from .franc import Franc
-        return Franc(amount)
+        return Franc(amount, 'CHF')
 
 
 def main():

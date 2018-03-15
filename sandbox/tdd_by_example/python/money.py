@@ -12,12 +12,15 @@ class Money:
         from .sum import Sum
         return Sum(self, addend)
 
+    def __mul__(self, multiplier):
+        return Money(self._amount * multiplier, self.currency)
+
+    def __rmul__(self, multiplier):
+        return self.__mul__(multiplier)
+
     def __eq__(self, money):
         return self._amount == money._amount \
             and self.currency == money.currency
-
-    def times(self, multiplier):
-        return Money(self._amount * multiplier, self.currency)
 
     def reduce(self, bank, to):
         rate = bank.rate(self.currency, to)

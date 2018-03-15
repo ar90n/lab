@@ -8,8 +8,9 @@ from .sum import Sum
 
 def test_multiplication():
     five = Money.dollar(5)
-    assert five.times(2) == Money.dollar(10)
-    assert five.times(3) == Money.dollar(15)
+    assert five * 2 == Money.dollar(10)
+    assert 2 * five == Money.dollar(10)
+    assert 3 * five == Money.dollar(15)
 
 
 def test_equality():
@@ -20,8 +21,8 @@ def test_equality():
 
 def test_franc_multiplication():
     five = Money.franc(5)
-    assert five.times(2) == Money.franc(10)
-    assert five.times(3) == Money.franc(15)
+    assert 2 * five == Money.franc(10)
+    assert 3 * five == Money.franc(15)
 
 
 def test_currency():
@@ -74,3 +75,23 @@ def test_mixed_addition():
     bank.addRate('CHF', 'USD', 2)
     result = bank.reduce(fiveBucks + tenFrancs, 'USD')
     assert result == Money.dollar(10)
+
+
+def test_sum_plus_money():
+    fiveBucks = Money.dollar(5)
+    tenFrancs = Money.franc(10)
+    bank = Bank()
+    bank.addRate('CHF', 'USD', 2)
+    sum = Sum(fiveBucks, tenFrancs) + fiveBucks
+    result = bank.reduce(sum, 'USD')
+    assert result == Money.dollar(15)
+
+
+def test_sum_times():
+    fiveBucks = Money.dollar(5)
+    tenFrancs = Money.franc(10)
+    bank = Bank()
+    bank.addRate('CHF', 'USD', 2)
+    sum = Sum(fiveBucks, tenFrancs) * 2
+    result = bank.reduce(sum, 'USD')
+    assert result == Money.dollar(20)

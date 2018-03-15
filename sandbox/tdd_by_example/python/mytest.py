@@ -3,6 +3,7 @@
 
 from .money import Money
 from .bank import Bank
+from .sum import Sum
 
 
 def test_multiplication():
@@ -33,3 +34,20 @@ def test_simple_addition():
     bank = Bank()
     reduced = bank.reduce(sum, 'USD')
     assert reduced == Money.dollar(10)
+
+def test_plug_returns_sum():
+    five = Money.dollar(5)
+    sum = five + five
+    assert sum.augend == five
+    assert sum.addend == five
+
+def test_reduce_sum():
+    sum = Sum(Money.dollar(3), Money.dollar(4))
+    bank = Bank()
+    result = bank.reduce(sum, 'USD')
+    assert result == Money.dollar(7)
+
+def test_reduce_money():
+    bank = Bank()
+    result = bank.reduce(Money.dollar(1), 'USD')
+    assert result == Money.dollar(1)

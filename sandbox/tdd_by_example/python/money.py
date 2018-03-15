@@ -8,8 +8,9 @@ class Money:
         self._amount = amount
         self.currency = currency
 
-    def __add__(self, money):
-        return Money(self._amount + money._amount, self.currency)
+    def __add__(self, addend):
+        from .sum import Sum
+        return Sum(self, addend)
 
     def __eq__(self, money):
         return self._amount == money._amount \
@@ -17,6 +18,9 @@ class Money:
 
     def times(self, multiplier):
         return Money(self._amount * multiplier, self.currency)
+
+    def reduce(self, to):
+        return self
 
     @classmethod
     def dollar(cls, amount):

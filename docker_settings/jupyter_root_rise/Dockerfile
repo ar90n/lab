@@ -39,6 +39,8 @@ ENV JUPYTER_CONFIG_DIR /opt/jupyter_config
 ENV JUPYTER_PATH /opt/jupyter
 ADD notebook.json $JUPYTER_CONFIG_DIR/nbconfig/
 RUN set -x && \
+    pip install networkx && \
+    pip install numpy matplotlib seaborn pandas pandas-datareader bokeh holoviews && \
     jupyter contrib nbextension install --user && \
     jupyter nbextensions_configurator enable --user && \
     jupyter-nbextension enable vim_binding/vim_binding && \

@@ -10,5 +10,5 @@ class Sum:
 
     def reduce(self, bank, to):
         from .money import Money
-        amount = self.augend._amount + self.addend._amount
+        amount = self.augend.reduce(bank, to)._amount + self.addend.reduce(bank, to)._amount
         return Money(amount, to)

@@ -19,8 +19,9 @@ class Money:
     def times(self, multiplier):
         return Money(self._amount * multiplier, self.currency)
 
-    def reduce(self, to):
-        return self
+    def reduce(self, bank, to):
+        rate = bank.rate(self.currency, to)
+        return Money(self._amount / rate, to)
 
     @classmethod
     def dollar(cls, amount):

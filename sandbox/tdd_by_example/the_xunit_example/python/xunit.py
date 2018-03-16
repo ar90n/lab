@@ -5,12 +5,17 @@ class TestResult:
 
     def __init__(self):
         self.runCount = 0
+        self.errorCount = 0
 
     def testStarted(self):
         self.runCount += 1
 
+    def testFailed(self):
+        self.errorCount += 1
+
+
     def summary(self):
-        return '%d run, 0 failed' % self.runCount
+        return '%d run, %d failed' % (self.runCount, self.errorCount)
 
 
 class TestCase:
@@ -28,8 +33,11 @@ class TestCase:
         result = TestResult()
         result.testStarted()
         self.setUp()
-        method = getattr(self, self.name)
-        method()
+        try:
+            method = getattr(self, self.name)
+            method()
+        except:
+            result.testFailed()
         self.tearDown()
         return result
 
@@ -66,13 +74,20 @@ class TestCaseTest(TestCase):
     def testFailedResult(self):
         test = WasRun('testBrokenMethod')
         result = test.run()
-        assert result.summary() == '1run, 1 failed'
+        assert result.summary() == '1 run, 1 failed'
+
+    def testFailedResultFormatting(self):
+        result = TestResult()
+        result.testStarted()
+        result.testFailed()
+        assert result.summary() == '1 run, 1 failed'
 
 
 def main():
-    TestCaseTest('testTemplateMethod').run()
-    TestCaseTest('testResult').run()
-    # TestCaseTest('testFailedResult').run()
+    print(TestCaseTest('testTemplateMethod').run().summary())
+    print(TestCaseTest('testResult').run().summary())
+    print(TestCaseTest('testFailedResult').run().summary())
+    print(TestCaseTest('testFailedResultFormatting').run().summary())
 
 if __name__ == '__main__':
     main()

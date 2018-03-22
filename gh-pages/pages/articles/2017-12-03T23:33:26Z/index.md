@@ -1,6 +1,6 @@
 ---
 title: Dockerで開発環境を整備する
-date: "2017-12-03T23:33:26Z "
+date: "2017-12-03T23:33:26Z"
 layout: post
 path: "/blog/2017-12-03T23:33:26Z/"
 category:

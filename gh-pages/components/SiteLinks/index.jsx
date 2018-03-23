@@ -3,9 +3,9 @@ import { StyleSheet, css } from 'aphrodite'
 import { RouteHandler, Link } from 'react-router'
 import { prefixLink } from 'gatsby-helpers'
 import { config } from 'config'
-import FontaAwesome from 'react-fontawesome'
+// import FontaAwesome from 'react-fontawesome'
 import * as colors from 'material-ui/styles/colors';
-import '../../static/fonts/fontawesome/style.css'
+// import '../../static/fonts/fontawesome/style.css'
 
 const styles = StyleSheet.create({
     common: {
@@ -43,17 +43,17 @@ const SiteLinks = ( props ) => {
             <ul className={css(styles.list)}>
                 <li className={css(styles.container)}>
                     <a href={config.siteTwitterUrl}>
-                        <FontaAwesome name='fa fa-twitter' className={css(styles.icon)}/>
+        {/* <FontaAwesome name='fa fa-twitter' className={css(styles.icon)}/> */}
                     </a>
                 </li>
                 <li className={css(styles.container)}>
                     <a href={config.siteGithubUrl}>
-                        <FontaAwesome name='fa fa-github-alt' className={css(styles.icon)}/>
+            {/* <FontaAwesome name='fa fa-github-alt' className={css(styles.icon)}/> */}
                     </a>
                 </li>
                 <li className={css(styles.container)}>
                     <a href={`mailto:${config.siteEmailUrl}`}>
-                        <FontaAwesome name='fa fa-envelope-o' className={css(styles.icon)}/>
+        {/* <FontaAwesome name='fa fa-envelope-o' className={css(styles.icon)}/> */}
                     </a>
                 </li>
             </ul>

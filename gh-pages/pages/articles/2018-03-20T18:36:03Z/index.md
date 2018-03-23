@@ -20,8 +20,7 @@ description: "サイトジェネレータをReact Staticに変更するべき作
 1. Typescriptテンプレートで環境構築
 1. [Core Concepts](https://react-static.js.org/concepts)を読み概要を把握
 
-## 作業詳細
-### 動作確認
+## 動作確認
 Quick Startに従って以下のようにreact-staticを導入．
 ```bash
 $ yarn global add react-static
@@ -38,7 +37,14 @@ $ yarn start
 ブラウザからhttp://localhost:3000/にアクセスして動作を確認する．
 ![トップページ](./sc01.png)
 
-### Core Conceptsのメモ
+## React Staticのメモ
+
+* 必要なデータやルーティングに関する情報は全てstatic.config.jsに記述する．データソースとしては，markdownやヘッドレスCMSやgraphqlのエンドポイントが使える．
+* Route Dataという各ルーティング毎に使われるデータと，Shared Dataというルーティングを跨いで使われるデータがある．このShared Dataはキャッシュされる性質があるようだかここら辺がよくわかっていない．
+* static.config.jsのgetDataで必要な情報を取得する
+* ルーティングされる度に対応するデータを用いてページをレンダリングする．
+* 初回ページ表示時には必要最低限のデータのみロードする．後は必要になる度に取得．
+
 
 ## 所感
 Reactを使ったSPAなのはGatsbyと似ているが，こちらの方が細かな調整が効く感じがする．ブログ以外のサイトやアプリの雛形なんかにも使えそうな気がしてきました．

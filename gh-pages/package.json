@@ -53,6 +53,7 @@
     "react-motion": "^0.4.8",
     "react-router": "^2.6.1",
     "react-tap-event-plugin": "^2.0.1",
+    "remark-graphviz": "^0.2.2",
     "safe-access": "^0.1.0",
     "underscore.string": "^3.2.3"
   },

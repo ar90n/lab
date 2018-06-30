@@ -16,6 +16,7 @@ module.exports = React.createClass({
         const {body, route} = this.props
         const {title} = Helmet.rewind()
         const font = <link href='https://fonts.googleapis.com/css?family=Roboto:400,400italic,500,700&subset=latin,cyrillic' rel='stylesheet' type='text/css' />
+	const font_awesome = <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
         let css
         if (process.env.NODE_ENV === 'production') {
             css = <style dangerouslySetInnerHTML={ {    __html: require('!raw!./public/styles.css')} } />
@@ -29,6 +30,7 @@ module.exports = React.createClass({
               <meta name="viewport" content="width=device-width, initial-scale=1.0 maximum-scale=5.0" />
               { title.toComponent() }
               { font }
+              { font_awesome }
               { css }
               <script dangerouslySetInnerHTML={ {    __html: GA_JS_CODE} } />
             </head>

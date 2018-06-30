@@ -70,7 +70,7 @@
     "eslint-plugin-react": "^6.0.0",
     "file-loader": "^0.9.0",
     "fs-extra-promise": "^1.0.1",
-    "gh-pages": "^0.11.0",
+    "gh-pages": "^1.2.0",
     "image-webpack-loader": "^2.0.0",
     "lost": "^7.0.3",
     "null-loader": "^0.1.1",

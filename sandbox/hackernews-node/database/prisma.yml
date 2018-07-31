@@ -1,0 +1,9 @@
+endpoint: ''
+
+datamodel: datamodel.graphql
+
+secret: mysqcret123
+
+hooks:
+  post-deploy:
+    - graphql get-schema --project database

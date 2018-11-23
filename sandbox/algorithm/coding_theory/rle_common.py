@@ -2,11 +2,15 @@ from itertools import groupby
 
 
 def encode(data, hook):
-    return sum([hook(list(v)) for _, v in groupby(data)], [])
+    result = [hook(list(v)) for _, v in groupby(data)]
+    result.append(hook(None))
+    return sum(result, [])
 
 
 def decode(data, hook):
-    return sum([hook(v) for v in data], [])
+    result = [hook(v) for v in data]
+    result.append(hook(None))
+    return sum(result, [])
 
 
 def test_rle_common(_encode, _decode):

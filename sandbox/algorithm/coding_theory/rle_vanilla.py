@@ -1,4 +1,4 @@
-from rle_common import encode, decode, test_rle_common
+from rle_common import test_rle_common
 
 
 def _encode(v):
@@ -25,6 +25,7 @@ def _decode():
             result = rl
             rl = 0
         return [v] * result
+
     return f
 
 
@@ -32,5 +33,5 @@ def main():
     test_rle_common(_encode, _decode())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

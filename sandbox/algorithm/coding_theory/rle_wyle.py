@@ -1,4 +1,4 @@
-from rle_common import encode, decode, test_rle_common
+from rle_common import test_rle_common
 
 
 def _ln2(value):
@@ -10,7 +10,6 @@ def _ln2(value):
 
 
 class BitStream:
-
     def __init__(self):
         self._buf = 0
         self.length = 0
@@ -25,7 +24,7 @@ class BitStream:
         if self.length < width:
             return None
 
-        self.length -= width 
+        self.length -= width
         val = self._buf >> self.length
         self._buf &= (1 << self.length) - 1
         return val
@@ -77,6 +76,7 @@ def _encode():
                 break
             result.append(ret)
         return result
+
     return f
 
 
@@ -116,11 +116,7 @@ def _decode():
         length = None
         return [value] * run_length, 0
 
-    states = [
-        _decode_prefix,
-        _decode_run_length,
-        _decode_value
-    ]
+    states = [_decode_prefix, _decode_run_length, _decode_value]
     state = 0
 
     def f(v):
@@ -137,6 +133,7 @@ def _decode():
             if next_state == state:
                 return result
             state = next_state
+
     return f
 
 
@@ -144,5 +141,5 @@ def main():
     test_rle_common(_encode(), _decode())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

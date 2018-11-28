@@ -12,8 +12,9 @@ def create_encoder(_make_tree, _encode):
 
     def _wrappeed(vs):
         nonlocal tree
-        tree = _make_tree(vs)
-        return tree, encoder(vs)
+        enc_tree, dec_tree = _make_tree(vs)
+        tree = enc_tree
+        return dec_tree, encoder(vs)
 
     return _wrappeed
 

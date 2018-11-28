@@ -1,46 +1,5 @@
+from common import BitStream
 from rle_common import test_rle_common
-
-
-def _ln2(value):
-    ret = 0
-    while 0 < value:
-        ret += 1
-        value = value >> 1
-    return ret
-
-
-class BitStream:
-    def __init__(self):
-        self._buf = 0
-        self.length = 0
-
-    def push(self, value, width=1):
-        assert _ln2(value) <= width
-
-        self._buf = (self._buf << width) | value
-        self.length += width
-
-    def pop(self, width=8):
-        if self.length < width:
-            return None
-
-        self.length -= width
-        val = self._buf >> self.length
-        self._buf &= (1 << self.length) - 1
-        return val
-
-    def flush(self, padding=0):
-        self.push(padding, 7)
-        return self.pop(8)
-
-    def leading_ones(self):
-        if self.length == 0:
-            return 0
-
-        count = 0
-        while 0 < (self._buf & (1 << (self.length - count - 1))):
-            count += 1
-        return count
 
 
 def _encode():
@@ -70,11 +29,8 @@ def _encode():
         bs.push(s, 8)
 
         result = []
-        while True:
-            ret = bs.pop(8)
-            if ret is None:
-                break
-            result.append(ret)
+        while 8 <= bs.length:
+            result.append(bs.pop(8))
         return result
 
     return f

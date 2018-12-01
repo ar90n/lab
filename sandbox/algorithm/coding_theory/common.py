@@ -45,6 +45,13 @@ class BitStream:
             count += 1
         return count
 
+    def to_list(self):
+        result = []
+        while 8 <= self.length:
+            result.append(self.pop())
+        result.append(self.flush())
+        return result
+
 
 def create_converter(hook):
     def _f(data):

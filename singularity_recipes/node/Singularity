@@ -1,0 +1,37 @@
+Bootstrap: localimage
+
+From: ../images/dev_env.simg
+
+
+%runscript
+
+    exec /usr/local/bin/node
+
+%setup
+
+%files
+
+    npmrc /usr/local/etc/npmrc
+
+%environment
+
+
+%labels
+
+%post
+
+    apt-get update
+    apt-get -y install nodejs npm
+    npm cache clean
+    npm install n -g
+
+    n latest
+    ln -sf /usr/local/bin/node /usr/bin/node
+    apt-get -y purge nodejs
+    apt-get clean
+
+    npm install webpack webpack-dev-server yarn -g
+    npm install bs-platform -g
+
+#    nvim -c 'call dein#install()' -c 'q'
+#    nvim -c 'UpdateRemotePlugins' -c 'q'

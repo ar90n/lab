@@ -1,0 +1,38 @@
+Bootstrap: localimage
+
+From: ../images/dev_env.simg
+
+
+%runscript
+
+    exec /opt/cargo/bin/cargo
+
+%setup
+
+#    mkdir /opt/rustup
+
+%files
+
+%environment
+
+    RUSTUP_HOME=/opt/rustup
+    CARGO_HOME=/opt/cargo
+    PATH=/opt/cargo/bin:$PATH
+
+    export RUSTUP_HOME CARGO_HOME PATH
+
+%labels
+
+%post
+
+    export RUSTUP_HOME=/opt/rustup
+    export CARGO_HOME=/opt/cargo
+
+    curl -sSf https://sh.rustup.rs -o /tmp/rustup.sh
+    RUSTUP_HOME=/opt/rustup CARGO_HOME=/opt/cargo bash /tmp/rustup.sh -y --no-modify-path
+    /opt/cargo/bin/rustup install nightly
+    /opt/cargo/bin/rustup default nightly
+    /opt/cargo/bin/cargo +nightly install racer
+
+#    nvim -c 'call dein#install()' -c 'q'
+#    nvim -c 'UpdateRemotePlugins' -c 'q'

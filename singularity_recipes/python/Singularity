@@ -1,0 +1,42 @@
+Bootstrap: localimage
+
+From: ../images/dev_env.simg
+
+
+%runscript
+
+    exec /opt/miniconda3/bin/python
+
+%setup
+
+%files
+
+%environment
+
+    PATH=/opt/miniconda3/bin:$PATH
+    PYTHONPATH=/opt/miniconda3/lib/python3.7/site-packages:$PYTHONPATH
+
+    export PATH PYTHONPATH
+
+%labels
+
+%post
+    curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+    bash /tmp/miniconda.sh -b -p /opt/miniconda3
+    rm  /tmp/miniconda.sh
+
+    /opt/miniconda3/bin/conda install -y jupyter
+    /opt/miniconda3/bin/conda install -y -c r libiconv
+    /opt/miniconda3/bin/conda install -y -c conda-forge gdcm pydicom nibabel
+    /opt/miniconda3/bin/conda install -y -c simpleitk simpleitk
+    /opt/miniconda3/bin/conda install -y tensorflow
+    /opt/miniconda3/bin/conda install -y -c conda-forge xgboost lightgbm
+    /opt/miniconda3/bin/conda install -y -c conda-forge numpy scipy scikit-learn scikit-image matplotlib seaborn bokeh holoviews pillow networkx
+    /opt/miniconda3/bin/conda install -y -c conda-forge pandas pandas-datareader
+    /opt/miniconda3/bin/conda install -y -c conda-forge flask scrapy requests
+    /opt/miniconda3/bin/conda install -y -c conda-forge black jedi pytest pytest-xdist
+    /opt/miniconda3/bin/conda install -y cython
+    /opt/miniconda3/bin/conda clean -t
+
+#    nvim -c 'call dein#install()' -c 'q' && \
+#    nvim -c 'UpdateRemotePlugins' -c 'q'

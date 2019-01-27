@@ -9,9 +9,9 @@ From: ../images/dev_env.simg
 
 %setup
 
-#    mkdir /opt/rustup
-
 %files
+
+    rust_dein.toml /opt/nvim/specs
 
 %environment
 
@@ -25,6 +25,8 @@ From: ../images/dev_env.simg
 
 %post
 
+    export XDG_CONFIG_HOME=/opt/
+    export XDG_DATA_HOME=/opt/
     export RUSTUP_HOME=/opt/rustup
     export CARGO_HOME=/opt/cargo
 
@@ -34,5 +36,6 @@ From: ../images/dev_env.simg
     /opt/cargo/bin/rustup default nightly
     /opt/cargo/bin/cargo +nightly install racer
 
-#    nvim -c 'call dein#install()' -c 'q'
-#    nvim -c 'UpdateRemotePlugins' -c 'q'
+    nvim -c 'call dein#install()' -c 'q'
+    nvim -c 'UpdateRemotePlugins' -c 'q'
+    chmod -R 777 /opt/nvim/shada

@@ -10,6 +10,8 @@ From: ../images/dev_env.simg
 %setup
 
 %files
+   
+    python_dein.toml /opt/nvim/specs
 
 %environment
 
@@ -21,6 +23,10 @@ From: ../images/dev_env.simg
 %labels
 
 %post
+
+    export XDG_CONFIG_HOME=/opt/
+    export XDG_DATA_HOME=/opt/
+
     curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
     bash /tmp/miniconda.sh -b -p /opt/miniconda3
     rm  /tmp/miniconda.sh
@@ -33,10 +39,13 @@ From: ../images/dev_env.simg
     /opt/miniconda3/bin/conda install -y -c conda-forge xgboost lightgbm
     /opt/miniconda3/bin/conda install -y -c conda-forge numpy scipy scikit-learn scikit-image matplotlib seaborn bokeh holoviews pillow networkx
     /opt/miniconda3/bin/conda install -y -c conda-forge pandas pandas-datareader
-    /opt/miniconda3/bin/conda install -y -c conda-forge flask scrapy requests
-    /opt/miniconda3/bin/conda install -y -c conda-forge black jedi pytest pytest-xdist
+    /opt/miniconda3/bin/conda install -y -c conda-forge flask tinydb scrapy requests hy click
+    /opt/miniconda3/bin/conda install -y -c conda-forge black jedi pytest pytest-xdist python-language-server
+    /opt/miniconda3/bin/conda install -y -c conda-forge dash dash-renderer dash-html-components dash-core-components plotly
     /opt/miniconda3/bin/conda install -y cython
     /opt/miniconda3/bin/conda clean -t
+    /opt/miniconda3/bin/pip install pyenv pipenv
 
-#    nvim -c 'call dein#install()' -c 'q' && \
-#    nvim -c 'UpdateRemotePlugins' -c 'q'
+    nvim -c 'call dein#install()' -c 'q'
+    nvim -c 'UpdateRemotePlugins' -c 'q'
+    chmod -R 777 /opt/nvim/shada

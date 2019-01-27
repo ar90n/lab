@@ -48,10 +48,17 @@ hook_post_source = '''
 '''
 
 [[plugins]]
-repo = 'vim-scripts/twilight'
+repo = 'mileszs/ack.vim'
+hook_add = '''
+  if executable('ag')
+    let g:ackprg = 'ag --vimgrep'
+  endif
+'''
+
+[[plugins]]
+repo = 'morhetz/gruvbox'
 hook_source = '''
-    syntax on
-    colorscheme twilight
+    color gruvbox
 '''
 
 [[plugins]]
@@ -62,9 +69,9 @@ hook_source = '''
       call UltiSnips#ExpandSnippet()
       return g:ulti_expand_res
     endfunction
-    let g:deoplete#enable_at_startup = 1
     inoremap <C-k> <C-R>=(Ulti_ExpandOrJump_and_getRes() > 0)?"":deoplete#close_popup()<CR>
-    set completeopt=menuone
+
+    let g:deoplete#enable_at_startup = 1
 '''
 on_i = 1
 

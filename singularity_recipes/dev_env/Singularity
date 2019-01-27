@@ -17,7 +17,7 @@ From: ubuntu:latest
 
     init.vim /opt/nvim/init.vim
     dein.toml /opt/nvim/dein.toml
-    template /opt/nvim/template/
+    template /opt/nvim/template
 
 %environment
 
@@ -31,6 +31,9 @@ From: ubuntu:latest
 
 %post
 
+    export XDG_CONFIG_HOME=/opt/
+    export XDG_DATA_HOME=/opt/
+
     apt-get update -qq
     apt-get upgrade -qq
     apt-get install -y software-properties-common language-pack-ja build-essential
@@ -42,8 +45,8 @@ From: ubuntu:latest
 
     pip2 install --upgrade pip neovim
     pip3 install --upgrade pip neovim
-    XDG_CONFIG_HOME=/opt/ XDG_DATA_HOME=/opt/ nvim -c 'call dein#install()' -c 'q'
-    XDG_CONFIG_HOME=/opt/ XDG_DATA_HOME=/opt/ nvim -c 'UpdateRemotePlugins' -c 'q'
+    nvim -c 'call dein#install()' -c 'q'
+    nvim -c 'UpdateRemotePlugins' -c 'q'
     chmod -R 777 /opt/nvim/shada
 
     apt-get clean

@@ -28,6 +28,7 @@ call dein#load_toml(s:toml, {'lazy': 0})
 for spec_toml in s:spec_tomls
     call dein#load_toml(spec_toml, {'lazy': 0})
 endfor
+call dein#load_toml(s:toml,      {'lazy': 0})
 
 " 設定終了
 call dein#end()
@@ -150,19 +151,18 @@ set smartindent  " 新しい行を開始したときに、新しい行のイン�
 
 " softtabstopはTabキー押し下げ時の挿入される空白の量，0の場合はtabstopと同じ，
 " BSにも影響する
-set tabstop=8 expandtab shiftwidth=4 softtabstop=4
+set tabstop=4 expandtab shiftwidth=4 softtabstop=4
 
-if has("autocmd")
-    "ファイルタイプの検索を有効にする
-    filetype plugin on
-    "そのファイルタイプにあわせたインデントを利用する
-    filetype indent on
-    "Makefileはタブを展開しない
-    autocmd FileType make :setlocal noexpandtab
-    autocmd Filetype c,c++ :set cindent      " Cプログラムファイルの自動インデントを始める
-    autocmd FileType html :set indentexpr=
-    autocmd FileType xhtml :set indentexpr=
-endif
+"ファイルタイプの検索を有効にする
+filetype plugin on
+"そのファイルタイプにあわせたインデントを利用する
+filetype indent on
+"Makefileはタブを展開しない
+autocmd FileType make :setlocal noexpandtab
+autocmd Filetype c,c++ :set cindent      " Cプログラムファイルの自動インデントを始める
+autocmd FileType html :set indentexpr=
+autocmd FileType xhtml :set indentexpr=
+autocmd FileType typescript :set tabstop=2 shiftwidth=2 softtabstop=2
 
 "-------------------------------------------------------------------------------
 " 移動設定 Move
@@ -335,18 +335,15 @@ endif
 syntax enable
 
 set background=dark
-" 補完候補の色づけ for vim7
-hi Pmenu ctermbg=darkgray ctermfg=white
-hi PmenuSel ctermbg=blue ctermfg=white
-hi PmenuSbar ctermbg=0 ctermfg=9
-
 set novisualbell
 "-------------------------------------------------------------------------------
 " その他 Misc
 "-------------------------------------------------------------------------------
 
+" 分割は右と下に
+set splitbelow
+set splitright
+
 " ;でコマンド入力( ;と:を入れ替)
 noremap ; :
 "noremap : ;
-
-autocmd BufNewFile *.py 0r  /opt/nvim/template/python.template

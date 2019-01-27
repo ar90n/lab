@@ -12,6 +12,7 @@ From: ../images/dev_env.simg
 %files
 
     npmrc /usr/local/etc/npmrc
+    node_dein.toml /opt/nvim/specs
 
 %environment
 
@@ -20,8 +21,11 @@ From: ../images/dev_env.simg
 
 %post
 
+    export XDG_CONFIG_HOME=/opt/
+    export XDG_DATA_HOME=/opt/
+
     apt-get update
-    apt-get -y install nodejs npm
+    apt-get -y install nodejs npm unzip
     npm cache clean
     npm install n -g
 
@@ -32,6 +36,9 @@ From: ../images/dev_env.simg
 
     npm install webpack webpack-dev-server yarn -g
     npm install bs-platform -g
+    npm install reason-cli@latest-linux -g
+    npm install ocaml-language-server -g
 
-#    nvim -c 'call dein#install()' -c 'q'
-#    nvim -c 'UpdateRemotePlugins' -c 'q'
+    nvim -c 'call dein#install()' -c 'q'
+    nvim -c 'UpdateRemotePlugins' -c 'q'
+    chmod -R 777 /opt/nvim/shada

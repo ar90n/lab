@@ -1,0 +1,23 @@
+Bootstrap: localimage
+
+From: ../images/dev_env.simg
+
+
+%runscript
+
+    exec /usr/local/bin/node
+
+%setup
+
+%files
+
+%environment
+
+%labels
+
+%post
+
+    apt-get update
+    apt-get -y install dcmtk libgdcm-cil
+    apt-get -y install imagemagick
+    apt-get clean

@@ -1,0 +1,6 @@
+[vagrants]
+127.0.0.1:2222
+
+[all:vars]
+ansible_ssh_user=vagrant
+ansible_ssh_private_key_file=~/.ssh/id_rsa

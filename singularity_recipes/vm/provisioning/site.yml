@@ -1,0 +1,19 @@
+---
+- hosts: vagrants
+  become: yes
+  user: vagrant
+  tasks:
+    - name: Add neurodebian apt source to source.list
+      get_url:
+        url: http://neuro.debian.net/lists/xenial.us-ca.full
+        dest: /etc/apt/sources.list.d/neurodebian.sources.list 
+
+    - name: Add neurodebian apt key
+      apt_key:
+        keyserver: hkp://pool.sks-keyservers.net:80
+        id: A5D32F012649A5A9
+
+    - name: install singularity container
+      apt:
+         name: singularity-container
+         update_cache: yes

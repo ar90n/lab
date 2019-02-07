@@ -12,6 +12,7 @@ From: ../images/dev_env.simg
 %files
    
     python_dein.toml /opt/nvim/specs
+    jupyter-server /opt/bin
 
 %environment
 
@@ -32,6 +33,8 @@ From: ../images/dev_env.simg
     rm  /tmp/miniconda.sh
 
     /opt/miniconda3/bin/conda install -y jupyter
+    /opt/miniconda3/bin/conda install -y -c conda-forge jupyter_contrib_nbextensions jupyter_nbextensions_configurator ipywidgets
+    /opt/miniconda3/bin/conda install -y -c damianavila82 rise
     /opt/miniconda3/bin/conda install -y -c r libiconv
     /opt/miniconda3/bin/conda install -y -c conda-forge gdcm pydicom nibabel
     /opt/miniconda3/bin/conda install -y -c simpleitk simpleitk
@@ -44,7 +47,19 @@ From: ../images/dev_env.simg
     /opt/miniconda3/bin/conda install -y -c conda-forge dash dash-renderer dash-html-components dash-core-components plotly
     /opt/miniconda3/bin/conda install -y cython
     /opt/miniconda3/bin/conda clean -t
-    /opt/miniconda3/bin/pip install pyenv pipenv
+    /opt/miniconda3/bin/pip install pipenv
+
+    mkdir -p /opt/jupyter/nbextensions
+    mkdir -p /opt/jupyter/runtime
+    /opt/miniconda3/bin/jupyter notebook --generate-config
+    git clone https://github.com/lambdalisue/jupyter-vim-binding.git /opt/jupyter/nbextensions/vim_binding
+    /opt/miniconda3/bin/jupyter contrib nbextension install --user
+    /opt/miniconda3/bin/jupyter nbextensions_configurator enable --user
+    /opt/miniconda3/bin/jupyter-nbextension enable vim_binding/vim_binding
+    /opt/miniconda3/bin/jupyter-nbextension enable --py widgetsnbextension --user
+    /opt/miniconda3/bin/jupyter-nbextension install rise --py --user
+    /opt/miniconda3/bin/jupyter-nbextension enable rise --py --user
+    chmod -R 777 /opt/jupyter
 
     nvim -c 'call dein#install()' -c 'q'
     nvim -c 'UpdateRemotePlugins' -c 'q'

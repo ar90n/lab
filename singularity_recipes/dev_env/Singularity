@@ -21,6 +21,7 @@ From: ubuntu:latest
 
 %environment
 
+    export CONTAINER_NAME=dev_env
     export XDG_CONFIG_HOME=/opt/
     export XDG_DATA_HOME=/opt/
     export XDG_RUNTIME_DIR=$HOME/.local/share

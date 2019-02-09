@@ -3,16 +3,13 @@ Bootstrap: localimage
 From: ../images/dev_env.simg
 
 
-%runscript
-
-    exec /opt/cargo/bin/cargo
-
 %files
 
     rust_dein.toml /opt/nvim/specs
 
 %environment
 
+    export CONTAINER_NAME=rust
     RUSTUP_HOME=/opt/rustup
     CARGO_HOME=/opt/cargo
     PATH=/opt/cargo/bin:$PATH

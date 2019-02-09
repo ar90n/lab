@@ -2,13 +2,6 @@ Bootstrap: localimage
 
 From: ../images/dev_env.simg
 
-
-%runscript
-
-    exec /usr/local/bin/node
-
-%setup
-
 %files
 
     npmrc /usr/local/etc/npmrc
@@ -16,6 +9,7 @@ From: ../images/dev_env.simg
 
 %environment
 
+    export CONTAINER_NAME=node
 
 %labels
 

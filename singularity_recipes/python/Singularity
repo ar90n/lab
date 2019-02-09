@@ -2,11 +2,6 @@ Bootstrap: localimage
 
 From: ../images/dev_env.simg
 
-
-%runscript
-
-    exec /opt/miniconda3/bin/python
-
 %files
    
     python_dein.toml /opt/nvim/specs
@@ -15,6 +10,7 @@ From: ../images/dev_env.simg
 
 %environment
 
+    export CONTAINER_NAME=python
     PATH=/opt/bin:/opt/miniconda3/bin:$PATH
     export PATH
 

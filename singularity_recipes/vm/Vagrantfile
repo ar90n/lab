@@ -7,7 +7,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.provider "virtualbox" do |vm|
     vm.memory = 8192
-    config.vm.synced_folder "/Users/argon", "/home/vagrant", owner: "vagrant", group: "vagrant"
+    config.vm.synced_folder "~/", "/home/vagrant", owner: "vagrant", group: "vagrant"
   end
 
   config.vm.provision "ansible" do |ansible|

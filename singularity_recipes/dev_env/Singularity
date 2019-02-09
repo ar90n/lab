@@ -23,6 +23,7 @@ From: ubuntu:latest
 
     export XDG_CONFIG_HOME=/opt/
     export XDG_DATA_HOME=/opt/
+    export XDG_RUNTIME_DIR=$HOME/.local/share
     export PATH=/opt/bin:$PATH
 
 %labels

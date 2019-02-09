@@ -7,8 +7,6 @@ From: ../images/dev_env.simg
 
     exec /opt/cargo/bin/cargo
 
-%setup
-
 %files
 
     rust_dein.toml /opt/nvim/specs

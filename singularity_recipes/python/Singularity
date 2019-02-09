@@ -7,19 +7,16 @@ From: ../images/dev_env.simg
 
     exec /opt/miniconda3/bin/python
 
-%setup
-
 %files
    
     python_dein.toml /opt/nvim/specs
+    pipenv /opt/bin
     jupyter-server /opt/bin
 
 %environment
 
-    PATH=/opt/miniconda3/bin:$PATH
-    PYTHONPATH=/opt/miniconda3/lib/python3.7/site-packages:$PYTHONPATH
-
-    export PATH PYTHONPATH
+    PATH=/opt/bin:/opt/miniconda3/bin:$PATH
+    export PATH
 
 %labels
 
@@ -32,16 +29,18 @@ From: ../images/dev_env.simg
     bash /tmp/miniconda.sh -b -p /opt/miniconda3
     rm  /tmp/miniconda.sh
 
+    /opt/miniconda3/bin/conda install -y tensorflow
+    /opt/miniconda3/bin/conda install -y -c pytorch pytorch
+    /opt/miniconda3/bin/conda install -y -c conda-forge xgboost lightgbm
     /opt/miniconda3/bin/conda install -y jupyter
     /opt/miniconda3/bin/conda install -y -c conda-forge jupyter_contrib_nbextensions jupyter_nbextensions_configurator ipywidgets
     /opt/miniconda3/bin/conda install -y -c damianavila82 rise
     /opt/miniconda3/bin/conda install -y -c r libiconv
     /opt/miniconda3/bin/conda install -y -c conda-forge gdcm pydicom nibabel
     /opt/miniconda3/bin/conda install -y -c simpleitk simpleitk
-    /opt/miniconda3/bin/conda install -y tensorflow
-    /opt/miniconda3/bin/conda install -y -c conda-forge xgboost lightgbm
     /opt/miniconda3/bin/conda install -y -c conda-forge numpy scipy scikit-learn scikit-image matplotlib seaborn bokeh holoviews pillow networkx
     /opt/miniconda3/bin/conda install -y -c conda-forge pandas pandas-datareader
+    /opt/miniconda3/bin/conda install -y -c conda-forge coconut flexx pudb asciimatics mypy monkeytype
     /opt/miniconda3/bin/conda install -y -c conda-forge flask tinydb scrapy requests hy click
     /opt/miniconda3/bin/conda install -y -c conda-forge black jedi pytest pytest-xdist python-language-server
     /opt/miniconda3/bin/conda install -y -c conda-forge dash dash-renderer dash-html-components dash-core-components plotly
@@ -50,7 +49,6 @@ From: ../images/dev_env.simg
     /opt/miniconda3/bin/pip install pipenv
 
     mkdir -p /opt/jupyter/nbextensions
-    mkdir -p /opt/jupyter/runtime
     /opt/miniconda3/bin/jupyter notebook --generate-config
     git clone https://github.com/lambdalisue/jupyter-vim-binding.git /opt/jupyter/nbextensions/vim_binding
     /opt/miniconda3/bin/jupyter contrib nbextension install --user

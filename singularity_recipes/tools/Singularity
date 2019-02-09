@@ -3,18 +3,6 @@ Bootstrap: localimage
 From: ../images/dev_env.simg
 
 
-%runscript
-
-    exec /usr/local/bin/node
-
-%setup
-
-%files
-
-%environment
-
-%labels
-
 %post
 
     apt-get update

@@ -1,0 +1,9 @@
+export LANG=ja_JP.UTF-8
+export LC_CTYPE=ja_JP.UTF-8
+export LC_ALL=ja_JP.UTF-8
+
+test -r ~/.bashrc && . ~/.bashrc
+
+if [ -e {$HOME}/.iterm2_shell_integration.bash ]; then
+    source {$HOME}/.iterm2_shell_integration.bash
+fi

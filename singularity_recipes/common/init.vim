@@ -1,7 +1,7 @@
 "-------------------------------------------------------------------------------
 " dein
 "-------------------------------------------------------------------------------
-let g:dein_dir = expand('/opt/nvim/dein')
+let g:dein_dir = expand("$XDG_DATA_HOME/nvim/dein")
 let s:dein_repo_dir = g:dein_dir . '/repos/github.com/Shougo/dein.vim'
 let g:dein#install_process_timeout = 3600
 
@@ -20,8 +20,8 @@ let g:python3_host_prog = '/usr/bin/python3'
 call dein#begin(g:dein_dir)
 
 " プラグインリストを収めた TOML ファイル
-let s:toml      = '/opt/nvim/dein.toml'
-let s:spec_tomls = split( glob("/opt/nvim/specs/*.toml"), "\n" )
+let s:toml      = "$XDG_DATA_HOME/nvim/dein.toml"
+let s:spec_tomls = split( glob("$XDG_DATA_HOME/nvim/specs/*.toml"), "\n" )
 
 " TOML を読み込み
 call dein#load_toml(s:toml, {'lazy': 0})

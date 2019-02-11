@@ -1,25 +1,27 @@
 Bootstrap: localimage
+From: ../images/common.simg
 
-From: ../images/dev_env.simg
+%setup
+    mkdir -p ${SINGULARITY_ROOTFS}/opt/init/010_python
 
 %files
-   
-    python_dein.toml /opt/nvim/specs
-    pipenv /opt/bin
     jupyter-server /opt/bin
+    entry.sh /opt/init/010_python/entry.sh
+    python_dein.toml /opt/init/010_python/python_dein.toml
 
 %environment
-
-    export CONTAINER_NAME=python
-    PATH=/opt/bin:/opt/miniconda3/bin:$PATH
-    export PATH
+    export PATH=/opt/bin:/opt/miniconda3/bin:$PATH
 
 %labels
+    AUTHOR argon.argon.argon@gmail.com
 
 %post
-
-    export XDG_CONFIG_HOME=/opt/
-    export XDG_DATA_HOME=/opt/
+    echo "export SINGULARITY_IMAGE_NAME=python_$(date +%s)" >> $SINGULARITY_ENVIRONMENT
+    echo "export SINGULARITY_XDG_ROOT=\$HOME/.xdg/\$SINGULARITY_IMAGE_NAME" >> $SINGULARITY_ENVIRONMENT
+    echo "export XDG_CONFIG_HOME=\$SINGULARITY_XDG_ROOT" >> $SINGULARITY_ENVIRONMENT
+    echo "export XDG_DATA_HOME=\$SINGULARITY_XDG_ROOT" >> $SINGULARITY_ENVIRONMENT
+    echo "export XDG_RUNTIME_DIR=\$SINGULARITY_XDG_ROOT" >> $SINGULARITY_ENVIRONMENT
+    echo "export JUPYTER_CONFIG_DIR=\$SINGULARITY_XDG_ROOT/jupyter" >> $SINGULARITY_ENVIRONMENT
 
     curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
     bash /tmp/miniconda.sh -b -p /opt/miniconda3
@@ -43,18 +45,3 @@ From: ../images/dev_env.simg
     /opt/miniconda3/bin/conda install -y cython
     /opt/miniconda3/bin/conda clean -t
     /opt/miniconda3/bin/pip install pipenv
-
-    mkdir -p /opt/jupyter/nbextensions
-    /opt/miniconda3/bin/jupyter notebook --generate-config
-    git clone https://github.com/lambdalisue/jupyter-vim-binding.git /opt/jupyter/nbextensions/vim_binding
-    /opt/miniconda3/bin/jupyter contrib nbextension install --user
-    /opt/miniconda3/bin/jupyter nbextensions_configurator enable --user
-    /opt/miniconda3/bin/jupyter-nbextension enable vim_binding/vim_binding
-    /opt/miniconda3/bin/jupyter-nbextension enable --py widgetsnbextension --user
-    /opt/miniconda3/bin/jupyter-nbextension install rise --py --user
-    /opt/miniconda3/bin/jupyter-nbextension enable rise --py --user
-    chmod -R 777 /opt/jupyter
-
-    nvim -c 'call dein#install()' -c 'q'
-    nvim -c 'UpdateRemotePlugins' -c 'q'
-    chmod -R 777 /opt/nvim/shada

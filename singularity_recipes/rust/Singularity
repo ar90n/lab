@@ -1,36 +1,31 @@
 Bootstrap: localimage
+From: ../images/common.simg
 
-From: ../images/dev_env.simg
-
+%setup
+    mkdir -p ${SINGULARITY_ROOTFS}/opt/init/012_rust
 
 %files
-
-    rust_dein.toml /opt/nvim/specs
+    entry.sh /opt/init/012_rust/entry.sh
+    rust_dein.toml /opt/init/012_rust/rust_dein.toml
 
 %environment
-
-    export CONTAINER_NAME=rust
-    RUSTUP_HOME=/opt/rustup
-    CARGO_HOME=/opt/cargo
-    PATH=/opt/cargo/bin:$PATH
-
-    export RUSTUP_HOME CARGO_HOME PATH
+    export PATH=/opt/cargo/bin:$PATH
 
 %labels
+    AUTHOR argon.argon.argon@gmail.com
 
 %post
-
-    export XDG_CONFIG_HOME=/opt/
-    export XDG_DATA_HOME=/opt/
-    export RUSTUP_HOME=/opt/rustup
-    export CARGO_HOME=/opt/cargo
+    echo "export SINGULARITY_IMAGE_NAME=rust_$(date +%s)" >> $SINGULARITY_ENVIRONMENT
+    echo "export SINGULARITY_XDG_ROOT=\$HOME/.xdg/\$SINGULARITY_IMAGE_NAME" >> $SINGULARITY_ENVIRONMENT
+    echo "export XDG_CONFIG_HOME=\$SINGULARITY_XDG_ROOT" >> $SINGULARITY_ENVIRONMENT
+    echo "export XDG_DATA_HOME=\$SINGULARITY_XDG_ROOT" >> $SINGULARITY_ENVIRONMENT
+    echo "export XDG_RUNTIME_DIR=\$SINGULARITY_XDG_ROOT" >> $SINGULARITY_ENVIRONMENT
+    echo "export RUSTUP_HOME=/opt/rustup" >> $SINGULARITY_ENVIRONMENT
+    echo "export CARGO_HOME=/opt/cargo" >> $SINGULARITY_ENVIRONMENT
+    . $SINGULARITY_ENVIRONMENT
 
     curl -sSf https://sh.rustup.rs -o /tmp/rustup.sh
-    RUSTUP_HOME=/opt/rustup CARGO_HOME=/opt/cargo bash /tmp/rustup.sh -y --no-modify-path
+    bash /tmp/rustup.sh -y --no-modify-path
     /opt/cargo/bin/rustup install nightly
     /opt/cargo/bin/rustup default nightly
     /opt/cargo/bin/cargo +nightly install racer
-
-    nvim -c 'call dein#install()' -c 'q'
-    nvim -c 'UpdateRemotePlugins' -c 'q'
-    chmod -R 777 /opt/nvim/shada

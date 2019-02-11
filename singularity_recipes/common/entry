@@ -1,0 +1,18 @@
+#!/bin/bash
+
+if [ ! -d ${XDG_CONFIG_HOME} ]; then
+  mkdir ${XDG_CONFIG_HOME}
+
+  INIT_DIR=/opt/init
+  for ENTRY_DIR in `ls ${INIT_DIR}`;
+  do
+      ENTRY_DIR_PATH=${INIT_DIR}/${ENTRY_DIR}
+      if [ -e ${ENTRY_DIR_PATH}/entry.sh ]; then
+          pushd $ENTRY_DIR_PATH
+  	. entry.sh
+  	popd
+      fi
+  done
+fi
+
+${ENTRY_COMMAND}

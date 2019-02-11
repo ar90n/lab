@@ -1,0 +1,38 @@
+Bootstrap: library
+From: ubuntu:18.10
+
+%runscript
+    exec /opt/bin/entry
+
+%setup
+    mkdir -p ${SINGULARITY_ROOTFS}/opt/bin
+    mkdir -p ${SINGULARITY_ROOTFS}/opt/init/000_common
+    chmod -R 777 ${SINGULARITY_ROOTFS}/opt
+
+%files
+    entry /opt/bin/entry
+    entry.sh /opt/init/000_common/entry.sh
+    init.vim /opt/init/000_common/init.vim
+    dein.toml /opt/init/000_common/dein.toml
+    template /opt/init/000_common/template
+
+%environment
+    export ENTRY_COMMAND=bash
+    export PATH=/opt/bin:$PATH
+
+%labels
+   AUTHOR argon.argon.argon@gmail.com
+
+%post
+    echo "export SINGULARITY_IMAGE_NAME=common_$(date +%s)" >> $SINGULARITY_ENVIRONMENT
+    echo "export SINGULARITY_XDG_ROOT=\$HOME/.xdg/\$SINGULARITY_IMAGE_NAME" >> $SINGULARITY_ENVIRONMENT
+    echo "export XDG_CONFIG_HOME=\$SINGULARITY_XDG_ROOT" >> $SINGULARITY_ENVIRONMENT
+    echo "export XDG_DATA_HOME=\$SINGULARITY_XDG_ROOT" >> $SINGULARITY_ENVIRONMENT
+    echo "export XDG_RUNTIME_DIR=\$SINGULARITY_XDG_ROOT" >> $SINGULARITY_ENVIRONMENT
+
+    apt-get update -qq
+    apt-get install -y git curl software-properties-common language-pack-ja build-essential
+    apt-get install -y neovim python-dev python-pip python3-dev python3-pip
+
+    pip2 install --upgrade pip neovim
+    pip3 install --upgrade pip neovim

@@ -1,3 +1,0 @@
-#!/bin/sh
-
-XDG_DATA_HOME= /opt/miniconda3/bin/pipenv $@

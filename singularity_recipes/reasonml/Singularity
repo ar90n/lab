@@ -2,25 +2,25 @@ Bootstrap: localimage
 From: ../images/common.simg
 
 %setup
-    mkdir -p ${SINGULARITY_ROOTFS}/opt/init/011_node
+    mkdir -p ${SINGULARITY_ROOTFS}/opt/init/011_reasonml
 
 %files
     npmrc /usr/local/etc/npmrc
-    entry.sh /opt/init/011_node/entry.sh
-    node_dein.toml /opt/init/011_node/node_dein.toml
+    entry.sh /opt/init/011_reasonml/entry.sh
+    reasonml_dein.toml /opt/init/011_reasonml/reasonml_dein.toml
 
 %labels
     AUTHOR argon.argon.argon@gmail.com
 
 %post
-    echo "export SINGULARITY_IMAGE_NAME=node_$(date +%s)" >> $SINGULARITY_ENVIRONMENT
+    echo "export SINGULARITY_IMAGE_NAME=reasonml_$(date +%s)" >> $SINGULARITY_ENVIRONMENT
     echo "export SINGULARITY_XDG_ROOT=\$HOME/.xdg/\$SINGULARITY_IMAGE_NAME" >> $SINGULARITY_ENVIRONMENT
     echo "export XDG_CONFIG_HOME=\$SINGULARITY_XDG_ROOT" >> $SINGULARITY_ENVIRONMENT
     echo "export XDG_DATA_HOME=\$SINGULARITY_XDG_ROOT" >> $SINGULARITY_ENVIRONMENT
     echo "export XDG_RUNTIME_DIR=\$SINGULARITY_XDG_ROOT" >> $SINGULARITY_ENVIRONMENT
 
     apt-get update
-    apt-get -y install nodejs npm unzip
+    apt-get -y install nodejs npm unzip libncurses5 libncurses6
     npm cache verify
     npm install n -g
 
@@ -29,7 +29,9 @@ From: ../images/common.simg
     apt-get -y purge nodejs
     apt-get clean
 
-    npm install webpack webpack-dev-server yarn -g
-    npm install bs-platform -g
-    npm install reason-cli@latest-linux -g
-    npm install ocaml-language-server -g
+    npm install yarn -g
+    yarn global add webpack webpack-dev-server
+    yarn global add bs-platform
+    yarn global add reason-cli@latest-linux
+    yarn global add ocaml-language-server
+    yarn global add esy

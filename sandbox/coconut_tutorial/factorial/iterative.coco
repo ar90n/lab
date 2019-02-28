@@ -1,0 +1,13 @@
+def factorial(n):
+    case n:
+        match 0:
+            return 1
+        match _ is int if n > 0:
+            return range(1, n+1) |> reduce$(*)
+    else:
+        raise TypeError("the argument to factorial must be integer >+h= 0")
+
+-1 |> factorial |> print
+0.5 |> factorial |> print
+0 |> factorial |> print
+3 |> factorial |> print

@@ -43,3 +43,6 @@ hook_source = '''
 
 [[plugins]]
 repo = 'hylang/vim-hy'
+
+[[plugins]]
+repo = 'manicmaniac/coconut.vim'

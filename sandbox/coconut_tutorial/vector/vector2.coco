@@ -1,0 +1,10 @@
+data vector2(x, y):
+    def __abs__(self) =
+        (self.x ** 2 + self.y ** 2) ** 0.5
+
+# Test cases:
+vector2(1, 2) |> print  # vector2(x=1, y=2)
+vector2(3, 4) |> abs |> print  # 5
+vector2(1, 2) |> fmap$(x -> x*2) |> print  # vector2(x=2, y=4)
+v = vector2(2, 3)
+v.x = 7  # AttributeError

@@ -1,0 +1,13 @@
+def quick_sort(l):
+    match [head] :: tail in l:
+        tail = reiterable(tail)
+        yield from quick_sort(left) :: [head] :: quick_sort(right) where:
+            left = (x for x in tail if x < head)
+            right = (x for x in tail if head <= x)
+
+# Test cases:
+[] |> quick_sort |> list |> print  # []
+[3] |> quick_sort |> list |> print  # [3]
+[0,1,2,3,4] |> quick_sort |> list |> print  # [0,1,2,3,4]
+[4,3,2,1,0] |> quick_sort |> list |> print  # [0,1,2,3,4]
+[3,0,4,2,1] |> quick_sort |> list |> print  # [0,1,2,3,4]

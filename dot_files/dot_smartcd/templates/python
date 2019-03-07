@@ -1,0 +1,29 @@
+########################################################################
+# This is a smartcd template.  Edit this file to create a named
+# configuration you can copy to any number of directories.  This is
+# useful if you often use the same settings in different directories
+# but with minor differences.
+#
+# The string __PATH__ will be replaced with the directory being
+# configured when this template is installed, so you can set variables:
+#
+#    autostash PATH=__PATH__/bin:$PATH
+#
+# This template is named 'singularity'
+########################################################################
+
+# Enter any bash_enter commands below here: (leave this line!)
+local IMAGE_NAME=${SINGULARITY_IMAGE_NAME:-'python.simg'}
+local IMAGE_DIR_PATH=${SINGULARITY_IMAGE_DIR:-''}
+local IMAGE_PATH=${IMAGE_DIR_PATH}/${IMAGE_NAME}
+if [ ! -v SINGULARITY_CONTAINER ] && [ -e $IMAGE_PATH ]; then
+    local WHERETO=/tmp/whereto_$RANDOM
+    WHERETO=$WHERETO $IMAGE_PATH -B /tmp:/tmp
+    whereto=$(cat $WHERETO)
+fi
+
+# Enter any bash_leave commands below here: (leave this line!)
+if [ -v SINGULARITY_CONTAINER ] && [ ! $WHERETO = '' ]; then
+    echo $whereto > $WHERETO
+    exit
+fi

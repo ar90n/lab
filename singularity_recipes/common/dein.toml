@@ -76,7 +76,17 @@ hook_source = '''
 on_i = 1
 
 [[plugins]]
-repo = 'SirVer/ultisnips'
+repo = 'Shougo/neosnippet.vim'
 hook_source = '''
-    let g:UltiSnipsSnippetDirectories=["mysnippets","dein/repos/github.com/honza/vim-snippets/UltiSnips"]
+    imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+    smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+    xmap <C-k>     <Plug>(neosnippet_expand_target)
+    " Enable snipMate compatibility feature.
+    let g:neosnippet#enable_snipmate_compatibility = 1
+    
+    " Tell Neosnippet about the other snippets
+    let g:neosnippet#snippets_directory="mysnippets"
 '''
+
+[[plugins]]
+repo = 'Shougo/neosnippet-snippets'

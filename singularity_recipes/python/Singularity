@@ -27,6 +27,8 @@ From: ../images/common.simg
     bash /tmp/miniconda.sh -b -p /opt/miniconda3
     rm  /tmp/miniconda.sh
 
+    /opt/miniconda3/bin/pip install sagemaker
+
     /opt/miniconda3/bin/conda install -y tensorflow
     /opt/miniconda3/bin/conda install -y -c pytorch pytorch
     /opt/miniconda3/bin/conda install -y -c conda-forge xgboost lightgbm
@@ -42,6 +44,9 @@ From: ../images/common.simg
     /opt/miniconda3/bin/conda install -y -c conda-forge flask tinydb scrapy requests hy click
     /opt/miniconda3/bin/conda install -y -c conda-forge black jedi pytest pytest-xdist python-language-server
     /opt/miniconda3/bin/conda install -y -c conda-forge dash dash-renderer dash-html-components dash-core-components plotly
-    /opt/miniconda3/bin/conda install -y cython
+    /opt/miniconda3/bin/conda install -y -c conda-forge cython numba
     /opt/miniconda3/bin/conda clean -t
-    /opt/miniconda3/bin/pip install pipenv
+    /opt/miniconda3/bin/pip install pipenv pyls-black pyls-isort
+
+    curl -L -o /opt/bin/vast https://raw.githubusercontent.com/vast-ai/vast-python/master/vast.py
+    chmod +x /opt/bin/vast

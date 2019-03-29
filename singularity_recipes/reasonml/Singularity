@@ -31,7 +31,8 @@ From: ../images/common.simg
 
     npm install yarn -g
     yarn global add webpack webpack-dev-server
+    yarn global add serverless serverless-offline
     yarn global add bs-platform
     yarn global add reason-cli@latest-linux
     yarn global add ocaml-language-server
-    yarn global add esy
+    yarn global add esy npx

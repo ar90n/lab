@@ -347,3 +347,5 @@ set splitright
 " ;でコマンド入力( ;と:を入れ替)
 noremap ; :
 "noremap : ;
+
+runtime! specs/*.vim

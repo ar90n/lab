@@ -15,6 +15,7 @@ From: ubuntu:18.10
     init.vim /opt/init/000_common/init.vim
     dein.toml /opt/init/000_common/dein.toml
     template /opt/init/000_common/template
+    snippets /opt/init/000_common/snippets
 
 %environment
     export ENTRY_COMMAND=bash

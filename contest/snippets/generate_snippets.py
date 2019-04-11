@@ -16,19 +16,21 @@ neosnippets_template = """snippet %s%s
 suffix_map = {
     "haskell" : ".hs",
     "cpp" : ".cpp",
-    "fsharp" : ".fsx"
+    "fsharp" : ".fsx",
+    "python" : ".py"
 }
 
 comment_prefix_map = {
     "haskell" : "//",
     "cpp" : "//",
-    "fsharp" : "//"
+    "fsharp" : "//",
+    "python" : "#"
 }
 
 def render_snippet( prefix, name, option, content):
-    return ultsnippet_template % ( prefix, name, "", content )
-#    content = '    ' + content.replace('\n', '\n    ')
-#    return neosnippets_template % ( prefix, name, content )
+#    return ultsnippet_template % ( prefix, name, "", content )
+    content = '    ' + content.replace('\n', '\n    ')
+    return neosnippets_template % ( prefix, name, content )
 
 def remove_comment( str_array, lang ):
     return filter( lambda l: not l.startswith(comment_prefix_map[lang]), str_array)

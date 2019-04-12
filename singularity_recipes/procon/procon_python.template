@@ -1,0 +1,4 @@
+import sys
+
+reatInt = [int(v) for v in sys.stdin.readline()]
+reatIntN = [int(v) for v in sys.stdin.readline().split(' ')]

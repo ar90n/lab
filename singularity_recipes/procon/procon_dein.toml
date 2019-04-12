@@ -1,0 +1,42 @@
+[[plugins]]
+repo = 'autozimu/LanguageClient-neovim'
+rev = 'next'
+build = 'bash install.sh'
+hook_source = '''
+  :set signcolumn=yes
+  let g:LanguageClient_serverCommands = {
+      \ 'python': ['/opt/miniconda3/bin/pyls'],
+      \ }
+
+  let g:LanguageClient_diagnosticsDisplay = {
+  \     1: {
+  \         "name": "Error",
+  \         "texthl": "ALEError",
+  \         "signText": "e",
+  \         "signTexthl": "ALEErrorSign",
+  \     },
+  \     2: {
+  \         "name": "Warning",
+  \         "texthl": "ALEWarning",
+  \         "signText": "w",
+  \         "signTexthl": "ALEWarningSign",
+  \     },
+  \     3: {
+  \         "name": "Information",
+  \         "texthl": "ALEInfo",
+  \         "signText": "i",
+  \         "signTexthl": "ALEInfoSign",
+  \     },
+  \     4: {
+  \         "name": "Hint",
+  \         "texthl": "ALEInfo",
+  \         "signText": "H",
+  \         "signTexthl": "ALEInfoSign",
+  \     },
+  \ }
+
+  nnoremap <silent> t<space> :call LanguageClient_contextMenu()<CR>
+  nnoremap <silent> ti :call LanguageClient#textDocument_hover()<CR>
+  nnoremap <silent> tt :call LanguageClient#textDocument_definition()<CR>
+  nnoremap <silent> tf :call LanguageClient#textDocument_formatting()<CR>
+'''

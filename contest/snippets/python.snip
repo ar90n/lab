@@ -1,0 +1,252 @@
+snippet ____powmod
+    def powmod(a, k, m):
+		if k == 0:
+			return 1
+	
+		t = powmod(a, k // 2, m)
+		res = (t * t) % m
+		if k % 2 == 1:
+			res = (res * a) % m
+	
+		return res
+
+snippet ____prime_table
+    def prime_table(n):
+		t = [True] * (n + 1)
+		t[0] = False
+		t[1] = False
+	
+		i = 2
+		while i * i <= n:
+			for ii in range(2 * i, n + 1, i):
+				t[ii] = False
+			i += 1
+		return [x for x, i in enumerate(t) if i == True]
+
+snippet ____binary_search
+    def binary_search(search_range, f, n=100, eps=1e-12):
+		l, r = search_range
+		c = (l + r) / 2.0
+		for i in range(n):
+			v = f(c)
+			if abs(v) < eps:
+				return c
+	
+			if v > 0:
+				r = c
+			else:
+				l = c
+			c = (l + r) / 2.0
+	
+		return c
+
+snippet ____ternary_search
+    def ternary_search( search_range, f, n = 100, eps = 1e-24 ):
+		l, r = search_range
+		for i in range( n ):
+			ll = ( l + l + r ) / 3.0
+			rr = ( l + r + r ) / 3.0
+	
+			vl = f( ll )
+			vr = f( rr )
+			if abs( vl - vr ) < eps:
+				break
+	
+			if vl > vr :
+				r =rr 
+			else:
+				l =ll 
+	
+		return ( l + r ) / 2.0
+
+snippet ____prim
+    def find_prim(g, src):
+		import heapq
+	
+		min_spaning_tree = {}
+	
+		edge_heap = []
+		heapq.heapify(edge_heap)
+		heapq.heappush(edge_heap, (0, (src, src)))
+		while edge_heap:
+			cost, edge = heapq.heappop(edge_heap)
+			if edge[1] in min_spaning_tree:
+				continue
+			min_spaning_tree.setdefault(edge[0], {})[edge[1]] = cost
+			min_spaning_tree.setdefault(edge[1], {})[edge[0]] = cost
+	
+			for neighbor, w in zip(g[edge[1]].keys(), g[edge[1]].values()):
+				heapq.heappush(edge_heap, (w, (edge[1], neighbor)))
+	
+		min_spaning_tree[src].pop(src)
+		return min_spaning_tree
+
+snippet ____maxflow_ek
+    def find_maxflow_ek(rg, source, sink):
+		def find_source_to_sink_path(rg, source, sink):
+			from collections import deque
+			import sys
+	
+			bfs_queue = deque([source])
+			bfs_visited = set([])
+			parents_map = {source: -1}
+			source_to_sink_path = []
+	
+			flow = sys.float_info.max
+			while bfs_queue:
+				current_node = bfs_queue.popleft()
+				bfs_visited.add(current_node)
+	
+				if current_node == sink:
+					r_current_node = current_node
+					r_parent_node = parents_map[r_current_node]
+					while r_parent_node != -1:
+						capacity = rg[r_parent_node][r_current_node]
+						flow = min(flow, capacity)
+						source_to_sink_path.append(r_current_node)
+						r_current_node = r_parent_node
+						r_parent_node = parents_map[r_parent_node]
+					source_to_sink_path.append(source)
+					source_to_sink_path.reverse()
+					return source_to_sink_path, flow, set([])
+	
+				for next_node in rg[current_node].keys():
+					if 0 < rg[current_node][next_node] and next_node not in bfs_visited:
+						parents_map[next_node] = current_node
+						bfs_queue.append(next_node)
+	
+			return [], 0.0, set(bfs_visited)
+	
+		maxflow = 0.0
+		while True:
+			source_to_sink_path, current_flow, source_nodes = find_source_to_sink_path(
+				rg, source, sink
+			)
+			print(source_to_sink_path, source_nodes)
+			if current_flow == 0.0:
+				break
+	
+			maxflow += current_flow
+			for from_node, to_node in zip(
+				source_to_sink_path[0:-1], source_to_sink_path[1:]
+			):
+				rg[from_node][to_node] -= current_flow
+				rg[to_node][from_node] += current_flow
+	
+		all_nodes = set()
+		for k, v in rg.items():
+			all_nodes.add(k)
+			for kk in v.keys():
+				all_nodes.add(kk)
+		sink_nodes = all_nodes - source_nodes
+		return source_nodes, sink_nodes, maxflow
+
+snippet ____dijkstra
+    def find_dijkstra(g, src):
+		import heapq
+	
+		min_cost = {}
+	
+		node_heap = []
+		heapq.heapify(node_heap)
+		heapq.heappush(node_heap, (0, src))
+		while node_heap:
+			cost, node = heapq.heappop(node_heap)
+			if node in min_cost:
+				continue
+			min_cost[node] = cost
+	
+			n = g.setdefault(node, {})
+			for neighbor, w in zip(n.keys(), n.values()):
+				neighbor_cost = min_cost[node] + w
+				heapq.heappush(node_heap, (neighbor_cost, neighbor))
+		return min_cost
+
+snippet ____bellman_ford
+    def find_bellman_ford(g, src):
+		from functools import reduce
+		import sys
+	
+		all_nodes = reduce(
+			lambda x, y: x.union(y), [set(g.keys())] + [set(g[x].keys()) for x in g]
+		)
+		node_num = len(all_nodes)
+		min_cost = dict(zip(all_nodes, [sys.maxsize] * node_num))
+	
+		min_cost[src] = 0
+		for i in range(node_num):
+			is_changed = False
+			for node, neighbors in zip(g.keys(), g.values()):
+				for neighbor, w in zip(neighbors.keys(), neighbors.values()):
+					new_cost = min_cost[node] + w
+					current_cost = min_cost[neighbor]
+					if new_cost < current_cost:
+						min_cost[neighbor] = new_cost
+						is_changed = True
+			if not is_changed:
+				break
+		return min_cost
+
+snippet ____bfs
+    def bfs(g, src, dst):
+		from collections import deque
+	
+		visited = set([])
+		vertex_queue = deque([src])
+		while vertex_queue:
+			current_vertex = vertex_queue.popleft()
+			if current_vertex == dst:
+				return True
+	
+			if current_vertex in visited:
+				continue
+			visited.add(current_vertex)
+	
+			for next_vertex in g.setdefault(current_vertex, {}).keys():
+				vertex_queue.append(next_vertex)
+		return False
+
+snippet ____warshall_floyd
+    def find_warshall_floyd(g):
+		from functools import reduce
+		import sys
+	
+		all_nodes = list(
+			reduce(
+				lambda x, y: x.union(y),
+				[set(g.keys())] + [set(x.keys()) for x in g.values()],
+			)
+		)
+		node_num = len(all_nodes)
+	
+		dist = [[sys.maxsize for i in range(node_num)] for j in range(node_num)]
+		for node in all_nodes:
+			dist[node][node] = 0
+		for node, neighbors in zip(g.keys(), g.values()):
+			for neighbor, w in zip(neighbors.keys(), neighbors.values()):
+				dist[node][neighbor] = w
+	
+		for k in all_nodes:
+			for i in all_nodes:
+				for j in all_nodes:
+					dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
+	
+		return dist
+
+snippet ____dfs
+    def dfs(g, src, dst):
+		visited = set([])
+		vertex_stack = [src]
+		while vertex_stack:
+			current_vertex = vertex_stack.pop()
+			if current_vertex == dst:
+				return True
+	
+			if current_vertex in visited:
+				continue
+			visited.add(current_vertex)
+	
+			for next_vertex in g.setdefault(current_vertex, {}).keys():
+				vertex_stack.append(next_vertex)
+	
+		return False

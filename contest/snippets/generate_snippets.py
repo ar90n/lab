@@ -29,7 +29,7 @@ comment_prefix_map = {
 
 def render_snippet( prefix, name, option, content):
 #    return ultsnippet_template % ( prefix, name, "", content )
-    content = '    ' + content.replace('\n', '\n    ')
+    content = '    ' + content.replace('\n', '\n    ').replace('    ', '\t')
     return neosnippets_template % ( prefix, name, content )
 
 def remove_comment( str_array, lang ):
@@ -99,7 +99,7 @@ def main():
 
         os.chdir( root_dir )
         if 0 < len( snippets_str ):
-            output_file_name = lang + ".snippets"
+            output_file_name = lang + ".snip"
             with open( output_file_name, 'w' ) as f:
                 f.write(snippets_str)
     pass

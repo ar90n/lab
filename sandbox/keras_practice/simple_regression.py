@@ -36,7 +36,7 @@ import numpy as np
 k = 4
 num_val_samples = len(train_data) // k
 num_epochs = 100
-all_ mae_histories= []
+all_mae_histories= []
 for i in range(k):
     print('processing fold#', i)
 
@@ -60,16 +60,25 @@ for i in range(k):
                         validation_data=(val_data, val_targets),
                         epochs=num_epochs, batch_size=1, verbose=0)
     mae_history = history.history['val_mean_absolute_error']
-    all_mae_histories.append(mae_historiy)
-
-average_mae_history = [
-    np.mean([x[1] for x in all_mae_histories]) for i in range(num_epochs)
-]
+    all_mae_histories.append(mae_history)
 
 #%%
 import matplotlib.pyplot as plt
 
+average_mae_history = [
+    np.mean([x[i] for x in all_mae_histories]) for i in range(num_epochs)
+]
 plt.plot(range(1, len(average_mae_history) + 1), average_mae_history)
 plt.xlabel('Epochs')
 plt.ylabel('Validation MAE')
-ptl.show()
+plt.show()
+
+#%%
+model = build_model()
+model.fit(train_data, train_targets, epochs=80, batch_size=16, verbose=8)
+
+test_mse_score, test_mae_score = model.evaluate(test_data, test_targets)
+
+#%%
+print(test_mse_score, test_mae_score)
+

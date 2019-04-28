@@ -1,0 +1,37 @@
+#!/usr/bin/env python3
+import sys
+try:
+    from math import gcd
+except Exception:
+    from fractions import gcd
+
+
+def solve(N: int, M: int, A: "List[int]", B: "List[int]"):
+    rem = M
+    ret = 0
+    for a, b in sorted(zip(A, B)):
+        ret += a * min(b, rem)
+        rem -= min(b, rem)
+        if rem == 0:
+            break
+    return ret
+
+
+def main():
+    def iterate_tokens():
+        for line in sys.stdin:
+            for word in line.split():
+                yield word
+    tokens = iterate_tokens()
+    N = int(next(tokens))  # type: int
+    M = int(next(tokens))  # type: int
+    A = [int()] * (N)  # type: "List[int]" 
+    B = [int()] * (N)  # type: "List[int]" 
+    for i in range(N):
+        A[i] = int(next(tokens))
+        B[i] = int(next(tokens))
+    result = solve(N, M, A, B)
+    print(result)
+
+if __name__ == '__main__':
+    main()

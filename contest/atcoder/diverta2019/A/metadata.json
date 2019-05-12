@@ -1,0 +1,13 @@
+{
+ "code_filename": "main.py",
+ "lang": "python",
+ "problem": {
+  "alphabet": "A",
+  "contest": {
+   "contest_id": "diverta2019"
+  },
+  "problem_id": "diverta2019_a"
+ },
+ "sample_in_pattern": "in_*.txt",
+ "sample_out_pattern": "out_*.txt"
+}

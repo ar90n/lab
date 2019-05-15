@@ -1,3 +1,16 @@
+snippet ____gcd
+    template<typename T>
+	auto gcd(T a, T b) {
+		T minv = min(a, b);
+		T maxv = max(a, b);
+		return (minv == 0) ? maxv : gcd(b, (a % b));
+	}
+	
+	template<typename T>
+	auto lcm(T a, T b) {
+		return a * (b / gcd(a, b));
+	}
+
 snippet ____bfs
     std::vector< vertex > bfs( graph const& _graph, vertex const _origin )
 	{

@@ -59,27 +59,89 @@ snippet ____ternary_search
 	
 		return ( l + r ) / 2.0
 
+snippet ____UnionFind
+    class UnionFind:
+		def __init__(self, n):
+			self._parents = list(range(n))
+			self._ranks = [0] * n
+			self._size = [1] * n
+	
+		def root(self, x):
+			if self._parents[x] == x:
+				return x
+			self._parents[x] = self.root(self._parents[x])
+			return self._parents[x]
+	
+		def size(self, x):
+			return self._size[self.root(x)]
+	
+		def unite(self, x, y):
+			rx = self.root(x)
+			ry = self.root(y)
+			if rx == ry:
+				return
+	
+			if self._ranks[rx] < self._ranks[ry]:
+				self._parents[rx] = ry
+				self._size[ry] += self._size[rx]
+			else:
+				self._parents[ry] = rx
+				self._size[rx] += self._size[ry]
+				if self._ranks[rx] == self._ranks[ry]:
+					self._ranks[rx] += 1
+	
+		def same(self, x, y):
+			return self.root(x) == self.root(y)
+
+snippet ____graph
+    class DGraph:
+		def __init__(self, n, edges):
+			self._vertice = [{} for _ in range(n)]
+			for e in edges:
+				self._vertice[e[0]][e[1]] = e[2] if len(e) == 3 else 1
+	
+		def __len__(self):
+			return len(self._vertice)
+	
+		def edges(self, n=None):
+			srcs = range(len(self)) if n is None else [n]
+			return sum([[(s, d, c) for d, c in self._vertice[s].items()] for s in srcs], [])
+	
+		def transpose(self):
+			tedges = [(t, f, c) for f, t, c in self.edges()]
+			return DGraph(len(self), tedges)
+	
+		def cost(self, src, dst):
+			return self._vertice[src].get(dst, float('inf'))
+	
+	class Graph(DGraph):
+		def __init__(self, n, edges):
+			nd_edges = edges + [(d, s, c) for s, d, c in edges]
+			super().__init__(n, nd_edges)
+	
+		def transpose(self):
+			return self
+
 snippet ____prim
-    def find_prim(g, src):
+    def prim(g, src):
 		import heapq
 	
-		min_spaning_tree = {}
-	
+		visited = [False] * len(g)
+		spanning_tree_edges = []
 		edge_heap = []
-		heapq.heapify(edge_heap)
 		heapq.heappush(edge_heap, (0, (src, src)))
 		while edge_heap:
-			cost, edge = heapq.heappop(edge_heap)
-			if edge[1] in min_spaning_tree:
+			c, (s, d) = heapq.heappop(edge_heap)
+			if visited[d]:
 				continue
-			min_spaning_tree.setdefault(edge[0], {})[edge[1]] = cost
-			min_spaning_tree.setdefault(edge[1], {})[edge[0]] = cost
+			visited[d] = True
+			spanning_tree_edges.append((s, d, c))
 	
-			for neighbor, w in zip(g[edge[1]].keys(), g[edge[1]].values()):
-				heapq.heappush(edge_heap, (w, (edge[1], neighbor)))
+			for _, nd, ndc in g.edges(d):
+				heapq.heappush(edge_heap, (ndc, (d, nd)))
 	
-		min_spaning_tree[src].pop(src)
-		return min_spaning_tree
+		spanning_tree_edges = spanning_tree_edges[1:]
+		return Graph(len(g), spanning_tree_edges)
 
 snippet ____maxflow_ek
     def find_maxflow_ek(rg, source, sink):
@@ -142,111 +204,81 @@ snippet ____maxflow_ek
 		return source_nodes, sink_nodes, maxflow
 
 snippet ____dijkstra
-    def find_dijkstra(g, src):
+    def dijkstra(g, src):
 		import heapq
 	
-		min_cost = {}
+		min_cost = [float('inf')] * len(g)
 	
 		node_heap = []
-		heapq.heapify(node_heap)
 		heapq.heappush(node_heap, (0, src))
 		while node_heap:
 			cost, node = heapq.heappop(node_heap)
-			if node in min_cost:
+			if min_cost[node] <= cost:
 				continue
 			min_cost[node] = cost
 	
-			n = g.setdefault(node, {})
-			for neighbor, w in zip(n.keys(), n.values()):
-				neighbor_cost = min_cost[node] + w
-				heapq.heappush(node_heap, (neighbor_cost, neighbor))
+			for _, d, c in g.edges(node):
+				dc = min_cost[node] + c
+				heapq.heappush(node_heap, (dc, d))
 		return min_cost
 
 snippet ____bellman_ford
-    def find_bellman_ford(g, src):
-		from functools import reduce
-		import sys
-	
-		all_nodes = reduce(
-			lambda x, y: x.union(y), [set(g.keys())] + [set(g[x].keys()) for x in g]
-		)
-		node_num = len(all_nodes)
-		min_cost = dict(zip(all_nodes, [sys.maxsize] * node_num))
-	
+    def bellman_ford(g, src):
+		min_cost = [float('inf')] * len(g)
 		min_cost[src] = 0
-		for i in range(node_num):
+	
+		for _ in range(len(min_cost)):
 			is_changed = False
-			for node, neighbors in zip(g.keys(), g.values()):
-				for neighbor, w in zip(neighbors.keys(), neighbors.values()):
-					new_cost = min_cost[node] + w
-					current_cost = min_cost[neighbor]
-					if new_cost < current_cost:
-						min_cost[neighbor] = new_cost
-						is_changed = True
+			for s, d, c in g.edges():
+				if min_cost[s] + c < min_cost[d]:
+					is_changed = True
+					min_cost[d] = min_cost[s] + c
 			if not is_changed:
 				break
 		return min_cost
 
 snippet ____bfs
-    def bfs(g, src, dst):
+    def bfs(g, src):
 		from collections import deque
 	
-		visited = set([])
-		vertex_queue = deque([src])
-		while vertex_queue:
-			current_vertex = vertex_queue.popleft()
-			if current_vertex == dst:
-				return True
-	
-			if current_vertex in visited:
+		visited = [False] * len(g)
+		queue = deque([src])
+		while queue:
+			n = queue.popleft()
+			if visited[n]:
 				continue
-			visited.add(current_vertex)
+			visited[n] = True
 	
-			for next_vertex in g.setdefault(current_vertex, {}).keys():
-				vertex_queue.append(next_vertex)
-		return False
+			for _, d, _ in g.edges(n):
+				queue.append(d)
+			yield n
 
 snippet ____warshall_floyd
-    def find_warshall_floyd(g):
-		from functools import reduce
-		import sys
+    def warshall_floyd(g):
+		n = len(g)
+		costs = [[float('inf') for i in range(n)] for j in range(n)]
+		for i in range(n):
+			costs[i][i] = 0
+		for s, d, c in g.edges():
+			costs[s][d] = c
 	
-		all_nodes = list(
-			reduce(
-				lambda x, y: x.union(y),
-				[set(g.keys())] + [set(x.keys()) for x in g.values()],
-			)
-		)
-		node_num = len(all_nodes)
-	
-		dist = [[sys.maxsize for i in range(node_num)] for j in range(node_num)]
-		for node in all_nodes:
-			dist[node][node] = 0
-		for node, neighbors in zip(g.keys(), g.values()):
-			for neighbor, w in zip(neighbors.keys(), neighbors.values()):
-				dist[node][neighbor] = w
-	
-		for k in all_nodes:
-			for i in all_nodes:
-				for j in all_nodes:
-					dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
-	
-		return dist
+		for k in range(n):
+			for i in range(n):
+				for j in range(n):
+					costs[i][j] = min(costs[i][j], costs[i][k] + costs[k][j])
+		return costs
 
 snippet ____dfs
-    def dfs(g, src, dst):
-		visited = set([])
-		vertex_stack = [src]
-		while vertex_stack:
-			current_vertex = vertex_stack.pop()
-			if current_vertex == dst:
-				return True
-	
-			if current_vertex in visited:
+    def dfs(g, src):
+		visited = [False] * len(g)
+		stack = [src]
+		while stack:
+			n = stack.pop()
+			if visited[n]:
 				continue
-			visited.add(current_vertex)
+			visited[n] = True
 	
-			for next_vertex in g.setdefault(current_vertex, {}).keys():
-				vertex_stack.append(next_vertex)
-	
-		return False
+			for _, d, _ in g.edges(n):
+				#yield d
+				stack.append(d)
+			yield n

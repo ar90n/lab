@@ -1,16 +1,13 @@
-def dfs(g, src, dst):
-    visited = set([])
-    vertex_stack = [src]
-    while vertex_stack:
-        current_vertex = vertex_stack.pop()
-        if current_vertex == dst:
-            return True
-
-        if current_vertex in visited:
+def dfs(g, src):
+    visited = [False] * len(g)
+    stack = [src]
+    while stack:
+        n = stack.pop()
+        if visited[n]:
             continue
-        visited.add(current_vertex)
+        visited[n] = True
 
-        for next_vertex in g.setdefault(current_vertex, {}).keys():
-            vertex_stack.append(next_vertex)
-
-    return False
+        for _, d, _ in g.edges(n):
+            #yield d
+            stack.append(d)
+        yield n

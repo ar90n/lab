@@ -1,17 +1,14 @@
-def bfs(g, src, dst):
+def bfs(g, src):
     from collections import deque
 
-    visited = set([])
-    vertex_queue = deque([src])
-    while vertex_queue:
-        current_vertex = vertex_queue.popleft()
-        if current_vertex == dst:
-            return True
-
-        if current_vertex in visited:
+    visited = [False] * len(g)
+    queue = deque([src])
+    while queue:
+        n = queue.popleft()
+        if visited[n]:
             continue
-        visited.add(current_vertex)
+        visited[n] = True
 
-        for next_vertex in g.setdefault(current_vertex, {}).keys():
-            vertex_queue.append(next_vertex)
-    return False
+        for _, d, _ in g.edges(n):
+            queue.append(d)
+        yield n

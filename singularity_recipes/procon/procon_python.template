@@ -1,4 +1,6 @@
 import sys
+import numpy as np
 
-reatInt = [int(v) for v in sys.stdin.readline()]
-reatIntN = [int(v) for v in sys.stdin.readline().split(' ')]
+readInt = lambda: int(sys.stdin.readline())
+readIntN = lambda: [int(v) for v in sys.stdin.readline().split(' ')]
+

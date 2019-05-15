@@ -31,21 +31,11 @@ From: ../images/common.simg
     bash /tmp/miniconda.sh -b -p /opt/miniconda3
     rm  /tmp/miniconda.sh
 
+    /opt/miniconda3/bin/conda install -y -c conda-forge pypy3.5
     /opt/miniconda3/bin/conda install -y -c conda-forge numpy scipy scikit-learn networkx
     /opt/miniconda3/bin/conda install -y -c conda-forge pandas pandas-datareader
     /opt/miniconda3/bin/conda install -y -c conda-forge black jedi python-language-server
     /opt/miniconda3/bin/conda clean -t
-    /opt/miniconda3/bin/pip install pipenv pyls-black pyls-isort
+    /opt/miniconda3/bin/pip install pipenv pyls-black pyls-isort atcoder-tools
 
-    apt-get update
-    apt-get -y install nodejs npm unzip libncurses5 libncurses6
-    npm cache verify
-    npm install n -g
-
-    n latest
-    ln -sf /usr/local/bin/node /usr/bin/node
-    apt-get -y purge nodejs
-    apt-get clean
-
-    npm install yarn -g
-    yarn global add webpack npx
+    apt-get install -y make cmake clang-tools clang-format clang

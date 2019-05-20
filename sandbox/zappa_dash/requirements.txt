@@ -1,7 +1,7 @@
-dash==0.29.0  # The core dash backend
-dash-renderer==0.14.3  # The dash front-end
-dash-html-components==0.13.2  # HTML components
-dash-core-components==0.36.0  # Supercharged components
-dash-table==3.1.3
+dash
+dash-renderer
+dash-html-components
+dash-core-components
+dash-table
 pandas
 zappa

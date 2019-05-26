@@ -10,21 +10,27 @@ except Exception:
     from fractions import gcd
 
 
+def bs(a, lo, hi, f):
+    olo = lo
+    ohi = hi
+    while (lo + 1) < hi:
+        mid = (lo + hi) // 2
+        v = f(ohi, mid, olo)
+        if 0 < v:
+            lo = mid
+        elif v < 0:
+            hi = mid
+        else:
+            return mid
+    if abs(f(ohi, lo, olo)) < abs(f(ohi, hi, olo)):
+        return lo
+    else:
+        return hi
+
 def solve(N: int, A: "List[int]"):
-    acc = list(accumulate(A))
-    li = 1
-    rdiff = float('inf')
-    ri = 0
-    for i in range(3, len(acc)):
-        d = acc[-1] - acc[i-1]
-        c = acc[i-1] - acc[1]
-        if abs(d - c) < rdiff:
-            rdiff = abs(d -c)
-            ri = i
-    ci = 2
 
     def _g(li, ci, ri):
-        a = acc[li - 1]
+        a = acc[li - 1] - acc[0]
         b = acc[ci - 1] - acc[li-1]
         c = acc[ri - 1] - acc[ci - 1]
         d = acc[-1] - acc[ri - 1]
@@ -32,19 +38,17 @@ def solve(N: int, A: "List[int]"):
         return cr
 
     def _f(h, m, l):
-        bbb = acc[l-1] if 0 < l else 0
-        return abs((acc[h - 1] - acc[m-1]) - (acc[m - 1] - bbb))
-  
-    r = _g(li, ci, ri)
+        return ((acc[h - 1] - acc[m-1]) - (acc[m - 1] - acc[l - 1]))
+
+    acc = [0] + list(accumulate(A))
+
+    ret = float('inf')
     for i in range(3, len(acc) - 1):
-        while _f(i, (li+1), 0) <  _f(i, li, 0):
-            li += 1
-        while _f(len(acc), (ri+1), i) <  _f(len(acc), ri, i):
-            ri += 1
-        cr = _g(li, i, ri)
-        if cr < r:
-            r = cr
-    return r
+        li = bs(acc, 1, i, _f)
+        ri = bs(acc, i, len(acc), _f)
+        cv = _g(li, i, ri)
+        ret = min(ret, cv)
+    return ret
 
 
 def main():

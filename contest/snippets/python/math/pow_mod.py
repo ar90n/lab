@@ -1,10 +1,10 @@
-def powmod(a, k, m):
+def pow_mod(a, k, M):
     if k == 0:
         return 1
 
-    t = powmod(a, k // 2, m)
-    res = (t * t) % m
+    t = pow_mod(a, k // 2, M)
+    res = (t * t) % M
     if k % 2 == 1:
-        res = (res * a) % m
+        res = (res * a) % M
 
     return res

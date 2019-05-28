@@ -3,9 +3,10 @@ def prime_table(n):
     t[0] = False
     t[1] = False
 
-    i = 2
-    while i * i <= n:
-        for ii in range(2 * i, n + 1, i):
-            t[ii] = False
-        i += 1
-    return [x for x, i in enumerate(t) if i == True]
+    for p in range(2, n + 1, 2):
+        if n < p ** 2:
+            break
+        if t[p]:
+            for i in range(p * p, n + 1, 2 * p):
+                t[i] = False
+    return [2] + [p for p in range(3, n + 1, 2) if t[p]]

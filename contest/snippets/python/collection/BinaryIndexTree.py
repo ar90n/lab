@@ -14,7 +14,6 @@ class BinaryIndexTree:
 
     def _sum(self, i):
         s = 0
-        i += 1
         while 0 < i:
             s += self._tree[i - 1]
             i -= i & -i

@@ -41,7 +41,7 @@ def main():
     tokens = iterate_tokens()
     {{ input_part }}
     result = solve({{ actual_arguments }})
-    if isinstance(result, Iterable):
+    if isinstance(result, Iterable) and not isinstance(result, str):
         result = '\n'.join([str(v) for v in result])
     {% else %}
     # Failed to predict input format

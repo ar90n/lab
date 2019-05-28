@@ -14,25 +14,54 @@ MOD = 1000000007  # type: int
 
 
 def prime_table(n):
-    rn = int(ceil(sqrt(n)))
-    t = [True] * (rn + 1)
+    t = [True] * (n + 1)
     t[0] = False
     t[1] = False
 
-    i = 2
-    while i * i <= n:
-        for ii in range(2 * i, rn + 1, i):
-            t[ii] = False
-        i += 1
-    return [x for x, i in enumerate(t) if i == True]
+    for p in range(2, n + 1, 2):
+        if n < p ** 2:
+            break
+        if t[p]:
+            for i in range(p * p, n + 1, 2 * p):
+                t[i] = False
+    return [2] + [p for p in range(3, n + 1, 2) if t[p]]
 
 
-def combination(n, m):
-    return reduce(mul, range(n, n - m, -1), 1) // factorial(m)
+def pow_mod(a, k, M):
+    if k == 0:
+        return 1
+    t = pow_mod(a, k // 2, M)
+    res = (t * t) % M
+    if k % 2 == 1:
+        res = (res * a) % M
+
+    return res
+
+
+def inv_mod(a, M):
+    return pow_mod(a, M - 2, M)
+
+
+def fact_mod(a, M):
+    ret = 1
+    for i in range(2, a + 1):
+        ret = (ret * i) % M
+    return ret
+
+def perm_mod(n, m, M):
+    ret = 1
+    for i in range(n, n - m, -1):
+        ret = (ret * i) % M
+    return ret
+
+
+def comb_mod(n, m, M):
+    return (perm_mod(n, m, M) * inv_mod(fact_mod(m, M), M)) % M
+
 
 def solve(N: int, M: int):
     fs = defaultdict(int)
-    for p in prime_table(M):
+    for p in prime_table(int(M ** 0.5) + 1):
         while (M % p) == 0:
             fs[p] += 1
             M //= p
@@ -41,9 +70,9 @@ def solve(N: int, M: int):
 
     ret = 1
     for c in fs.values():
-        ret *= combination(c + N - 1, c)
+        ret = (ret * comb_mod(c + N - 1, c, MOD)) % MOD
 
-    return ret % MOD
+    return ret
 
 
 def main():

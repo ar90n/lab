@@ -27,6 +27,7 @@ From: ../images/common.simg
     curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
     bash /tmp/miniconda.sh -b -p /opt/miniconda3
     rm  /tmp/miniconda.sh
+    /opt/miniconda3/bin/conda install python=3.6
 
     /opt/miniconda3/bin/pip install sagemaker kaggle
 
@@ -47,7 +48,7 @@ From: ../images/common.simg
     /opt/miniconda3/bin/conda install -y -c conda-forge dash dash-renderer dash-html-components dash-core-components plotly
     /opt/miniconda3/bin/conda install -y -c conda-forge cython numba
     /opt/miniconda3/bin/conda clean -t
-    /opt/miniconda3/bin/pip install pipenv pyls-black pyls-isort twine
+    /opt/miniconda3/bin/pip install pipenv pyls-black pyls-isort twine poetry 
 
     curl -L -o /opt/bin/vast https://raw.githubusercontent.com/vast-ai/vast-python/master/vast.py
     chmod +x /opt/bin/vast

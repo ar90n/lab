@@ -18,7 +18,7 @@ From: ubuntu:18.10
     snippets /opt/init/000_common/snippets
 
 %environment
-    export ENTRY_COMMAND=bash
+    export ENTRY_COMMAND=xonsh
     export PATH=/opt/bin:$PATH
 
 %labels
@@ -44,6 +44,8 @@ From: ubuntu:18.10
 
     pip2 install --upgrade pip neovim
     pip3 install --upgrade pip neovim
+
+    pip3 install xonsh pyt prompt_toolkit pygments
 
     EXERCISM_CLI_PKG_URL=https://github.com/exercism/cli/releases/download/v3.0.11/exercism-linux-64bit.tgz
     curl -L $EXERCISM_CLI_PKG_URL | tar xz -C /tmp

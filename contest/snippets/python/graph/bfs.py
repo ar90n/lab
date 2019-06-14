@@ -4,11 +4,11 @@ def bfs(g, src):
     visited = [False] * len(g)
     queue = deque([src])
     while queue:
-        n = queue.popleft()
+        n, c = queue.popleft()
         if visited[n]:
             continue
         visited[n] = True
 
         for _, d, _ in g.edges(n):
-            queue.append(d)
-        yield n
+            queue.append((d, c + 1))
+        yield n, c

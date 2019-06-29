@@ -1,0 +1,5 @@
+4
+unagi 20
+usagi 13
+snuke 42
+smeke 7

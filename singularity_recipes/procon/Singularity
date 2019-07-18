@@ -27,6 +27,8 @@ From: ../images/common.simg
     echo "export XDG_DATA_HOME=\$SINGULARITY_XDG_ROOT" >> $SINGULARITY_ENVIRONMENT
     echo "export XDG_RUNTIME_DIR=\$SINGULARITY_XDG_ROOT" >> $SINGULARITY_ENVIRONMENT
 
+    apt-get install -y make cmake clang-tools clang-format clang
+
     curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
     bash /tmp/miniconda.sh -b -p /opt/miniconda3
     rm  /tmp/miniconda.sh
@@ -37,5 +39,3 @@ From: ../images/common.simg
     /opt/miniconda3/bin/conda install -y -c conda-forge black jedi python-language-server
     /opt/miniconda3/bin/conda clean -t
     /opt/miniconda3/bin/pip install pipenv pyls-black pyls-isort atcoder-tools
-
-    apt-get install -y make cmake clang-tools clang-format clang

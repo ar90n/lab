@@ -36,4 +36,4 @@ From: ../images/common.simg
     yarn global add bs-platform
     yarn global add reason-cli@latest-linux
     yarn global add ocaml-language-server
-    yarn global add esy npx
+    yarn global add esy npx npm-check-updates

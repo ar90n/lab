@@ -35,16 +35,24 @@ From: ubuntu:18.10
     echo "export EXERCISM_CONFIG_HOME=\$HOME/.config/exercism" >> $SINGULARITY_ENVIRONMENT
     . $SINGULARITY_ENVIRONMENT
 
+    sed -i '/jessie-updates/d' /etc/apt/sources.list 
     apt-get update -qq
     apt-get install -y git curl software-properties-common language-pack-ja build-essential direnv
     apt-get install -y neovim python-dev python-pip python3-dev python3-pip
     apt-get install -y bash tmux tig unzip httpie jq silversearcher-ag peco
-    apt-get install -y dcmtk libgdcm-cil libgdcm-tools imagemagick
+    apt-get install -y dicom3tools dcmtk libgdcm-cil libgdcm-tools imagemagick
     apt-get clean
 
-    pip2 install --upgrade pip neovim
-    pip3 install --upgrade pip neovim
+    curl https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py
+    python2 /tmp/get-pip.py -vv
+    python3 /tmp/get-pip.py -vv
+    rm /tmp/get-pip.py
 
+    pip2 install --upgrade pip
+    pip3 install --upgrade pip
+
+    pip2 install --upgrade neovim
+    pip3 install --upgrade neovim
     pip3 install xonsh pyt prompt_toolkit pygments
 
     EXERCISM_CLI_PKG_URL=https://github.com/exercism/cli/releases/download/v3.0.11/exercism-linux-64bit.tgz

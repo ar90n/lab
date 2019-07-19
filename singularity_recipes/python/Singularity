@@ -5,7 +5,6 @@ From: ../images/common.simg
     mkdir -p ${SINGULARITY_ROOTFS}/opt/init/010_python
 
 %files
-    jupyter-server /opt/bin
     entry.sh /opt/init/010_python/entry.sh
     python_dein.toml /opt/init/010_python/python_dein.toml
 
@@ -23,5 +22,12 @@ From: ../images/common.simg
     echo "export XDG_DATA_HOME=\$SINGULARITY_XDG_ROOT" >> $SINGULARITY_ENVIRONMENT
     echo "export XDG_RUNTIME_DIR=\$SINGULARITY_XDG_ROOT" >> $SINGULARITY_ENVIRONMENT
 
-    pip3 install poetry
-    pip3 install mypy black isort jedi python-language-server pyls-black pyls-isort 
+    curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+    bash /tmp/miniconda.sh -b -p /opt/miniconda3
+    rm  /tmp/miniconda.sh
+    /opt/miniconda3/bin/conda install python=3.6
+
+    curl https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py
+    /opt/miniconda3/bin/python /tmp/get-pip.py
+
+    /opt/miniconda3/bin/pip install poetry

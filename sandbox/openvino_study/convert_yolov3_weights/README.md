@@ -50,3 +50,8 @@ $ curl -L -o /tmp/yolov3-tiny.weights https://pjreddie.com/media/files/yolov3-ti
 $ poetry run python3 ./tensorflow-yolo-v3/convert_weights_pb.py --class_names /tmp/coco.names --data_format NHWC --weights_file /tmp/yolov3.weights
 
 ```
+
+## Generate OpenVINO IR
+```
+$ poetry run python3 /opt/intel/openvino/deployment_tools/model_optimizer/mo_tf.py  --input_model ./frozen_darknet_yolov3_model.pb  --tensorflow_use_custom_operations_config /opt/intel/openvino/deployment_tools/model_optimizer/extensions/front/tf/yolo_v3.json --batch 1
+```

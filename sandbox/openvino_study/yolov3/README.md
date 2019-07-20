@@ -3,7 +3,7 @@
 ## Install dependency packages
 
 ```
-$ sudo apt-get install cmake
+$ sudo apt-get install cmake libavcodec-dev libavformat-dev libswscale-dev libv4l-dev libatlas-base-dev libxvidcore-dev libx264-dev libgtk-3-dev
 ```
 
 ## Install OpenVINO
@@ -53,5 +53,15 @@ $ poetry run python3 ./tensorflow-yolo-v3/convert_weights_pb.py --class_names /t
 
 ## Generate OpenVINO IR
 ```
-$ poetry run python3 /opt/intel/openvino/deployment_tools/model_optimizer/mo_tf.py  --input_model ./frozen_darknet_yolov3_model.pb  --tensorflow_use_custom_operations_config /opt/intel/openvino/deployment_tools/model_optimizer/extensions/front/tf/yolo_v3.json --batch 1
+$ mkdir fp32_ir
+$ poetry run python3 /opt/intel/openvino/deployment_tools/model_optimizer/mo_tf.py --data_type FP32 --input_model ./frozen_darknet_yolov3_model.pb  --tensorflow_use_custom_operations_config /opt/intel/openvino/deployment_tools/model_optimizer/extensions/front/tf/yolo_v3.json --batch 1 --output_dir fp32_ir
+$ mkdir fp16_ir
+$ poetry run python3 /opt/intel/openvino/deployment_tools/model_optimizer/mo_tf.py --data_type FP16 --input_model ./frozen_darknet_yolov3_model.pb  --tensorflow_use_custom_operations_config /opt/intel/openvino/deployment_tools/model_optimizer/extensions/front/tf/yolo_v3.json --batch 1 --output_dir fp16_ir
+```
+
+## Run sample code
+```
+$ export OPENVINO_ROOT=<path to openvino root>
+$ source setup_env
+$ poetry run python ./object_detection_demo_yolov3_async.py  -m ./fp32_ir/frozen_darknet_yolov3_model.xml -r -l libcpu_extension_sse4.so -d CPU *.jpg
 ```

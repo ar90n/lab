@@ -3,7 +3,7 @@
 ## Install dependency packages
 
 ```
-$ sudo apt-get install cmake libavcodec-dev libavformat-dev libswscale-dev libv4l-dev libatlas-base-dev libxvidcore-dev libx264-dev libgtk-3-dev
+$ sudo apt-get install cmake libavcodec-dev libavformat-dev libswscale-dev libv4l-dev libatlas-base-dev libxvidcore-dev libx264-dev libgtk-3-dev ocl-icd-opencl-dev clinfo
 ```
 
 ## Install OpenVINO
@@ -48,7 +48,6 @@ $ curl -L -o /tmp/yolov3-tiny.weights https://pjreddie.com/media/files/yolov3-ti
 ## Convert darknet weights into tensorflow weights
 ```
 $ poetry run python3 ./tensorflow-yolo-v3/convert_weights_pb.py --class_names /tmp/coco.names --data_format NHWC --weights_file /tmp/yolov3.weights
-
 ```
 
 ## Generate OpenVINO IR
@@ -63,5 +62,15 @@ $ poetry run python3 /opt/intel/openvino/deployment_tools/model_optimizer/mo_tf.
 ```
 $ export OPENVINO_ROOT=<path to openvino root>
 $ source setup_env
+```
+
+Run in CPU
+```
 $ poetry run python ./object_detection_demo_yolov3_async.py  -m ./fp32_ir/frozen_darknet_yolov3_model.xml -r -l libcpu_extension_sse4.so -d CPU *.jpg
+```
+
+Run in GPU
+```
+$ sudo adduser $USER video
+$ poetry run python ./object_detection_demo_yolov3_async.py  -m ./fp32_ir/frozen_darknet_yolov3_model.xml -r -l libcpu_extension_sse4.so -d GPU *.jpg
 ```

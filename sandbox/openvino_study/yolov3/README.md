@@ -26,12 +26,6 @@ $ sha256sum -c ww27.sum /tmp/neo_packages/*
 $ sudo dpkg -i /tmp/neo_packages/*.deb
 ```
 
-## Checkout submodules
-```
-$ git submodule init
-$ git submodule update
-```
-
 ## Setup python environment
 ```
 $ poetry config settings.virtualenvs.in-project true
@@ -47,6 +41,8 @@ $ curl -L -o /tmp/yolov3-tiny.weights https://pjreddie.com/media/files/yolov3-ti
 
 ## Convert darknet weights into tensorflow weights
 ```
+$ poetry run python3 ./tensorflow-yolo-v3/convert_weights_pb.py --class_names /tmp/coco.names --data_format NHWC --tiny --weights_file /tmp/yolov3-tiny.weights
+$ mv frozen_darknet_yolov3_model.pb frozen_darknet_yolov3_tiny_model.pb
 $ poetry run python3 ./tensorflow-yolo-v3/convert_weights_pb.py --class_names /tmp/coco.names --data_format NHWC --weights_file /tmp/yolov3.weights
 ```
 
@@ -54,8 +50,10 @@ $ poetry run python3 ./tensorflow-yolo-v3/convert_weights_pb.py --class_names /t
 ```
 $ mkdir fp32_ir
 $ poetry run python3 /opt/intel/openvino/deployment_tools/model_optimizer/mo_tf.py --data_type FP32 --input_model ./frozen_darknet_yolov3_model.pb  --tensorflow_use_custom_operations_config /opt/intel/openvino/deployment_tools/model_optimizer/extensions/front/tf/yolo_v3.json --batch 1 --output_dir fp32_ir
+$ poetry run python3 /opt/intel/openvino/deployment_tools/model_optimizer/mo_tf.py --data_type FP32 --input_model ./frozen_darknet_yolov3_tiny_model.pb  --tensorflow_use_custom_operations_config /opt/intel/openvino/deployment_tools/model_optimizer/extensions/front/tf/yolo_v3_tiny.json --batch 1 --output_dir fp32_ir
 $ mkdir fp16_ir
 $ poetry run python3 /opt/intel/openvino/deployment_tools/model_optimizer/mo_tf.py --data_type FP16 --input_model ./frozen_darknet_yolov3_model.pb  --tensorflow_use_custom_operations_config /opt/intel/openvino/deployment_tools/model_optimizer/extensions/front/tf/yolo_v3.json --batch 1 --output_dir fp16_ir
+$ poetry run python3 /opt/intel/openvino/deployment_tools/model_optimizer/mo_tf.py --data_type FP16 --input_model ./frozen_darknet_yolov3_tiny_model.pb  --tensorflow_use_custom_operations_config /opt/intel/openvino/deployment_tools/model_optimizer/extensions/front/tf/yolo_v3_tiny.json --batch 1 --output_dir fp16_ir
 ```
 
 ## Run sample code
@@ -67,10 +65,14 @@ $ source setup_env
 Run in CPU
 ```
 $ poetry run python ./object_detection_demo_yolov3_async.py  -m ./fp32_ir/frozen_darknet_yolov3_model.xml -r -l libcpu_extension_sse4.so -d CPU *.jpg
+$ poetry run python ./object_detection_demo_yolov3_async.py  -m ./fp32_ir/frozen_darknet_yolov3_tiny_model.xml -r -l libcpu_extension_sse4.so -d CPU *.jpg
 ```
 
 Run in GPU
 ```
 $ sudo adduser $USER video
 $ poetry run python ./object_detection_demo_yolov3_async.py  -m ./fp32_ir/frozen_darknet_yolov3_model.xml -r -l libcpu_extension_sse4.so -d GPU *.jpg
+$ poetry run python ./object_detection_demo_yolov3_async.py  -m ./fp32_ir/frozen_darknet_yolov3_tiny_model.xml -r -l libcpu_extension_sse4.so -d GPU *.jpg
+$ poetry run python ./object_detection_demo_yolov3_async.py  -m ./fp16_ir/frozen_darknet_yolov3_model.xml -r -l libcpu_extension_sse4.so -d GPU *.jpg
+$ poetry run python ./object_detection_demo_yolov3_async.py  -m ./fp16_ir/frozen_darknet_yolov3_tiny_model.xml -r -l libcpu_extension_sse4.so -d GPU *.jpg
 ```

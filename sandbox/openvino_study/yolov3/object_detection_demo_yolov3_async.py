@@ -69,14 +69,31 @@ class YoloV3Params:
                         198.0,
                         373.0, 326.0] if 'anchors' not in param else [float(a) for a in param['anchors'].split(',')]
         self.side = side
-        if self.side == 13:
-            self.anchor_offset = 2 * 6
-        elif self.side == 26:
-            self.anchor_offset = 2 * 3
-        elif self.side == 52:
-            self.anchor_offset = 2 * 0
-        else:
-            assert False, "Invalid output size. Only 13, 26 and 52 sizes are supported for output spatial dimensions"
+        if len(self.anchors) == 18:   ## YoloV3
+            if side == 13:
+                self.anchor_offset = 2 * 6
+            elif side == 26:
+                self.anchor_offset = 2 * 3
+            elif side == 52:
+                self.anchor_offset = 2 * 0
+            else:
+                assert False, "Invalid output size. Only 13, 26 and 52 sizes are supported for output spatial dimensions"
+        elif len(self.anchors) == 12: ## tiny-YoloV3
+            if side == 13:
+                self.anchor_offset = 2 * 3
+            elif side == 26:
+                self.anchor_offset = 2 * 0
+            else:
+                assert False, "Invalid output size. Only 13, 26 and 52 sizes are supported for output spatial dimensions"
+        else:                    ## ???
+            if side == 13:
+                self.anchor_offset = 2 * 6
+            elif side == 26:
+                self.anchor_offset = 2 * 3
+            elif side == 52:
+                self.anchor_offset = 2 * 0
+            else:
+                assert False, "Invalid output size. Only 13, 26 and 52 sizes are supported for output spatial dimensions"
 
     def log_params(self):
         params_to_print = {'classes': self.classes, 'num': self.num, 'coords': self.coords, 'anchors': self.anchors}
@@ -185,7 +202,6 @@ def main():
             sys.exit(1)
 
     assert len(net.inputs.keys()) == 1, "Sample supports only YOLO V3 based single input topologies"
-    assert len(net.outputs) == 3, "Sample supports only YOLO V3 based triple output topologies"
 
     # ---------------------------------------------- 4. Preparing inputs -----------------------------------------------
     log.info("Preparing inputs")
@@ -226,6 +242,7 @@ def main():
         # Start inference
         start_time = time()
         exec_net.start_async(request_id=request_id, inputs={input_blob: in_frame})
+        exec_net.requests[request_id].wait(-1)
         det_time = time() - start_time
 
         # Collecting object detection results

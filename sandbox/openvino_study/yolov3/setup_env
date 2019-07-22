@@ -1,2 +1,2 @@
-PYTHONPATH=${OPENVINO_ROOT}/python/python3.6/:$PYTHONPATH
-LD_LIBRARY_PATH=${OPENVINO_ROOT}/openvx/lib:${OPENVINO_ROOT}/opencv/lib/:${OPENVINO_ROOT}/deployment_tools/inference_engine/lib/intel64/:${OPENVINO_ROOT}/deployment_tools/inference_engine/external/mkltiny_lnx/lib/:$LD_LIBRARY_PATH
+export PYTHONPATH=${OPENVINO_ROOT}/python/python3.6/:$PYTHONPATH
+export LD_LIBRARY_PATH=${OPENVINO_ROOT}/openvx/lib:${OPENVINO_ROOT}/opencv/lib/:${OPENVINO_ROOT}/deployment_tools/inference_engine/lib/intel64/:${OPENVINO_ROOT}/deployment_tools/inference_engine/external/mkltiny_lnx/lib/:$LD_LIBRARY_PATH

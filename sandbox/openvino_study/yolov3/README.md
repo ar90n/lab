@@ -58,8 +58,8 @@ $ poetry run python3 /opt/intel/openvino/deployment_tools/model_optimizer/mo_tf.
 
 ## Run sample code
 ```
-$ export OPENVINO_ROOT=<path to openvino root>
-$ source setup_env
+$ export INTEL_OPENVINO_DIR=<path to openvino root>
+$ source ${INTEL_OPENVINO_DIR}/bin/setupvars.sh
 ```
 
 Run in CPU

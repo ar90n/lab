@@ -1,0 +1,14 @@
+{
+    "trigger": true,
+    "modules": [
+        "custom"
+    ],
+    "parentResource": "awsamplifyapp",
+    "functionName": "awsamplifyappPreSignup",
+    "parentStack": "auth",
+    "triggerEnvs": "[]",
+    "triggerTemplate": "PreSignup.json.ejs",
+    "roleName": "awsamplifyappPreSignup",
+    "skipEdit": true,
+    "resourceName": "awsamplifyappPreSignup"
+}

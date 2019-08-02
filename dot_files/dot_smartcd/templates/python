@@ -9,16 +9,17 @@
 #
 #    autostash PATH=__PATH__/bin:$PATH
 #
-# This template is named 'singularity'
+# This template is named 'python'
 ########################################################################
 
 # Enter any bash_enter commands below here: (leave this line!)
+local SINGULARITY_CMD=${SINGULARITY_CMD:-'singularity'}
 local IMAGE_NAME=${SINGULARITY_IMAGE_NAME:-'python.simg'}
 local IMAGE_DIR_PATH=${SINGULARITY_IMAGE_DIR:-''}
 local IMAGE_PATH=${IMAGE_DIR_PATH}/${IMAGE_NAME}
 if [ ! -v SINGULARITY_CONTAINER ] && [ -e $IMAGE_PATH ]; then
     local WHERETO=/tmp/whereto_$RANDOM
-    WHERETO=$WHERETO $IMAGE_PATH -B /tmp:/tmp
+    WHERETO=$WHERETO $SINGULARITY_CMD run -B /tmp -B /opt/intel $IMAGE_PATH
     whereto=$(cat $WHERETO)
 fi
 

@@ -1,0 +1,6 @@
+type Request @model {
+  id: ID!
+  bucket: String!
+  key: String!
+  description: String
+}

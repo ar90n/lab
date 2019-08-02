@@ -40,3 +40,9 @@ hook_source = '''
   nnoremap <silent> tt :call LanguageClient#textDocument_definition()<CR>
   nnoremap <silent> tf :call LanguageClient#textDocument_formatting()<CR>
 '''
+
+[[plugins]]
+repo = 'hylang/vim-hy'
+
+[[plugins]]
+repo = 'manicmaniac/coconut.vim'

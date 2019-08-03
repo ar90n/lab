@@ -18,7 +18,7 @@ From: ubuntu:18.10
     snippets /opt/init/000_common/snippets
 
 %environment
-    export ENTRY_COMMAND="bash -c xonsh"
+    export ENTRY_COMMAND=bash
     export PATH=/opt/bin:$PATH
 
 %labels

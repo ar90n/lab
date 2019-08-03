@@ -1,9 +1,17 @@
-#pushd common
-#sudo singularity build --force ../images/common.simg Singularity
-#popd
-#
+pushd common
+sudo singularity build --force ../images/common.simg Singularity
+popd
+
 pushd python
 sudo singularity build --force ../images/python.simg Singularity
+popd
+
+pushd aws
+sudo singularity build --force ../images/aws.simg Singularity
+popd
+
+pushd procon
+sudo singularity build --force ../images/procon.simg Singularity
 popd
 
 #pushd reasonml
@@ -16,8 +24,4 @@ popd
 #
 #pushd vnc
 #sudo singularity build --force ../images/vnc.simg Singularity
-#popd
-
-#pushd procon
-#sudo singularity build --force ../images/procon.simg Singularity
 #popd

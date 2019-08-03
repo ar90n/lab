@@ -163,6 +163,8 @@ autocmd Filetype c,c++ :set cindent      " Cプログラムファイルの自動
 autocmd FileType html :set indentexpr=
 autocmd FileType xhtml :set indentexpr=
 autocmd FileType typescript :set tabstop=2 shiftwidth=2 softtabstop=2
+autocmd FileType javascript :set tabstop=2 shiftwidth=2 softtabstop=2
+autocmd FileType javascript.jsx :set tabstop=2 shiftwidth=2 softtabstop=2
 
 "-------------------------------------------------------------------------------
 " 移動設定 Move

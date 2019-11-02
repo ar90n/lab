@@ -35,9 +35,15 @@ From: ../images/common.simg
     /opt/miniconda3/bin/conda create -y -n py35 python=3.5
     /opt/miniconda3/bin/conda create -y -n py36 python=3.6
     /opt/miniconda3/bin/conda create -y -n py37 python=3.7
+    /opt/miniconda3/bin/conda create -y -n py38 python=3.8
+
+    /opt/miniconda3/bin/conda install -y -c conda-forge -n py27 pypy2.7
+    /opt/miniconda3/bin/conda install -y -c conda-forge -n py35 pypy3.5
+    /opt/miniconda3/bin/conda install -y -c conda-forge -n py36 pypy3.6
 
     /opt/miniconda3/bin/pip install poetry
     /opt/miniconda3/envs/py27/bin/pip install poetry
     /opt/miniconda3/envs/py35/bin/pip install poetry
     /opt/miniconda3/envs/py36/bin/pip install poetry
     /opt/miniconda3/envs/py37/bin/pip install poetry
+    /opt/miniconda3/envs/py38/bin/pip install poetry

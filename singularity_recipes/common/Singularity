@@ -38,6 +38,7 @@ From: ubuntu:18.10
     sed -i '/jessie-updates/d' /etc/apt/sources.list 
     apt-get update -qq
     apt-get install -y git curl software-properties-common language-pack-ja build-essential direnv
+    apt-get install -y libgfortran3
     apt-get install -y neovim python-dev python-pip python3-dev python3-pip
     apt-get install -y bash tmux tig unzip httpie jq silversearcher-ag peco
     apt-get install -y dicom3tools dcmtk libgdcm-cil libgdcm-tools imagemagick
@@ -53,8 +54,12 @@ From: ubuntu:18.10
 
     pip2 install --upgrade neovim
     pip3 install --upgrade neovim
+    pip3 install awscli
     pip3 install xonsh pyt prompt_toolkit pygments
 
     EXERCISM_CLI_PKG_URL=https://github.com/exercism/cli/releases/download/v3.0.11/exercism-linux-64bit.tgz
     curl -L $EXERCISM_CLI_PKG_URL | tar xz -C /tmp
     mv /tmp/exercism /opt/bin/exercism
+
+    curl -L -o /opt/bin/vast https://raw.githubusercontent.com/vast-ai/vast-python/master/vast.py
+    chmod +x /opt/bin/vast

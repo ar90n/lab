@@ -8,8 +8,8 @@ authors = ["Masahiro Wada <argon.argon.argon@gmail.com>"]
 python = "^3.6"
 numpy = "^1.17"
 scikit-learn = "^0.21.3"
-streamlit = "^0.49.0"
 xgboost = "^0.90.0"
+streamlit = "^0.49.0"
 
 [tool.poetry.dev-dependencies]
 python-language-server = "^0.30.0"

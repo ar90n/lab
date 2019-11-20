@@ -38,7 +38,7 @@ From: ubuntu:18.10
     sed -i '/jessie-updates/d' /etc/apt/sources.list 
     apt-get update -qq
     apt-get install -y git curl software-properties-common language-pack-ja build-essential direnv
-    apt-get install -y libgfortran3
+    apt-get install -y gfortran libgfortran3
     apt-get install -y neovim python-dev python-pip python3-dev python3-pip
     apt-get install -y bash tmux tig unzip httpie jq silversearcher-ag peco
     apt-get install -y dicom3tools dcmtk libgdcm-cil libgdcm-tools imagemagick

@@ -12,14 +12,15 @@ from collections import OrderedDict
 try:
     import_path = str(Path(__file__).parent)
     sys.path.insert(0, import_path)
-    from kagglebook_practice import  ch01, ch02
+    from kagglebook_practice import  ch01, ch02, ch03
 finally:
     sys.path.remove(import_path)
 
 
 CHAPTERS = OrderedDict([
     ("ch01", ch01.SECTIONS),
-    ("ch02", ch02.SECTIONS)
+    ("ch02", ch02.SECTIONS),
+    ("ch03", ch03.SECTIONS)
 ])
 
 def main():

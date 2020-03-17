@@ -1,16 +1,19 @@
-Bootstrap: library
-From: ubuntu:18.10
+Bootstrap: docker
+From: ubuntu:19.04
 
 %runscript
     exec /opt/bin/entry
 
 %setup
     mkdir -p ${SINGULARITY_ROOTFS}/opt/bin
+    mkdir -p ${SINGULARITY_ROOTFS}/opt/ssh
     mkdir -p ${SINGULARITY_ROOTFS}/opt/init/000_common
     chmod -R 777 ${SINGULARITY_ROOTFS}/opt
 
 %files
     entry /opt/bin/entry
+    sshd /opt/bin/sshd
+    sshd_config /opt/ssh/sshd_config
     entry.sh /opt/init/000_common/entry.sh
     init.vim /opt/init/000_common/init.vim
     dein.toml /opt/init/000_common/dein.toml
@@ -20,6 +23,7 @@ From: ubuntu:18.10
 %environment
     export ENTRY_COMMAND=bash
     export PATH=/opt/bin:$PATH
+    export SSHD_PORT=3333
 
 %labels
    AUTHOR argon.argon.argon@gmail.com
@@ -35,14 +39,18 @@ From: ubuntu:18.10
     echo "export EXERCISM_CONFIG_HOME=\$HOME/.config/exercism" >> $SINGULARITY_ENVIRONMENT
     . $SINGULARITY_ENVIRONMENT
 
-    sed -i '/jessie-updates/d' /etc/apt/sources.list 
+    #sed -i '/jessie-updates/d' /etc/apt/sources.list 
     apt-get update -qq
     apt-get install -y git curl software-properties-common language-pack-ja build-essential direnv
     apt-get install -y gfortran libgfortran3
     apt-get install -y neovim python-dev python-pip python3-dev python3-pip
     apt-get install -y bash tmux tig unzip httpie jq silversearcher-ag peco
     apt-get install -y dicom3tools dcmtk libgdcm-cil libgdcm-tools imagemagick
+    apt-get install -y libopenblas-dev
+    apt-get install -y openssh-server
     apt-get clean
+
+    dpkg-reconfigure openssh-server
 
     curl https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py
     python2 /tmp/get-pip.py -vv

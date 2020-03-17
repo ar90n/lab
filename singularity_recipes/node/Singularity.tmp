@@ -8,6 +8,10 @@ From: ../images/common.simg
     npmrc /usr/local/etc/npmrc
     entry.sh /opt/init/011_node/entry.sh
     node_dein.toml /opt/init/011_node/node_dein.toml
+    coc-settings.json /opt/init/011_node/coc-settings.json
+
+%environment
+    export SSHD_PORT=3010
 
 %labels
     AUTHOR argon.argon.argon@gmail.com
@@ -32,4 +36,5 @@ From: ../images/common.simg
     apt-get -y purge nodejs
     apt-get clean
 
-    npm install -g yarn npx neovim
+    npm install -g yarn npx neovim 
+    npm install -g @elm-tooling/elm-language-server elm elm-test elm-format elm-analyse

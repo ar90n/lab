@@ -10,6 +10,7 @@ From: ../images/common.simg
 
 %environment
     export PATH=/opt/bin:/opt/miniconda3/bin:$PATH
+    export SSHD_PORT=###SSHD_PORT###
 
 %labels
     AUTHOR argon.argon.argon@gmail.com

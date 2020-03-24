@@ -1,0 +1,6 @@
+*/README.md
+*/Makefile
+*/*.c
+*/*.o
+*/vendor
+*/tests

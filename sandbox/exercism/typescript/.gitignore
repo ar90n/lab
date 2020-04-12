@@ -1,0 +1,7 @@
+*.js
+*.json
+*.test.ts
+*.lock
+.eslintrc
+.eslintignore
+*.md

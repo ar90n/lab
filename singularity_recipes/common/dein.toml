@@ -17,15 +17,8 @@ repo = 'cespare/vim-toml'
 on_ft=['toml']
 
 [[plugins]]
-repo = 'Shougo/unite.vim'
-depends = ['vimfiler.vim']
-
-[[plugins]]
 repo = 'Shougo/vimproc.vim'
 build = 'make'
-
-[[plugins]]
-repo = 'honza/vim-snippets'
 
 [[plugins]]
 repo = 'kana/vim-submode'
@@ -57,39 +50,9 @@ hook_add = '''
 
 [[plugins]]
 repo = 'morhetz/gruvbox'
-hook_source = '''
-    color gruvbox
+hook_add = '''
+    colorscheme gruvbox
 '''
-
-[[plugins]]
-repo = 'Shougo/deoplete.nvim'
-hook_source = '''
-    let g:ulti_expand_or_jump_res = 0 "default value, just set once
-    function! Ulti_ExpandOrJump_and_getRes()
-      call UltiSnips#ExpandSnippet()
-      return g:ulti_expand_res
-    endfunction
-    inoremap <C-k> <C-R>=(Ulti_ExpandOrJump_and_getRes() > 0)?"":deoplete#close_popup()<CR>
-
-    let g:deoplete#enable_at_startup = 1
-'''
-on_i = 1
-
-[[plugins]]
-repo = 'Shougo/neosnippet.vim'
-hook_source = '''
-    imap <C-k>     <Plug>(neosnippet_expand_or_jump)
-    smap <C-k>     <Plug>(neosnippet_expand_or_jump)
-    xmap <C-k>     <Plug>(neosnippet_expand_target)
-    " Enable snipMate compatibility feature.
-    let g:neosnippet#enable_snipmate_compatibility = 1
-
-    " Tell Neosnippet about the other snippets
-    let g:neosnippet#snippets_directory="snippets"
-'''
-
-[[plugins]]
-repo = 'Shougo/neosnippet-snippets'
 
 [[plugins]]
 repo = "Shougo/denite.nvim"
@@ -148,3 +111,74 @@ function! s:denite_filter_my_settings() abort
   imap <silent><buffer> <C-o> <Plug>(denite_filter_quit)
 endfunction
 """
+
+[[plugins]]
+repo = 'neoclide/coc.nvim'
+build = './install.sh nightly'
+hook_add = '''
+" TextEdit might fail if hidden is not set.
+set hidden
+
+" Some servers have issues with backup files, see #649.
+set nobackup
+set nowritebackup
+
+" Give more space for displaying messages.
+set cmdheight=2
+
+" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
+" delays and poor user experience.
+set updatetime=300
+
+" Don't pass messages to |ins-completion-menu|.
+set shortmess+=c
+
+" Always show the signcolumn, otherwise it would shift the text each time
+" diagnostics appear/become resolved.
+set signcolumn=no
+
+" Use `[g` and `]g` to navigate diagnostics
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Symbol renaming.
+nmap <slient> gn <Plug>(coc-rename)
+
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+" Use F to call format action
+nnoremap <silent> F :call CocAction('format')<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+" Mappings using CoCList:
+" Show all diagnostics.
+nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
+" Manage extensions.
+nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
+" Show commands.
+nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
+" Find symbol of current document.
+nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
+" Search workspace symbols.
+nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
+" Do default action for next item.
+nnoremap <silent> <space>j  :<C-u>CocNext<CR>
+" Do default action for previous item.
+nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
+" Resume latest coc list.
+nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+'''

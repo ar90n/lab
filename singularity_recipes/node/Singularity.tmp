@@ -27,7 +27,6 @@ From: ../images/common.simg
     echo "export XDG_RUNTIME_DIR=\$SINGULARITY_XDG_ROOT" >> $SINGULARITY_ENVIRONMENT
 
     apt-get update
-    apt-get -y install nodejs npm unzip libncurses5 libncurses6
     npm cache verify
     npm install n -g
 
@@ -36,5 +35,6 @@ From: ../images/common.simg
     apt-get -y purge nodejs
     apt-get clean
 
-    npm install -g yarn npx neovim 
-    npm install -g @elm-tooling/elm-language-server elm elm-test elm-format elm-analyse
+    npm install -g yarn npx neovim
+    npm install -g @elm-tooling/elm-language-server elm elm-test elm-format elm-analyse create-elm-app
+    npm install -g typescript typescript-language-server

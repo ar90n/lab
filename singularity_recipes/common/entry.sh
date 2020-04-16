@@ -8,3 +8,4 @@ cp -rf snippets ${XDG_CONFIG_HOME}/nvim
 
 nvim -c 'call dein#install()' -c 'q'
 nvim -c 'UpdateRemotePlugins' -c 'q'
+nvim -c 'CocInstall -sync coc-json coc-yaml coc-snippets coc-git coc-todolist|q'

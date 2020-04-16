@@ -6,3 +6,4 @@ cp coc-settings.json ${XDG_CONFIG_HOME}/nvim/coc-settings.json
 
 nvim -c 'call dein#install()' -c 'q'
 nvim -c 'UpdateRemotePlugins' -c 'q'
+nvim -c 'CocInstall -sync coc-tsserver coc-css coc-cssmodule coc-html|q'

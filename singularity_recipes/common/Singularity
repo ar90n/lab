@@ -19,6 +19,7 @@ From: ubuntu:20.04
     dein.toml /opt/init/000_common/dein.toml
     template /opt/init/000_common/template
     snippets /opt/init/000_common/snippets
+    coc-settings.json /opt/init/000_common/coc-settings.json
 
 %environment
     export ENTRY_COMMAND=bash
@@ -40,7 +41,7 @@ From: ubuntu:20.04
     . $SINGULARITY_ENVIRONMENT
 
     apt-get update -qq
-    apt-get install -y git curl software-properties-common language-pack-ja build-essential
+    apt-get install -y git curl software-properties-common language-pack-ja build-essential ripgrep
     apt-get install -y gfortran libgfortran5
     apt-get install -y nodejs npm unzip libncurses5 libncurses6
     apt-get install -y neovim python3-dev python3-pip python-is-python3

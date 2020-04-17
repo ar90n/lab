@@ -323,7 +323,7 @@ command! Sjis Cp932
 "-------------------------------------------------------------------------------
 
 " ターミナルタイプによるカラー設定
-if &term =~ "xterm-debian" || &term =~ "xterm-xfree86" || &term =~ "xterm-256color"
+if &term =~ "xterm-debian" || &term =~ "xterm-xfree86" || &term =~ "xterm-256color" || &term =~ "screen-256color" || &term =~ "tmux-256color"
     set t_Co=16
     set t_Sf=[3%dm
     set t_Sb=[4%dm
@@ -351,3 +351,7 @@ noremap ; :
 "noremap : ;
 
 runtime! specs/*.vim
+
+nmap <C-e> :CocCommand explorer --toggle<CR>
+nmap <C-d><C-f> :CocList --number-select files<CR>
+nmap <C-d><C-b> :CocList --number-select buffers<CR>

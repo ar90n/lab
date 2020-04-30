@@ -30,6 +30,8 @@ From: ubuntu:20.04
    AUTHOR argon.argon.argon@gmail.com
 
 %post
+    export NODE_VERSION=12.16.3
+
     echo "export SINGULARITY_IMAGE_NAME=common_$(date +%s)" >> $SINGULARITY_ENVIRONMENT
     echo "export SINGULARITY_XDG_ROOT=\$HOME/.xdg/\$SINGULARITY_IMAGE_NAME" >> $SINGULARITY_ENVIRONMENT
     echo "export XDG_CONFIG_HOME=\$SINGULARITY_XDG_ROOT" >> $SINGULARITY_ENVIRONMENT
@@ -49,6 +51,14 @@ From: ubuntu:20.04
     apt-get install -y dicom3tools dcmtk libgdcm-cil libgdcm-tools imagemagick
     apt-get install -y libopenblas-dev
     apt-get install -y openssh-server
+
+    npm cache verify
+    npm install n -g
+
+    n ${NODE_VERSION}
+    ln -sf /usr/local/bin/node /usr/bin/node
+    apt-get -y purge nodejs
+
     apt-get clean
 
     dpkg-reconfigure openssh-server

@@ -1,6 +1,7 @@
 "-------------------------------------------------------------------------------
 " dein
 "-------------------------------------------------------------------------------
+let mapleader = "\<Space>"       " キーマップリーダー
 let g:dein_dir = expand("$XDG_DATA_HOME/nvim/dein")
 let s:dein_repo_dir = g:dein_dir . '/repos/github.com/Shougo/dein.vim'
 let g:dein#install_process_timeout = 3600
@@ -41,7 +42,6 @@ endif
 "-------------------------------------------------------------------------------
 " 基本設定 Basics
 "-------------------------------------------------------------------------------
-let mapleader = "\<Space>"       " キーマップリーダー
 set scrolloff=5                  " スクロール時の余白確保
 set textwidth=0                  " 一行に長い文章を書いていても自動折り返しを しない
 set nobackup                     " バックアップ取らない
@@ -177,10 +177,6 @@ nnoremap k gk
 nnoremap l <Right>
 nnoremap <Down> gj
 nnoremap <Up>   gk
-
-" insert mode での移動
-imap  <C-e> <END>
-imap  <C-a> <HOME>
 
 " 最後に編集された位置に移動
 nnoremap gb '[
@@ -352,6 +348,7 @@ noremap ; :
 
 runtime! specs/*.vim
 
-nmap <C-e> :CocCommand explorer --toggle<CR>
-nmap <C-d><C-f> :CocList --number-select files<CR>
-nmap <C-d><C-b> :CocList --number-select buffers<CR>
+nnoremap <C-e> :CocCommand explorer --toggle<CR>
+inoremap <C-e> :CocCommand explorer --toggle<CR>
+nnoremap <Leader>f :CocList --number-select files<CR>
+nnoremap <Leader>b :CocList --number-select buffers<CR>

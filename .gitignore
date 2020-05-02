@@ -9,3 +9,5 @@ __pycache__
 node_modules
 
 singularity_recipes/images
+
+.tmp

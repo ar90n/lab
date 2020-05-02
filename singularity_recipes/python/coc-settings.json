@@ -1,0 +1,7 @@
+{
+  "python.jediEnabled": false,
+  "pyright.disableLanguageServices": false,
+  "pyright.openFilesOnly": true,
+  "pyright.disableCompletion": true,
+  "python.formatting.provider": "black"
+}

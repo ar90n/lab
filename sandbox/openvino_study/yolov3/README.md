@@ -3,7 +3,7 @@
 ## Install dependency packages
 
 ```
-$ sudo apt-get install cmake libavcodec-dev libavformat-dev libswscale-dev libv4l-dev libatlas-base-dev libxvidcore-dev libx264-dev libgtk-3-dev ocl-icd-opencl-dev clinfo
+$ sudo apt-get install cmake libavcodec-dev libavformat-dev libswscale-dev libv4l-dev libatlas-base-dev libxvidcore-dev libx264-dev libgtk-3-dev ocl-icd-opencl-dev clinfo libgstreamer1.0-0 libgtk2.0-dev gstreamer1.0-plugins-base
 ```
 
 ## Install OpenVINO

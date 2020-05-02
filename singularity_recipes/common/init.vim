@@ -1,6 +1,7 @@
 "-------------------------------------------------------------------------------
 " dein
 "-------------------------------------------------------------------------------
+let mapleader = "\<Space>"       " キーマップリーダー
 let g:dein_dir = expand("$XDG_DATA_HOME/nvim/dein")
 let s:dein_repo_dir = g:dein_dir . '/repos/github.com/Shougo/dein.vim'
 let g:dein#install_process_timeout = 3600
@@ -13,7 +14,7 @@ if &runtimepath !~# '/dein.vim'
   execute 'set runtimepath^=' . fnamemodify(s:dein_repo_dir, ':p')
 endif
 
-let g:python_host_prog = '/usr/bin/python'
+let g:python_host_prog = '/usr/bin/python2'
 let g:python3_host_prog = '/usr/bin/python3'
 
 " 設定開始
@@ -41,7 +42,6 @@ endif
 "-------------------------------------------------------------------------------
 " 基本設定 Basics
 "-------------------------------------------------------------------------------
-let mapleader = "\<Space>"       " キーマップリーダー
 set scrolloff=5                  " スクロール時の余白確保
 set textwidth=0                  " 一行に長い文章を書いていても自動折り返しを しない
 set nobackup                     " バックアップ取らない
@@ -163,6 +163,8 @@ autocmd Filetype c,c++ :set cindent      " Cプログラムファイルの自動
 autocmd FileType html :set indentexpr=
 autocmd FileType xhtml :set indentexpr=
 autocmd FileType typescript :set tabstop=2 shiftwidth=2 softtabstop=2
+autocmd FileType javascript :set tabstop=2 shiftwidth=2 softtabstop=2
+autocmd FileType javascript.jsx :set tabstop=2 shiftwidth=2 softtabstop=2
 
 "-------------------------------------------------------------------------------
 " 移動設定 Move
@@ -175,10 +177,6 @@ nnoremap k gk
 nnoremap l <Right>
 nnoremap <Down> gj
 nnoremap <Up>   gk
-
-" insert mode での移動
-imap  <C-e> <END>
-imap  <C-a> <HOME>
 
 " 最後に編集された位置に移動
 nnoremap gb '[
@@ -321,7 +319,7 @@ command! Sjis Cp932
 "-------------------------------------------------------------------------------
 
 " ターミナルタイプによるカラー設定
-if &term =~ "xterm-debian" || &term =~ "xterm-xfree86" || &term =~ "xterm-256color"
+if &term =~ "xterm-debian" || &term =~ "xterm-xfree86" || &term =~ "xterm-256color" || &term =~ "screen-256color" || &term =~ "tmux-256color"
     set t_Co=16
     set t_Sf=[3%dm
     set t_Sb=[4%dm
@@ -349,3 +347,8 @@ noremap ; :
 "noremap : ;
 
 runtime! specs/*.vim
+
+nnoremap <C-e> :CocCommand explorer --toggle<CR>
+inoremap <C-e> :CocCommand explorer --toggle<CR>
+nnoremap <Leader>f :CocList --number-select files<CR>
+nnoremap <Leader>b :CocList --number-select buffers<CR>

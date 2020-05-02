@@ -1,0 +1,4 @@
+#!/bin/bash
+
+SSHD_PORT=${SSHD_PORT:-2222}
+/usr/sbin/sshd -D -p ${SSHD_PORT} -f /opt/ssh/sshd_config

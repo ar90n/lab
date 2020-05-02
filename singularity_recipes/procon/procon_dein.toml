@@ -1,4 +1,38 @@
 [[plugins]]
+repo = 'honza/vim-snippets'
+
+[[plugins]]
+repo = 'Shougo/deoplete.nvim'
+hook_source = '''
+    let g:ulti_expand_or_jump_res = 0 "default value, just set once
+    function! Ulti_ExpandOrJump_and_getRes()
+      call UltiSnips#ExpandSnippet()
+      return g:ulti_expand_res
+    endfunction
+    inoremap <C-k> <C-R>=(Ulti_ExpandOrJump_and_getRes() > 0)?"":deoplete#close_popup()<CR>
+
+    let g:deoplete#enable_at_startup = 1
+'''
+on_i = 1
+
+[[plugins]]
+repo = 'Shougo/neosnippet.vim'
+hook_source = '''
+    imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+    smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+    xmap <C-k>     <Plug>(neosnippet_expand_target)
+    " Enable snipMate compatibility feature.
+    let g:neosnippet#enable_snipmate_compatibility = 1
+
+    " Tell Neosnippet about the other snippets
+    let g:neosnippet#snippets_directory="snippets"
+'''
+
+[[plugins]]
+repo = 'Shougo/neosnippet-snippets'
+
+
+[[plugins]]
 repo = 'autozimu/LanguageClient-neovim'
 rev = 'next'
 build = 'bash install.sh'

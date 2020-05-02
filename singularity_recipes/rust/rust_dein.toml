@@ -1,18 +1,4 @@
 [[plugins]]
-repo = 'sebastianmarkow/deoplete-rust'
-hook_source = '''
-    let g:deoplete#sources#rust#racer_binary = '/opt/cargo/bin/racer'
-    let g:deoplete#sources#rust#rust_source_path = '/opt/rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src'
-    let g:deoplete#sources#rust#show_duplicates=1
-    let g:deoplete#sources#rust#disable_keymap=1
-
-    nmap <buffer> tt <plug>DeopleteRustGoToDefinitionDefault
-    nmap <buffer> ti  <plug>DeopleteRustShowDocumentation
-'''
-on_ft = ['rust']
-depends = ['deoplete.nvim']
-
-[[plugins]]
 repo = 'rust-lang/rust.vim'
 hook_add = '''
     let g:rustfmt_autosave = 1

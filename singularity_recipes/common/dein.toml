@@ -2,91 +2,89 @@
 repo = 'Shougo/dein.vim'
 
 [[plugins]]
-repo = 'Shougo/vimfiler.vim'
-hook_add = '''
-    let g:vimfiler_as_default_explorer = 1
-    let g:vimfiler_safe_mode_by_default = 0
-    if has('mac')
-      let g:vimfiler_quick_look_command = 'qlmanage -p'
-    endif
-    nnoremap <C-e> :<C-u>VimFilerExplore<CR>
-'''
-
-[[plugins]]
 repo = 'cespare/vim-toml'
 on_ft=['toml']
 
 [[plugins]]
-repo = 'Shougo/unite.vim'
-depends = ['vimfiler.vim']
-
-[[plugins]]
-repo = 'Shougo/vimproc.vim'
-build = 'make'
-
-[[plugins]]
-repo = 'honza/vim-snippets'
-
-[[plugins]]
-repo = 'kana/vim-submode'
-hook_post_source = '''
-  call submode#enter_with('bufmove', 'n', '', 's>', '<C-w>>')
-  call submode#enter_with('bufmove', 'n', '', 's<', '<C-w><')
-  call submode#enter_with('bufmove', 'n', '', 's+', '<C-w>+')
-  call submode#enter_with('bufmove', 'n', '', 's-', '<C-w>-')
-  call submode#map('bufmove', 'n', '', '>', '<C-w>>')
-  call submode#map('bufmove', 'n', '', '<', '<C-w><')
-  call submode#map('bufmove', 'n', '', '+', '<C-w>+')
-  call submode#map('bufmove', 'n', '', '-', '<C-w>-')
-'''
-
-[[plugins]]
-repo = 'terryma/vim-expand-region'
-hook_post_source = '''
-  map K <Plug>(expand_region_expand)
-  map J <Plug>(expand_region_shrink)
-'''
-
-[[plugins]]
-repo = 'mileszs/ack.vim'
-hook_add = '''
-  if executable('ag')
-    let g:ackprg = 'ag --vimgrep'
-  endif
-'''
-
-[[plugins]]
 repo = 'morhetz/gruvbox'
-hook_source = '''
-    color gruvbox
+hook_add = '''
+    colorscheme gruvbox
 '''
 
 [[plugins]]
-repo = 'Shougo/deoplete.nvim'
-hook_source = '''
-    let g:ulti_expand_or_jump_res = 0 "default value, just set once
-    function! Ulti_ExpandOrJump_and_getRes()
-      call UltiSnips#ExpandSnippet()
-      return g:ulti_expand_res
-    endfunction
-    inoremap <C-k> <C-R>=(Ulti_ExpandOrJump_and_getRes() > 0)?"":deoplete#close_popup()<CR>
+repo = 'neoclide/coc.nvim'
+rev = 'release'
+build = './install.sh nightly'
+hook_add = '''
+" TextEdit might fail if hidden is not set.
+set hidden
 
-    let g:deoplete#enable_at_startup = 1
+" Some servers have issues with backup files, see #649.
+set nobackup
+set nowritebackup
+
+" Give more space for displaying messages.
+set cmdheight=2
+
+" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
+" delays and poor user experience.
+set updatetime=300
+
+" Don't pass messages to |ins-completion-menu|.
+set shortmess+=c
+
+" Always show the signcolumn, otherwise it would shift the text each time
+" diagnostics appear/become resolved.
+set signcolumn=no
+
+" Use `[g` and `]g` to navigate diagnostics
+nmap <silent> <Leader>k <Plug>(coc-diagnostic-prev)
+nmap <silent> <Leader>j <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation.
+nmap <silent> <Leader>gd <Plug>(coc-definition)
+nmap <silent> <Leader>gt <Plug>(coc-type-definition)
+nmap <silent> <Leader>gi <Plug>(coc-implementation)
+nmap <silent> <Leader>gr <Plug>(coc-references)
+
+" Symbol renaming.
+nmap <slient> <Leader>dn <Plug>(coc-rename)
+
+" Use K to show documentation in preview window.
+nnoremap <silent> <Leader>dd :call <SID>show_documentation()<CR>
+
+" Use F to call format action
+nnoremap <silent> F :call CocAction('format')<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+" Mappings using CoCList:
+" Show all diagnostics.
+nnoremap <silent> <Leader>da  :<C-u>CocList diagnostics<cr>
+" Find symbol of current document.
+nnoremap <silent> <Leader>do  :<C-u>CocList outline<cr>
+" Search workspace symbols.
+nnoremap <silent> <Leader>ds  :<C-u>CocList -I symbols<cr>
+" Show commands.
+nnoremap <silent> <Leader>p  :<C-u>CocList commands<cr>
+" Do default action for next item.
+nnoremap <silent> <Leader>j  :<C-u>CocNext<CR>
+" Do default action for previous item.
+nnoremap <silent> <Leader>k  :<C-u>CocPrev<CR>
+" Resume latest coc list.
+nnoremap <silent> <space>P  :<C-u>CocListResume<CR>
+
+" Use <C-k> to confirm completion, `<C-g>u` means break undo chain at current
+" position. Coc only does snippet and additional edit on confirm.
+if exists('*complete_info')
+  inoremap <expr> <C-k> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+else
+  inoremap <expr> <C-K> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+endif
 '''
-on_i = 1
-
-[[plugins]]
-repo = 'Shougo/neosnippet.vim'
-hook_source = '''
-    imap <C-k>     <Plug>(neosnippet_expand_or_jump)
-    smap <C-k>     <Plug>(neosnippet_expand_or_jump)
-    xmap <C-k>     <Plug>(neosnippet_expand_target)
-    " Enable snipMate compatibility feature.
-    let g:neosnippet#enable_snipmate_compatibility = 1
-    
-    " Tell Neosnippet about the other snippets
-    let g:neosnippet#snippets_directory="snippets"
-'''
-
-[[plugins]]
-repo = 'Shougo/neosnippet-snippets'

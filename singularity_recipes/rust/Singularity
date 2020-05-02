@@ -27,6 +27,7 @@ From: ../images/common.simg
 
     curl -sSf https://sh.rustup.rs -o /tmp/rustup.sh
     bash /tmp/rustup.sh -y --no-modify-path
+    /opt/cargo/bin/rustup update
     /opt/cargo/bin/rustup install nightly
     /opt/cargo/bin/rustup default nightly
-    /opt/cargo/bin/cargo +nightly install racer
+    /opt/cargo/bin/rustup component add rls rust-analysis rust-src

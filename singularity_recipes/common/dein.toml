@@ -12,6 +12,12 @@ hook_add = '''
 '''
 
 [[plugins]]
+repo = 'sheerun/vim-polyglot'
+hook_add = '''
+    let g:rustfmt_autosave = 1
+'''
+
+[[plugins]]
 repo = 'neoclide/coc.nvim'
 rev = 'release'
 build = './install.sh nightly'

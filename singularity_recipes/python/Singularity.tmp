@@ -7,6 +7,7 @@ From: ../images/common.simg
 %files
     entry.sh /opt/init/010_python/entry.sh
     python_dein.toml /opt/init/010_python/python_dein.toml
+    coc-settings.json /opt/init/010_python/coc-settings.json
 
 %environment
     export PATH=/opt/bin:/opt/miniconda3/bin:$PATH

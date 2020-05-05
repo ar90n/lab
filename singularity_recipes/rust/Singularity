@@ -29,5 +29,5 @@ From: ../images/common.simg
     bash /tmp/rustup.sh -y --no-modify-path
     /opt/cargo/bin/rustup update
     /opt/cargo/bin/rustup install nightly
-    /opt/cargo/bin/rustup default nightly
+    /opt/cargo/bin/rustup default stable
     /opt/cargo/bin/rustup component add rls rust-analysis rust-src

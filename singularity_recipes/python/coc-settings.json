@@ -3,5 +3,6 @@
   "pyright.disableLanguageServices": false,
   "pyright.openFilesOnly": true,
   "pyright.disableCompletion": true,
-  "python.formatting.provider": "black"
+  "python.formatting.provider": "black",
+  "python.linting.enabled" : false
 }

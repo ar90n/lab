@@ -7,6 +7,9 @@ cp -rf template ${XDG_CONFIG_HOME}/nvim
 cp -rf snippets ${XDG_CONFIG_HOME}/nvim
 cp coc-settings.json ${XDG_CONFIG_HOME}/nvim
 
+mkdir -p ${XDG_CONFIG_HOME}/efm-langserver
+cp config.yaml ${XDG_CONFIG_HOME}/efm-langserver
+
 nvim -c 'call dein#install()' -c 'q'
 nvim -c 'UpdateRemotePlugins' -c 'q'
 nvim -c 'CocInstall -sync coc-json|q'

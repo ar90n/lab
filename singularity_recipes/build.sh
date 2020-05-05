@@ -12,8 +12,8 @@ sudo singularity build --force ../images/python27.simg Singularity.tmp
 popd
 
 pushd node
-sed 's/###NODE_VERSION###/12.16.3/' Singularity.template | sed -e 's/###SSHD_PORT###/3010/'  > Singularity.tmp
-sudo singularity build --force ../images/node12_13.simg Singularity.tmp
+sed 's/###NODE_VERSION###/12.16/' Singularity.template | sed -e 's/###SSHD_PORT###/3010/'  > Singularity.tmp
+sudo singularity build --force ../images/node12_16.simg Singularity.tmp
 popd
 
 pushd rust

@@ -20,10 +20,12 @@ From: ubuntu:20.04
     template /opt/init/000_common/template
     snippets /opt/init/000_common/snippets
     coc-settings.json /opt/init/000_common/coc-settings.json
+    config.yaml /opt/init/000_common/config.yaml
+    dot_textlint /opt/
 
 %environment
     export ENTRY_COMMAND=bash
-    export PATH=/opt/bin:$PATH
+    export PATH=/opt/bin:/opt/go/bin:$PATH
     export SSHD_PORT=3333
 
 %labels
@@ -40,6 +42,7 @@ From: ubuntu:20.04
     echo "export XDG_RUNTIME_DIR=\$SINGULARITY_XDG_ROOT" >> $SINGULARITY_ENVIRONMENT
     echo "export DEBIAN_FRONTEND=noninteractive" >> $SINGULARITY_ENVIRONMENT
     echo "export EXERCISM_CONFIG_HOME=\$HOME/.config/exercism" >> $SINGULARITY_ENVIRONMENT
+    echo "export GOPATH=/opt/go" >> $SINGULARITY_ENVIRONMENT
     . $SINGULARITY_ENVIRONMENT
 
     apt-get update -qq
@@ -51,6 +54,9 @@ From: ubuntu:20.04
     apt-get install -y dicom3tools dcmtk libgdcm-cil libgdcm-tools imagemagick
     apt-get install -y libopenblas-dev
     apt-get install -y openssh-server
+    apt-get install -y golang
+
+    go get github.com/mattn/efm-langserver
 
     npm cache verify
     npm install n -g
@@ -76,8 +82,8 @@ From: ubuntu:20.04
     pip3 install msgpack-python
     pip3 install xonsh pyt prompt_toolkit pygments
 
-    npm install -g neovim
-    
+    npm install -g neovim textlint textlint-rule-preset-ja-technical-writing
+
     EXERCISM_CLI_PKG_URL=https://github.com/exercism/cli/releases/download/v3.0.11/exercism-linux-64bit.tgz
     curl -L $EXERCISM_CLI_PKG_URL | tar xz -C /tmp
     mv /tmp/exercism /opt/bin/exercism

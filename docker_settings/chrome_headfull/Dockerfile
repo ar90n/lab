@@ -11,4 +11,4 @@ RUN ln -s /usr/bin/xvfb-chromium /usr/bin/chromium-browser
 RUN apt-get update && apt-get install -y \
     python3 python3-pip curl unzip libgconf-2-4
 
-RUN pip3 install pytest selenium chromedriver-binary~=$(chromium --version | perl -pe 's/([^0-9]+)([0-9]+\.[0-9]+).+/$2/g')
+RUN pip3 install poetry pytest selenium chromedriver-binary~=$(chromium --version | perl -pe 's/([^0-9]+)([0-9]+\.[0-9]+).+/$2/g')

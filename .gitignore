@@ -11,3 +11,5 @@ node_modules
 singularity_recipes/images
 
 .tmp
+
+.mypy_cache

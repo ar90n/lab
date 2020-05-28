@@ -22,9 +22,10 @@ From: ../images/common.simg
     echo "export XDG_DATA_HOME=\$SINGULARITY_XDG_ROOT" >> $SINGULARITY_ENVIRONMENT
     echo "export XDG_RUNTIME_DIR=\$SINGULARITY_XDG_ROOT" >> $SINGULARITY_ENVIRONMENT
     echo "export RUSTUP_HOME=/opt/rustup" >> $SINGULARITY_ENVIRONMENT
-    echo "export CARGO_HOME=/opt/cargo" >> $SINGULARITY_ENVIRONMENT
+    echo "export CARGO_HOME=\$SINGULARITY_XDG_ROOT/cargo" >> $SINGULARITY_ENVIRONMENT
     . $SINGULARITY_ENVIRONMENT
 
+    export CARGO_HOME=/opt/cargo
     curl -sSf https://sh.rustup.rs -o /tmp/rustup.sh
     bash /tmp/rustup.sh -y --no-modify-path
     /opt/cargo/bin/rustup update

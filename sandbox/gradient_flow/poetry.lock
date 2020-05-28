@@ -16,7 +16,16 @@ python-versions = "*"
 version = "0.1.0"
 
 [[package]]
-category = "dev"
+category = "main"
+description = "Atomic file writes."
+marker = "sys_platform == \"win32\""
+name = "atomicwrites"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "1.4.0"
+
+[[package]]
+category = "main"
 description = "Classes Without Boilerplate"
 name = "attrs"
 optional = false
@@ -163,7 +172,7 @@ pastel = ">=0.2.0,<0.3.0"
 pylev = ">=1.3,<2.0"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Cross-platform colored terminal text."
 marker = "python_version >= \"3.3\" and sys_platform == \"win32\" or sys_platform == \"win32\""
 name = "colorama"
@@ -287,7 +296,7 @@ gdal = ["gdal"]
 itk = ["itk"]
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Read metadata from Python packages"
 marker = "python_version >= \"3.5\" and python_version < \"3.8\" or python_version < \"3.8\""
 name = "importlib-metadata"
@@ -614,6 +623,14 @@ python-versions = "*"
 version = "0.8.4"
 
 [[package]]
+category = "main"
+description = "More routines for operating on iterables, beyond itertools"
+name = "more-itertools"
+optional = false
+python-versions = ">=3.5"
+version = "8.3.0"
+
+[[package]]
 category = "dev"
 description = "MessagePack (de)serializer."
 name = "msgpack"
@@ -738,7 +755,7 @@ python-versions = ">=3.5"
 version = "1.18.4"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Core utilities for Python packages"
 name = "packaging"
 optional = false
@@ -823,6 +840,22 @@ version = "1.5.0.1"
 testing = ["nose", "coverage"]
 
 [[package]]
+category = "main"
+description = "plugin and hook calling mechanisms for python"
+name = "pluggy"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "0.13.1"
+
+[package.dependencies]
+[package.dependencies.importlib-metadata]
+python = "<3.8"
+version = ">=0.12"
+
+[package.extras]
+dev = ["pre-commit", "tox"]
+
+[[package]]
 category = "dev"
 description = "Python dependency management and packaging made easy."
 name = "poetry"
@@ -901,6 +934,36 @@ python-versions = "*"
 version = "0.6.0"
 
 [[package]]
+category = "main"
+description = "library with cross-python path, ini-parsing, io, code, log facilities"
+name = "py"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "1.8.1"
+
+[[package]]
+category = "main"
+description = ""
+name = "pyamg"
+optional = false
+python-versions = "*"
+version = "4.0.0"
+
+[package.dependencies]
+numpy = ">=1.7.0"
+pybind11 = ">=2.2"
+pytest = ">=2"
+scipy = ">=0.12.0"
+
+[[package]]
+category = "main"
+description = "Seamless operability between C++11 and Python"
+name = "pybind11"
+optional = false
+python-versions = "*"
+version = "2.5.0"
+
+[[package]]
 category = "dev"
 description = "C parser in Python"
 marker = "python_version >= \"3.5\" and python_version < \"4.0\" and sys_platform == \"linux\""
@@ -943,6 +1006,32 @@ version = "0.14.11"
 
 [package.dependencies]
 six = "*"
+
+[[package]]
+category = "main"
+description = "pytest: simple powerful testing with Python"
+name = "pytest"
+optional = false
+python-versions = ">=3.5"
+version = "5.4.2"
+
+[package.dependencies]
+atomicwrites = ">=1.0"
+attrs = ">=17.4.0"
+colorama = "*"
+more-itertools = ">=4.0.0"
+packaging = "*"
+pluggy = ">=0.12,<1.0"
+py = ">=1.5.0"
+wcwidth = "*"
+
+[package.dependencies.importlib-metadata]
+python = "<3.8"
+version = ">=0.12"
+
+[package.extras]
+checkqa-mypy = ["mypy (v0.761)"]
+testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "requests", "xmlschema"]
 
 [[package]]
 category = "main"
@@ -1248,7 +1337,7 @@ secure = ["certifi", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "pyOpenSSL (>=0
 socks = ["PySocks (>=1.5.6,<1.5.7 || >1.5.7,<2.0)"]
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Measures number of Terminal column cells of wide-character codes"
 name = "wcwidth"
 optional = false
@@ -1275,7 +1364,7 @@ version = "3.5.1"
 notebook = ">=4.4.1"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Backport of pathlib-compatible object wrapper for zip files"
 marker = "python_version >= \"3.5\" and python_version < \"3.8\" or python_version < \"3.8\" or python_version >= \"3.5\" and python_version < \"3.8\" and (python_version >= \"3.5\" and python_version < \"3.8\" or python_version < \"3.8\")"
 name = "zipp"
@@ -1288,7 +1377,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "a78bc007ca4664cfc7371c5685cf4a11570545eaf09379c85e07d22fe890a3f3"
+content-hash = "0c1296079d6f2b3877d8efaf5503930f0327724a51e14ee04368352ccfa69a5c"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1299,6 +1388,10 @@ appdirs = [
 appnope = [
     {file = "appnope-0.1.0-py2.py3-none-any.whl", hash = "sha256:5b26757dc6f79a3b7dc9fab95359328d5747fcb2409d331ea66d0272b90ab2a0"},
     {file = "appnope-0.1.0.tar.gz", hash = "sha256:8b995ffe925347a2138d7ac0fe77155e4311a0ea6d6da4f5128fe4b3cbe5ed71"},
+]
+atomicwrites = [
+    {file = "atomicwrites-1.4.0-py2.py3-none-any.whl", hash = "sha256:6d1784dea7c0c8d4a5172b6c620f40b6e4cbfdf96d783691f2e1302a7b88e197"},
+    {file = "atomicwrites-1.4.0.tar.gz", hash = "sha256:ae70396ad1a434f9c7046fd2dd196fc04b12f9e91ffb859164193be8b6168a7a"},
 ]
 attrs = [
     {file = "attrs-19.3.0-py2.py3-none-any.whl", hash = "sha256:08a96c641c3a74e44eb59afb61a24f2cb9f4d7188748e76ba4bb5edfa3cb7d1c"},
@@ -1605,6 +1698,10 @@ mistune = [
     {file = "mistune-0.8.4-py2.py3-none-any.whl", hash = "sha256:88a1051873018da288eee8538d476dffe1262495144b33ecb586c4ab266bb8d4"},
     {file = "mistune-0.8.4.tar.gz", hash = "sha256:59a3429db53c50b5c6bcc8a07f8848cb00d7dc8bdb431a4ab41920d201d4756e"},
 ]
+more-itertools = [
+    {file = "more-itertools-8.3.0.tar.gz", hash = "sha256:558bb897a2232f5e4f8e2399089e35aecb746e1f9191b6584a151647e89267be"},
+    {file = "more_itertools-8.3.0-py3-none-any.whl", hash = "sha256:7818f596b1e87be009031c7653d01acc46ed422e6656b394b0f765ce66ed4982"},
+]
 msgpack = [
     {file = "msgpack-1.0.0-cp35-cp35m-manylinux1_i686.whl", hash = "sha256:cec8bf10981ed70998d98431cd814db0ecf3384e6b113366e7f36af71a0fca08"},
     {file = "msgpack-1.0.0-cp35-cp35m-manylinux1_x86_64.whl", hash = "sha256:aa5c057eab4f40ec47ea6f5a9825846be2ff6bf34102c560bad5cad5a677c5be"},
@@ -1741,6 +1838,10 @@ pkginfo = [
     {file = "pkginfo-1.5.0.1-py2.py3-none-any.whl", hash = "sha256:a6d9e40ca61ad3ebd0b72fbadd4fba16e4c0e4df0428c041e01e06eb6ee71f32"},
     {file = "pkginfo-1.5.0.1.tar.gz", hash = "sha256:7424f2c8511c186cd5424bbf31045b77435b37a8d604990b79d4e70d741148bb"},
 ]
+pluggy = [
+    {file = "pluggy-0.13.1-py2.py3-none-any.whl", hash = "sha256:966c145cd83c96502c3c3868f50408687b38434af77734af1e9ca461a4081d2d"},
+    {file = "pluggy-0.13.1.tar.gz", hash = "sha256:15b2acde666561e1298d71b523007ed7364de07029219b604cf808bfa1c765b0"},
+]
 poetry = [
     {file = "poetry-1.0.5-py2.py3-none-any.whl", hash = "sha256:81cdb3c708fe03cdef484ccd6c3becc74811dce2b15cb67444c2495b1240a278"},
     {file = "poetry-1.0.5.tar.gz", hash = "sha256:8e195ea8a4bce4f418a23fd828aa2f9ce06be7655720efd1d95beb0ee641030a"},
@@ -1760,6 +1861,35 @@ ptyprocess = [
     {file = "ptyprocess-0.6.0-py2.py3-none-any.whl", hash = "sha256:d7cc528d76e76342423ca640335bd3633420dc1366f258cb31d05e865ef5ca1f"},
     {file = "ptyprocess-0.6.0.tar.gz", hash = "sha256:923f299cc5ad920c68f2bc0bc98b75b9f838b93b599941a6b63ddbc2476394c0"},
 ]
+py = [
+    {file = "py-1.8.1-py2.py3-none-any.whl", hash = "sha256:c20fdd83a5dbc0af9efd622bee9a5564e278f6380fffcacc43ba6f43db2813b0"},
+    {file = "py-1.8.1.tar.gz", hash = "sha256:5e27081401262157467ad6e7f851b7aa402c5852dbcb3dae06768434de5752aa"},
+]
+pyamg = [
+    {file = "pyamg-4.0.0-cp27-cp27m-macosx_10_13_x86_64.whl", hash = "sha256:3d987bec03c03b0f323fd922bdf3a5078022d0f7de3a83743bc1cafcc772da8c"},
+    {file = "pyamg-4.0.0-cp27-cp27m-macosx_10_6_intel.whl", hash = "sha256:672c322bdc3637c187ac77864a628d3445bd6c59e0743bb16864eeab051e2887"},
+    {file = "pyamg-4.0.0-cp27-cp27m-manylinux1_i686.whl", hash = "sha256:5a54a8799eccd285e61ce9528613cfb34f1a8b3eaab8847f79922fb17f38da83"},
+    {file = "pyamg-4.0.0-cp27-cp27m-manylinux1_x86_64.whl", hash = "sha256:4f5f8e81474f98523350af86ca9defbce39887f77ea8f63c02de679c171485e2"},
+    {file = "pyamg-4.0.0-cp27-cp27mu-manylinux1_i686.whl", hash = "sha256:78a149bb9d67490f110a37a534da957a9f03e2f1e97257c4193d85f111d8f854"},
+    {file = "pyamg-4.0.0-cp27-cp27mu-manylinux1_x86_64.whl", hash = "sha256:b91fa4c1e7e65315e13d8196a15a9ee5eb95fc6d065f3d4fa6e7f93fc7f1d9c7"},
+    {file = "pyamg-4.0.0-cp35-cp35m-macosx_10_6_intel.whl", hash = "sha256:23e8952cf48d0828e4377be8a616ad1ae7ef6da1a008d25ae7fd3a0cb31d04ed"},
+    {file = "pyamg-4.0.0-cp35-cp35m-manylinux1_i686.whl", hash = "sha256:92bb7f1c0d9378a714b57ab9e07146f03ba82ad0eefe0d24903c295b8c6a87fd"},
+    {file = "pyamg-4.0.0-cp35-cp35m-manylinux1_x86_64.whl", hash = "sha256:6682d93fb8d85651e9428a96604fd337689921bbac899da5b2691da4373c58fc"},
+    {file = "pyamg-4.0.0-cp36-cp36m-macosx_10_6_intel.whl", hash = "sha256:c65082b55e7afe79ac6af56b95dddc2ef8b9175fa9f635eb742fa23ba3816df1"},
+    {file = "pyamg-4.0.0-cp36-cp36m-manylinux1_i686.whl", hash = "sha256:39b3bd0ca2e86c96034b1d1964b3d26d14b8a6a19147e6b201ae0b1af60489f9"},
+    {file = "pyamg-4.0.0-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:3b1803590db6e3c59a6b4bb0a7e55c4c869e8538418aa76b9b3803bafb32c9fa"},
+    {file = "pyamg-4.0.0-cp36-cp36m-win32.whl", hash = "sha256:f01c0490aac188a6dca995d817b526dbef7ec337c4de0ac8a0d978dfdaf08d9c"},
+    {file = "pyamg-4.0.0-cp36-cp36m-win_amd64.whl", hash = "sha256:052c55e5a3027d58b3dfdc6d35e9e02642d686d1816a5cc2fc27585e2ba2e422"},
+    {file = "pyamg-4.0.0-cp37-cp37m-macosx_10_13_x86_64.whl", hash = "sha256:91ad6bf5cb0f751d38c61b4e4cf90cbe96b839be398797717e2cbb96db53eb53"},
+    {file = "pyamg-4.0.0-cp37-cp37m-macosx_10_6_intel.whl", hash = "sha256:1084166877f5c6d86f45198f96aa3593908b5d857f1d8403d539f02f169a3d6b"},
+    {file = "pyamg-4.0.0-cp37-cp37m-manylinux1_i686.whl", hash = "sha256:f79d910b0949dddd057b4d3f6fc2a07bda51b815fce460ed6107b62aa684deac"},
+    {file = "pyamg-4.0.0-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:9f8c5a1e492a5b77c42598da44ed00291bf6bf569e2e6a80d385ef8b051e4baf"},
+    {file = "pyamg-4.0.0.tar.gz", hash = "sha256:3ceb38ffd86e29774e759486f2961599c8ed847459c68727493cadeaf115a38a"},
+]
+pybind11 = [
+    {file = "pybind11-2.5.0-py2.py3-none-any.whl", hash = "sha256:205d9f9615eac190811cb8c3c2b2f95f6844ddba0fa0a1d45d00793338741601"},
+    {file = "pybind11-2.5.0.tar.gz", hash = "sha256:ea5a4e7a880112915463826f1acbec5892df36dfe102ecb249229ac514fb54ad"},
+]
 pycparser = [
     {file = "pycparser-2.20-py2.py3-none-any.whl", hash = "sha256:7582ad22678f0fcd81102833f60ef8d0e57288b6b5fb00323d101be910e35705"},
     {file = "pycparser-2.20.tar.gz", hash = "sha256:2d475327684562c3a96cc71adf7dc8c4f0565175cf86b6d7a404ff4c771f15f0"},
@@ -1778,6 +1908,10 @@ pyparsing = [
 ]
 pyrsistent = [
     {file = "pyrsistent-0.14.11.tar.gz", hash = "sha256:3ca82748918eb65e2d89f222b702277099aca77e34843c5eb9d52451173970e2"},
+]
+pytest = [
+    {file = "pytest-5.4.2-py3-none-any.whl", hash = "sha256:95c710d0a72d91c13fae35dce195633c929c3792f54125919847fdcdf7caa0d3"},
+    {file = "pytest-5.4.2.tar.gz", hash = "sha256:eb2b5e935f6a019317e455b6da83dd8650ac9ffd2ee73a7b657a30873d67a698"},
 ]
 python-dateutil = [
     {file = "python-dateutil-2.8.1.tar.gz", hash = "sha256:73ebfe9dbf22e832286dafa60473e4cd239f8592f699aa5adaf10050e6e1823c"},

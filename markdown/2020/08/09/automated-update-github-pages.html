@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>GitHub ActionsでWebサイトを自動更新する | lab note</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="GitHub ActionsでWebサイトを自動更新する" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Update GitHubPages automatically" />
+<meta property="og:description" content="Update GitHubPages automatically" />
+<link rel="canonical" href="https://lab.ar90n.net/markdown/2020/08/09/automated-update-github-pages.html" />
+<meta property="og:url" content="https://lab.ar90n.net/markdown/2020/08/09/automated-update-github-pages.html" />
+<meta property="og:site_name" content="lab note" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-08-09T00:00:00-05:00" />
+<script type="application/ld+json">
+{"description":"Update GitHubPages automatically","url":"https://lab.ar90n.net/markdown/2020/08/09/automated-update-github-pages.html","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://lab.ar90n.net/markdown/2020/08/09/automated-update-github-pages.html"},"headline":"GitHub ActionsでWebサイトを自動更新する","dateModified":"2020-08-09T00:00:00-05:00","datePublished":"2020-08-09T00:00:00-05:00","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://lab.ar90n.net/feed.xml" title="lab note" /><!-- the google_analytics_id gets auto inserted from the config file -->
+
+
+
+<script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create','UA-57531313-5','auto');ga('require','displayfeatures');ga('send','pageview');</script>
+
+<link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">lab note</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About Me</a><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">GitHub ActionsでWebサイトを自動更新する</h1><p class="page-description">Update GitHubPages automatically</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-08-09T00:00:00-05:00" itemprop="datePublished">
+        Aug 9, 2020
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      1 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#markdown">markdown</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#はじめに">はじめに</a></li>
+<li class="toc-entry toc-h2"><a href="#github-actions-によるバッチ処理の定刻実行">GitHub Actions によるバッチ処理の定刻実行</a></li>
+<li class="toc-entry toc-h2"><a href="#cliプログラムを-elm-で書く">CLIプログラムを Elm で書く</a></li>
+<li class="toc-entry toc-h2"><a href="#クローリング結果の保存">クローリング結果の保存</a></li>
+<li class="toc-entry toc-h2"><a href="#elmによるフロントエンド開発">Elmによるフロントエンド開発</a></li>
+<li class="toc-entry toc-h2"><a href="#所感">所感</a></li>
+</ul><h2 id="はじめに">
+<a class="anchor" href="#%E3%81%AF%E3%81%98%E3%82%81%E3%81%AB" aria-hidden="true"><span class="octicon octicon-link"></span></a>はじめに</h2>
+<p>GitHubPages + GitHub Actions でコンテンツを自動的に更新するWebサイトをつくってみました．GitHub Trending に登場したリポジトリに付与されていた topics を一覧表示するサイトです．言語ごとの用途がざっくりとした感じでみることができます．</p>
+
+<p><a href="https://ar90n.github.io/github-topics-trending/">Topics in GitHub Trending</a> - <a href="https://github.com/ar90n/github-topics-trending">GitHub</a></p>
+
+<p>今回，勉強も兼ねてフロントエンドとデータのクローリング処理共に Elm で記述しました．</p>
+
+<h2 id="github-actions-によるバッチ処理の定刻実行">
+<a class="anchor" href="#github-actions-%E3%81%AB%E3%82%88%E3%82%8B%E3%83%90%E3%83%83%E3%83%81%E5%87%A6%E7%90%86%E3%81%AE%E5%AE%9A%E5%88%BB%E5%AE%9F%E8%A1%8C" aria-hidden="true"><span class="octicon octicon-link"></span></a>GitHub Actions によるバッチ処理の定刻実行</h2>
+
+<p>GitHub Actionsによって定刻実行されるバッチ処理はは以下の3つのジョブからなります．</p>
+
+<ul>
+  <li>build</li>
+  <li>crawl</li>
+  <li>push</li>
+</ul>
+
+<p>それぞれ，クローリングスクリプトのビルド，データのクローリング，データのリポジトリへのプッシュを行います．設定の詳細は<a href="https://github.com/ar90n/github-topics-trending/blob/master/.github/workflows/crawling.yml">こちら</a>を参考にしてください．</p>
+
+<h2 id="cliプログラムを-elm-で書く">
+<a class="anchor" href="#cli%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%A0%E3%82%92-elm-%E3%81%A7%E6%9B%B8%E3%81%8F" aria-hidden="true"><span class="octicon octicon-link"></span></a>CLIプログラムを Elm で書く</h2>
+<p>crawlジョブではElmで記述されたCLIプログラムを実行してデータの取得を行います．ElmはWebフロントエンドを記述することに特化している言語です．そのため，CLIプログラムの開発に必要な，コマンドライン引数の処理といった機能がサポートされいません．そこで，今回は以下のパッケージを持ちました．</p>
+
+<p><a href="https://github.com/dillonkearns/elm-cli-options-parser">pdillonkearns/elm-cli-options-parser</a></p>
+
+<p>こちらのパッケージを用いると，Flagを用いてコマンドライン引数へのアクセスが可能となります．今回のプログラムでは，以下の様に<code class="language-plaintext highlighter-rouge">githubToken</code> と <code class="language-plaintext highlighter-rouge">language</code> と <code class="language-plaintext highlighter-rouge">dataRange</code> とを引数から受け取っています．</p>
+
+<div class="language-elm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">init</span> <span class="p">:</span> <span class="kt">Flags</span> <span class="o">-&gt;</span> <span class="kt">TrendingApiOptions</span> <span class="o">-&gt;</span> <span class="p">(</span> <span class="kt">Model</span><span class="o">,</span> <span class="kt">Cmd</span> <span class="kt">Msg</span> <span class="p">)</span>
+<span class="n">init</span> <span class="p">{</span> <span class="n">githubToken</span> <span class="p">}</span> <span class="p">{</span> <span class="n">language</span><span class="o">,</span> <span class="n">dateRange</span> <span class="p">}</span> <span class="o">=</span>
+    <span class="p">(</span> <span class="p">{</span> <span class="n">githubToken</span> <span class="o">=</span> <span class="n">githubToken</span> <span class="p">}</span>
+    <span class="o">,</span> <span class="n">attemptApi</span> <span class="kt">TrendingApiResponse</span> <span class="p">(</span><span class="n">fetchTrending</span> <span class="n">githubToken</span> <span class="n">language</span> <span class="n">dateRange</span><span class="p">)</span>
+    <span class="p">)</span>
+</code></pre></div></div>
+
+<p>また，GitHub Tredingsの取得は以下のAPIを利用させていただきました．</p>
+
+<p><a href="https://github.com/huchenme/github-trending-api">github-trending-api</a></p>
+
+<h2 id="クローリング結果の保存">
+<a class="anchor" href="#%E3%82%AF%E3%83%AD%E3%83%BC%E3%83%AA%E3%83%B3%E3%82%B0%E7%B5%90%E6%9E%9C%E3%81%AE%E4%BF%9D%E5%AD%98" aria-hidden="true"><span class="octicon octicon-link"></span></a>クローリング結果の保存</h2>
+<p>今回，GitHub PagesのみでWebサイトをホスティングするため，データベースを使用することはできません．そのため，クローリング結果はJSONに整形されたのちに，直接GitHub Pagesのリポジトリにプッシュされます．</p>
+
+<p><a href="https://github.com/ar90n/github-topics-trending/tree/gh-pages/topics">topics</a></p>
+
+<p>この，JSONをフロントエンドから取得することで動的なコンテンツ更新を実現します．</p>
+
+<h2 id="elmによるフロントエンド開発">
+<a class="anchor" href="#elm%E3%81%AB%E3%82%88%E3%82%8B%E3%83%95%E3%83%AD%E3%83%B3%E3%83%88%E3%82%A8%E3%83%B3%E3%83%89%E9%96%8B%E7%99%BA" aria-hidden="true"><span class="octicon octicon-link"></span></a>Elmによるフロントエンド開発</h2>
+<p>特筆すべきことはありません．Elmは本当に書きやすい言語でした．</p>
+
+<h2 id="所感">
+<a class="anchor" href="#%E6%89%80%E6%84%9F" aria-hidden="true"><span class="octicon octicon-link"></span></a>所感</h2>
+<p>Elmの勉強としてはちょうど良い分量でした．GitHub PagesとGitHub Actionsで結構なことができる印象なので，また何かチャレンジしたいですね．</p>
+
+
+  </div><a class="u-url" href="/markdown/2020/08/09/automated-update-github-pages.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>My lab notebook</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/ar90n" title="ar90n"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/ar90n" title="ar90n"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

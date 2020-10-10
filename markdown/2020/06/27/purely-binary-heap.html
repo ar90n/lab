@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>純粋なバイナリヒープ | lab note</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="純粋なバイナリヒープ" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="An implementation of purely binary heap" />
+<meta property="og:description" content="An implementation of purely binary heap" />
+<link rel="canonical" href="https://lab.ar90n.net/markdown/2020/06/27/purely-binary-heap.html" />
+<meta property="og:url" content="https://lab.ar90n.net/markdown/2020/06/27/purely-binary-heap.html" />
+<meta property="og:site_name" content="lab note" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-06-27T00:00:00-05:00" />
+<script type="application/ld+json">
+{"description":"An implementation of purely binary heap","url":"https://lab.ar90n.net/markdown/2020/06/27/purely-binary-heap.html","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://lab.ar90n.net/markdown/2020/06/27/purely-binary-heap.html"},"headline":"純粋なバイナリヒープ","dateModified":"2020-06-27T00:00:00-05:00","datePublished":"2020-06-27T00:00:00-05:00","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://lab.ar90n.net/feed.xml" title="lab note" /><!-- the google_analytics_id gets auto inserted from the config file -->
+
+
+
+<script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create','UA-57531313-5','auto');ga('require','displayfeatures');ga('send','pageview');</script>
+
+<link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">lab note</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About Me</a><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">純粋なバイナリヒープ</h1><p class="page-description">An implementation of purely binary heap</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-06-27T00:00:00-05:00" itemprop="datePublished">
+        Jun 27, 2020
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      2 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#markdown">markdown</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#バイナリヒープとは">バイナリヒープとは？</a></li>
+<li class="toc-entry toc-h2"><a href="#バイナリヒープを純粋に実装する">バイナリヒープを純粋に実装する</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#ヒープクラス">ヒープクラス</a></li>
+<li class="toc-entry toc-h3"><a href="#挿入-olog-n">挿入 O(log n)</a></li>
+<li class="toc-entry toc-h3"><a href="#構築-on">構築 O(n)</a></li>
+<li class="toc-entry toc-h3"><a href="#削除-olog-n">削除 O(log n)</a></li>
+<li class="toc-entry toc-h3"><a href="#fによるプライオリティキュー">F#によるプライオリティキュー</a></li>
+</ul>
+</li>
+</ul><p>純粋なヒープを実装する場合，Braun Treeなど色々と適したデータ構造があるらしいですね．
+でも、あまり詳しくないので今回は馴染みの深いバイナリヒープを実装する方法について調べてみました．</p>
+
+<h2 id="バイナリヒープとは">
+<a class="anchor" href="#%E3%83%90%E3%82%A4%E3%83%8A%E3%83%AA%E3%83%92%E3%83%BC%E3%83%97%E3%81%A8%E3%81%AF" aria-hidden="true"><span class="octicon octicon-link"></span></a>バイナリヒープとは？</h2>
+<p>二分木を用いて実装したヒープです．ヒープとは以下の性質をもつデータ構造です．</p>
+
+<ul>
+  <li>木構造をもつ</li>
+  <li>常に子要素の値は親要素の値以上</li>
+</ul>
+
+<p>ヒープ自身の詳細については<a href="https://ja.m.wikipedia.org/wiki/%E3%83%92%E3%83%BC%E3%83%97">この記事</a>を参考にしてください．</p>
+
+<h2 id="バイナリヒープを純粋に実装する">
+<a class="anchor" href="#%E3%83%90%E3%82%A4%E3%83%8A%E3%83%AA%E3%83%92%E3%83%BC%E3%83%97%E3%82%92%E7%B4%94%E7%B2%8B%E3%81%AB%E5%AE%9F%E8%A3%85%E3%81%99%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>バイナリヒープを純粋に実装する</h2>
+<p>一般的にバイナリヒープの実装には配列とそのインデックスを用いることが多いと思います．（上記のウィキペディアにもこの方法が記載されています）
+しかしがなら，この方法は配列の内容を書き換える必要があるため，純粋ではありません．そこで，今回は以下で提案されている手法を用いました．</p>
+
+<p><a href="https://arxiv.org/abs/1312.4666">A Functional Approach to Standard Binary Heaps</a></p>
+
+<p>この論文では，純粋なバイナリヒープの挿入，構築，削除の各操作ついてScalaを用いて説明しています．
+以降，これらについて簡単に紹介を行います．</p>
+
+<h3 id="ヒープクラス">
+<a class="anchor" href="#%E3%83%92%E3%83%BC%E3%83%97%E3%82%AF%E3%83%A9%E3%82%B9" aria-hidden="true"><span class="octicon octicon-link"></span></a>ヒープクラス</h3>
+<p>この論文ではバイナリヒープを表現するためのクラスHeapを以下のように定義しています，</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">abstract</span> <span class="k">sealed</span> <span class="k">class</span> <span class="nc">Heap</span> <span class="o">{</span>
+    <span class="k">def</span> <span class="nf">min</span><span class="k">:</span> <span class="kt">Int</span> <span class="c1">// ヒープの最小値</span>
+    <span class="k">def</span> <span class="nf">left</span><span class="k">:</span> <span class="kt">Heap</span> <span class="c1">//左側の子要素</span>
+    <span class="k">def</span> <span class="nf">right</span><span class="k">:</span> <span class="kt">Heap</span> <span class="c1">//右側の子要素</span>
+    <span class="k">def</span> <span class="nf">size</span><span class="k">:</span> <span class="kt">Int</span> <span class="c1">//ヒープに含まれる要素数</span>
+    <span class="k">def</span> <span class="nf">height</span><span class="k">:</span> <span class="kt">Int</span> <span class="c1">//ヒープの高さ</span>
+<span class="o">}</span>
+<span class="k">case</span> <span class="k">class</span> <span class="nc">Branch</span><span class="o">(</span><span class="n">min</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">left</span><span class="k">:</span> <span class="kt">Heap</span><span class="o">,</span> <span class="n">right</span><span class="k">:</span> <span class="kt">Heap</span><span class="o">,</span> <span class="n">size</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">height</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">Heap</span>
+<span class="k">case</span> <span class="k">object</span> <span class="nc">Leaf</span> <span class="k">extends</span> <span class="nc">Heap</span> <span class="o">{</span>
+    <span class="k">def</span> <span class="nf">min</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="nf">fail</span><span class="o">(</span><span class="s">"Leaf.min"</span><span class="o">)</span>
+    <span class="k">def</span> <span class="nf">left</span><span class="k">:</span> <span class="kt">Heap</span> <span class="o">=</span> <span class="nf">fail</span><span class="o">(</span><span class="s">"Leaf.min"</span><span class="o">)</span>
+    <span class="k">def</span> <span class="nf">right</span><span class="k">:</span> <span class="kt">Heap</span> <span class="o">=</span> <span class="nf">fail</span><span class="o">(</span><span class="s">"Leaf.right"</span><span class="o">)</span>
+    <span class="k">def</span> <span class="nf">size</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">def</span> <span class="nf">height</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>上述の通り，Heapクラスのleftとrightを持つ再帰的な構造になっています．
+また，Heapクラスは抽象クラスであるため，一つ以上の子要素を持つBranchと子要素を持たないLeafとを派生させています．
+単純な二分木にはsizeとheightは必須ではありません．しかしながら，今回のようにバイナリヒープを実現するためには非常に重要となってきます．</p>
+
+<h3 id="挿入-olog-n">
+<a class="anchor" href="#%E6%8C%BF%E5%85%A5-olog-n" aria-hidden="true"><span class="octicon octicon-link"></span></a>挿入 O(log n)</h3>
+<p>新たな要素をを挿入する際に気をつけなければいけないことは，要素を挿入したバイナリヒープもまた上述の条件を満たさなければならないということです．
+そこで，今回の実装では挿入処理を以下の二つの処理に分けて考えます．</p>
+
+<ol>
+  <li>要素をLeafとして最下レベルに追加する．</li>
+  <li>1.にて追加した要素を適切な位置まで上へ登らせる（bubbleUp）．</li>
+</ol>
+
+<p>それでは，まずは1.の新たな要素をLeafとして追加する方法について解説します．
+ノード追加すること自体は言語側でやってくれることなので，基本的には問題になりません．
+そのため，次にLeafを挿入する場所はどこかを知ることが問題となります．</p>
+
+<p>二分木に対する操作のパフォーマンスは木の高さに依存するため，可能な限り二分木の高さを抑える必要があります．
+従って，新たな要素はleft側から順番に挿入します．
+バイナリヒープは二分木であるため，ルートから適切にleftまたはrightを選択することで任意の位置に到達することが可能です．
+そのため，この問題はleftとrightを以下のように4つの場合に分けて考えることで解決することができます．</p>
+
+<ol>
+  <li>leftが完全二分木でない場合 -&gt; leftを選択</li>
+  <li>leftが完全二分木であるが，rightは完全二分木でない場合 -&gt; rightを選択</li>
+  <li>leftもrightも完全二分木であるが，leftの方がrightよりも高い場合 -&gt; rightを選択</li>
+  <li>leftもrightも完全二分木であり，高さが等しい場合 -&gt; leftを選択</li>
+</ol>
+
+<p>これら4つの場合を図に表すと以下のようになります．</p>
+
+<p><img src="/assets/img/2020-06-27-purely-binary-heap/media/image.png" alt=""></p>
+
+<p>また，Heapが完全二分木であるか否かは以下の条件式で求めることが可能です．</p>
+
+<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mi>i</mi><mi>z</mi><mi>e</mi><mo>=</mo><mo>=</mo><msup><mn>2</mn><mrow><mi>H</mi><mi>e</mi><mi>i</mi><mi>g</mi><mi>h</mi><mi>t</mi></mrow></msup><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">Size == 2^{Height} - 1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05764em;">S</span><span class="mord mathdefault">i</span><span class="mord mathdefault" style="margin-right:0.04398em;">z</span><span class="mord mathdefault">e</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span></span><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.9824379999999999em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8991079999999999em;"><span style="top:-3.1130000000000004em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.08125em;">H</span><span class="mord mathdefault mtight">e</span><span class="mord mathdefault mtight">i</span><span class="mord mathdefault mtight" style="margin-right:0.03588em;">g</span><span class="mord mathdefault mtight">h</span><span class="mord mathdefault mtight">t</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span></span>
+
+<p>次に，2.のbubbleUpの方法について解説します．
+bubbleUpの処理は単純で，自身の値(min)と子要素の値(min)とを比較し，子要素の値(min)の値の方が小さい場合は要素を入れ替えます．
+以上の結果を元に，insertとbubbleUpは以下のように実装することができます．</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">bubbleUp</span><span class="o">(</span><span class="n">x</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">l</span><span class="k">:</span> <span class="kt">Heap</span><span class="o">,</span> <span class="n">r</span><span class="k">:</span> <span class="kt">Heap</span><span class="o">)</span><span class="k">:</span> <span class="kt">Heap</span> <span class="o">=</span> <span class="o">(</span><span class="n">l</span><span class="o">,</span> <span class="n">r</span><span class="o">)</span> <span class="k">match</span> <span class="o">{</span>
+    <span class="nf">case</span> <span class="o">(</span><span class="nc">Branch</span><span class="o">(</span><span class="n">y</span><span class="o">,</span> <span class="n">lt</span><span class="o">,</span> <span class="n">rt</span><span class="o">,</span> <span class="k">_</span><span class="o">,</span> <span class="k">_</span><span class="o">),</span> <span class="k">_</span><span class="o">)</span> <span class="nf">if</span> <span class="o">(</span><span class="n">x</span> <span class="o">&gt;</span> <span class="n">y</span><span class="o">)</span> <span class="k">=&gt;</span>
+    <span class="nc">Heap</span><span class="o">(</span><span class="n">y</span><span class="o">,</span> <span class="nc">Heap</span><span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="n">lt</span><span class="o">,</span> <span class="n">rt</span><span class="o">),</span> <span class="n">r</span><span class="o">)</span>
+    <span class="nf">case</span> <span class="o">(</span><span class="k">_</span><span class="o">,</span> <span class="nc">Branch</span><span class="o">(</span><span class="n">z</span><span class="o">,</span> <span class="n">lt</span><span class="o">,</span> <span class="n">rt</span><span class="o">,</span> <span class="k">_</span><span class="o">,</span> <span class="k">_</span><span class="o">))</span> <span class="nf">if</span> <span class="o">(</span><span class="n">x</span> <span class="o">&gt;</span> <span class="n">z</span><span class="o">)</span> <span class="k">=&gt;</span>
+    <span class="nc">Heap</span><span class="o">(</span><span class="n">z</span><span class="o">,</span> <span class="n">l</span><span class="o">,</span> <span class="nc">Heap</span><span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="n">lt</span><span class="o">,</span> <span class="n">rt</span><span class="o">))</span>
+    <span class="nf">case</span> <span class="o">(</span><span class="k">_</span><span class="o">,</span> <span class="k">_</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">Heap</span><span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="n">l</span><span class="o">,</span> <span class="n">r</span><span class="o">)</span>
+<span class="o">}</span>
+
+<span class="k">def</span> <span class="nf">insert</span><span class="o">(</span><span class="n">x</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Heap</span> <span class="o">=</span>
+    <span class="nf">if</span> <span class="o">(</span><span class="n">isEmpty</span><span class="o">)</span> <span class="nc">Heap</span><span class="o">(</span><span class="n">x</span><span class="o">)</span>
+    <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="nv">left</span><span class="o">.</span><span class="py">size</span> <span class="o">&lt;</span> <span class="nv">math</span><span class="o">.</span><span class="py">pow</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="nv">left</span><span class="o">.</span><span class="py">height</span><span class="o">)</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span>
+        <span class="nf">bubbleUp</span><span class="o">(</span><span class="n">min</span><span class="o">,</span> <span class="nv">left</span><span class="o">.</span><span class="py">insert</span><span class="o">(</span><span class="n">x</span><span class="o">),</span> <span class="n">right</span><span class="o">)</span>
+    <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="nv">right</span><span class="o">.</span><span class="py">size</span> <span class="o">&lt;</span> <span class="nv">math</span><span class="o">.</span><span class="py">pow</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="nv">right</span><span class="o">.</span><span class="py">height</span><span class="o">)</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span>
+        <span class="nf">bubbleUp</span><span class="o">(</span><span class="n">min</span><span class="o">,</span> <span class="n">left</span><span class="o">,</span> <span class="nv">right</span><span class="o">.</span><span class="py">insert</span><span class="o">(</span><span class="n">x</span><span class="o">))</span>
+    <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="nv">right</span><span class="o">.</span><span class="py">height</span> <span class="o">&lt;</span> <span class="nv">left</span><span class="o">.</span><span class="py">height</span><span class="o">)</span>
+        <span class="nf">bubbleUp</span><span class="o">(</span><span class="n">min</span><span class="o">,</span> <span class="n">left</span><span class="o">,</span> <span class="nv">right</span><span class="o">.</span><span class="py">insert</span><span class="o">(</span><span class="n">x</span><span class="o">))</span>
+    <span class="k">else</span> <span class="nf">bubbleUp</span><span class="o">(</span><span class="n">min</span><span class="o">,</span> <span class="nv">left</span><span class="o">.</span><span class="py">insert</span><span class="o">(</span><span class="n">x</span><span class="o">),</span> <span class="n">right</span><span class="o">)</span>
+</code></pre></div></div>
+
+<h3 id="構築-on">
+<a class="anchor" href="#%E6%A7%8B%E7%AF%89-on" aria-hidden="true"><span class="octicon octicon-link"></span></a>構築 O(n)</h3>
+<p>ソートされていない配列からバイナリヒープの構築を試みます．
+ここでは，構築済みのバイナリヒープをleftとrightに，配列のi番目の要素をminに設定した要素を考えます．
+しかしながら，配列のi番目の要素が各子要素の値(min)より小さいとは限らないため，全体としてヒープの条件を満たすとは限りません．
+そこで，ヒープの条件を満たさない場合は，配列のi番目の要素を適切な位置まで降ろす操作(bubbleDown)が必要となります．</p>
+
+<p>bubbleDownはHeapのminの値と各子要素のminの値とを比較し，小さな場合は何もせず， 大きな場合は要素を入れ替えた後に，再帰的にbubbleDownを呼びだします．
+こうすることで，当該要素を適切な位置まで降ろすことができます．
+以上の結果を踏まえ，配列からバイナリヒープを構築する関数heapify及びbubbleUpは以下のように定義できます．</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">bubbleDown</span><span class="o">(</span><span class="n">x</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">l</span><span class="k">:</span> <span class="kt">Heap</span><span class="o">,</span> <span class="n">r</span><span class="k">:</span> <span class="kt">Heap</span><span class="o">)</span><span class="k">:</span> <span class="kt">Heap</span> <span class="o">=</span> <span class="o">(</span><span class="n">l</span><span class="o">,</span> <span class="n">r</span><span class="o">)</span> <span class="k">match</span> <span class="o">{</span>
+    <span class="nf">case</span> <span class="o">(</span><span class="nc">Branch</span><span class="o">(</span><span class="n">y</span><span class="o">,</span> <span class="k">_</span><span class="o">,</span> <span class="k">_</span><span class="o">,</span> <span class="k">_</span><span class="o">,</span> <span class="k">_</span><span class="o">),</span> <span class="nc">Branch</span><span class="o">(</span><span class="n">z</span><span class="o">,</span> <span class="n">lt</span><span class="o">,</span> <span class="n">rt</span><span class="o">,</span> <span class="k">_</span><span class="o">,</span> <span class="k">_</span><span class="o">))</span>
+    <span class="nf">if</span> <span class="o">(</span><span class="n">z</span> <span class="o">&lt;</span> <span class="n">y</span> <span class="o">&amp;&amp;</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">z</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">Heap</span><span class="o">(</span><span class="n">z</span><span class="o">,</span> <span class="n">l</span><span class="o">,</span> <span class="nf">bubbleDown</span><span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="n">lt</span><span class="o">,</span> <span class="n">rt</span><span class="o">))</span>
+        <span class="nf">case</span> <span class="o">(</span><span class="nc">Branch</span><span class="o">(</span><span class="n">y</span><span class="o">,</span> <span class="n">lt</span><span class="o">,</span> <span class="n">rt</span><span class="o">,</span> <span class="k">_</span><span class="o">,</span> <span class="k">_</span><span class="o">),</span> <span class="k">_</span><span class="o">)</span>
+        <span class="nf">if</span> <span class="o">(</span><span class="n">x</span> <span class="o">&gt;</span> <span class="n">y</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">Heap</span><span class="o">(</span><span class="n">y</span><span class="o">,</span> <span class="nf">bubbleDown</span><span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="n">lt</span><span class="o">,</span> <span class="n">rt</span><span class="o">),</span> <span class="n">r</span><span class="o">)</span>
+            <span class="nf">case</span> <span class="o">(</span><span class="k">_</span><span class="o">,</span> <span class="k">_</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">Heap</span><span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="n">l</span><span class="o">,</span> <span class="n">r</span><span class="o">)</span>
+<span class="o">}</span>
+
+<span class="k">def</span> <span class="nf">heapify</span><span class="o">(</span><span class="n">a</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">Int</span><span class="o">])</span><span class="k">:</span> <span class="kt">Heap</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="k">def</span> <span class="nf">loop</span><span class="o">(</span><span class="n">i</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Heap</span> <span class="o">=</span>
+    <span class="nf">if</span> <span class="o">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="nv">a</span><span class="o">.</span><span class="py">length</span><span class="o">)</span> <span class="nf">bubbleDown</span><span class="o">(</span><span class="nf">a</span><span class="o">(</span><span class="n">i</span><span class="o">),</span> <span class="nf">loop</span><span class="o">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="o">),</span> <span class="nf">loop</span><span class="o">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="o">))</span>
+        <span class="k">else</span> <span class="nc">Leaf</span>
+            <span class="nf">loop</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>heapifyは一見するとを$O(n\log n)$に見えますが，漸近的には$O(n)$らしいです．
+正直，なぜ$O(n)$に成るのかは理解できていませんが，アルゴリズムイントロダクションに詳細が記載されているとあったので，そのうち調べてみようと思います．</p>
+
+<h3 id="削除-olog-n">
+<a class="anchor" href="#%E5%89%8A%E9%99%A4-olog-n" aria-hidden="true"><span class="octicon octicon-link"></span></a>削除 O(log n)</h3>
+<p>要素をの削除も挿入と同様， 以下のように二つのの処理に分けて考えることができます．</p>
+
+<ol>
+  <li>最後に挿入した要素をバイナリヒープのルートへ移動させる</li>
+  <li>1.でルートへ移動した要素を適切な位置まで降ろす(bubbleDown)</li>
+</ol>
+
+<p>最後に挿入した要素は挿入処理と同様に二分木を走査し，当該要素を見つけることで実現します．
+要素を適切な位置まで降ろす処理(bubbleDown)は構築の際に用いたものと同一です．
+以上の結果より，要素を削除する関数removeは以下のように実装されます．
+なお，floatLeftは左側の，floatRightは右側の子要素の値と親要素の値を交換する関数です.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">remove</span><span class="k">:</span> <span class="kt">Heap</span> <span class="o">=</span>
+    <span class="nf">if</span> <span class="o">(</span><span class="n">isEmpty</span><span class="o">)</span> <span class="nf">fail</span><span class="o">(</span><span class="s">"Empty heap."</span><span class="o">)</span>
+    <span class="k">else</span> <span class="nf">bubbleRootDown</span><span class="o">(</span><span class="nf">mergeChildren</span><span class="o">(</span><span class="n">left</span><span class="o">,</span> <span class="n">right</span><span class="o">))</span>
+
+<span class="k">def</span> <span class="nf">bubbleRootDown</span><span class="o">(</span><span class="n">h</span><span class="k">:</span> <span class="kt">Heap</span><span class="o">)</span><span class="k">:</span> <span class="kt">Heap</span> <span class="o">=</span>
+    <span class="nf">if</span> <span class="o">(</span><span class="nv">h</span><span class="o">.</span><span class="py">isEmpty</span><span class="o">)</span> <span class="nc">Leaf</span>
+    <span class="k">else</span> <span class="nv">Heap</span><span class="o">.</span><span class="py">bubbleDown</span><span class="o">(</span><span class="nv">h</span><span class="o">.</span><span class="py">min</span><span class="o">,</span> <span class="nv">h</span><span class="o">.</span><span class="py">left</span><span class="o">,</span> <span class="nv">h</span><span class="o">.</span><span class="py">right</span><span class="o">)</span>
+
+<span class="k">def</span> <span class="nf">mergeChildren</span><span class="o">(</span><span class="n">l</span><span class="k">:</span> <span class="kt">Heap</span><span class="o">,</span> <span class="n">r</span><span class="k">:</span> <span class="kt">Heap</span><span class="o">)</span><span class="k">:</span> <span class="kt">Heap</span> <span class="o">=</span>
+    <span class="nf">if</span> <span class="o">(</span><span class="nv">l</span><span class="o">.</span><span class="py">isEmpty</span> <span class="o">&amp;&amp;</span> <span class="nv">r</span><span class="o">.</span><span class="py">isEmpty</span><span class="o">)</span> <span class="nc">Leaf</span>
+    <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="nv">l</span><span class="o">.</span><span class="py">size</span> <span class="o">&lt;</span> <span class="nv">math</span><span class="o">.</span><span class="py">pow</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="nv">l</span><span class="o">.</span><span class="py">height</span><span class="o">)</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span>
+        <span class="nf">floatLeft</span><span class="o">(</span><span class="nv">l</span><span class="o">.</span><span class="py">min</span><span class="o">,</span> <span class="nf">mergeChildren</span><span class="o">(</span><span class="nv">l</span><span class="o">.</span><span class="py">left</span><span class="o">,</span> <span class="nv">l</span><span class="o">.</span><span class="py">right</span><span class="o">),</span> <span class="n">r</span><span class="o">)</span>
+    <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="nv">r</span><span class="o">.</span><span class="py">size</span> <span class="o">&lt;</span> <span class="nv">math</span><span class="o">.</span><span class="py">pow</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="nv">r</span><span class="o">.</span><span class="py">height</span><span class="o">)</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span>
+        <span class="nf">floatRight</span><span class="o">(</span><span class="nv">r</span><span class="o">.</span><span class="py">min</span><span class="o">,</span> <span class="n">l</span><span class="o">,</span> <span class="nf">mergeChildren</span><span class="o">(</span><span class="nv">r</span><span class="o">.</span><span class="py">left</span><span class="o">,</span> <span class="nv">r</span><span class="o">.</span><span class="py">right</span><span class="o">))</span>
+    <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="nv">r</span><span class="o">.</span><span class="py">height</span> <span class="o">&lt;</span> <span class="nv">l</span><span class="o">.</span><span class="py">height</span><span class="o">)</span>
+        <span class="nf">floatLeft</span><span class="o">(</span><span class="nv">l</span><span class="o">.</span><span class="py">min</span><span class="o">,</span> <span class="nf">mergeChildren</span><span class="o">(</span><span class="nv">l</span><span class="o">.</span><span class="py">left</span><span class="o">,</span> <span class="nv">l</span><span class="o">.</span><span class="py">right</span><span class="o">),</span> <span class="n">r</span><span class="o">)</span>
+    <span class="k">else</span> <span class="nf">floatRight</span><span class="o">(</span><span class="nv">r</span><span class="o">.</span><span class="py">min</span><span class="o">,</span> <span class="n">l</span><span class="o">,</span> <span class="nf">mergeChildren</span><span class="o">(</span><span class="nv">r</span><span class="o">.</span><span class="py">left</span><span class="o">,</span> <span class="nv">r</span><span class="o">.</span><span class="py">right</span><span class="o">))</span>
+
+<span class="k">def</span> <span class="nf">floatLeft</span><span class="o">(</span><span class="n">x</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">l</span><span class="k">:</span> <span class="kt">Heap</span><span class="o">,</span> <span class="n">r</span><span class="k">:</span> <span class="kt">Heap</span><span class="o">)</span><span class="k">:</span> <span class="kt">Heap</span> <span class="o">=</span> <span class="n">l</span> <span class="k">match</span> <span class="o">{</span>
+    <span class="k">case</span> <span class="nc">Branch</span><span class="o">(</span><span class="n">y</span><span class="o">,</span> <span class="n">lt</span><span class="o">,</span> <span class="n">rt</span><span class="o">,</span> <span class="k">_</span><span class="o">,</span> <span class="k">_</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">Heap</span><span class="o">(</span><span class="n">y</span><span class="o">,</span> <span class="nc">Heap</span><span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="n">lt</span><span class="o">,</span> <span class="n">rt</span><span class="o">),</span> <span class="n">r</span><span class="o">)</span>
+    <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="nc">Heap</span><span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="n">l</span><span class="o">,</span> <span class="n">r</span><span class="o">)</span>
+<span class="o">}</span>
+
+<span class="k">def</span> <span class="nf">floatRight</span><span class="o">(</span><span class="n">x</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">l</span><span class="k">:</span> <span class="kt">Heap</span><span class="o">,</span> <span class="n">r</span><span class="k">:</span> <span class="kt">Heap</span><span class="o">)</span><span class="k">:</span> <span class="kt">Heap</span> <span class="o">=</span> <span class="n">r</span> <span class="k">match</span> <span class="o">{</span>
+    <span class="k">case</span> <span class="nc">Branch</span><span class="o">(</span><span class="n">y</span><span class="o">,</span> <span class="n">lt</span><span class="o">,</span> <span class="n">rt</span><span class="o">,</span> <span class="k">_</span><span class="o">,</span> <span class="k">_</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">Heap</span><span class="o">(</span><span class="n">y</span><span class="o">,</span> <span class="n">l</span><span class="o">,</span> <span class="nc">Heap</span><span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="n">lt</span><span class="o">,</span> <span class="n">rt</span><span class="o">))</span>
+    <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="nc">Heap</span><span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="n">l</span><span class="o">,</span> <span class="n">r</span><span class="o">)</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="fによるプライオリティキュー">
+<a class="anchor" href="#f%E3%81%AB%E3%82%88%E3%82%8B%E3%83%97%E3%83%A9%E3%82%A4%E3%82%AA%E3%83%AA%E3%83%86%E3%82%A3%E3%82%AD%E3%83%A5%E3%83%BC" aria-hidden="true"><span class="octicon octicon-link"></span></a>F#によるプライオリティキュー</h3>
+<p>バイナリヒープを使ったプライオリティキューの実装です．</p>
+
+<p><a href="https://gist.github.com/ar90n/f2396d217951911466dd16b02990500f">PriorityQueue</a></p>
+
+<p>参考文献ではScalaによる実装でしたが，自分が普段使いする言語はF#なので，F#で実装してみました．</p>
+
+  </div><a class="u-url" href="/markdown/2020/06/27/purely-binary-heap.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>My lab notebook</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/ar90n" title="ar90n"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/ar90n" title="ar90n"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

@@ -17,6 +17,9 @@ permalink: /about/
 ## Twitter
 [@ar90n](https://twitter.com/ar90n)
 
+## Mail
+argon.argon.argon@gmail.com
+
 ## Skill
 * 画像処理
 * 医療画像処理

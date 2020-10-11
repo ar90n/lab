@@ -1,8 +1,9 @@
 ---
+keywords: fastai
 description: "Analysis of the feature of moving average filter"
 title: 移動平均フィルタの零点と周波数特性
 toc: true
-categories: [signal processing, jupyter]
+categories: [Signal Processing, Jupyter]
 nb_path: _notebooks/analysis-of-moving-average-filter.ipynb
 layout: notebook
 ---

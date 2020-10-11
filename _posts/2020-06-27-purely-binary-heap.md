@@ -2,7 +2,7 @@
 toc: true
 layout: post
 description: An implementation of purely binary heap
-categories: [markdown]
+categories: [Algorithm]
 title: 純粋なバイナリヒープ 
 ---
 純粋なヒープを実装する場合，Braun Treeなど色々と適したデータ構造があるらしいですね．

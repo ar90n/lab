@@ -2,7 +2,7 @@
 toc: true
 layout: post
 description: Update GitHubPages automatically
-categories: [markdown]
+categories: [Elm, Web]
 title: GitHub ActionsでWebサイトを自動更新する
 ---
 

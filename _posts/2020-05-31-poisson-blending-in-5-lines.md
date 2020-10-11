@@ -2,7 +2,7 @@
 toc: true
 layout: post
 description: An implementation of Poisson Blending Algorithm in 5 lines
-categories: [markdown]
+categories: [Image Processing, Python]
 title: 5行で書くポアソンブレンディング
 ---
 

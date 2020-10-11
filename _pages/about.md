@@ -4,8 +4,23 @@ title: About Me
 permalink: /about/
 ---
 
-This website is powered by **[fastpages](https://github.com/fastai/fastpages)** [^1].
+都内でソフトウェアエンジニアをやっています．
 
+画像処理，Python，Web開発など広くポストしてます．
 
+## Name
+和田政弘
 
-[^1]:a blogging platform that natively supports Jupyter notebooks in addition to other formats.
+## GitHub
+[@ar90n](https://github.com/ar90n)
+
+## Twitter
+[@ar90n](https://twitter.com/ar90n)
+
+## Skill
+* 画像処理
+* 医療画像処理
+* Python
+* C++
+* Web
+* 組み込み

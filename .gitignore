@@ -13,3 +13,7 @@ singularity_recipes/images
 .tmp
 
 .mypy_cache
+
+.jekyll-cache
+.tweet-cache
+_site

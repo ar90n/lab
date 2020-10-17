@@ -1,89 +1,90 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="https://lab.ar90n.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://lab.ar90n.net/" rel="alternate" type="text/html" /><updated>2020-10-12T11:59:44-05:00</updated><id>https://lab.ar90n.net/feed.xml</id><title type="html">lab note</title><subtitle>My lab notebook</subtitle><entry><title type="html">DICOMにおける文字コードの取り扱い</title><link href="https://lab.ar90n.net/dicom/2020/10/12/character-encodings-in-dicom.html" rel="alternate" type="text/html" title="DICOMにおける文字コードの取り扱い" /><published>2020-10-12T00:00:00-05:00</published><updated>2020-10-12T00:00:00-05:00</updated><id>https://lab.ar90n.net/dicom/2020/10/12/character-encodings-in-dicom</id><content type="html" xml:base="https://lab.ar90n.net/dicom/2020/10/12/character-encodings-in-dicom.html">&lt;h2 id=&quot;はじめに&quot;&gt;はじめに&lt;/h2&gt;
-&lt;p&gt;DICOMを取り扱うライブラリの多くは海外製であるため，日本語の取り扱いが得意で無いことが多いです. そこで，DICOMにおいて日本語を正しく扱うために色々と調べたのでまとめます．&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="https://lab.ar90n.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://lab.ar90n.net/" rel="alternate" type="text/html" /><updated>2020-10-17T06:43:45-05:00</updated><id>https://lab.ar90n.net/feed.xml</id><title type="html">lab note</title><subtitle>My lab notebook</subtitle><entry><title type="html">Ubuntu 20.04 LTS Server でUSB-NICを使う</title><link href="https://lab.ar90n.net/dicom/2020/10/17/usb-nic-in-ubuntu-server.html" rel="alternate" type="text/html" title="Ubuntu 20.04 LTS Server でUSB-NICを使う" /><published>2020-10-17T00:00:00-05:00</published><updated>2020-10-17T00:00:00-05:00</updated><id>https://lab.ar90n.net/dicom/2020/10/17/usb-nic-in-ubuntu-server</id><content type="html" xml:base="https://lab.ar90n.net/dicom/2020/10/17/usb-nic-in-ubuntu-server.html">&lt;h2 id=&quot;はじめに&quot;&gt;はじめに&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.amazon.co.jp/gp/product/B0871W1WPJ&quot;&gt;このUSB-NIC&lt;/a&gt;をUbuntu 20.04から使用するために行った作業記録です．&lt;/p&gt;
 
 &lt;h2 id=&quot;やったこと&quot;&gt;やったこと&lt;/h2&gt;
 &lt;ul&gt;
-  &lt;li&gt;DICOMで日本語を表現する方法を調査&lt;/li&gt;
+  &lt;li&gt;ネットワークデバイスを有効&lt;/li&gt;
+  &lt;li&gt;netplanで静的IPアドレスを設定&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&quot;文字コードについて復習&quot;&gt;文字コードについて復習&lt;/h2&gt;
-&lt;p&gt;DICOMにおける文字コードの取り扱いについて述べる前に，いわゆる”文字コード”と呼ばれているものは何であるかを簡単に復習します．より正しく”文字コード”について理解するためには，（符号化）文字集合と（文字）符号化方式を区別することが重要です．文字集合とは表現する文字の集合（アルファベット全てやひらがな全てなど）です．符号化方式とは文字集合の要素をコンピュータ上で取り扱うことが可能な形式に変換する方法です．従って，同一の文字集合に対して複数の符号化方式が存在します．&lt;/p&gt;
+&lt;h2 id=&quot;現状の確認&quot;&gt;現状の確認&lt;/h2&gt;
+&lt;p&gt;USBポートに差し込んだのみでは，ネットワークデバイスとして使用可能な状態にはなりませんでした．
+まずは，USBデバイスとして適切に認識されていることを確認します．&lt;/p&gt;
 
-&lt;h2 id=&quot;isoiec-2022-とはなんだろう&quot;&gt;ISO/IEC 2022 とはなんだろう&lt;/h2&gt;
-&lt;p&gt;ISO/IEC 2022とは文字集合を７ビット文字または８ビット文字にて表現する符号化方式です．特徴としてはエスケープシーケンスを利用することで，複数の文字集合を同時に取り扱うことが可能である点が挙げられます．日本語においては，このISO/IEC 2022の機構を利用したISO-2022-JPが広く利用されています．ISO-2022-JPは一般的にJISコードと呼ばれます．これには漢字，ひらがな，カタカナ，ラテン文字，ギリシア文字，キリル文字など多くの文字集合が含まれます．（半角カタカナは含まれません）&lt;/p&gt;
-
-&lt;p&gt;上述した通り，ISO/IEC 2022には7ビット文字を利用したものと8ビット文字を利用したものとが存在します．ここでは８ビット文字を利用した場合のみを考慮します．ISO/IEC 2022の符号表は図形文字の領域（GL，GR）と制御文字の領域（CL，CR)からなります．また，４つの仮想的なバッファ(G0, G1, G2,G3)が存在します．ISO/IEC 2022を利用するには，エスケープシーケンスを用いて任意のバッファへ文字集合をロードし，それを図形文字の領域（GL，GR)に呼び出します．呼び出しには永続的に呼び出すロッキングシフトと１文字のみのシングルシフトが存在します．&lt;/p&gt;
-
-&lt;h2 id=&quot;dicomにおけるisoiec-2022&quot;&gt;DICOMにおけるISO/IEC 2022&lt;/h2&gt;
-&lt;p&gt;DICOMでは符号方式としてISO/IEC 2022のサブセットを用いています．具体的には&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;8ビット文字をサポート&lt;/li&gt;
-  &lt;li&gt;デフォルトの文字集合としてISO646を使用&lt;/li&gt;
-  &lt;li&gt;ISO646は必ずGL空間に呼び出される&lt;/li&gt;
-  &lt;li&gt;ISO646以外の文字集合を用いる場合は&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Specific Character Set(0008,0005)&lt;/code&gt;に指定する&lt;/li&gt;
-  &lt;li&gt;エスケープを利用した符号拡張を使う(ISO/IEC 2022)場合はSpecific Character Setに二つ以上の文字集合を指定する&lt;/li&gt;
-  &lt;li&gt;バッファG0はGLに，バッファG1はGRにロードされる&lt;/li&gt;
-  &lt;li&gt;G2，G3は利用不可&lt;/li&gt;
-  &lt;li&gt;G0，G1は常に呼び出し状態にあるのでロッキングシフトは不要&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;という制約があります．&lt;/p&gt;
-
-&lt;h2 id=&quot;実際にdicomで日本語を扱ってみる&quot;&gt;実際にDICOMで日本語を扱ってみる&lt;/h2&gt;
-&lt;p&gt;DICOMで日本語を扱うためには，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Specific Character Set(0008,0005)&lt;/code&gt;に使用する符号方式を設定する必要があります．ここでは，以下の患者名を符号化することを考えます．&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ﾔﾏﾀﾞ^ﾀﾛｳ=山田^太郎=やまだ^たろう
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;lsusb
+Bus 002 Device 002: ID 0b95:1790 ASIX Electronics Corp. AX88179 Gigabit Ethernet
+Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+Bus 001 Device 002: ID 8087:0a2a Intel Corp.
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;この患者名には，半角かな，漢字，全角ひらがなが含まれています．英数字と半角かなはISO 2022 IR 13で，漢字と全角ひらがなはISO 2022 IR 87で表現が可能です．
-従って，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Specific Character Set(0008,0005)&lt;/code&gt;には以下の値を設定します．&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ASIX Electronics Corp. AX88179 Gigabit Ethernet&lt;/code&gt; このデバイスが対象のUSB-NICであるようです．&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ISO 2022 IR 13\ISO 2022 IR 87
+&lt;h2 id=&quot;ネットワークデバイスとして認識する&quot;&gt;ネットワークデバイスとして認識する&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&quot;https://qiita.com/tackey/items/794ea92e5cb31f9febbc&quot;&gt;参考サイト&lt;/a&gt;の方法に従ってネットワークデバイスとして認識させます．&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;lshw &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; Network
+...
+  &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;-network&lt;/span&gt;:0 DISABLED
+       description: Ethernet interface
+       physical &lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt;: 1
+       bus info: usb@2:4
+       logical name: enx000ec6853d1a
+       serial: 00:0e:c6:85:3d:1a
+       size: 10Mbit/s
+       capacity: 1Gbit/s
+       capabilities: ethernet physical tp mii 10bt 10bt-fd 100bt 100bt-fd 1000bt 1000bt-fd autonegotiation
+       configuration: &lt;span class=&quot;nv&quot;&gt;autonegotiation&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;off &lt;span class=&quot;nv&quot;&gt;broadcast&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;yes &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;driver&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;ax88179_178a &lt;span class=&quot;nv&quot;&gt;duplex&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;half &lt;span class=&quot;nb&quot;&gt;link&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;no &lt;span class=&quot;nv&quot;&gt;multicast&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;yes &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;MII &lt;span class=&quot;nv&quot;&gt;speed&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;10Mbit/s
+...
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;ifconfig enx000ec6853d1a up
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;ifconfig
+...
+enx000ec6853d1a: &lt;span class=&quot;nv&quot;&gt;flags&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;4163&amp;lt;UP,BROADCAST,RUNNING,MULTICAST&amp;gt;  mtu 1500
+        inet6 fe80::20e:c6ff:fe85:3d1a  prefixlen 64  scopeid 0x20&amp;lt;&lt;span class=&quot;nb&quot;&gt;link&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+        ether 00:0e:c6:85:3d:1a  txqueuelen 1000  &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;イーサネット&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+        RX packets 39  bytes 3635 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;3.6 KB&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+        RX errors 0  dropped 32  overruns 0  frame 0
+        TX packets 7  bytes 882 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;882.0 B&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+...
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;前述の通り，ISO/IEC 2022ではエスケープシーケンスを用いて複数の符号方式を切り替えます．
-従って，上述の患者名においても適切なタイミングでエスケープする必要があります． エスケープシーケンスを追加した例を以下にしまします．&lt;/p&gt;
+&lt;h2 id=&quot;etccloudcloudcfgd50-curtin-networkingcfgにenx000ec6853d1aの設定を追加&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/etc/cloud/cloud.cfg.d/50-curtin-networking.cfg&lt;/code&gt;にenx000ec6853d1aの設定を追加&lt;/h2&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ﾔﾏﾀﾞ^ﾀﾛｳ= ESC 02/04 04/02 山田 ESC 02/08 04/10 ^ ESC 02/04 04/02 太郎 ESC 02/08 04/10 = ESC 02/04 04/02 やまだ ESC 02/08 04/10 ^ ESC 02/04 04/02 たろう ESC 02/08 04/10
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; /etc/cloud/cloud.cfg.d/50-curtin-networking.cfg
+network:
+  ethernets:
+    enp2s0:
+      addresses: &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt;
+      dhcp4: &lt;span class=&quot;nb&quot;&gt;true
+    &lt;/span&gt;enx000ec6853d1a:
+      addresses:
+      - 10.0.100.1/24
+      gateway4: 10.0.0.1
+      dhcp4: &lt;span class=&quot;nb&quot;&gt;false
+  &lt;/span&gt;version: 2
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;cloud-init clean &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;また，各エスケープシーケンスの詳細を以下に示します．&lt;/p&gt;
+&lt;p&gt;ここでシステムが再起動します．その後，以下の様に設定確認します．&lt;/p&gt;
 
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th style=&quot;text-align: center&quot;&gt;エスケープシーケンス&lt;/th&gt;
-      &lt;th style=&quot;text-align: center&quot;&gt;処理&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;ESC 02/08 04/10&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;英数字(ISO-IR 14)をGLにロード&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;ESC 02/04 04/02&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;漢字とひらがな(ISO-IR 87)をGLにロード&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;これらを踏まえて，実際にエンコーディングすると以下の値が得られます．&lt;/p&gt;
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;13/04 12/15 12/00 13/14 05/14 12/00 13/11 11/03 03/13 01/11 02/04 04/02 03/11 03/03 04/05 04/04 01/11 02/08 04/10 05/14 01/11 02/04 04/02 04/02 04/00 04/15 03/10 01/11 02/08 04/10 03/13 01/11 02/04 04/02 02/04 06/04 02/04 05/14 02/04 04/00 01/11 02/08 04/10 05/14 01/11 02/04 04/02 02/04 03/15 02/04 06/13 02/04 02/06 01/11 02/08 04/10
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;ifconfig
+...
+enx000ec6853d1a: &lt;span class=&quot;nv&quot;&gt;flags&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;4163&amp;lt;UP,BROADCAST,RUNNING,MULTICAST&amp;gt;  mtu 1500
+        inet 10.0.100.1  netmask 255.255.255.0  broadcast 10.0.100.255
+        inet6 fe80::20e:c6ff:fe85:3d1a  prefixlen 64  scopeid 0x20&amp;lt;&lt;span class=&quot;nb&quot;&gt;link&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+        ether 00:0e:c6:85:3d:1a  txqueuelen 1000  &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;イーサネット&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+        RX packets 2163  bytes 212391 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;212.3 KB&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+        RX errors 0  dropped 1734  overruns 0  frame 0
+        TX packets 18  bytes 1900 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1.9 KB&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+...
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
-
 &lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://ja.wikipedia.org/wiki/JIS%E6%BC%A2%E5%AD%97%E3%82%B3%E3%83%BC%E3%83%89&quot;&gt;JIS漢字コード&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://ja.wikipedia.org/wiki/ISO/IEC_2022&quot;&gt;ISO/IEC 2022&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://ja.wikipedia.org/wiki/JIS_X_0201&quot;&gt;JIS X 0201&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.jira-net.or.jp/dicom/file/dicom_2011_standard_jrc_st.pdf&quot;&gt;２０１１ ST講座 入門講座 DICOM規格 初級 –DICOMをうまく使いこなす–&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://blog.goo.ne.jp/satomi_takeo/e/4bd08b26b1750bbf15ecefda00789318&quot;&gt;DICOMの日本語エンコーディング処理実装&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.jira-net.or.jp/dicom/file/dicom_201002_MRC_vol19-1.pdf&quot;&gt;DICOM に慣れる － 現場で DICOM 接続に慌てないための知識 （２） 文字系の通信 －&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://dicom.nema.org/dicom/2013/output/chtml/part05/sect_H.3.html&quot;&gt;H.3 Example of Person Name Value Representation in the Japanese Language&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name></name></author><category term="DICOM" /><summary type="html">はじめに DICOMを取り扱うライブラリの多くは海外製であるため，日本語の取り扱いが得意で無いことが多いです. そこで，DICOMにおいて日本語を正しく扱うために色々と調べたのでまとめます．</summary></entry><entry><title type="html">移動平均フィルタの零点と周波数特性</title><link href="https://lab.ar90n.net/signal%20processing/jupyter/2020/10/11/analysis-of-moving-average-filter.html" rel="alternate" type="text/html" title="移動平均フィルタの零点と周波数特性" /><published>2020-10-11T00:00:00-05:00</published><updated>2020-10-11T00:00:00-05:00</updated><id>https://lab.ar90n.net/signal%20processing/jupyter/2020/10/11/analysis-of-moving-average-filter</id><content type="html" xml:base="https://lab.ar90n.net/signal%20processing/jupyter/2020/10/11/analysis-of-moving-average-filter.html">&lt;!--
+  &lt;li&gt;&lt;a href=&quot;https://qiita.com/tackey/items/794ea92e5cb31f9febbc&quot;&gt;Ubuntu 16.04.5で有線LANが繋がらない&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><category term="DICOM" /><summary type="html">はじめに このUSB-NICをUbuntu 20.04から使用するために行った作業記録です．</summary></entry><entry><title type="html">移動平均フィルタの零点と周波数特性</title><link href="https://lab.ar90n.net/signal%20processing/jupyter/2020/10/16/analysis-of-moving-average-filter.html" rel="alternate" type="text/html" title="移動平均フィルタの零点と周波数特性" /><published>2020-10-16T00:00:00-05:00</published><updated>2020-10-16T00:00:00-05:00</updated><id>https://lab.ar90n.net/signal%20processing/jupyter/2020/10/16/analysis-of-moving-average-filter</id><content type="html" xml:base="https://lab.ar90n.net/signal%20processing/jupyter/2020/10/16/analysis-of-moving-average-filter.html">&lt;!--
 #################################################
 ### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
 #################################################
@@ -426,7 +427,92 @@ $$&lt;p&gt;と置くと，$z$は$C\left(H'(z)\right)$の固有値に等しいこ
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;/div&gt;</content><author><name></name></author><category term="Signal Processing" /><category term="Jupyter" /><summary type="html"></summary></entry><entry><title type="html">移動平均フィルタの零点と周波数特性</title><link href="https://lab.ar90n.net/signal%20processing/jupyter/2020/10/10/analysis-of-moving-average-filter.html" rel="alternate" type="text/html" title="移動平均フィルタの零点と周波数特性" /><published>2020-10-10T00:00:00-05:00</published><updated>2020-10-10T00:00:00-05:00</updated><id>https://lab.ar90n.net/signal%20processing/jupyter/2020/10/10/analysis-of-moving-average-filter</id><content type="html" xml:base="https://lab.ar90n.net/signal%20processing/jupyter/2020/10/10/analysis-of-moving-average-filter.html">&lt;!--
+&lt;/div&gt;</content><author><name></name></author><category term="Signal Processing" /><category term="Jupyter" /><summary type="html"></summary></entry><entry><title type="html">DICOMにおける文字コードの取り扱い</title><link href="https://lab.ar90n.net/dicom/2020/10/12/character-encodings-in-dicom.html" rel="alternate" type="text/html" title="DICOMにおける文字コードの取り扱い" /><published>2020-10-12T00:00:00-05:00</published><updated>2020-10-12T00:00:00-05:00</updated><id>https://lab.ar90n.net/dicom/2020/10/12/character-encodings-in-dicom</id><content type="html" xml:base="https://lab.ar90n.net/dicom/2020/10/12/character-encodings-in-dicom.html">&lt;h2 id=&quot;はじめに&quot;&gt;はじめに&lt;/h2&gt;
+&lt;p&gt;DICOMを取り扱うライブラリの多くは海外製であるため，日本語の取り扱いが得意で無いことが多いです. そこで，DICOMにおいて日本語を正しく扱うために色々と調べたのでまとめます．&lt;/p&gt;
+
+&lt;h2 id=&quot;やったこと&quot;&gt;やったこと&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;DICOMで日本語を表現する方法を調査&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;文字コードについて復習&quot;&gt;文字コードについて復習&lt;/h2&gt;
+&lt;p&gt;DICOMにおける文字コードの取り扱いについて述べる前に，いわゆる”文字コード”と呼ばれているものは何であるかを簡単に復習します．より正しく”文字コード”について理解するためには，（符号化）文字集合と（文字）符号化方式を区別することが重要です．文字集合とは表現する文字の集合（アルファベット全てやひらがな全てなど）です．符号化方式とは文字集合の要素をコンピュータ上で取り扱うことが可能な形式に変換する方法です．従って，同一の文字集合に対して複数の符号化方式が存在します．&lt;/p&gt;
+
+&lt;h2 id=&quot;isoiec-2022-とはなんだろう&quot;&gt;ISO/IEC 2022 とはなんだろう&lt;/h2&gt;
+&lt;p&gt;ISO/IEC 2022とは文字集合を７ビット文字または８ビット文字にて表現する符号化方式です．特徴としてはエスケープシーケンスを利用することで，複数の文字集合を同時に取り扱うことが可能である点が挙げられます．日本語においては，このISO/IEC 2022の機構を利用したISO-2022-JPが広く利用されています．ISO-2022-JPは一般的にJISコードと呼ばれます．これには漢字，ひらがな，カタカナ，ラテン文字，ギリシア文字，キリル文字など多くの文字集合が含まれます．（半角カタカナは含まれません）&lt;/p&gt;
+
+&lt;p&gt;上述した通り，ISO/IEC 2022には7ビット文字を利用したものと8ビット文字を利用したものとが存在します．ここでは８ビット文字を利用した場合のみを考慮します．ISO/IEC 2022の符号表は図形文字の領域（GL，GR）と制御文字の領域（CL，CR)からなります．また，４つの仮想的なバッファ(G0, G1, G2,G3)が存在します．ISO/IEC 2022を利用するには，エスケープシーケンスを用いて任意のバッファへ文字集合をロードし，それを図形文字の領域（GL，GR)に呼び出します．呼び出しには永続的に呼び出すロッキングシフトと１文字のみのシングルシフトが存在します．&lt;/p&gt;
+
+&lt;h2 id=&quot;dicomにおけるisoiec-2022&quot;&gt;DICOMにおけるISO/IEC 2022&lt;/h2&gt;
+&lt;p&gt;DICOMでは符号方式としてISO/IEC 2022のサブセットを用いています．具体的には&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;8ビット文字をサポート&lt;/li&gt;
+  &lt;li&gt;デフォルトの文字集合としてISO646を使用&lt;/li&gt;
+  &lt;li&gt;ISO646は必ずGL空間に呼び出される&lt;/li&gt;
+  &lt;li&gt;ISO646以外の文字集合を用いる場合は&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Specific Character Set(0008,0005)&lt;/code&gt;に指定する&lt;/li&gt;
+  &lt;li&gt;エスケープを利用した符号拡張を使う(ISO/IEC 2022)場合はSpecific Character Setに二つ以上の文字集合を指定する&lt;/li&gt;
+  &lt;li&gt;バッファG0はGLに，バッファG1はGRにロードされる&lt;/li&gt;
+  &lt;li&gt;G2，G3は利用不可&lt;/li&gt;
+  &lt;li&gt;G0，G1は常に呼び出し状態にあるのでロッキングシフトは不要&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;という制約があります．&lt;/p&gt;
+
+&lt;h2 id=&quot;実際にdicomで日本語を扱ってみる&quot;&gt;実際にDICOMで日本語を扱ってみる&lt;/h2&gt;
+&lt;p&gt;DICOMで日本語を扱うためには，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Specific Character Set(0008,0005)&lt;/code&gt;に使用する符号方式を設定する必要があります．ここでは，以下の患者名を符号化することを考えます．&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ﾔﾏﾀﾞ^ﾀﾛｳ=山田^太郎=やまだ^たろう
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;この患者名には，半角かな，漢字，全角ひらがなが含まれています．英数字と半角かなはISO 2022 IR 13で，漢字と全角ひらがなはISO 2022 IR 87で表現が可能です．
+従って，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Specific Character Set(0008,0005)&lt;/code&gt;には以下の値を設定します．&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ISO 2022 IR 13\ISO 2022 IR 87
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;前述の通り，ISO/IEC 2022ではエスケープシーケンスを用いて複数の符号方式を切り替えます．
+従って，上述の患者名においても適切なタイミングでエスケープする必要があります． エスケープシーケンスを追加した例を以下にしまします．&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ﾔﾏﾀﾞ^ﾀﾛｳ= ESC 02/04 04/02 山田 ESC 02/08 04/10 ^ ESC 02/04 04/02 太郎 ESC 02/08 04/10 = ESC 02/04 04/02 やまだ ESC 02/08 04/10 ^ ESC 02/04 04/02 たろう ESC 02/08 04/10
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;また，各エスケープシーケンスの詳細を以下に示します．&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt;エスケープシーケンス&lt;/th&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt;処理&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;ESC 02/08 04/10&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;英数字(ISO-IR 14)をGLにロード&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;ESC 02/04 04/02&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;漢字とひらがな(ISO-IR 87)をGLにロード&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;これらを踏まえて，実際にエンコーディングすると以下の値が得られます．&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;13/04 12/15 12/00 13/14 05/14 12/00 13/11 11/03 03/13 01/11 02/04 04/02 03/11 03/03 04/05 04/04 01/11 02/08 04/10 05/14 01/11 02/04 04/02 04/02 04/00 04/15 03/10 01/11 02/08 04/10 03/13 01/11 02/04 04/02 02/04 06/04 02/04 05/14 02/04 04/00 01/11 02/08 04/10 05/14 01/11 02/04 04/02 02/04 03/15 02/04 06/13 02/04 02/06 01/11 02/08 04/10
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://ja.wikipedia.org/wiki/JIS%E6%BC%A2%E5%AD%97%E3%82%B3%E3%83%BC%E3%83%89&quot;&gt;JIS漢字コード&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://ja.wikipedia.org/wiki/ISO/IEC_2022&quot;&gt;ISO/IEC 2022&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://ja.wikipedia.org/wiki/JIS_X_0201&quot;&gt;JIS X 0201&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.jira-net.or.jp/dicom/file/dicom_2011_standard_jrc_st.pdf&quot;&gt;２０１１ ST講座 入門講座 DICOM規格 初級 –DICOMをうまく使いこなす–&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://blog.goo.ne.jp/satomi_takeo/e/4bd08b26b1750bbf15ecefda00789318&quot;&gt;DICOMの日本語エンコーディング処理実装&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.jira-net.or.jp/dicom/file/dicom_201002_MRC_vol19-1.pdf&quot;&gt;DICOM に慣れる － 現場で DICOM 接続に慌てないための知識 （２） 文字系の通信 －&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://dicom.nema.org/dicom/2013/output/chtml/part05/sect_H.3.html&quot;&gt;H.3 Example of Person Name Value Representation in the Japanese Language&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><category term="DICOM" /><summary type="html">はじめに DICOMを取り扱うライブラリの多くは海外製であるため，日本語の取り扱いが得意で無いことが多いです. そこで，DICOMにおいて日本語を正しく扱うために色々と調べたのでまとめます．</summary></entry><entry><title type="html">移動平均フィルタの零点と周波数特性</title><link href="https://lab.ar90n.net/signal%20processing/jupyter/2020/10/10/analysis-of-moving-average-filter.html" rel="alternate" type="text/html" title="移動平均フィルタの零点と周波数特性" /><published>2020-10-10T00:00:00-05:00</published><updated>2020-10-10T00:00:00-05:00</updated><id>https://lab.ar90n.net/signal%20processing/jupyter/2020/10/10/analysis-of-moving-average-filter</id><content type="html" xml:base="https://lab.ar90n.net/signal%20processing/jupyter/2020/10/10/analysis-of-moving-average-filter.html">&lt;!--
 #################################################
 ### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
 #################################################

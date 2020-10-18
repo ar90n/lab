@@ -2,7 +2,7 @@
 toc: true
 layout: post
 description: USB-NIC in Ubuntu Server
-categories: [DICOM]
+categories: [Ubuntu]
 title: Ubuntu 20.04 LTS Server でUSB-NICを使う
 ---
 

@@ -17,7 +17,7 @@ altair
 ipywidgets
 SimpleITK
 numba
-smart-open
+smart-open[all]
 kkt
 jupytext
 joblib

@@ -26,6 +26,11 @@ services:
     command: jupyter notebook --allow-root --no-browser --ip=0.0.0.0 --port=8080 --NotebookApp.token='' --NotebookApp.password=''
     ports:
       - "8080:8080"
+    volumes:
+      - .:/data/
+      - ~/.aws:/root/.aws
+      - ~/.config/gcloud:/root/.config/gcloud
+
 
   watcher:
     <<: *fastpages

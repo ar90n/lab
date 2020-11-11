@@ -4,7 +4,6 @@ scikit-learn
 scikit-image
 scikit-optimize
 networkx
-torch
 black
 pydicom
 sympy
@@ -13,6 +12,8 @@ returns
 classes
 fklearn
 matplotlib
+plotly
+jupyterlab
 altair
 ipywidgets
 SimpleITK

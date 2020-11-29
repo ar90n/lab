@@ -30,11 +30,13 @@ where
     DefaultAllocator: Allocator<f64, N, DimSum<C0, U1>> + Allocator<f64, DimSum<C0, U1>, C1>,
 {
     pub fn new() -> Self {
+        use rand::Rng;
+        use rand::distributions::{Normal};
         Self {
             input: None,
             d_w: MatrixMN::<f64, DimSum<C0, U1>, C1>::zeros(),
             v: MatrixMN::<f64, DimSum<C0, U1>, C1>::zeros(),
-            w: MatrixMN::<f64, DimSum<C0, U1>, C1>::new_random(),
+            w: MatrixMN::<f64, DimSum<C0, U1>, C1>::from_distribution(&mut Normal::new(0.0, 1.0), &mut rand::thread_rng()),
         }
     }
 }

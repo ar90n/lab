@@ -37,11 +37,11 @@ where
     }
     fn backward(&mut self, delta: Self::Output) -> Self::Input {
         let output = Self::_forward(self.input.as_ref().unwrap());
-        delta.zip_map(&output, |d, y| d * (1.0 - y) * y)
-        //delta.map_with_location(|y, x, v| {
-        //    let o = output[(y, x)];
-        //    v * (1.0 - o) * o
-        //})
+        //delta.zip_map(&output, |d, y| d * (1.0 - y) * y)
+        delta.map_with_location(|y, x, v| {
+            let o = output[(y, x)];
+            v * (1.0 - o) * o
+        })
     }
 }
 

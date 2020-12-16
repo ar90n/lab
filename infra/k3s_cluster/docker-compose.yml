@@ -1,0 +1,44 @@
+version: "3.3"
+services:
+        dns:
+                image: jpillora/dnsmasq
+                ports:
+                        - "53:53/udp"
+                        - "5380:8080"
+                volumes:
+                        - type: bind
+                          source: "${RASPPI_ROOT_DIR}/${RASPPI_OS_NAME:-raspbian}/boot"
+                          target: /tftpboot/a9f552e2
+                          read_only: true
+                        - type: bind
+                          source: "${RASPPI_ROOT_DIR}/${RASPPI_OS_NAME:-raspbian}/boot"
+                          target: /tftpboot/1bd6823c
+                          read_only: true
+                        - type: bind
+                          source: "${RASPPI_ROOT_DIR}/${RASPPI_OS_NAME:-raspbian}/boot"
+                          target: /tftpboot/a5cbe9ce
+                          read_only: true
+                        - type: bind
+                          source: "${RASPPI_ROOT_DIR}/${RASPPI_OS_NAME:-raspbian}/boot"
+                          target: /tftpboot/039b5dea
+                          read_only: true
+                        - type: bind
+                          source: ./dnsmasq.conf
+                          target: /etc/dnsmasq.conf
+                environment:
+                        HTTP_USER: foo
+                        HTTP_PASS: bar
+                network_mode: "host"
+                privileged: true
+                restart: always
+        nfs:
+                image: itsthenetwork/nfs-server-alpine:latest
+                volumes:
+                        - type: bind
+                          source: "${RASPPI_ROOT_DIR}"
+                          target: /nfsshare
+                environment:
+                        SHARED_DIRECTORY: /nfsshare
+                network_mode: "host"
+                privileged: true
+                restart: always

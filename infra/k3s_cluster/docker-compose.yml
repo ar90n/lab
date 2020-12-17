@@ -42,3 +42,16 @@ services:
                 network_mode: "host"
                 privileged: true
                 restart: always
+        samba:
+                container_name: samba
+                hostname: samba
+                image: dperson/samba:latest
+                volumes:
+                        - /home/argon/data:/mount
+                ports:
+                        - "139:139"
+                        - "445:445"
+                        - "137:137/udp"
+                        - "138:138/udp"
+                command: samba.sh -p -s "data;/mount;yes;no;yes;all" 
+                restart: always

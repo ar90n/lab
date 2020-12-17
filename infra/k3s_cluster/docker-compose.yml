@@ -47,7 +47,9 @@ services:
                 hostname: samba
                 image: dperson/samba:latest
                 volumes:
-                        - /home/argon/data:/mount
+                        - type: bind
+                          source: "${EXTRA_DATA_DIR}"
+                          target: /mount
                 ports:
                         - "139:139"
                         - "445:445"

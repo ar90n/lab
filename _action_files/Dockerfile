@@ -7,6 +7,7 @@ COPY . .
 RUN chmod u+x action_entrypoint.sh
 RUN chmod u+x word2post.sh
 RUN dos2unix /fastpages/*.sh
+RUN pip install -U pip
 RUN pip install -r ./requirements.txt
 RUN pip install torch==1.7.0+cpu torchvision==0.8.1+cpu torchaudio==0.7.0 -f https://download.pytorch.org/whl/torch_stable.html
 
@@ -73,8 +74,6 @@ RUN yarn global add ijavascript typescript itypescript @types/node \
 # Install jupyter labextensions
 RUN jupyter labextension install \
             @jupyter-widgets/jupyterlab-manager \ 
-            plotlywidget \
-            jupyterlab-plotly \
             jupyter-leaflet \
     && jupyter lab build
 RUN jupyter nbextension install https://github.com/drillan/jupyter-black/archive/master.zip

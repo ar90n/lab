@@ -1,9 +1,8 @@
 use glutin::ContextWrapper;
 
-use std::ffi::CStr;
-
 use super::shader::{Shader, ShaderCode};
 use cgmath::prelude::*;
+use std::ffi::CStr;
 
 #[allow(dead_code)]
 pub type Point3 = cgmath::Point3<f32>;
@@ -21,7 +20,7 @@ pub struct WindowContext(ContextWrapper<glutin::PossiblyCurrent, glutin::window:
 
 impl WindowContext {
     pub fn from(event_loop: &EventLoop<()>) -> Self {
-        let window_builder = WindowBuilder::new().with_title("Modern OpenGL with Rust");
+        let window_builder = WindowBuilder::new().with_title("Rust Obj Loader");
         let windowed_context = ContextBuilder::new()
             .build_windowed(window_builder, &event_loop)
             .unwrap();
@@ -38,15 +37,14 @@ impl Deref for WindowContext {
 }
 
 pub mod gl {
-    pub use self::Gles2 as Gl;
     pub use super::super::gl_bindings::*;
 }
 
 pub struct RenderContext {
     gl: gl::Gl,
     shader: Shader,
-    vbo: u32,
-    vba: u32,
+    vao: u32,
+    vertex_count: usize,
 }
 
 impl RenderContext {
@@ -74,8 +72,8 @@ impl RenderContext {
         Self {
             gl: gl,
             shader,
-            vbo: 0,
-            vba: 0,
+            vao: 0,
+            vertex_count: 0,
         }
     }
 
@@ -103,7 +101,7 @@ impl RenderContext {
         self.gl.Clear(mask);
     }
 
-    pub unsafe fn set_bool(&self, name: &str, value: bool) {
+    pub unsafe fn set_bool(&self, name: &CStr, value: bool) {
         self.gl.Uniform1i(
             self.gl
                 .GetUniformLocation(self.shader.id, name.as_ptr() as *const _),
@@ -111,7 +109,7 @@ impl RenderContext {
         );
     }
 
-    pub unsafe fn set_int(&self, name: &str, value: i32) {
+    pub unsafe fn set_int(&self, name: &CStr, value: i32) {
         self.gl.Uniform1i(
             self.gl
                 .GetUniformLocation(self.shader.id, name.as_ptr() as *const _),
@@ -119,7 +117,7 @@ impl RenderContext {
         );
     }
 
-    pub unsafe fn set_float(&self, name: &str, value: f32) {
+    pub unsafe fn set_float(&self, name: &CStr, value: f32) {
         self.gl.Uniform1f(
             self.gl
                 .GetUniformLocation(self.shader.id, name.as_ptr() as *const _),
@@ -127,7 +125,7 @@ impl RenderContext {
         );
     }
 
-    pub unsafe fn set_vector3(&self, name: &str, value: &Vector3) {
+    pub unsafe fn set_vector3(&self, name: &CStr, value: &Vector3) {
         self.gl.Uniform3fv(
             self.gl
                 .GetUniformLocation(self.shader.id, name.as_ptr() as *const _),
@@ -136,7 +134,7 @@ impl RenderContext {
         );
     }
 
-    pub unsafe fn set_vec3(&self, name: &str, x: f32, y: f32, z: f32) {
+    pub unsafe fn set_vec3(&self, name: &CStr, x: f32, y: f32, z: f32) {
         self.gl.Uniform3f(
             self.gl
                 .GetUniformLocation(self.shader.id, name.as_ptr() as *const _),
@@ -146,10 +144,9 @@ impl RenderContext {
         );
     }
 
-    pub unsafe fn set_mat4(&self, name: &str, mat: &Matrix4) {
+    pub unsafe fn set_mat4(&self, name: &CStr, mat: &Matrix4) {
         self.gl.UniformMatrix4fv(
-            self.gl
-                .GetUniformLocation(self.shader.id, name.as_ptr() as *const _),
+            self.gl.GetUniformLocation(self.shader.id, name.as_ptr()),
             1,
             gl::FALSE,
             mat.as_ptr(),
@@ -157,55 +154,43 @@ impl RenderContext {
     }
 
     pub unsafe fn draw(&self) {
-        //gl.BindVertexArray(self.vba);
-        self.gl.DrawArrays(gl::TRIANGLES, 0, 3);
-        //gl.BindVertexArray(0);
+        self.clear_color(1.0, 1.0, 1.0, 1.0);
+        self.clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
+
+        self.gl.BindVertexArray(self.vao);
+
+        self.gl.PolygonMode(gl::FRONT_AND_BACK, gl::LINE);
+        self.gl
+            .DrawArrays(gl::TRIANGLES, 0, self.vertex_count as i32);
+        self.gl.BindVertexArray(0);
     }
 
-    pub unsafe fn load_vertex(&mut self, vertices: &[f32]) {
-        let mut vb = std::mem::zeroed();
-        self.gl.GenBuffers(1, &mut vb);
-        self.gl.BindBuffer(gl::ARRAY_BUFFER, vb);
+    pub unsafe fn load_vertex(&mut self, name: &CStr, vertices: &[f32]) {
+        let mut vbo = std::mem::zeroed();
+        self.gl.GenBuffers(1, &mut vbo);
+        self.gl.BindBuffer(gl::ARRAY_BUFFER, vbo);
         self.gl.BufferData(
             gl::ARRAY_BUFFER,
             (vertices.len() * std::mem::size_of::<f32>()) as gl::types::GLsizeiptr,
             vertices.as_ptr() as *const _,
             gl::STATIC_DRAW,
         );
-        self.vbo = vb;
+        self.vertex_count = vertices.len();
 
-        if self.gl.BindVertexArray.is_loaded() {
-            let mut vao = std::mem::zeroed();
-            self.gl.GenVertexArrays(1, &mut vao);
-            self.gl.BindVertexArray(vao);
-            self.vba = vao;
-        }
+        let mut vao = std::mem::zeroed();
+        self.gl.GenVertexArrays(1, &mut vao);
+        self.gl.BindVertexArray(vao);
+        self.vao = vao;
 
-        let pos_attrib = self
-            .gl
-            .GetAttribLocation(self.shader.id, b"position\0".as_ptr() as *const _);
-        let color_attrib = self
-            .gl
-            .GetAttribLocation(self.shader.id, b"color\0".as_ptr() as *const _);
+        let id = self.gl.GetAttribLocation(self.shader.id, name.as_ptr()) as gl::types::GLuint;
         self.gl.VertexAttribPointer(
-            pos_attrib as gl::types::GLuint,
-            2,
-            gl::FLOAT,
-            0,
-            5 * std::mem::size_of::<f32>() as gl::types::GLsizei,
-            std::ptr::null(),
-        );
-        self.gl.VertexAttribPointer(
-            color_attrib as gl::types::GLuint,
+            id,
             3,
             gl::FLOAT,
             0,
-            5 * std::mem::size_of::<f32>() as gl::types::GLsizei,
-            (2 * std::mem::size_of::<f32>()) as *const () as *const _,
+            3 * std::mem::size_of::<f32>() as gl::types::GLsizei,
+            std::ptr::null(),
         );
-        self.gl
-            .EnableVertexAttribArray(pos_attrib as gl::types::GLuint);
-        self.gl
-            .EnableVertexAttribArray(color_attrib as gl::types::GLuint);
+        self.gl.EnableVertexAttribArray(id);
     }
 }

@@ -1,9 +1,12 @@
 #version 100
 precision mediump float;
-attribute vec2 position;
-attribute vec3 color;
-varying vec3 v_color;
+
+attribute vec3 Position;
+
+uniform mat4 Model;
+uniform mat4 View;
+uniform mat4 Projection;
+
 void main() {
-    gl_Position = vec4(position, 0.0, 1.0);
-    v_color = color;
+    gl_Position = Projection * View * vec4(vec3(Model * vec4(Position, 1.0)), 1.0);
 }

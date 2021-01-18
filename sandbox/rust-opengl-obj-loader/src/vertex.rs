@@ -3,7 +3,7 @@
 use std::mem;
 use std::os::raw::c_void;
 
-use crate::support::gl::types::{GLenum, GLfloat, GLint, GLsizei, GLsizeiptr};
+use crate::context::gl::types::{GLenum, GLfloat, GLint, GLsizei, GLsizeiptr};
 
 pub struct Vertex {
     vao: u32,

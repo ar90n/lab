@@ -44,7 +44,8 @@ pub struct RenderContext {
     gl: gl::Gl,
     shader: Shader,
     vao: u32,
-    vertex_count: usize,
+    ebo: u32,
+    ebo_size: usize,
 }
 
 impl RenderContext {
@@ -73,7 +74,8 @@ impl RenderContext {
             gl: gl,
             shader,
             vao: 0,
-            vertex_count: 0,
+            ebo: 0,
+            ebo_size: 0,
         }
     }
 
@@ -101,49 +103,6 @@ impl RenderContext {
         self.gl.Clear(mask);
     }
 
-    pub unsafe fn set_bool(&self, name: &CStr, value: bool) {
-        self.gl.Uniform1i(
-            self.gl
-                .GetUniformLocation(self.shader.id, name.as_ptr() as *const _),
-            value as i32,
-        );
-    }
-
-    pub unsafe fn set_int(&self, name: &CStr, value: i32) {
-        self.gl.Uniform1i(
-            self.gl
-                .GetUniformLocation(self.shader.id, name.as_ptr() as *const _),
-            value,
-        );
-    }
-
-    pub unsafe fn set_float(&self, name: &CStr, value: f32) {
-        self.gl.Uniform1f(
-            self.gl
-                .GetUniformLocation(self.shader.id, name.as_ptr() as *const _),
-            value,
-        );
-    }
-
-    pub unsafe fn set_vector3(&self, name: &CStr, value: &Vector3) {
-        self.gl.Uniform3fv(
-            self.gl
-                .GetUniformLocation(self.shader.id, name.as_ptr() as *const _),
-            1,
-            value.as_ptr(),
-        );
-    }
-
-    pub unsafe fn set_vec3(&self, name: &CStr, x: f32, y: f32, z: f32) {
-        self.gl.Uniform3f(
-            self.gl
-                .GetUniformLocation(self.shader.id, name.as_ptr() as *const _),
-            x,
-            y,
-            z,
-        );
-    }
-
     pub unsafe fn set_mat4(&self, name: &CStr, mat: &Matrix4) {
         self.gl.UniformMatrix4fv(
             self.gl.GetUniformLocation(self.shader.id, name.as_ptr()),
@@ -160,27 +119,42 @@ impl RenderContext {
         self.gl.BindVertexArray(self.vao);
 
         self.gl.PolygonMode(gl::FRONT_AND_BACK, gl::LINE);
-        self.gl
-            .DrawArrays(gl::TRIANGLES, 0, self.vertex_count as i32);
+        self.gl.DrawElements(
+            gl::TRIANGLES,
+            self.ebo_size as i32,
+            gl::UNSIGNED_INT,
+            0 as *const _,
+        );
         self.gl.BindVertexArray(0);
     }
 
-    pub unsafe fn load_vertex(&mut self, name: &CStr, vertices: &[f32]) {
+    pub unsafe fn load_model(&mut self, name: &CStr, model: &super::obj::Model) {
         let mut vbo = std::mem::zeroed();
         self.gl.GenBuffers(1, &mut vbo);
         self.gl.BindBuffer(gl::ARRAY_BUFFER, vbo);
         self.gl.BufferData(
             gl::ARRAY_BUFFER,
-            (vertices.len() * std::mem::size_of::<f32>()) as gl::types::GLsizeiptr,
-            vertices.as_ptr() as *const _,
+            (model.vertices.len() * std::mem::size_of::<f32>()) as gl::types::GLsizeiptr,
+            model.vertices.as_ptr() as *const _,
             gl::STATIC_DRAW,
         );
-        self.vertex_count = vertices.len();
 
         let mut vao = std::mem::zeroed();
         self.gl.GenVertexArrays(1, &mut vao);
         self.gl.BindVertexArray(vao);
         self.vao = vao;
+
+        let mut ebo = std::mem::zeroed();
+        self.gl.GenBuffers(1, &mut ebo);
+        self.gl.BindBuffer(gl::ELEMENT_ARRAY_BUFFER, ebo);
+        self.gl.BufferData(
+            gl::ELEMENT_ARRAY_BUFFER,
+            (model.facets.len() * std::mem::size_of::<u32>()) as gl::types::GLsizeiptr,
+            model.facets.as_ptr() as *const _,
+            gl::STATIC_DRAW,
+        );
+        self.ebo = ebo;
+        self.ebo_size = model.facets.len();
 
         let id = self.gl.GetAttribLocation(self.shader.id, name.as_ptr()) as gl::types::GLuint;
         self.gl.VertexAttribPointer(

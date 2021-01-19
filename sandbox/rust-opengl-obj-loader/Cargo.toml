@@ -12,6 +12,7 @@ c_str_macro = "1.0.2"
 cgmath = "0.18.0"
 gl = "0.14.0"
 glutin = "0.26.0"
+itertools = "0.10.0"
 
 [build-dependencies]
 gl_generator = "0.14"

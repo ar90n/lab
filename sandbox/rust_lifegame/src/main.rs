@@ -3,7 +3,7 @@ use itertools::*;
 use std::fs::File;
 use std::io::prelude::*;
 use std::str::FromStr;
-use std::{fmt, slice::Windows};
+use std::fmt;
 
 #[derive(Debug, Clone)]
 struct Field<T> {
@@ -265,7 +265,7 @@ fn main() -> anyhow::Result<()> {
     let mut game = load_rle(file)?;
     //dbg!(&game);
     let mut it = game.start();
-    for i in (0..10) {
+    for _ in 0..10 {
         println!("{:}", it.next().unwrap());
         println!("");
     }

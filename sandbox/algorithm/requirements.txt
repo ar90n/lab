@@ -1,0 +1,7 @@
+numpy
+pillow
+opencv-python-headless
+scipy
+requests
+matplotlib
+scikit-learn

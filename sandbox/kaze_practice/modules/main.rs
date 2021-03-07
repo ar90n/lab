@@ -16,6 +16,9 @@ use pc::program_counter;
 mod alu;
 use alu::alu;
 
+mod selector;
+use selector::selector;
+
 fn create_file(name: &str) -> std::io::Result<File> {
     let mut dest = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     dest.push("src");
@@ -55,6 +58,13 @@ fn main() -> std::io::Result<()> {
         alu,
         sim::GenerationOptions::default(),
         create_file("alu").unwrap(),
+    )?;
+
+    let selector = selector(&c);
+    sim::generate(
+        selector,
+        sim::GenerationOptions::default(),
+        create_file("selector").unwrap(),
     )?;
     // Generate Verilog code
     //verilog::generate(inverter, std::io::stdout())?;

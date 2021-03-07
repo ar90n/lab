@@ -2,6 +2,7 @@ mod decoder;
 mod pc;
 mod register;
 mod alu;
+mod selector;
 
 fn main() {
 }
@@ -179,4 +180,33 @@ fn test_register() {
     register.prop();
 
     assert_eq!(register.output, 0xe);
+}
+
+#[test]
+fn test_selector() {
+    let mut selector = selector::Selector::new();
+
+    selector.input_0 = 0x1;
+    selector.input_1 = 0x2;
+    selector.input_2 = 0x3;
+    selector.input_3 = 0x4;
+    selector.select = 0x0;
+    selector.prop();
+
+    assert_eq!(selector.output, 0x1);
+
+    selector.select = 0x1;
+    selector.prop();
+
+    assert_eq!(selector.output, 0x2);
+
+    selector.select = 0x2;
+    selector.prop();
+
+    assert_eq!(selector.output, 0x3);
+
+    selector.select = 0x3;
+    selector.prop();
+
+    assert_eq!(selector.output, 0x4);
 }

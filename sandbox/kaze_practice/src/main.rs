@@ -1,6 +1,7 @@
 mod decoder;
 mod pc;
 mod register;
+mod alu;
 
 fn main() {
 }
@@ -134,4 +135,23 @@ fn test_pc() {
     pc.prop();
 
     assert_eq!(pc.output, 0x0u32);
+}
+
+#[test]
+fn test_alu(){
+    let mut alu = alu::ALU::new();
+
+    alu.A = 0x1;
+    alu.B = 0x2;
+    alu.prop();
+
+    assert_eq!(alu.sum, 0x3);
+    assert_eq!(alu.carry, false);
+
+    alu.A = 0x8;
+    alu.B = 0x9;
+    alu.prop();
+
+    assert_eq!(alu.sum, 0x1);
+    assert_eq!(alu.carry, true);
 }

@@ -9,7 +9,7 @@ pub fn register<'a>(c: &'a Context<'a>) -> &'a Module<'a> {
 
     reg.default_value(0x0u32);
     reg.drive_next(load_.mux(reg.value, data));
-    register.output("output", reg.value);
+    register.output("value", reg.value);
 
     register
 }

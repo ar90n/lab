@@ -13,7 +13,7 @@ pub fn selector<'a>(c: &'a Context<'a>) -> &'a Module<'a> {
         select.bit(0).mux(input_3, input_2),
         select.bit(0).mux(input_1, input_0),
     );
-    selector.output("output", value);
+    selector.output("value", value);
 
     selector
 }

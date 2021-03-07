@@ -1,11 +1,11 @@
+mod alu;
 mod decoder;
 mod pc;
 mod register;
-mod alu;
 mod selector;
+mod td4;
 
-fn main() {
-}
+fn main() {}
 
 #[test]
 fn test_decoder() {
@@ -100,46 +100,46 @@ fn test_pc() {
     pc.reset();
     pc.prop();
 
-    assert_eq!(pc.output, 0x0u32);
+    assert_eq!(pc.addr, 0x0u32);
 
     pc.posedge_clk();
     pc.prop();
 
-    assert_eq!(pc.output, 0x1u32);
+    assert_eq!(pc.addr, 0x1u32);
 
     pc.posedge_clk();
     pc.prop();
 
-    assert_eq!(pc.output, 0x2u32);
+    assert_eq!(pc.addr, 0x2u32);
 
     pc.load_ = false;
-    pc.addr = 0xe;
+    pc.data = 0xe;
 
     pc.posedge_clk();
     pc.prop();
 
-    assert_eq!(pc.output, 0x3u32);
+    assert_eq!(pc.addr, 0x3u32);
 
     pc.load_ = true;
 
     pc.posedge_clk();
     pc.prop();
 
-    assert_eq!(pc.output, 0xeu32);
+    assert_eq!(pc.addr, 0xeu32);
 
     pc.posedge_clk();
     pc.prop();
 
-    assert_eq!(pc.output, 0xfu32);
+    assert_eq!(pc.addr, 0xfu32);
 
     pc.posedge_clk();
     pc.prop();
 
-    assert_eq!(pc.output, 0x0u32);
+    assert_eq!(pc.addr, 0x0u32);
 }
 
 #[test]
-fn test_alu(){
+fn test_alu() {
     let mut alu = alu::ALU::new();
 
     alu.A = 0x1;
@@ -161,25 +161,24 @@ fn test_alu(){
 fn test_register() {
     let mut register = register::Register::new();
 
-
     register.reset();
 
     register.load_ = false;
     register.data = 0xe;
     register.prop();
 
-    assert_eq!(register.output, 0x0);
+    assert_eq!(register.value, 0x0);
 
     register.posedge_clk();
     register.prop();
 
-    assert_eq!(register.output, 0xe);
+    assert_eq!(register.value, 0xe);
     register.load_ = true;
 
     register.posedge_clk();
     register.prop();
 
-    assert_eq!(register.output, 0xe);
+    assert_eq!(register.value, 0xe);
 }
 
 #[test]
@@ -193,20 +192,120 @@ fn test_selector() {
     selector.select = 0x0;
     selector.prop();
 
-    assert_eq!(selector.output, 0x1);
+    assert_eq!(selector.value, 0x1);
 
     selector.select = 0x1;
     selector.prop();
 
-    assert_eq!(selector.output, 0x2);
+    assert_eq!(selector.value, 0x2);
 
     selector.select = 0x2;
     selector.prop();
 
-    assert_eq!(selector.output, 0x3);
+    assert_eq!(selector.value, 0x3);
 
     selector.select = 0x3;
     selector.prop();
 
-    assert_eq!(selector.output, 0x4);
+    assert_eq!(selector.value, 0x4);
+}
+
+#[test]
+fn test_td4() {
+    let mut td4 = td4::TD4::new();
+    let memory: Vec<u32> = vec![
+        0b10110011,
+        0b10110110,
+        0b10111100,
+        0b10111000,
+        0b10111000,
+        0b10111100,
+        0b10110110,
+        0b10110011,
+        0b10110001,
+        0b11110000,
+    ];
+
+    td4.reset();
+    td4.prop();
+    assert_eq!(td4.out, 0b0000u32);
+    assert_eq!(td4.addr, 0b0000u32);
+
+    td4.data = memory[td4.addr as usize];
+    td4.in_ = 0x0u32;
+    td4.prop();
+    td4.posedge_clk();
+    td4.prop();
+
+    assert_eq!(td4.out, 0b0011u32);
+
+    td4.data = memory[td4.addr as usize];
+    td4.prop();
+    td4.posedge_clk();
+    td4.prop();
+
+    assert_eq!(td4.out, 0b0110u32);
+
+    td4.data = memory[td4.addr as usize];
+    td4.prop();
+    td4.posedge_clk();
+    td4.prop();
+
+    assert_eq!(td4.out, 0b1100u32);
+
+    td4.data = memory[td4.addr as usize];
+    td4.prop();
+    td4.posedge_clk();
+    td4.prop();
+
+    assert_eq!(td4.out, 0b1000u32);
+
+    td4.data = memory[td4.addr as usize];
+    td4.prop();
+    td4.posedge_clk();
+    td4.prop();
+
+    assert_eq!(td4.out, 0b1000u32);
+
+    td4.data = memory[td4.addr as usize];
+    td4.prop();
+    td4.posedge_clk();
+    td4.prop();
+
+    assert_eq!(td4.out, 0b1100u32);
+
+    td4.data = memory[td4.addr as usize];
+    td4.prop();
+    td4.posedge_clk();
+    td4.prop();
+
+    assert_eq!(td4.out, 0b0110u32);
+
+    td4.data = memory[td4.addr as usize];
+    td4.prop();
+    td4.posedge_clk();
+    td4.prop();
+
+    assert_eq!(td4.out, 0b0011u32);
+
+    td4.data = memory[td4.addr as usize];
+    td4.prop();
+    td4.posedge_clk();
+    td4.prop();
+
+    assert_eq!(td4.out, 0b0001u32);
+
+    td4.data = memory[td4.addr as usize];
+    td4.prop();
+    td4.posedge_clk();
+    td4.prop();
+
+    assert_eq!(td4.out, 0b0001u32);
+
+    td4.data = memory[td4.addr as usize];
+    td4.prop();
+    td4.posedge_clk();
+    td4.prop();
+
+    assert_eq!(td4.out, 0b0011u32);
 }

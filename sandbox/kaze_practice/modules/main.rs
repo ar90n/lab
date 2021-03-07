@@ -19,6 +19,9 @@ use alu::alu;
 mod selector;
 use selector::selector;
 
+mod td4;
+use td4::td4;
+
 fn create_file(name: &str) -> std::io::Result<File> {
     let mut dest = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     dest.push("src");
@@ -66,6 +69,14 @@ fn main() -> std::io::Result<()> {
         sim::GenerationOptions::default(),
         create_file("selector").unwrap(),
     )?;
+
+    let td4 = td4(&c);
+    sim::generate(
+        td4,
+        sim::GenerationOptions::default(),
+        create_file("td4").unwrap(),
+    )?;
+
     // Generate Verilog code
     //verilog::generate(inverter, std::io::stdout())?;
 

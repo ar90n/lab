@@ -155,3 +155,28 @@ fn test_alu(){
     assert_eq!(alu.sum, 0x1);
     assert_eq!(alu.carry, true);
 }
+
+#[test]
+fn test_register() {
+    let mut register = register::Register::new();
+
+
+    register.reset();
+
+    register.load_ = false;
+    register.data = 0xe;
+    register.prop();
+
+    assert_eq!(register.output, 0x0);
+
+    register.posedge_clk();
+    register.prop();
+
+    assert_eq!(register.output, 0xe);
+    register.load_ = true;
+
+    register.posedge_clk();
+    register.prop();
+
+    assert_eq!(register.output, 0xe);
+}

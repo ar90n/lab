@@ -27,18 +27,7 @@ fn main() -> std::io::Result<()> {
     // Create a context, which will contain our module(s)
     let c = Context::new();
 
-    // Create a module
-    let inverter = c.module("Inverter");
-    let i = inverter.input("i", 1); // 1-bit input
-    inverter.output("o", !i); // Output inverted input
-
     // Generate Rust simulator code
-    //sim::generate(inverter, sim::GenerationOptions::default(), std::io::stdout())?;
-    sim::generate(
-        inverter,
-        sim::GenerationOptions::default(),
-        create_file("inverter").unwrap(),
-    )?;
 
     let register = register(&c);
     sim::generate(

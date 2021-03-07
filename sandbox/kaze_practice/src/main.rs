@@ -1,11 +1,44 @@
+use kaze::runtime::tracing::vcd::{TimeScaleUnit, VcdTrace};
+
 mod alu;
 mod decoder;
 mod pc;
 mod register;
 mod selector;
 mod td4;
+mod td4_sim;
 
-fn main() {}
+fn main() -> std::io::Result<()> {
+    let f = std::fs::File::create("trace.vcd")?;
+    let tracer = VcdTrace::new(f, 100u32, TimeScaleUnit::Ms)?;
+    let mut td4 = td4_sim::TD4::new("td4", tracer).unwrap();
+
+    let memory: Vec<u32> = vec![
+        0b10110011,
+        0b10110110,
+        0b10111100,
+        0b10111000,
+        0b10111000,
+        0b10111100,
+        0b10110110,
+        0b10110011,
+        0b10110001,
+        0b11110000,
+    ];
+
+    td4.reset();
+    td4.in_ = 0x0u32;
+    for i in 0..64 {
+        td4.prop();
+        td4.update_trace(i);
+
+        td4.data = memory[td4.addr as usize];
+        td4.prop();
+        td4.posedge_clk();
+    }
+
+    Ok(())
+}
 
 #[test]
 fn test_decoder() {

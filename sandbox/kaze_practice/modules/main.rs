@@ -77,8 +77,14 @@ fn main() -> std::io::Result<()> {
         create_file("td4").unwrap(),
     )?;
 
+    sim::generate(
+        td4,
+        sim::GenerationOptions{tracing: true},
+        create_file("td4_sim").unwrap(),
+    )?;
+
     // Generate Verilog code
-    //verilog::generate(inverter, std::io::stdout())?;
+    verilog::generate(td4,create_file("td4.v").unwrap() )?;
 
     Ok(())
 }

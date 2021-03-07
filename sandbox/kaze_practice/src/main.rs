@@ -1,4 +1,5 @@
 mod decoder;
+mod pc;
 mod register;
 
 fn main() {
@@ -87,4 +88,50 @@ fn test_decoder() {
     decoder.prop();
     assert_eq!(decoder.select, 0b11);
     assert_eq!(decoder.load, 0b0111);
+}
+
+#[test]
+fn test_pc() {
+    let mut pc = pc::ProgramCounter::new();
+    pc.load_ = true;
+
+    pc.reset();
+    pc.prop();
+
+    assert_eq!(pc.output, 0x0u32);
+
+    pc.posedge_clk();
+    pc.prop();
+
+    assert_eq!(pc.output, 0x1u32);
+
+    pc.posedge_clk();
+    pc.prop();
+
+    assert_eq!(pc.output, 0x2u32);
+
+    pc.load_ = false;
+    pc.addr = 0xe;
+
+    pc.posedge_clk();
+    pc.prop();
+
+    assert_eq!(pc.output, 0x3u32);
+
+    pc.load_ = true;
+
+    pc.posedge_clk();
+    pc.prop();
+
+    assert_eq!(pc.output, 0xeu32);
+
+    pc.posedge_clk();
+    pc.prop();
+
+    assert_eq!(pc.output, 0xfu32);
+
+    pc.posedge_clk();
+    pc.prop();
+
+    assert_eq!(pc.output, 0x0u32);
 }

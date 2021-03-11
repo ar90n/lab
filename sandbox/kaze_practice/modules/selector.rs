@@ -1,6 +1,6 @@
 use kaze::*;
 
-pub fn selector<'a>(c: &'a Context<'a>) -> &'a Module<'a> {
+pub fn selector<'a>(c: &'a Context<'a>) {
     let selector = c.module("Selector");
 
     let select = selector.input("select", 2);
@@ -14,6 +14,4 @@ pub fn selector<'a>(c: &'a Context<'a>) -> &'a Module<'a> {
         select.bit(0).mux(input_1, input_0),
     );
     selector.output("value", value);
-
-    selector
 }

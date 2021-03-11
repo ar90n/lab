@@ -1,6 +1,6 @@
 use kaze::*;
 
-pub fn td4<'a>(c: &'a Context<'a>) -> &'a Module<'a> {
+pub fn td4<'a>(c: &'a Context<'a>) {
     let td4 = c.module("TD4");
 
     let data = td4.input("data", 8);
@@ -49,6 +49,4 @@ pub fn td4<'a>(c: &'a Context<'a>) -> &'a Module<'a> {
 
     td4.output("out", reg_out.output("value"));
     td4.output("addr", pc.output("addr"));
-
-    td4
 }

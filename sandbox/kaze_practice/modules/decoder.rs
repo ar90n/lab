@@ -1,6 +1,6 @@
 use kaze::*;
 
-pub fn decoder<'a>(c: &'a Context<'a>) -> &'a Module<'a> {
+pub fn decoder<'a>(c: &'a Context<'a>) {
     let decoder = c.module("Decoder");
 
     let op = decoder.input("op", 4);
@@ -19,6 +19,4 @@ pub fn decoder<'a>(c: &'a Context<'a>) -> &'a Module<'a> {
         "load",
         load_3_.concat(load_2_.concat(load_1_.concat(load_0_))),
     );
-
-    decoder
 }

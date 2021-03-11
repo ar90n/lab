@@ -7,34 +7,39 @@ mod register;
 mod selector;
 mod td4;
 mod td4_sim;
+mod lchika_program;
+mod timer_program;
 
 fn main() -> std::io::Result<()> {
     let f = std::fs::File::create("trace.vcd")?;
     let tracer = VcdTrace::new(f, 100u32, TimeScaleUnit::Ms)?;
     let mut td4 = td4_sim::TD4::new("td4", tracer).unwrap();
+    let mut lchika_program = lchika_program::LchikaProgram::new();
+    let mut timer_program = timer_program::TimerProgram::new();
 
-    let memory: Vec<u32> = vec![
-        0b10110011,
-        0b10110110,
-        0b10111100,
-        0b10111000,
-        0b10111000,
-        0b10111100,
-        0b10110110,
-        0b10110011,
-        0b10110001,
-        0b11110000,
-    ];
-
+    let mut memory = lchika_program;
+    //let mut memory = timer_program;
     td4.reset();
     td4.in_ = 0x0u32;
-    for i in 0..64 {
-        td4.prop();
-        td4.update_trace(i);
 
-        td4.data = memory[td4.addr as usize];
+    memory.posedge_clk();
+    memory.prop();
+    memory.posedge_clk();
+    memory.prop();
+    for i in 0..64 {
+        memory.addr = td4.addr;
+        td4.data = memory.data;
+
+        memory.prop();
         td4.prop();
+
+        memory.posedge_clk();
         td4.posedge_clk();
+
+        memory.prop();
+        td4.prop();
+
+        td4.update_trace(i);
     }
 
     Ok(())
@@ -135,11 +140,13 @@ fn test_pc() {
 
     assert_eq!(pc.addr, 0x0u32);
 
+    pc.prop();
     pc.posedge_clk();
     pc.prop();
 
     assert_eq!(pc.addr, 0x1u32);
 
+    pc.prop();
     pc.posedge_clk();
     pc.prop();
 
@@ -148,23 +155,21 @@ fn test_pc() {
     pc.load_ = false;
     pc.data = 0xe;
 
-    pc.posedge_clk();
     pc.prop();
-
-    assert_eq!(pc.addr, 0x3u32);
-
-    pc.load_ = true;
-
     pc.posedge_clk();
     pc.prop();
 
     assert_eq!(pc.addr, 0xeu32);
 
+    pc.load_ = true;
+
+    pc.prop();
     pc.posedge_clk();
     pc.prop();
 
     assert_eq!(pc.addr, 0xfu32);
 
+    pc.prop();
     pc.posedge_clk();
     pc.prop();
 
@@ -202,12 +207,14 @@ fn test_register() {
 
     assert_eq!(register.value, 0x0);
 
+    register.prop();
     register.posedge_clk();
     register.prop();
 
     assert_eq!(register.value, 0xe);
     register.load_ = true;
 
+    register.prop();
     register.posedge_clk();
     register.prop();
 
@@ -247,16 +254,8 @@ fn test_selector() {
 fn test_td4() {
     let mut td4 = td4::TD4::new();
     let memory: Vec<u32> = vec![
-        0b10110011,
-        0b10110110,
-        0b10111100,
-        0b10111000,
-        0b10111000,
-        0b10111100,
-        0b10110110,
-        0b10110011,
-        0b10110001,
-        0b11110000,
+        0b10110011, 0b10110110, 0b10111100, 0b10111000, 0b10111000, 0b10111100, 0b10110110,
+        0b10110011, 0b10110001, 0b11110000,
     ];
 
     td4.reset();

@@ -1,26 +1,25 @@
+mod alu;
+mod decoder;
+mod pc;
+mod register;
+mod selector;
+mod td4;
+mod program;
+
 use std::env;
 use std::fs::File;
 use std::path::PathBuf;
 
 use kaze::*;
 
-mod register;
-use register::register;
-
-mod decoder;
-use decoder::decoder;
-
-mod pc;
-use pc::program_counter;
-
-mod alu;
 use alu::alu;
-
-mod selector;
+use decoder::decoder;
+use pc::program_counter;
+use register::register;
 use selector::selector;
-
-mod td4;
 use td4::td4;
+use program::lchika_program;
+use program::timer_program;
 
 fn create_file(name: &str) -> std::io::Result<File> {
     let mut dest = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
@@ -30,61 +29,84 @@ fn create_file(name: &str) -> std::io::Result<File> {
 }
 
 fn main() -> std::io::Result<()> {
-    // Create a context, which will contain our module(s)
+    // Create a context
     let c = Context::new();
 
-    // Generate Rust simulator code
-
-    let register = register(&c);
+    // Generate Register codes
+    register(&c);
     sim::generate(
-        register,
+        c.modules().get("Register").unwrap(),
         sim::GenerationOptions::default(),
         create_file("register").unwrap(),
     )?;
 
-    let decoder = decoder(&c);
+    // Generate Decoder codes
+    decoder(&c);
     sim::generate(
-        decoder,
+        c.modules().get("Decoder").unwrap(),
         sim::GenerationOptions::default(),
         create_file("decoder").unwrap(),
     )?;
 
-    let pc = program_counter(&c);
+    // Generate ProgramCounter codes
+    program_counter(&c);
     sim::generate(
-        pc,
+        c.modules().get("ProgramCounter").unwrap(),
         sim::GenerationOptions::default(),
         create_file("pc").unwrap(),
     )?;
 
-    let alu = alu(&c);
+    // Generate ALU codes
+    alu(&c);
     sim::generate(
-        alu,
+        c.modules().get("ALU").unwrap(),
         sim::GenerationOptions::default(),
         create_file("alu").unwrap(),
     )?;
 
-    let selector = selector(&c);
+    // Generate Selector codes
+    selector(&c);
     sim::generate(
-        selector,
+        c.modules().get("Selector").unwrap(),
         sim::GenerationOptions::default(),
         create_file("selector").unwrap(),
     )?;
 
-    let td4 = td4(&c);
+    // Generate Lchika program codes
+    lchika_program(&c);
     sim::generate(
-        td4,
+        c.modules().get("LchikaProgram").unwrap(),
+        sim::GenerationOptions::default(),
+        //sim::GenerationOptions { tracing: true },
+        create_file("lchika_program").unwrap(),
+    )?;
+
+    // Generate Lchika program codes
+    timer_program(&c);
+    sim::generate(
+        c.modules().get("TimerProgram").unwrap(),
+        sim::GenerationOptions::default(),
+        create_file("timer_program").unwrap(),
+    )?;
+
+    // Generate TD4 codes
+    td4(&c);
+    sim::generate(
+        c.modules().get("TD4").unwrap(),
         sim::GenerationOptions::default(),
         create_file("td4").unwrap(),
     )?;
 
     sim::generate(
-        td4,
-        sim::GenerationOptions{tracing: true},
+        c.modules().get("TD4").unwrap(),
+        sim::GenerationOptions { tracing: true },
         create_file("td4_sim").unwrap(),
     )?;
 
-    // Generate Verilog code
-    verilog::generate(td4,create_file("td4.v").unwrap() )?;
+    verilog::generate(
+        c.modules().get("TD4").unwrap(),
+        create_file("td4.v").unwrap(),
+    )?;
 
     Ok(())
 }

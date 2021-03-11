@@ -4,7 +4,6 @@ mod pc;
 mod register;
 mod selector;
 mod td4;
-mod program;
 
 use std::env;
 use std::fs::File;
@@ -18,8 +17,6 @@ use pc::program_counter;
 use register::register;
 use selector::selector;
 use td4::td4;
-use program::lchika_program;
-use program::timer_program;
 
 fn create_file(name: &str) -> std::io::Result<File> {
     let mut dest = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
@@ -70,23 +67,6 @@ fn main() -> std::io::Result<()> {
         c.modules().get("Selector").unwrap(),
         sim::GenerationOptions::default(),
         create_file("selector").unwrap(),
-    )?;
-
-    // Generate Lchika program codes
-    lchika_program(&c);
-    sim::generate(
-        c.modules().get("LchikaProgram").unwrap(),
-        sim::GenerationOptions::default(),
-        //sim::GenerationOptions { tracing: true },
-        create_file("lchika_program").unwrap(),
-    )?;
-
-    // Generate Lchika program codes
-    timer_program(&c);
-    sim::generate(
-        c.modules().get("TimerProgram").unwrap(),
-        sim::GenerationOptions::default(),
-        create_file("timer_program").unwrap(),
     )?;
 
     // Generate TD4 codes

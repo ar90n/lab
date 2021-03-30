@@ -1,0 +1,13 @@
+{
+ "code_filename": "main.py",
+ "lang": "python",
+ "problem": {
+  "alphabet": "Z",
+  "contest": {
+   "contest_id": "dp"
+  },
+  "problem_id": "dp_z"
+ },
+ "sample_in_pattern": "in_*.txt",
+ "sample_out_pattern": "out_*.txt"
+}

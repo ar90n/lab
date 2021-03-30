@@ -1,0 +1,504 @@
+snippet ____bisect_func
+    def bisect_func(search_range, f):
+		lo, hi = search_range
+		while (lo+1) < hi:
+			mid= (lo + hi) // 2
+			if 0 <= f(mid):
+				hi = mid
+			else:
+				lo = mid
+		return lo + 1
+
+snippet ____inchworm
+    def inchworm(sweep_range, f, g):
+		end = N
+		left = 0
+		right = 0
+		ret = 0
+		acc = 1
+	
+		def _cond():
+			return acc <= K
+	
+		def _update_ret():
+			nonlocal ret
+			ret = max(ret ,right - left)
+	
+		def _r_event(i):
+			nonlocal acc
+			acc *= s[i]
+	
+		def _l_event(i):
+			nonlocal acc
+			acc /= s[i]
+	
+		while min(left, right) < end:
+			while right < end and _cond():
+				_update_ret()
+				_r_event(right)
+				right += 1
+	
+			if _cond():
+				_update_ret()
+	
+			_l_event(left)
+			left += 1
+
+snippet ____binary_search
+    def binary_search(search_range, f, n=100, eps=1e-12):
+		l, r = search_range
+		c = (l + r) / 2.0
+		for i in range(n):
+			v = f(c)
+			if abs(v) < eps:
+				return c
+	
+			if v > 0:
+				r = c
+			else:
+				l = c
+			c = (l + r) / 2.0
+	
+		return c
+
+snippet ____inv_mod
+    def inv_mod(a, M):
+		return pow_mod(a, M - 2, M)
+
+snippet ____popcount
+    def popcount(n):
+		return bin(n).count('1')
+
+snippet ____prime_table
+    def prime_table(n):
+		t = [True] * (n + 1)
+		t[0] = False
+		t[1] = False
+	
+		for p in range(2, n + 1, 2):
+			if n < p ** 2:
+				break
+			if t[p]:
+				for i in range(p * p, n + 1, 2 * p):
+					t[i] = False
+		return [2] + [p for p in range(3, n + 1, 2) if t[p]]
+
+snippet ____fact_mod
+    def fact_mod(a, M):
+		ret = 1
+		for i in range(2, a + 1):
+			ret = (ret * i) % M
+		return ret
+
+snippet ____perm_mod
+    def perm_mod(n, m, M):
+		ret = 1
+		for i in range(n, n - m, -1):
+			ret = (ret * i) % M
+		return ret
+
+snippet ____ternary_search
+    def ternary_search( search_range, f, n = 100, eps = 1e-24 ):
+		l, r = search_range
+		for i in range( n ):
+			ll = ( l + l + r ) / 3.0
+			rr = ( l + r + r ) / 3.0
+	
+			vl = f( ll )
+			vr = f( rr )
+			if abs( vl - vr ) < eps:
+				break
+	
+			if vl > vr :
+				r =rr 
+			else:
+				l =ll 
+	
+		return ( l + r ) / 2.0
+
+snippet ____pow_mod
+    def pow_mod(a, k, M):
+		if k == 0:
+			return 1
+	
+		t = pow_mod(a, k // 2, M)
+		res = (t * t) % M
+		if k % 2 == 1:
+			res = (res * a) % M
+	
+		return res
+
+snippet ____comb_mod
+    def comb_mod(n, m, M):
+		return (perm_mod(n, m, M) * inv_mod(fact_mod(m, M), M)) % M
+
+snippet ____BinaryIndexTree
+    class BinaryIndexTree:
+		def __init__(self, n):
+			self._tree = [0] * (n + 1)
+	
+		def sum(self, i, j=None):
+			if j is None:
+				f = 0
+				t = i
+			else:
+				f = i
+				t = j
+	
+			return self._sum(t) - self._sum(f)
+	
+		def _sum(self, i):
+			s = 0
+			while 0 < i:
+				s += self._tree[i - 1]
+				i -= i & -i
+			return s
+	
+		def add(self, i, x):
+			i += 1
+			while i < len(self._tree):
+				self._tree[i - 1] += x
+				i += i & -i
+
+snippet ____SkewHeap
+    class SkewHeap:
+		def __init__(self):
+			self._root = None
+			self._size = 0
+	
+		def append(self, v):
+			self._root = self._meld(self._root, (v, None, None))
+			self._size += 1
+	
+		def popleft(self):
+			if self._root is None:
+				return None
+	
+			v, lh, rh = self._root
+			self._root = self._meld(lh, rh)
+			self._size -= 1
+			return v
+	
+		def _meld(self, a, b):
+			if a is None:
+				return b
+			if b is None:
+				return a
+			a, b = (a, b) if b[0] < a[0] else (b, a)
+			return (a[0], self._meld(a[2], b), a[1])
+	
+		def __len__(self):
+			return self._size
+
+snippet ____UnionFind
+    class UnionFind:
+		def __init__(self, n):
+			self._parents = list(range(n))
+			self._ranks = [0] * n
+			self._size = [1] * n
+	
+		def root(self, x):
+			if self._parents[x] == x:
+				return x
+			self._parents[x] = self.root(self._parents[x])
+			return self._parents[x]
+	
+		def size(self, x):
+			return self._size[self.root(x)]
+	
+		def unite(self, x, y):
+			rx = self.root(x)
+			ry = self.root(y)
+			if rx == ry:
+				return
+	
+			if self._ranks[rx] < self._ranks[ry]:
+				self._parents[rx] = ry
+				self._size[ry] += self._size[rx]
+			else:
+				self._parents[ry] = rx
+				self._size[rx] += self._size[ry]
+				if self._ranks[rx] == self._ranks[ry]:
+					self._ranks[rx] += 1
+	
+		def same(self, x, y):
+			return self.root(x) == self.root(y)
+
+snippet ____SegmentTree
+    class SegmentTree:
+		def __init__(self, n, f):
+			self._size = n
+			self._func = f
+	
+			n = 1
+			while n < self._size:
+				n *= 2
+			self._tree = [None] * 2 * n
+	
+		def _filter(self, vl, vr):
+			return list(filter(lambda x: x is not None, [vl, vr]))
+	
+		def update(self, i, x):
+			i += (len(self._tree) // 2) - 1
+			self._tree[i] = x
+	
+			while 0 < i:
+				i = (i - 1) // 2
+				values = self._filter(self._tree[2 * i + 1], self._tree[2 * i + 2])
+				self._tree[i] = self._func(values) if 0 < len(values) else None
+	
+		def query(self, a, b):
+			return self._query(a, b, 0, 0, len(self._tree) // 2)
+	
+		def _query(self, a, b, k, l, r):
+			if r <= a or b <= l:
+				return None
+	
+			if a <= l and r <= b:
+				return self._tree[k]
+			else:
+				values = self._filter(
+					self._query(a, b, 2 * k + 1, l, (l + r) // 2),
+					self._query(a, b, 2 * k + 2, (l + r) // 2, r)
+				)
+				return self._func(values) if 0 < len(values) else None
+
+snippet ____graph
+    class DGraph:
+		def __init__(self, n, edges):
+			self._vertice = [{} for _ in range(n)]
+			for e in edges:
+				self._vertice[e[0]][e[1]] = e[2] if len(e) == 3 else 1
+	
+		def __len__(self):
+			return len(self._vertice)
+	
+		def edges(self, n=None):
+			srcs = range(len(self)) if n is None else [n]
+			return sum([[(s, d, c) for d, c in self._vertice[s].items()] for s in srcs], [])
+	
+		def transpose(self):
+			tedges = [(t, f, c) for f, t, c in self.edges()]
+			return DGraph(len(self), tedges)
+	
+		def cost(self, src, dst):
+			return self._vertice[src].get(dst, float('inf'))
+	
+	class Graph(DGraph):
+		def __init__(self, n, edges):
+			nd_edges = edges + [(d, s, c) for s, d, c in edges]
+			super().__init__(n, nd_edges)
+	
+		def transpose(self):
+			return self
+
+snippet ____prim
+    def prim(g, src):
+		import heapq
+	
+		visited = [False] * len(g)
+		spanning_tree_edges = []
+		edge_heap = []
+		heapq.heappush(edge_heap, (0, (src, src)))
+		while edge_heap:
+			c, (s, d) = heapq.heappop(edge_heap)
+			if visited[d]:
+				continue
+			visited[d] = True
+			spanning_tree_edges.append((s, d, c))
+	
+			for _, nd, ndc in g.edges(d):
+				heapq.heappush(edge_heap, (ndc, (d, nd)))
+	
+		spanning_tree_edges = spanning_tree_edges[1:]
+		return Graph(len(g), spanning_tree_edges)
+
+snippet ____maxflow_ek
+    def find_maxflow_ek(rg, source, sink):
+		def find_source_to_sink_path(rg, source, sink):
+			from collections import deque
+			import sys
+	
+			bfs_queue = deque([source])
+			bfs_visited = set([])
+			parents_map = {source: -1}
+			source_to_sink_path = []
+	
+			flow = sys.float_info.max
+			while bfs_queue:
+				current_node = bfs_queue.popleft()
+				bfs_visited.add(current_node)
+	
+				if current_node == sink:
+					r_current_node = current_node
+					r_parent_node = parents_map[r_current_node]
+					while r_parent_node != -1:
+						capacity = rg[r_parent_node][r_current_node]
+						flow = min(flow, capacity)
+						source_to_sink_path.append(r_current_node)
+						r_current_node = r_parent_node
+						r_parent_node = parents_map[r_parent_node]
+					source_to_sink_path.append(source)
+					source_to_sink_path.reverse()
+					return source_to_sink_path, flow, set([])
+	
+				for next_node in rg[current_node].keys():
+					if 0 < rg[current_node][next_node] and next_node not in bfs_visited:
+						parents_map[next_node] = current_node
+						bfs_queue.append(next_node)
+	
+			return [], 0.0, set(bfs_visited)
+	
+		maxflow = 0.0
+		while True:
+			source_to_sink_path, current_flow, source_nodes = find_source_to_sink_path(
+				rg, source, sink
+			)
+			print(source_to_sink_path, source_nodes)
+			if current_flow == 0.0:
+				break
+	
+			maxflow += current_flow
+			for from_node, to_node in zip(
+				source_to_sink_path[0:-1], source_to_sink_path[1:]
+			):
+				rg[from_node][to_node] -= current_flow
+				rg[to_node][from_node] += current_flow
+	
+		all_nodes = set()
+		for k, v in rg.items():
+			all_nodes.add(k)
+			for kk in v.keys():
+				all_nodes.add(kk)
+		sink_nodes = all_nodes - source_nodes
+		return source_nodes, sink_nodes, maxflow
+
+snippet ____dijkstra
+    def dijkstra(g, src):
+		import heapq
+	
+		min_cost = [float('inf')] * len(g)
+	
+		node_heap = []
+		heapq.heappush(node_heap, (0, src))
+		while node_heap:
+			cost, node = heapq.heappop(node_heap)
+			if min_cost[node] <= cost:
+				continue
+			min_cost[node] = cost
+	
+			for _, d, c in g.edges(node):
+				dc = min_cost[node] + c
+				heapq.heappush(node_heap, (dc, d))
+		return min_cost
+
+snippet ____topological_sort
+    def topological_sort(g):
+		result = []
+		status = [0] * len(g)
+	
+		def _dfs(v):
+			st = [v]
+			while 0 < len(st):
+				cv = st[-1]
+				if status[cv] == 0:
+					status[cv] = 1
+					for _, d, _ in g.edges(cv):
+						if status[d] == 1:
+							raise ValueError('has cyclic')
+						st.append(d)
+				elif status[cv] == 1:
+					status[cv] = 2
+					result.append(cv)
+				if status[cv] == 2:
+					st.pop()
+	
+		for v in range(len(g)):
+			_dfs(v)
+		return list(reversed(result))
+
+snippet ____bellman_ford
+    def bellman_ford(g, src):
+		min_cost = [float('inf')] * len(g)
+		min_cost[src] = 0
+	
+		for _ in range(len(min_cost)):
+			is_changed = False
+			for s, d, c in g.edges():
+				if min_cost[s] + c < min_cost[d]:
+					is_changed = True
+					min_cost[d] = min_cost[s] + c
+			if not is_changed:
+				break
+		return min_cost
+
+snippet ____diameter
+    def diameter(g):
+		_, n = max([(c, n) for n, c in bfs(g, 0)])
+		return max([c for _, c in bfs(g, n)])
+
+snippet ____bfs
+    def bfs(g, src):
+		from collections import deque
+	
+		visited = [False] * len(g)
+		queue = deque([src])
+		while queue:
+			n, c = queue.popleft()
+			if visited[n]:
+				continue
+			visited[n] = True
+	
+			for _, d, _ in g.edges(n):
+				queue.append((d, c + 1))
+			yield n, c
+
+snippet ____warshall_floyd
+    def warshall_floyd(g):
+		n = len(g)
+		costs = [[float('inf') for i in range(n)] for j in range(n)]
+		for i in range(n):
+			costs[i][i] = 0
+		for s, d, c in g.edges():
+			costs[s][d] = c
+	
+		for k in range(n):
+			for i in range(n):
+				for j in range(n):
+					costs[i][j] = min(costs[i][j], costs[i][k] + costs[k][j])
+		return costs
+
+snippet ____dfs
+    def dfs(g, src):
+		visited = [False] * len(g)
+		stack = [(src, 0)]
+		while stack:
+			n, c = stack.pop()
+			if visited[n]:
+				continue
+			visited[n] = True
+	
+			for _, d, _ in g.edges(n):
+				#yield d
+				stack.append((d, c + 1))
+			yield n, c
+
+snippet ____lcs
+    def lcs(xs, ys):
+		dp = [([0] * (len(ys) + 1)) for _ in range(len(xs) + 1)]
+		for i, x in enumerate(xs):
+			for j, y in enumerate(ys):
+				dp[i + 1][j + 1] = max(dp[i][j + 1], dp[i + 1][j], dp[i][j] + int(x == y))
+	
+		s = []
+		p = (-1, -1)
+		while 0 < dp[p[0]][p[1]]:
+			if dp[p[0]][p[1]] == dp[p[0]-1][p[1]]:
+				p = (p[0]-1, p[1])
+			elif dp[p[0]][p[1]] == (dp[p[0]-1][p[1]-1] + int(xs[p[0]] == ys[p[1]])):
+				s.append(xs[p[0]])
+				p = (p[0]-1, p[1]-1)
+			else:
+				p = (p[0], p[1]-1)
+	
+		return ''.join(reversed(s))

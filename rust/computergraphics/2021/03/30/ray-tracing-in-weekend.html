@@ -4,18 +4,19 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
-<title>lab note | My lab notebook</title>
+<title>Rustでレイトレーシングをしてみる | lab note</title>
 <meta name="generator" content="Jekyll v4.1.1" />
-<meta property="og:title" content="lab note" />
+<meta property="og:title" content="Rustでレイトレーシングをしてみる" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="My lab notebook" />
-<meta property="og:description" content="My lab notebook" />
-<link rel="canonical" href="https://lab.ar90n.net/" />
-<meta property="og:url" content="https://lab.ar90n.net/" />
+<meta name="description" content="Raytracing in weekend" />
+<meta property="og:description" content="Raytracing in weekend" />
+<link rel="canonical" href="https://lab.ar90n.net/rust/computergraphics/2021/03/30/ray-tracing-in-weekend.html" />
+<meta property="og:url" content="https://lab.ar90n.net/rust/computergraphics/2021/03/30/ray-tracing-in-weekend.html" />
 <meta property="og:site_name" content="lab note" />
-<meta property="og:image" content="https://lab.ar90n.net/images/logo.png" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-03-30T00:00:00-05:00" />
 <script type="application/ld+json">
-{"description":"My lab notebook","url":"https://lab.ar90n.net/","@type":"WebSite","headline":"lab note","image":"https://lab.ar90n.net/images/logo.png","name":"lab note","@context":"https://schema.org"}</script>
+{"description":"Raytracing in weekend","url":"https://lab.ar90n.net/rust/computergraphics/2021/03/30/ray-tracing-in-weekend.html","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://lab.ar90n.net/rust/computergraphics/2021/03/30/ray-tracing-in-weekend.html"},"headline":"Rustでレイトレーシングをしてみる","dateModified":"2021-03-30T00:00:00-05:00","datePublished":"2021-03-30T00:00:00-05:00","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://lab.ar90n.net/feed.xml" title="lab note" /><!-- the google_analytics_id gets auto inserted from the config file -->
 
@@ -89,104 +90,77 @@ window.onload = wrap_img;
 </header>
 <main class="page-content" aria-label="Content">
       <div class="wrapper">
-        <div class="home">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Rustでレイトレーシングをしてみる</h1><p class="page-description">Raytracing in weekend</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-03-30T00:00:00-05:00" itemprop="datePublished">
+        Mar 30, 2021
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      1 min read
+    
+</span></p>
 
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#Rust">Rust</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#ComputerGraphics">ComputerGraphics</a>
+        
+      
+      </p>
+    
 
-  
+    </header>
 
-  <!-- Hide posts if front matter flag hide:true -->
-  
-  
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#はじめに">はじめに</a></li>
+<li class="toc-entry toc-h2"><a href="#メモ">メモ</a></li>
+<li class="toc-entry toc-h2"><a href="#結果">結果</a></li>
+<li class="toc-entry toc-h2"><a href="#参考">参考</a></li>
+</ul><h2 id="はじめに">
+<a class="anchor" href="#%E3%81%AF%E3%81%98%E3%82%81%E3%81%AB" aria-hidden="true"><span class="octicon octicon-link"></span></a>はじめに</h2>
+<p>Rustの勉強を兼ねて，<a href="http://in1weekend.blogspot.com/">こちら</a>を参考にレイトレーシングを写経してみました．</p>
 
-  <!-- Sort posts by rank, then date -->
-  
-  
-  
+<div class="github-card" data-github="ar90n/ray-tracing-in-weekends-with-rust" data-width="400" data-height="153" data-theme="default"></div>
+<script src="//cdn.jsdelivr.net/github-cards/latest/widget.js"></script>
 
- 
-  
+<h2 id="メモ">
+<a class="anchor" href="#%E3%83%A1%E3%83%A2" aria-hidden="true"><span class="octicon octicon-link"></span></a>メモ</h2>
 
-   <!-- Assemble final sorted posts array -->
-  
-  <ul class="post-list"><li><h3>
-    <a class="post-link" href="/rust/computergraphics/2021/03/30/ray-tracing-in-weekend.html">
-    Rustでレイトレーシングをしてみる
-    </a>
-</h3><p class="post-meta-description">Raytracing in weekend</p><p class="post-meta">Mar 30, 2021</p>
-</li><li><h3>
-    <a class="post-link" href="/rust/glutin/opengl/computergraphics/2021/02/01/getting-started-with-glutin.html">
-    glutinに入門してみる
-    </a>
-</h3><p class="post-meta-description">Getting started with glutin</p><p class="post-meta">Feb 1, 2021</p>
-</li><li><h3>
-    <a class="post-link" href="/tool/2021/01/06/install-starship.html">
-    starshipの導入
-    </a>
-</h3><p class="post-meta-description">Install starship</p><p class="post-meta">Jan 6, 2021</p>
-</li><li><h3>
-    <a class="post-link" href="/rust/2020/12/13/introduction-to-typenum.html">
-    型レベル整数ライブラリtypenumの紹介
-    </a>
-</h3><p class="post-meta-description">Introduction to typenum</p><p class="post-meta">Dec 13, 2020</p>
-</li><li><h3>
-    <a class="post-link" href="/rust/jupyter/2020/11/15/rust-on-nodebook-with-evcxr-jupyter.html">
-    evcxr_jupyterによるRust on Notebook
-    </a>
-</h3><p class="post-meta-description">Rust on Notebook with evcxr_jupyter</p><p class="post-meta">Nov 15, 2020</p>
-</li><li><h3>
-    <a class="post-link" href="/imageprocessing/geometry/2020/11/08/read-umeyama-1991-paper.html">
-    Least-Squares Estimation of Transformation Parameters Between Two Point Patterns の読解
-    </a>
-</h3><p class="post-meta-description">Read a thesis whose name is Least-Squares Estimation of Transformation Parameters Between Two Point Patterns</p><p class="post-meta">Nov 8, 2020</p>
-</li><li><h3>
-    <a class="post-link" href="/cloud/python/aws/gcp/2020/10/21/accessing-file-with-unified-pythonic-api.html">
-    smart_openによる統一的なファイルアクセス
-    </a>
-</h3><p class="post-meta-description">Accessing file with unified pythonic API</p><p class="post-meta">Oct 21, 2020</p>
-</li><li><h3>
-    <a class="post-link" href="/ubuntu/2020/10/17/usb-nic-in-ubuntu-server.html">
-    Ubuntu 20.04 LTS Server でUSB-NICを使う
-    </a>
-</h3><p class="post-meta-description">USB-NIC in Ubuntu Server</p><p class="post-meta">Oct 17, 2020</p>
-</li><li><h3>
-    <a class="post-link" href="/dicom/2020/10/12/character-encodings-in-dicom.html">
-    DICOMにおける文字コードの取り扱い
-    </a>
-</h3><p class="post-meta-description">A study of handling Japanese characters in DICOM</p><p class="post-meta">Oct 12, 2020</p>
-</li><li><h3>
-    <a class="post-link" href="/signalprocessing/jupyter/2020/10/10/analysis-of-moving-average-filter.html">
-    移動平均フィルタの零点と周波数特性
-    </a>
-</h3><p class="post-meta-description">Analysis of the feature of moving average filter</p><p class="post-meta">Oct 10, 2020</p>
-</li><li><h3>
-    <a class="post-link" href="/elm/web/2020/08/09/automated-update-github-pages.html">
-    GitHub ActionsでWebサイトを自動更新する
-    </a>
-</h3><p class="post-meta-description">Update GitHubPages automatically</p><p class="post-meta">Aug 9, 2020</p>
-</li><li><h3>
-    <a class="post-link" href="/algorithm/2020/06/27/purely-binary-heap.html">
-    純粋なバイナリヒープ
-    </a>
-</h3><p class="post-meta-description">An implementation of purely binary heap</p><p class="post-meta">Jun 27, 2020</p>
-</li><li><h3>
-    <a class="post-link" href="/math/geometry/2020/06/27/linear-algebra-in-3d-coordinates.html">
-    三次元空間における行列演算の復習
-    </a>
-</h3><p class="post-meta-description">Linear algebra in 3d coordinates</p><p class="post-meta">Jun 27, 2020</p>
-</li><li><h3>
-    <a class="post-link" href="/imageprocessing/python/2020/05/31/poisson-blending-in-5-lines.html">
-    5行で書くポアソンブレンディング
-    </a>
-</h3><p class="post-meta-description">An implementation of Poisson Blending Algorithm in 5 lines</p><p class="post-meta">May 31, 2020</p>
-</li><li><h3>
-    <a class="post-link" href="/kubernetes/ray/python/distributed%20systems/2020/05/25/Ray-k3s-raspi4.html">
-    Raspberry Pi 4 + k3s + Rayで分散処理を試す
-    </a>
-</h3><p class="post-meta-description">An evaluation for distributed program with Ray, k3s and Raspberry Pi 4</p><p class="post-meta">May 25, 2020</p>
-</li></ul>
+<ul>
+  <li>十分な数のRayを計算しなければ綺麗な画像は得られない．レイトレーシング結果のサンプルで，画素が黒く欠損しているのは十分な数のRayを計算していないから</li>
+  <li>Rayによってランダムにサンプリングすることで，ブラーやボケやアンチエイリアシングを表現する</li>
+  <li>思っていたよりも単純</li>
+</ul>
 
-    </div>
+<h2 id="結果">
+<a class="anchor" href="#%E7%B5%90%E6%9E%9C" aria-hidden="true"><span class="octicon octicon-link"></span></a>結果</h2>
+<ul>
+  <li>
+    <p>1週目
+<img src="https://raw.githubusercontent.com/ar90n/ray-tracing-in-weekends-with-rust/main/assets/output_firest_weekend.jpg" alt="first_weekend"></p>
+  </li>
+  <li>
+    <p>2週目
+<img src="https://raw.githubusercontent.com/ar90n/ray-tracing-in-weekends-with-rust/main/assets/output_second_weekend.jpg" alt="second_weekend"></p>
+  </li>
+</ul>
+
+<h2 id="参考">
+<a class="anchor" href="#%E5%8F%82%E8%80%83" aria-hidden="true"><span class="octicon octicon-link"></span></a>参考</h2>
+<ol>
+  <li><a href="http://in1weekend.blogspot.com/2016/01/ray-tracing-in-one-weekend.html">Ray Tracing in One Weekend</a></li>
+  <li><a href="http://in1weekend.blogspot.com/2016/01/ray-tracing-second-weekend.html">Ray Tracing: the Next Week</a></li>
+</ol>
+
+  </div><a class="u-url" href="/rust/computergraphics/2021/03/30/ray-tracing-in-weekend.html" hidden></a>
+</article>
       </div>
     </main><footer class="site-footer h-card">
   <data class="u-url" href="/"></data>

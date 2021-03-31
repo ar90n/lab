@@ -1,0 +1,44 @@
+version: "3.7"
+
+x-environment: &default-environment
+  MINIO_CACHE_COMMIT: writeback
+  MINIO_CACHE: "on"
+  MINIO_CACHE_DRIVES: /cache0 
+  MINIO_CACHE_AFTER: 0
+  MINIO_CACHE_QUOTA: 90 
+  MINIO_CACHE_WATERMARK_LOW: 75 
+  MINIO_CACHE_WATERMARK_HIGH: 85 
+  MINIO_ROOT_USER: miniominio 
+  MINIO_ROOT_PASSWORD: miniominio
+
+services:
+  s3-gateway:
+    image: minio/minio
+    container_name: s3_gateway
+    volumes:
+      - type: bind
+        source: /cache/s3
+        target: /opt/cache0
+    ports:
+      - 9000:9000
+    environment:
+      <<: *default-environment
+      MINIO_ROOT_USER: "$AWS_ACCESS_KEY_ID"
+      MINIO_ROOT_PASSWORD: "$AWS_SECRET_ACCESS_KEY"
+    command: ["gateway", "s3"]
+  gcs-gateway:
+    image: minio/minio
+    container_name: gcs_gateway
+    volumes:
+      - type: bind
+        source: /cache/gcs
+        target: /opt/cache0
+      - type: bind
+        source: "$GOOGLE_APPLICATION_CREDENTIALS"
+        target: "/credentials.json"
+    ports:
+      - 9001:9000
+    environment:
+      <<: *default-environment
+      GOOGLE_APPLICATION_CREDENTIALS: /credentials.json
+    command: ["gateway", "gcs", "$PROJECT_ID"]

@@ -26,6 +26,7 @@ services:
       MINIO_ROOT_USER: "$AWS_ACCESS_KEY_ID"
       MINIO_ROOT_PASSWORD: "$AWS_SECRET_ACCESS_KEY"
     command: ["gateway", "s3"]
+    restart: always
   gcs-gateway:
     image: minio/minio
     container_name: gcs_gateway
@@ -42,3 +43,4 @@ services:
       <<: *default-environment
       GOOGLE_APPLICATION_CREDENTIALS: /credentials.json
     command: ["gateway", "gcs", "$PROJECT_ID"]
+    restart: always

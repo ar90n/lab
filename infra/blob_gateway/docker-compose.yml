@@ -3,7 +3,7 @@ version: "3.7"
 x-environment: &default-environment
   MINIO_CACHE_COMMIT: writeback
   MINIO_CACHE: "on"
-  MINIO_CACHE_DRIVES: /cache0 
+  MINIO_CACHE_DRIVES: /opt/cache0, /opt/cache1
   MINIO_CACHE_AFTER: 0
   MINIO_CACHE_QUOTA: 90 
   MINIO_CACHE_WATERMARK_LOW: 75 
@@ -17,8 +17,11 @@ services:
     container_name: s3_gateway
     volumes:
       - type: bind
-        source: /cache/s3
+        source: /cache/0/s3
         target: /opt/cache0
+      - type: bind
+        source: /cache/1/s3
+        target: /opt/cache1
     ports:
       - 9000:9000
     environment:
@@ -32,8 +35,11 @@ services:
     container_name: gcs_gateway
     volumes:
       - type: bind
-        source: /cache/gcs
+        source: /cache/0/gcs
         target: /opt/cache0
+      - type: bind
+        source: /cache/1/gcs
+        target: /opt/cache1
       - type: bind
         source: "$GOOGLE_APPLICATION_CREDENTIALS"
         target: "/credentials.json"

@@ -9,9 +9,9 @@ pub fn selector<'a>(c: &'a Context<'a>) {
     let input_2 = selector.input("input_2", 4);
     let input_3 = selector.input("input_3", 4);
 
-    let value = select.bit(1).mux(
-        select.bit(0).mux(input_3, input_2),
-        select.bit(0).mux(input_1, input_0),
-    );
+    let value = if_(select.eq(selector.lit(0b00u32,2)),input_0
+    ).else_if(select.eq(selector.lit(0b01u32,2)),input_1
+    ).else_if(select.eq(selector.lit(0b10u32,2)),input_2
+    ).else_(input_3);
     selector.output("value", value);
 }

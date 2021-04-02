@@ -1,3 +1,4 @@
-/src/*.rs
-!/src/main.rs
-/target
+*.v
+*.vcd
+target
+.devcontainer

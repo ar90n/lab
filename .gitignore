@@ -1,14 +1,19 @@
+
+# Local Netlify folder
 *.swp
-~*
 *~
-_site
-.sass-cache
+.ipynb_checkpoints
 .jekyll-cache
 .jekyll-metadata
-_notebooks/.ipynb_checkpoints
-# Local Netlify folder
 .netlify
+.sass-cache
 .tweet-cache
 __pycache__
-
-.ipynb_checkpoints
+_notebooks/.ipynb_checkpoints
+_posts/2020-10-10-analysis-of-moving-average-filter.md
+_posts/2020-10-21-accessing-file-with-unified-pythonic-api.md
+_posts/2020-11-08-read-umeyama-1991-paper.md
+_posts/2020-11-15-rust-on-nodebook-with-evcxr-jupyter.md
+_posts/2020-12-13-introduction-to-typenum.md
+_site
+~*

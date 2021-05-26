@@ -12,6 +12,9 @@ eval "$(ssh-agent -s)"
 cp /fastpages/settings.ini .
 python /fastpages/nb2post.py
 
+######## Add markdown files derived from notebooks to .gitignore ########
+find _notebooks -maxdepth 1 -name '*.ipynb' | sort | sed -e 's/ipynb$/md/g' | sed -e 's/_notebooks/_posts/g' | cat .gitignore - | sort | uniq > .gitignore.tmp
+mv .gitignore.tmp .gitignore
 
 ######## Optionally save files and build GitHub Pages ########
 if [[ "$INPUT_BOOL_SAVE_MARKDOWN" == "true" ]];then

@@ -19,6 +19,7 @@ ipywidgets
 SimpleITK
 numba
 smart-open[all]
+paaaaath[all]
 kkt
 jupytext
 joblib
@@ -29,3 +30,7 @@ ImageHash
 nibabel
 ray
 jax
+catboost
+pytorch-lightning
+kornia
+tables

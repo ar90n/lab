@@ -1,0 +1,15 @@
+version: "3"
+services:
+  jupyter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - notebooks:/jupyter/notebooks
+    ports:
+      - 9050:8050
+      - 9999:8888
+    restart: always
+
+volumes:
+  notebooks:

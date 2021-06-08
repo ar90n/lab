@@ -6,6 +6,8 @@ services:
       dockerfile: Dockerfile
     volumes:
       - notebooks:/jupyter/notebooks
+      - ~/.aws:/root/.aws
+      - ~/.config/gcloud:/root/.config/gcloud
     ports:
       - 9050:8050
       - 9999:8888

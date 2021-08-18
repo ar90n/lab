@@ -1,0 +1,36 @@
+version: "3.2"
+
+networks:
+  monitoring:
+
+services:
+  loki:
+    image: grafana/loki:latest
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - type: bind
+        source: ./loki/local-config.yml
+        target: /etc/loki/local-config.yaml
+    networks:
+      - monitoring
+    restart: always
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - type: bind
+        source: ./grafana/provisioning
+        target: /etc/grafana/provisioning
+      - type: volume
+        source: grafana_data
+        target: /var/lib/grafana
+    networks:
+      - monitoring
+    restart: always
+
+volumes:
+  grafana_data:

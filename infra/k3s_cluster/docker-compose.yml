@@ -25,6 +25,12 @@ services:
                         - type: bind
                           source: ./dnsmasq.conf
                           target: /etc/dnsmasq.conf
+                        - type: bind
+                          source: ./dnsmasq.resolv.conf
+                          target: /etc/resolv_dnsmasq.conf
+                        - type: bind
+                          source: ./hosts
+                          target: /etc/hosts
                 environment:
                         HTTP_USER: foo
                         HTTP_PASS: bar

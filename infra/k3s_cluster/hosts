@@ -1,0 +1,16 @@
+127.0.0.1 localhost
+10.0.100.1 nikawa.local nikawa
+10.0.0.30 nikawa.local nikawa
+
+10.0.100.1 k3s-master.local k3s-master
+10.0.100.110 k3s-worker0.local k3s-worker0
+10.0.100.111 k3s-worker1.local k3s-worker1
+10.0.100.112 k3s-worker2.local k3s-worker2
+10.0.100.113 k3s-worker3.local k3s-worker3
+
+# The following lines are desirable for IPv6 capable hosts
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters

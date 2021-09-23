@@ -4,7 +4,7 @@ ADD clean-layer.sh  /tmp/clean-layer.sh
 
 RUN pip install pytorch-lightning && \
     pip install torch==1.8.1+cpu torchvision==0.9.1+cpu torchaudio==0.8.1 -f https://download.pytorch.org/whl/torch_stable.html && \
-    pip install scikit-image kornia  && \
+    pip install scikit-image && \
     pip install kornia && \
     pip install jax jaxlib  && \
     pip install albumentations && \

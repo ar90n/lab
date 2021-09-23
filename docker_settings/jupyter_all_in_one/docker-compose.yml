@@ -8,6 +8,7 @@ services:
       - notebooks:/jupyter/notebooks
       - ~/.aws:/root/.aws
       - ~/.config/gcloud:/root/.config/gcloud
+      - /mnt/data:/data
     ports:
       - 9050:8050
       - 9999:8888

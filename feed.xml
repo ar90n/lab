@@ -1,4 +1,90 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="https://lab.ar90n.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://lab.ar90n.net/" rel="alternate" type="text/html" /><updated>2021-09-30T07:40:02-05:00</updated><id>https://lab.ar90n.net/feed.xml</id><title type="html">lab note</title><subtitle>My lab notebook</subtitle><entry><title type="html">RustによるシンプルなGuidedFilterの実装</title><link href="https://lab.ar90n.net/rust/imaceprocessing/2021/09/30/simple-guided-filter-rs.html" rel="alternate" type="text/html" title="RustによるシンプルなGuidedFilterの実装" /><published>2021-09-30T00:00:00-05:00</published><updated>2021-09-30T00:00:00-05:00</updated><id>https://lab.ar90n.net/rust/imaceprocessing/2021/09/30/simple-guided-filter-rs</id><content type="html" xml:base="https://lab.ar90n.net/rust/imaceprocessing/2021/09/30/simple-guided-filter-rs.html">&lt;!--
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="https://lab.ar90n.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://lab.ar90n.net/" rel="alternate" type="text/html" /><updated>2022-01-03T05:01:12-06:00</updated><id>https://lab.ar90n.net/feed.xml</id><title type="html">lab note</title><subtitle>My lab notebook</subtitle><entry><title type="html">AWS Amplifyのメモ</title><link href="https://lab.ar90n.net/aws/web/cloud/amplify/2022/01/03/aws-amplify-tips.html" rel="alternate" type="text/html" title="AWS Amplifyのメモ" /><published>2022-01-03T00:00:00-06:00</published><updated>2022-01-03T00:00:00-06:00</updated><id>https://lab.ar90n.net/aws/web/cloud/amplify/2022/01/03/aws-amplify-tips</id><content type="html" xml:base="https://lab.ar90n.net/aws/web/cloud/amplify/2022/01/03/aws-amplify-tips.html">&lt;h2 id=&quot;はじめに&quot;&gt;はじめに&lt;/h2&gt;
+&lt;p&gt;AWS Amplifyを使ってみて個人的にハマったことのメモです．&lt;/p&gt;
+
+&lt;h2 id=&quot;やったこと&quot;&gt;やったこと&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;コンテナ（Fargate）に対して，環境に応じた環境変数を設定する&lt;/li&gt;
+  &lt;li&gt;ロールに対して任意のポリシーを追加する&lt;/li&gt;
+  &lt;li&gt;コンテナが配置されたVPCにリソースを配置する&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;コンテナfargateに対して環境に応じた環境変数を設定する&quot;&gt;コンテナ（Fargate）に対して，環境に応じた環境変数を設定する&lt;/h2&gt;
+&lt;p&gt;AWS AmplifyではAPIを実装するリソースとしてコンテナ（Fargate）がサポートされています．ですが，現状ではデプロイ環境（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dev&lt;/code&gt;や&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;prod&lt;/code&gt;など）に応じた環境変数を設定することができないようです．（少なくとも，私には見つけることができませんでした）&lt;/p&gt;
+
+&lt;p&gt;最初は，CloudFormationの定義ファイルを手動で書き換えることで実現できると考えていました．ですが，実際に作業を進めるとこのファイルは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;amplify push&lt;/code&gt;のたびに&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docker-compose.yaml&lt;/code&gt;から生成されることが判明しました．そこで，&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dev&lt;/code&gt;環境向けに&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docker-compose.yaml.dev&lt;/code&gt;を，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;prod&lt;/code&gt;環境向けに&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docker-compose.yaml.prod&lt;/code&gt;をそれぞれ作成&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://docs.amplify.aws/cli/project/command-hooks/&quot;&gt;コマンドフック&lt;/a&gt;を利用して，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;amplify push&lt;/code&gt;のタイミングで&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docker-compose.yaml.dev&lt;/code&gt;または&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docker-compose.yaml.prod&lt;/code&gt;を&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docker-compose.yaml&lt;/code&gt;にコピー&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;という対応を採用しました．&lt;/p&gt;
+
+&lt;h2 id=&quot;ロールに対して任意のポリシーを追加する&quot;&gt;ロールに対して任意のポリシーを追加する&lt;/h2&gt;
+&lt;p&gt;カスタムリソースを追加した場合など，Lambdaに任意のポリシーを追加したい場合があると思います．そのような場合は，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;custom-policies.json&lt;/code&gt;を利用するのが楽です．
+一応，&lt;a href=&quot;https://aws.amazon.com/jp/blogs/news/extend-amplify-backend-with-custom-aws-resource-using-aws-cdk-or-cloudformation/&quot;&gt;ここ&lt;/a&gt;や&lt;a href=&quot;https://docs.amplify.aws/cli/usage/containers/#custom-policy-file-structure&quot;&gt;ここ&lt;/a&gt;など，AWSの公式ドキュメントにも記載されているようですが，目立つところには記載されていないため気がつくまでに時間がかかりました．&lt;/p&gt;
+
+&lt;h2 id=&quot;コンテナが配置されたvpcにリソースを配置する&quot;&gt;コンテナが配置されたVPCにリソースを配置する&lt;/h2&gt;
+&lt;p&gt;コンテナの配置されるVPCは, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;amplify/backend/backend-config.json&lt;/code&gt;中に記述されている&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NetworkStack&lt;/code&gt;というリソースによって作成されれます．&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NetworkStack&lt;/code&gt;は&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;CloudMapNamespaceId&lt;/li&gt;
+  &lt;li&gt;ClusterName&lt;/li&gt;
+  &lt;li&gt;Igw&lt;/li&gt;
+  &lt;li&gt;SubnetIds&lt;/li&gt;
+  &lt;li&gt;VpcCidrBlock&lt;/li&gt;
+  &lt;li&gt;VpcId&lt;/li&gt;
+  &lt;li&gt;VpcLinkId&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;を出力します．必要なパラメータはリソースによって異なると思いますが，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SubnetIds&lt;/code&gt;や&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;VpcId&lt;/code&gt;などを参照することでコンテナと同じVPC内にリソースを配置することができると思います．&lt;/p&gt;
+
+&lt;p&gt;上記パラメータを参照するためには，&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;amplify/backend/backend-config.json&lt;/code&gt;において，上記パラメータを参照するリソースの&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dependsOn&lt;/code&gt;に&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NetworkStack&lt;/code&gt;を追加
+    &lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;err&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;dependsOn&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;category&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;resourceName&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;NetworkStack&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;attributes&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;VpcId&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;SubnetIds&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;上述のリソースのCloudFormationの設定ファイルにパラメータの設定を追加.この際，パラメータ名は&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NetworkStack&amp;lt;Attribute名&amp;gt;&lt;/code&gt;となります
+    &lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;err&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;Parameters&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;NetworkStackVpcId&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;Type&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;String&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;NetworkStackSubnetIds&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;Type&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;CommaDelimitedList&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+  &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;amplify env checkout &amp;lt;env&amp;gt;&lt;/code&gt;を実行して環境のチェックアウトを行う&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://aws.amazon.com/jp/blogs/news/extend-amplify-backend-with-custom-aws-resource-using-aws-cdk-or-cloudformation/&quot;&gt;AWS CDKまたはCloudFormationを使用し、カスタムAWSリソースでAmplifyバックエンドを拡張する新機能「カスタム」のご紹介&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://docs.amplify.aws/&quot;&gt;Amplify Docs&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><category term="AWS" /><category term="Web" /><category term="Cloud" /><category term="Amplify" /><summary type="html">はじめに AWS Amplifyを使ってみて個人的にハマったことのメモです．</summary></entry><entry><title type="html">RustによるシンプルなGuidedFilterの実装</title><link href="https://lab.ar90n.net/rust/imaceprocessing/2021/09/30/simple-guided-filter-rs.html" rel="alternate" type="text/html" title="RustによるシンプルなGuidedFilterの実装" /><published>2021-09-30T00:00:00-05:00</published><updated>2021-09-30T00:00:00-05:00</updated><id>https://lab.ar90n.net/rust/imaceprocessing/2021/09/30/simple-guided-filter-rs</id><content type="html" xml:base="https://lab.ar90n.net/rust/imaceprocessing/2021/09/30/simple-guided-filter-rs.html">&lt;!--
 #################################################
 ### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
 #################################################
@@ -2692,17 +2778,4 @@ f &amp;lt;面番号1&amp;gt; &amp;lt;頂点番号i&amp;gt; &amp;lt;頂点番号j
 &lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
 &lt;ol&gt;
   &lt;li&gt;&lt;a href=&quot;https://docs.rs/glutin/0.26.0/glutin/&quot;&gt;glutin&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;</content><author><name></name></author><category term="Rust" /><category term="glutin" /><category term="OpenGL" /><category term="ComputerGraphics" /><summary type="html">はじめに glutin に入門した記録です． Objファイルをロードして，スタンフォードバニーを表示するサンプルプログラムを作成します．</summary></entry><entry><title type="html">starshipの導入</title><link href="https://lab.ar90n.net/tool/2021/01/06/install-starship.html" rel="alternate" type="text/html" title="starshipの導入" /><published>2021-01-06T00:00:00-06:00</published><updated>2021-01-06T00:00:00-06:00</updated><id>https://lab.ar90n.net/tool/2021/01/06/install-starship</id><content type="html" xml:base="https://lab.ar90n.net/tool/2021/01/06/install-starship.html">&lt;h2 id=&quot;cicaを導入する&quot;&gt;Cicaを導入する&lt;/h2&gt;
-&lt;p&gt;startshipを使用するためには，事前にNerdFontを導入する必要があります．
-そこで，今回は&lt;a href=&quot;https://github.com/miiton/Cica&quot;&gt;Cica&lt;/a&gt;を使用しました．
-導入は&lt;a href=&quot;https://github.com/miiton/Cica/releases/latest&quot;&gt;リリースページ&lt;/a&gt;から配布されているアーカイブをダウンロードしttfファイルをダブルクリックで完了です．&lt;/p&gt;
-
-&lt;h2 id=&quot;startshipを導入する&quot;&gt;startshipを導入する&lt;/h2&gt;
-&lt;p&gt;brewを使ってstartshipを導入します．&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;brew &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;starship
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;以下のように良い感じです．&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/img/2021-01-06-install-starship/media/sc.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><category term="Tool" /><summary type="html">Cicaを導入する startshipを使用するためには，事前にNerdFontを導入する必要があります． そこで，今回はCicaを使用しました． 導入はリリースページから配布されているアーカイブをダウンロードしttfファイルをダブルクリックで完了です．</summary></entry></feed>
+&lt;/ol&gt;</content><author><name></name></author><category term="Rust" /><category term="glutin" /><category term="OpenGL" /><category term="ComputerGraphics" /><summary type="html">はじめに glutin に入門した記録です． Objファイルをロードして，スタンフォードバニーを表示するサンプルプログラムを作成します．</summary></entry></feed>

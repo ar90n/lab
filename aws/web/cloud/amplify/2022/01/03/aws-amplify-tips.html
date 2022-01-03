@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>AWS Amplifyのメモ | lab note</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="AWS Amplifyのメモ" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="AWS Amplify tips" />
+<meta property="og:description" content="AWS Amplify tips" />
+<link rel="canonical" href="https://lab.ar90n.net/aws/web/cloud/amplify/2022/01/03/aws-amplify-tips.html" />
+<meta property="og:url" content="https://lab.ar90n.net/aws/web/cloud/amplify/2022/01/03/aws-amplify-tips.html" />
+<meta property="og:site_name" content="lab note" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-01-03T00:00:00-06:00" />
+<script type="application/ld+json">
+{"url":"https://lab.ar90n.net/aws/web/cloud/amplify/2022/01/03/aws-amplify-tips.html","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://lab.ar90n.net/aws/web/cloud/amplify/2022/01/03/aws-amplify-tips.html"},"headline":"AWS Amplifyのメモ","dateModified":"2022-01-03T00:00:00-06:00","datePublished":"2022-01-03T00:00:00-06:00","description":"AWS Amplify tips","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://lab.ar90n.net/feed.xml" title="lab note" /><!-- the google_analytics_id gets auto inserted from the config file -->
+
+
+
+<script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create','UA-90473091-1','auto');ga('require','displayfeatures');ga('send','pageview');</script>
+
+<link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">lab note</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About Me</a><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">AWS Amplifyのメモ</h1><p class="page-description">AWS Amplify tips</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-01-03T00:00:00-06:00" itemprop="datePublished">
+        Jan 3, 2022
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      1 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#AWS">AWS</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#Web">Web</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#Cloud">Cloud</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#Amplify">Amplify</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#はじめに">はじめに</a></li>
+<li class="toc-entry toc-h2"><a href="#やったこと">やったこと</a></li>
+<li class="toc-entry toc-h2"><a href="#コンテナfargateに対して環境に応じた環境変数を設定する">コンテナ（Fargate）に対して，環境に応じた環境変数を設定する</a></li>
+<li class="toc-entry toc-h2"><a href="#ロールに対して任意のポリシーを追加する">ロールに対して任意のポリシーを追加する</a></li>
+<li class="toc-entry toc-h2"><a href="#コンテナが配置されたvpcにリソースを配置する">コンテナが配置されたVPCにリソースを配置する</a></li>
+<li class="toc-entry toc-h2"><a href="#参考">参考</a></li>
+</ul><h2 id="はじめに">
+<a class="anchor" href="#%E3%81%AF%E3%81%98%E3%82%81%E3%81%AB" aria-hidden="true"><span class="octicon octicon-link"></span></a>はじめに</h2>
+<p>AWS Amplifyを使ってみて個人的にハマったことのメモです．</p>
+
+<h2 id="やったこと">
+<a class="anchor" href="#%E3%82%84%E3%81%A3%E3%81%9F%E3%81%93%E3%81%A8" aria-hidden="true"><span class="octicon octicon-link"></span></a>やったこと</h2>
+<ul>
+  <li>コンテナ（Fargate）に対して，環境に応じた環境変数を設定する</li>
+  <li>ロールに対して任意のポリシーを追加する</li>
+  <li>コンテナが配置されたVPCにリソースを配置する</li>
+</ul>
+
+<h2 id="コンテナfargateに対して環境に応じた環境変数を設定する">
+<a class="anchor" href="#%E3%82%B3%E3%83%B3%E3%83%86%E3%83%8Afargate%E3%81%AB%E5%AF%BE%E3%81%97%E3%81%A6%E7%92%B0%E5%A2%83%E3%81%AB%E5%BF%9C%E3%81%98%E3%81%9F%E7%92%B0%E5%A2%83%E5%A4%89%E6%95%B0%E3%82%92%E8%A8%AD%E5%AE%9A%E3%81%99%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>コンテナ（Fargate）に対して，環境に応じた環境変数を設定する</h2>
+<p>AWS AmplifyではAPIを実装するリソースとしてコンテナ（Fargate）がサポートされています．ですが，現状ではデプロイ環境（<code class="language-plaintext highlighter-rouge">dev</code>や<code class="language-plaintext highlighter-rouge">prod</code>など）に応じた環境変数を設定することができないようです．（少なくとも，私には見つけることができませんでした）</p>
+
+<p>最初は，CloudFormationの定義ファイルを手動で書き換えることで実現できると考えていました．ですが，実際に作業を進めるとこのファイルは<code class="language-plaintext highlighter-rouge">amplify push</code>のたびに<code class="language-plaintext highlighter-rouge">docker-compose.yaml</code>から生成されることが判明しました．そこで，</p>
+
+<ul>
+  <li>
+<code class="language-plaintext highlighter-rouge">dev</code>環境向けに<code class="language-plaintext highlighter-rouge">docker-compose.yaml.dev</code>を，<code class="language-plaintext highlighter-rouge">prod</code>環境向けに<code class="language-plaintext highlighter-rouge">docker-compose.yaml.prod</code>をそれぞれ作成</li>
+  <li>
+<a href="https://docs.amplify.aws/cli/project/command-hooks/">コマンドフック</a>を利用して，<code class="language-plaintext highlighter-rouge">amplify push</code>のタイミングで<code class="language-plaintext highlighter-rouge">docker-compose.yaml.dev</code>または<code class="language-plaintext highlighter-rouge">docker-compose.yaml.prod</code>を<code class="language-plaintext highlighter-rouge">docker-compose.yaml</code>にコピー</li>
+</ul>
+
+<p>という対応を採用しました．</p>
+
+<h2 id="ロールに対して任意のポリシーを追加する">
+<a class="anchor" href="#%E3%83%AD%E3%83%BC%E3%83%AB%E3%81%AB%E5%AF%BE%E3%81%97%E3%81%A6%E4%BB%BB%E6%84%8F%E3%81%AE%E3%83%9D%E3%83%AA%E3%82%B7%E3%83%BC%E3%82%92%E8%BF%BD%E5%8A%A0%E3%81%99%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>ロールに対して任意のポリシーを追加する</h2>
+<p>カスタムリソースを追加した場合など，Lambdaに任意のポリシーを追加したい場合があると思います．そのような場合は，<code class="language-plaintext highlighter-rouge">custom-policies.json</code>を利用するのが楽です．
+一応，<a href="https://aws.amazon.com/jp/blogs/news/extend-amplify-backend-with-custom-aws-resource-using-aws-cdk-or-cloudformation/">ここ</a>や<a href="https://docs.amplify.aws/cli/usage/containers/#custom-policy-file-structure">ここ</a>など，AWSの公式ドキュメントにも記載されているようですが，目立つところには記載されていないため気がつくまでに時間がかかりました．</p>
+
+<h2 id="コンテナが配置されたvpcにリソースを配置する">
+<a class="anchor" href="#%E3%82%B3%E3%83%B3%E3%83%86%E3%83%8A%E3%81%8C%E9%85%8D%E7%BD%AE%E3%81%95%E3%82%8C%E3%81%9Fvpc%E3%81%AB%E3%83%AA%E3%82%BD%E3%83%BC%E3%82%B9%E3%82%92%E9%85%8D%E7%BD%AE%E3%81%99%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>コンテナが配置されたVPCにリソースを配置する</h2>
+<p>コンテナの配置されるVPCは, <code class="language-plaintext highlighter-rouge">amplify/backend/backend-config.json</code>中に記述されている<code class="language-plaintext highlighter-rouge">NetworkStack</code>というリソースによって作成されれます．<code class="language-plaintext highlighter-rouge">NetworkStack</code>は</p>
+
+<ul>
+  <li>CloudMapNamespaceId</li>
+  <li>ClusterName</li>
+  <li>Igw</li>
+  <li>SubnetIds</li>
+  <li>VpcCidrBlock</li>
+  <li>VpcId</li>
+  <li>VpcLinkId</li>
+</ul>
+
+<p>を出力します．必要なパラメータはリソースによって異なると思いますが，<code class="language-plaintext highlighter-rouge">SubnetIds</code>や<code class="language-plaintext highlighter-rouge">VpcId</code>などを参照することでコンテナと同じVPC内にリソースを配置することができると思います．</p>
+
+<p>上記パラメータを参照するためには，</p>
+
+<ol>
+  <li>
+<code class="language-plaintext highlighter-rouge">amplify/backend/backend-config.json</code>において，上記パラメータを参照するリソースの<code class="language-plaintext highlighter-rouge">dependsOn</code>に<code class="language-plaintext highlighter-rouge">NetworkStack</code>を追加
+    <div class="language-json highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code><span class="err">...</span><span class="w">
+
+  </span><span class="nl">"dependsOn"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"category"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"resourceName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"NetworkStack"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"VpcId"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"SubnetIds"</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+
+</span><span class="err">...</span><span class="w">
+</span></code></pre></div>    </div>
+  </li>
+  <li>上述のリソースのCloudFormationの設定ファイルにパラメータの設定を追加.この際，パラメータ名は<code class="language-plaintext highlighter-rouge">NetworkStack&lt;Attribute名&gt;</code>となります
+    <div class="language-json highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code><span class="err">...</span><span class="w">
+
+</span><span class="nl">"Parameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="err">...</span><span class="w">
+
+  </span><span class="nl">"NetworkStackVpcId"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"Type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"String"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"NetworkStackSubnetIds"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"Type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CommaDelimitedList"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+
+  </span><span class="err">...</span><span class="w">
+</span><span class="p">}</span><span class="err">,</span><span class="w"> 
+</span><span class="err">...</span><span class="w">
+</span></code></pre></div>    </div>
+  </li>
+  <li>
+<code class="language-plaintext highlighter-rouge">amplify env checkout &lt;env&gt;</code>を実行して環境のチェックアウトを行う</li>
+</ol>
+
+<h2 id="参考">
+<a class="anchor" href="#%E5%8F%82%E8%80%83" aria-hidden="true"><span class="octicon octicon-link"></span></a>参考</h2>
+<ul>
+  <li><a href="https://aws.amazon.com/jp/blogs/news/extend-amplify-backend-with-custom-aws-resource-using-aws-cdk-or-cloudformation/">AWS CDKまたはCloudFormationを使用し、カスタムAWSリソースでAmplifyバックエンドを拡張する新機能「カスタム」のご紹介</a></li>
+  <li><a href="https://docs.amplify.aws/">Amplify Docs</a></li>
+</ul>
+
+  </div><a class="u-url" href="/aws/web/cloud/amplify/2022/01/03/aws-amplify-tips.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>My lab notebook</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/ar90n" target="_blank" title="ar90n"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/ar90n" target="_blank" title="ar90n"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

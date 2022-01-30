@@ -1,4 +1,95 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="https://lab.ar90n.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://lab.ar90n.net/" rel="alternate" type="text/html" /><updated>2022-01-03T05:01:12-06:00</updated><id>https://lab.ar90n.net/feed.xml</id><title type="html">lab note</title><subtitle>My lab notebook</subtitle><entry><title type="html">AWS Amplifyのメモ</title><link href="https://lab.ar90n.net/aws/web/cloud/amplify/2022/01/03/aws-amplify-tips.html" rel="alternate" type="text/html" title="AWS Amplifyのメモ" /><published>2022-01-03T00:00:00-06:00</published><updated>2022-01-03T00:00:00-06:00</updated><id>https://lab.ar90n.net/aws/web/cloud/amplify/2022/01/03/aws-amplify-tips</id><content type="html" xml:base="https://lab.ar90n.net/aws/web/cloud/amplify/2022/01/03/aws-amplify-tips.html">&lt;h2 id=&quot;はじめに&quot;&gt;はじめに&lt;/h2&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="https://lab.ar90n.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://lab.ar90n.net/" rel="alternate" type="text/html" /><updated>2022-01-29T21:37:53-06:00</updated><id>https://lab.ar90n.net/feed.xml</id><title type="html">lab note</title><subtitle>My lab notebook</subtitle><entry><title type="html">cargo-editが上手く動かない時の回避策</title><link href="https://lab.ar90n.net/rust/2022/01/30/cargo-edit-workaround.html" rel="alternate" type="text/html" title="cargo-editが上手く動かない時の回避策" /><published>2022-01-30T00:00:00-06:00</published><updated>2022-01-30T00:00:00-06:00</updated><id>https://lab.ar90n.net/rust/2022/01/30/cargo-edit-workaround</id><content type="html" xml:base="https://lab.ar90n.net/rust/2022/01/30/cargo-edit-workaround.html">&lt;h2 id=&quot;はじめに&quot;&gt;はじめに&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/killercup/cargo-edit&quot;&gt;cargo-edit&lt;/a&gt; v0.8.0が上手く動かなかったので，その対処法についてのメモです．&lt;/p&gt;
+
+&lt;h2 id=&quot;やったこと&quot;&gt;やったこと&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;ssh-agentに秘密鍵を登録&lt;/li&gt;
+  &lt;li&gt;v0.7.0にダウングレード&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;error-authenticating-no-auth-sock-variable-classssh-23-でcargo-editをインストールすることができない&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;error authenticating: no auth sock variable; class=Ssh (23)&lt;/code&gt; で&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cargo-edit&lt;/code&gt;をインストールすることができない&lt;/h2&gt;
+&lt;p&gt;単純に &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cargo install cargo-edit&lt;/code&gt; をすると，以下の様に&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ssh-agent&lt;/code&gt;との連携に失敗してエラーとなりました．&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;cargo &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;cargo-edit
+    Updating crates.io index
+error: failed to fetch &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;https://github.com/rust-lang/crates.io-index&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
+
+Caused by:
+  failed to authenticate when downloading repository: ssh://git@github.com/rust-lang/crates.io-index
+
+  &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; attempted ssh-agent authentication, but no usernames succeeded: &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;git&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;the git CLI succeeds &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt; &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;net.git-fetch-with-cli&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; may &lt;span class=&quot;nb&quot;&gt;help &lt;/span&gt;here
+  https://doc.rust-lang.org/cargo/reference/config.html#netgit-fetch-with-cli
+
+Caused by:
+  error authenticating: no auth sock variable&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;Ssh &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;23&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;対処法はエラーメッセージの中に書いてあるので，以下の様にssh-agentの起動と秘密鍵の登録を行います．&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;eval&lt;/span&gt; &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;ssh-agent &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
+Agent pid 1756
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;ssh-add
+Identity added: &amp;lt;path to home&amp;gt;/.ssh/id_rsa &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&amp;lt;mail address&amp;gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;再度，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cargo install cargo-edit&lt;/code&gt; を実行すると無事にインストールできました．&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;cargo &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;cargo-edit
+    Updating crates.io index
+  Downloaded cargo-edit v0.8.0
+  Downloaded 1 crate &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;61.1 KB&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.40s
+  Installing cargo-edit v0.8.0
+
+...
+
+   Compiling crates-index v0.17.0
+   Compiling cargo-edit v0.8.0
+    Finished release &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;optimized] target&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;1m 05s
+  Installing /usr/local/cargo/bin/cargo-add
+  Installing /usr/local/cargo/bin/cargo-rm
+  Installing /usr/local/cargo/bin/cargo-set-version
+  Installing /usr/local/cargo/bin/cargo-upgrade
+   Installed package &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;cargo-edit v0.8.0&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;executables &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;cargo-add&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;, &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;cargo-rm&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;, &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;cargo-set-version&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;, &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;cargo-upgrade&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;command-failed-due-to-unhandled-error-authentication-required-but-no-callback-set-classssh-23-codeauth--16-で-cargo-add-できない&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command failed due to unhandled error: authentication required but no callback set; class=Ssh (23); code=Auth (-16)&lt;/code&gt; で &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cargo add&lt;/code&gt; できない&lt;/h2&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cargo add&lt;/code&gt; でクレートを追加しようとすると，以下の様にエラーが発生します．&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;cargo add anyhow
+    Updating &lt;span class=&quot;s1&quot;&gt;'https://github.com/rust-lang/crates.io-index'&lt;/span&gt; index
+Command failed due to unhandled error: authentication required but no callback &lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;Ssh &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;23&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;code&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;Auth &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;-16&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/killercup/cargo-edit/issues/333&quot;&gt;こちら&lt;/a&gt;や&lt;a href=&quot;https://github.com/killercup/cargo-edit/issues/515&quot;&gt;こちら&lt;/a&gt;など，同様のエラーに関する報告はちらほら上がっているようです．しかしながら，それらの回避策は私の環境では有効性を発揮しませんでした．
+従って，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cargo-edit&lt;/code&gt; のバージョンを &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;v0.7.0&lt;/code&gt; にダウンロードすることとしました．&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt; cargo &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--version&lt;/span&gt; 0.7.0 cargo-edit
+  Downloaded cargo-edit v0.7.0
+  Downloaded 1 crate &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;57.6 KB&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.69s
+    Updating crates.io index
+  Installing cargo-edit v0.7.0
+
+...
+
+ Replacing /usr/local/cargo/bin/cargo-upgrade
+    Removing executable &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;/usr/local/cargo/bin/cargo-set-version&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; from previous version cargo-edit v0.8.0
+    Replaced package &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;cargo-edit v0.8.0&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; with &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;cargo-edit v0.7.0&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;executables &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;cargo-add&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;, &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;cargo-rm&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;, &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;cargo-upgrade&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;この結果，以下の様に &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cargo add&lt;/code&gt; が動作する様になりました．&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;cargo add anyhow
+    Updating &lt;span class=&quot;s1&quot;&gt;'https://github.com/rust-lng/crates.io-index'&lt;/span&gt; index
+      Adding anyhow v1.0.53 to dependenciesa
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/killercup/cargo-edit/issues/515&quot;&gt;cargo add no longer works with Git using SSH in 0.8.0 #515
+&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/killercup/cargo-edit/issues/333&quot;&gt;SSH support #333 &lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><category term="Rust" /><summary type="html">はじめに cargo-edit v0.8.0が上手く動かなかったので，その対処法についてのメモです．</summary></entry><entry><title type="html">AWS Amplifyのメモ</title><link href="https://lab.ar90n.net/aws/web/cloud/amplify/2022/01/03/aws-amplify-tips.html" rel="alternate" type="text/html" title="AWS Amplifyのメモ" /><published>2022-01-03T00:00:00-06:00</published><updated>2022-01-03T00:00:00-06:00</updated><id>https://lab.ar90n.net/aws/web/cloud/amplify/2022/01/03/aws-amplify-tips</id><content type="html" xml:base="https://lab.ar90n.net/aws/web/cloud/amplify/2022/01/03/aws-amplify-tips.html">&lt;h2 id=&quot;はじめに&quot;&gt;はじめに&lt;/h2&gt;
 &lt;p&gt;AWS Amplifyを使ってみて個人的にハマったことのメモです．&lt;/p&gt;
 
 &lt;h2 id=&quot;やったこと&quot;&gt;やったこと&lt;/h2&gt;
@@ -2457,325 +2548,4 @@ May 23 03:26:21 slime systemd[1]: Started Serial Getty on ttyUSB0.
 &lt;ol&gt;
   &lt;li&gt;&lt;a href=&quot;http://in1weekend.blogspot.com/2016/01/ray-tracing-in-one-weekend.html&quot;&gt;Ray Tracing in One Weekend&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;http://in1weekend.blogspot.com/2016/01/ray-tracing-second-weekend.html&quot;&gt;Ray Tracing: the Next Week&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;</content><author><name></name></author><category term="Rust" /><category term="ComputerGraphics" /><summary type="html">はじめに Rustの勉強を兼ねて，こちらを参考にレイトレーシングを写経してみました．</summary></entry><entry><title type="html">glutinに入門してみる</title><link href="https://lab.ar90n.net/rust/glutin/opengl/computergraphics/2021/02/01/getting-started-with-glutin.html" rel="alternate" type="text/html" title="glutinに入門してみる" /><published>2021-02-01T00:00:00-06:00</published><updated>2021-02-01T00:00:00-06:00</updated><id>https://lab.ar90n.net/rust/glutin/opengl/computergraphics/2021/02/01/getting-started-with-glutin</id><content type="html" xml:base="https://lab.ar90n.net/rust/glutin/opengl/computergraphics/2021/02/01/getting-started-with-glutin.html">&lt;h2 id=&quot;はじめに&quot;&gt;はじめに&lt;/h2&gt;
-&lt;p&gt;&lt;a href=&quot;https://github.com/rust-windowing/glutin&quot;&gt;glutin&lt;/a&gt; に入門した記録です． Objファイルをロードして，スタンフォードバニーを表示するサンプルプログラムを作成します．&lt;/p&gt;
-
-&lt;h2 id=&quot;glutinとは&quot;&gt;glutinとは&lt;/h2&gt;
-&lt;p&gt;Rustで記述されたOpenGLのラッパーライブラリです． 
-OpenGLのラッパーライブラリには抽象度が高いものから低いものまで様々あります．
-本ライブラリは，それらの中でも抽象度が低い，低レベルな機能を提供することを目的としたライブラリです．
-したがって，OpenGL相当の非常にプリミティブな機能しか提供されていません．&lt;/p&gt;
-
-&lt;p&gt;glutinの実装の興味深い点に，ユーザが指定したAPIのバインディングをビルド時に動的に生成する点が挙げられます．
-この機能の利用方法については， サンプルプログラムの動作を通じて後述します．&lt;/p&gt;
-
-&lt;h2 id=&quot;サンプルプログラムの解析&quot;&gt;サンプルプログラムの解析&lt;/h2&gt;
-&lt;h3 id=&quot;サンプルプログラムの実行&quot;&gt;サンプルプログラムの実行&lt;/h3&gt;
-&lt;p&gt;&lt;a href=&quot;https://github.com/rust-windowing/glutin#try-it&quot;&gt;リポジトリページ&lt;/a&gt;にある手順に従ってサンプルプログラムを実行します．&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git clone https://github.com/rust-windowing/glutin
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;glutin
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;cargo run &lt;span class=&quot;nt&quot;&gt;--example&lt;/span&gt; window
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;すると，以下のようなウィンドウが表示されます．&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/img/2021-02-01-getting-started-with-glutin/media/sample.png&quot; alt=&quot;sample&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;gl_bindingsrsの生成&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gl_bindings.rs&lt;/code&gt;の生成&lt;/h3&gt;
-&lt;p&gt;それでは，このサンプルプログラムの詳細をみていきます．&lt;/p&gt;
-
-&lt;p&gt;まず，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Cargo.toml&lt;/code&gt;を見てみます．すると，以下のように&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;build.rs&lt;/code&gt;がbuild scriptが設定されていることが確認できます．&lt;/p&gt;
-
-&lt;div class=&quot;language-toml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nn&quot;&gt;[package]&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;glutin_examples&quot;&lt;/span&gt;
-
-&lt;span class=&quot;err&quot;&gt;...&lt;/span&gt;
-
-&lt;span class=&quot;py&quot;&gt;build&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;build.rs&quot;&lt;/span&gt;
-
-&lt;span class=&quot;err&quot;&gt;...&lt;/span&gt;
-
-&lt;span class=&quot;nn&quot;&gt;[build-dependencies]&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;gl_generator&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;0.14&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;build.rs&lt;/code&gt;を確認すると，１２行目から１４行目において，GLES 2.0のバインディングを生成していることが確認できます．
-この処理は，&lt;a href=&quot;https://github.com/brendanzab/gl-rs/tree/master/gl_generator&quot;&gt;gl_generator&lt;/a&gt;を用いて実現されています．&lt;/p&gt;
-
-&lt;div class=&quot;language-rust highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;use&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;gl_generator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Api&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fallbacks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Registry&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;use&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;use&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;fs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;use&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PathBuf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;fn&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dest&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;PathBuf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;from&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;var&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;OUT_DIR&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;.unwrap&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt;
-
-    &lt;span class=&quot;nd&quot;&gt;println!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;cargo:rerun-if-changed=build.rs&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-
-    &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;mut&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dest&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;.join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;gl_bindings.rs&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;.unwrap&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-    &lt;span class=&quot;nn&quot;&gt;Registry&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;Api&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Gles2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Core&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Fallbacks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;All&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[])&lt;/span&gt;
-        &lt;span class=&quot;nf&quot;&gt;.write_bindings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;gl_generator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;StructGenerator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;mut&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;nf&quot;&gt;.unwrap&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;次に，実際にどのようあファイルが生成されているかを確認します．
-環境変数&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;OUT_DIR&lt;/code&gt;は&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cargo&lt;/code&gt;によって設定されてしまうため，任意の値を設定することができません．
-そこで，以下のように環境変数名を変更します．&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git diff
-diff &lt;span class=&quot;nt&quot;&gt;--git&lt;/span&gt; a/glutin_examples/build.rs b/glutin_examples/build.rs
-index 77f6fa5..4ff7c4e 100644
-&lt;span class=&quot;nt&quot;&gt;---&lt;/span&gt; a/glutin_examples/build.rs
-+++ b/glutin_examples/build.rs
-@@ &lt;span class=&quot;nt&quot;&gt;-4&lt;/span&gt;,7 +4,7 @@ use std::fs::File&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
- use std::path::PathBuf&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
- fn main&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
--    &lt;span class=&quot;nb&quot;&gt;let &lt;/span&gt;dest &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; PathBuf::from&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&amp;amp;env::var&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;OUT_DIR&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.unwrap&lt;span class=&quot;o&quot;&gt;())&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-+    &lt;span class=&quot;nb&quot;&gt;let &lt;/span&gt;dest &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; PathBuf::from&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&amp;amp;env::var&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;TMP_OUT_DIR&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.unwrap&lt;span class=&quot;o&quot;&gt;())&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-     println!&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;cargo:rerun-if-changed=build.rs&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;そして，ビルドすると&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gl_bindings.rs&lt;/code&gt;というファイルが作成されていることが確認できます．
-ファイルの内容を確認すると，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GLES 2.0&lt;/code&gt;に利用されるデータ構造のバインディングか確認できます．&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ TMP_OUT_DIR&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;pwd&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; cargo build &lt;span class=&quot;nt&quot;&gt;--example&lt;/span&gt; window
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls &lt;/span&gt;gl_bindings.rs
-gl_bindings.rs
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;head&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; 32 gl_bindings.rs
-
-        mod __gl_imports &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-            pub use std::mem&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-            pub use std::marker::Send&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-            pub use std::os::raw&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-
-        pub mod types &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;c&quot;&gt;#![allow(non_camel_case_types, non_snake_case, dead_code, missing_copy_implementations)]&lt;/span&gt;
-
-// Common types from OpenGL 1.1
-pub &lt;span class=&quot;nb&quot;&gt;type &lt;/span&gt;GLenum &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; super::__gl_imports::raw::c_uint&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-pub &lt;span class=&quot;nb&quot;&gt;type &lt;/span&gt;GLboolean &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; super::__gl_imports::raw::c_uchar&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-pub &lt;span class=&quot;nb&quot;&gt;type &lt;/span&gt;GLbitfield &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; super::__gl_imports::raw::c_uint&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-pub &lt;span class=&quot;nb&quot;&gt;type &lt;/span&gt;GLvoid &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; super::__gl_imports::raw::c_void&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-pub &lt;span class=&quot;nb&quot;&gt;type &lt;/span&gt;GLbyte &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; super::__gl_imports::raw::c_char&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-pub &lt;span class=&quot;nb&quot;&gt;type &lt;/span&gt;GLshort &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; super::__gl_imports::raw::c_short&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-pub &lt;span class=&quot;nb&quot;&gt;type &lt;/span&gt;GLint &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; super::__gl_imports::raw::c_int&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-pub &lt;span class=&quot;nb&quot;&gt;type &lt;/span&gt;GLclampx &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; super::__gl_imports::raw::c_int&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-pub &lt;span class=&quot;nb&quot;&gt;type &lt;/span&gt;GLubyte &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; super::__gl_imports::raw::c_uchar&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-pub &lt;span class=&quot;nb&quot;&gt;type &lt;/span&gt;GLushort &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; super::__gl_imports::raw::c_ushort&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-pub &lt;span class=&quot;nb&quot;&gt;type &lt;/span&gt;GLuint &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; super::__gl_imports::raw::c_uint&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-pub &lt;span class=&quot;nb&quot;&gt;type &lt;/span&gt;GLsizei &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; super::__gl_imports::raw::c_int&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-pub &lt;span class=&quot;nb&quot;&gt;type &lt;/span&gt;GLfloat &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; super::__gl_imports::raw::c_float&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-pub &lt;span class=&quot;nb&quot;&gt;type &lt;/span&gt;GLclampf &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; super::__gl_imports::raw::c_float&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-pub &lt;span class=&quot;nb&quot;&gt;type &lt;/span&gt;GLdouble &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; super::__gl_imports::raw::c_double&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-pub &lt;span class=&quot;nb&quot;&gt;type &lt;/span&gt;GLclampd &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; super::__gl_imports::raw::c_double&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-pub &lt;span class=&quot;nb&quot;&gt;type &lt;/span&gt;GLeglImageOES &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;const super::__gl_imports::raw::c_void&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-pub &lt;span class=&quot;nb&quot;&gt;type &lt;/span&gt;GLchar &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; super::__gl_imports::raw::c_char&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-pub &lt;span class=&quot;nb&quot;&gt;type &lt;/span&gt;GLcharARB &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; super::__gl_imports::raw::c_char&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;次に，ターゲットのAPIを&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Api::Gl&lt;/code&gt;に変更して&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;'gl_bindings.rs&lt;/code&gt;を生成してみます.
-すると，先ほど生成した&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gl_bindings.rs&lt;/code&gt;とは内容が異なることが確認できます．
-このように，ターゲットや機能に合わせて，バックエンドを静的に切り替えて使用することが可能です．&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;mv &lt;/span&gt;gl_bindings.rs gl_bindings_gles2.rs
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git diff
-diff &lt;span class=&quot;nt&quot;&gt;--git&lt;/span&gt; a/glutin_examples/build.rs b/glutin_examples/build.rs
-index 77f6fa5..7e149bd 100644
-&lt;span class=&quot;nt&quot;&gt;---&lt;/span&gt; a/glutin_examples/build.rs
-+++ b/glutin_examples/build.rs
-@@ &lt;span class=&quot;nt&quot;&gt;-4&lt;/span&gt;,12 +4,12 @@ use std::fs::File&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
- use std::path::PathBuf&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
- fn main&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
--    &lt;span class=&quot;nb&quot;&gt;let &lt;/span&gt;dest &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; PathBuf::from&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&amp;amp;env::var&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;OUT_DIR&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.unwrap&lt;span class=&quot;o&quot;&gt;())&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-+    &lt;span class=&quot;nb&quot;&gt;let &lt;/span&gt;dest &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; PathBuf::from&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&amp;amp;env::var&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;TMP_OUT_DIR&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.unwrap&lt;span class=&quot;o&quot;&gt;())&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-     println!&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;cargo:rerun-if-changed=build.rs&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-     &lt;span class=&quot;nb&quot;&gt;let &lt;/span&gt;mut file &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; File::create&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&amp;amp;dest.join&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;gl_bindings.rs&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;.unwrap&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
--    Registry::new&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Api::Gles2, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;3, 3&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, Profile::Core, Fallbacks::All, &lt;span class=&quot;o&quot;&gt;[])&lt;/span&gt;
-+    Registry::new&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Api::Gl, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;3, 3&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, Profile::Core, Fallbacks::All, &lt;span class=&quot;o&quot;&gt;[])&lt;/span&gt;
-         .write_bindings&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gl_generator::StructGenerator, &amp;amp;mut file&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-         .unwrap&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
- &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ TMP_OUT_DIR&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;pwd&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; cargo build &lt;span class=&quot;nt&quot;&gt;--example&lt;/span&gt; window
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;diff gl_bindings.rs gl_bindings_gles2.rs | &lt;span class=&quot;nb&quot;&gt;head&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; 32
-121a122
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#[allow(dead_code, non_upper_case_globals)] pub const ACTIVE_ATOMIC_COUNTER_BUFFERS: types::GLenum = 0x92D9;&lt;/span&gt;
-123a125,126
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#[allow(dead_code, non_upper_case_globals)] pub const ACTIVE_PROGRAM: types::GLenum = 0x8259;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#[allow(dead_code, non_upper_case_globals)] pub const ACTIVE_RESOURCES: types::GLenum = 0x92F5;&lt;/span&gt;
-128a132
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#[allow(dead_code, non_upper_case_globals)] pub const ACTIVE_VARIABLES: types::GLenum = 0x9305;&lt;/span&gt;
-129a134,136
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#[allow(dead_code, non_upper_case_globals)] pub const ALIASED_POINT_SIZE_RANGE: types::GLenum = 0x846D;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#[allow(dead_code, non_upper_case_globals)] pub const ALL_BARRIER_BITS: types::GLenum = 0xFFFFFFFF;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#[allow(dead_code, non_upper_case_globals)] pub const ALL_SHADER_BITS: types::GLenum = 0xFFFFFFFF;&lt;/span&gt;
-130a138
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#[allow(dead_code, non_upper_case_globals)] pub const ALPHA_BITS: types::GLenum = 0x0D55;&lt;/span&gt;
-133,135d140
-&amp;lt; &lt;span class=&quot;c&quot;&gt;#[allow(dead_code, non_upper_case_globals)] pub const AND: types::GLenum = 0x1501;&lt;/span&gt;
-&amp;lt; &lt;span class=&quot;c&quot;&gt;#[allow(dead_code, non_upper_case_globals)] pub const AND_INVERTED: types::GLenum = 0x1504;&lt;/span&gt;
-&amp;lt; &lt;span class=&quot;c&quot;&gt;#[allow(dead_code, non_upper_case_globals)] pub const AND_REVERSE: types::GLenum = 0x1502;&lt;/span&gt;
-136a142
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#[allow(dead_code, non_upper_case_globals)] pub const ANY_SAMPLES_PASSED_CONSERVATIVE: types::GLenum = 0x8D6A;&lt;/span&gt;
-138a145,152
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#[allow(dead_code, non_upper_case_globals)] pub const ARRAY_SIZE: types::GLenum = 0x92FB;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#[allow(dead_code, non_upper_case_globals)] pub const ARRAY_STRIDE: types::GLenum = 0x92FE;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#[allow(dead_code, non_upper_case_globals)] pub const ATOMIC_COUNTER_BARRIER_BIT: types::GLenum = 0x00001000;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#[allow(dead_code, non_upper_case_globals)] pub const ATOMIC_COUNTER_BUFFER: types::GLenum = 0x92C0;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#[allow(dead_code, non_upper_case_globals)] pub const ATOMIC_COUNTER_BUFFER_BINDING: types::GLenum = 0x92C1;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#[allow(dead_code, non_upper_case_globals)] pub const ATOMIC_COUNTER_BUFFER_INDEX: types::GLenum = 0x9301;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#[allow(dead_code, non_upper_case_globals)] pub const ATOMIC_COUNTER_BUFFER_SIZE: types::GLenum = 0x92C3;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#[allow(dead_code, non_upper_case_globals)] pub const ATOMIC_COUNTER_BUFFER_START: types::GLenum = 0x92C2;&lt;/span&gt;
-141,146d154
-&amp;lt; &lt;span class=&quot;c&quot;&gt;#[allow(dead_code, non_upper_case_globals)] pub const BACK_LEFT: types::GLenum = 0x0402;&lt;/span&gt;
-&amp;lt; &lt;span class=&quot;c&quot;&gt;#[allow(dead_code, non_upper_case_globals)] pub const BACK_RIGHT: types::GLenum = 0x0403;&lt;/span&gt;
-&amp;lt; &lt;span class=&quot;c&quot;&gt;#[allow(dead_code, non_upper_case_globals)] pub const BGR: types::GLenum = 0x80E0;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;ウィンドウの表示とポリゴンの描画&quot;&gt;ウィンドウの表示とポリゴンの描画&lt;/h3&gt;
-&lt;p&gt;先ほど実行したサンプルプログラムに対応するコードは&lt;a href=&quot;https://github.com/rust-windowing/glutin/blob/master/glutin_examples/examples/window.rs&quot;&gt;こちら&lt;/a&gt;になります．
-それでは，こちらの内容を先頭から紹介していきます．&lt;/p&gt;
-
-&lt;p&gt;まずは，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;support&lt;/code&gt;モジュールと利用する&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;glutin&lt;/code&gt;のモジュールのインポートです．
-&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;support&lt;/code&gt;モジュールは，ポリゴンの生成と描画，頂点シェーダ，フラグメントシェーダなど，サンプルプログラムに表示された三角形を描画するための処理が含まれています．&lt;/p&gt;
-
-&lt;div class=&quot;language-rust highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;mod&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;support&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;use&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;glutin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;WindowEvent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;use&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;glutin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;event_loop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ControlFlow&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EventLoop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;use&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;glutin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;WindowBuilder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;use&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;glutin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ContextBuilder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;次にmain関数です．main関数では，まず初めにイベントループ，ウィンドウ，このウインドウと紐づいたGLコンテキストを作成します．
-コード中の&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;windowed_context&lt;/code&gt;とは，ウインドウとこのウィンドウに紐づいたGLコンテキストとを表現する構造体になります．&lt;/p&gt;
-
-&lt;div class=&quot;language-rust highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;fn&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;el&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;EventLoop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wb&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;WindowBuilder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;.with_title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;A fantastic window!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-
-    &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;windowed_context&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;ContextBuilder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;.build_windowed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;wb&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;el&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;.unwrap&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-
-    &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;windowed_context&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;unsafe&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;windowed_context&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;.make_current&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;.unwrap&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
-
-    &lt;span class=&quot;nd&quot;&gt;println!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Pixel format of the window's GL context: {:?}&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;windowed_context&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;.get_pixel_format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt;
-
-    &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
-
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;次にコンテキストの取得を行います．この処理は，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;support::load&lt;/code&gt;によって実現します．
-&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;support::load&lt;/code&gt;では，以下のような処理が実行されます．&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;頂点シェーダとフラグメントシェーダのコンパイル&lt;/li&gt;
-  &lt;li&gt;シェーダプログラムの作成&lt;/li&gt;
-  &lt;li&gt;三角形のポリゴンを表す頂点バッファオブジェクトと頂点配列オブジェクトの作成&lt;/li&gt;
-  &lt;li&gt;上記各種リソースのGLコンテキストへの割り当て&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;このコンテキストは上述のGLコンテキストを内部に持ち，各種描画処理を移譲します．&lt;/p&gt;
-
-&lt;div class=&quot;language-rust highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gl&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;support&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;load&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;windowed_context&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;.context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;最後にイベントハンドラです．このイベントハンドラは先ほど作成したイベントループ渡され，何かイベントが発生するたびに呼び出されます．
-従って，イベントハンドラでは，発生したイベントの識別とそのイベントに対応する振る舞いを記述する必要があります．
-各イベントに対する振る舞いについては，コード中にコメントとして追記しました．&lt;/p&gt;
-
-&lt;div class=&quot;language-rust highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;n&quot;&gt;el&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;.run&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;move&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;control_flow&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;nd&quot;&gt;println!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;{:?}&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;control_flow&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;ControlFlow&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Wait&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-        &lt;span class=&quot;k&quot;&gt;match&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;event&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;nn&quot;&gt;Event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;LoopDestroyed&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;// イベントループか破棄されたのでインベントハンドラから抜ける&lt;/span&gt;
-            &lt;span class=&quot;nn&quot;&gt;Event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;WindowEvent&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;..&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;match&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;event&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-                &lt;span class=&quot;nn&quot;&gt;WindowEvent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;Resized&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;physical_size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;windowed_context&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;.resize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;physical_size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;// ウインドウをリサイズ&lt;/span&gt;
-                &lt;span class=&quot;nn&quot;&gt;WindowEvent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;CloseRequested&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;control_flow&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;ControlFlow&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Exit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;// ウインドウを閉じる&lt;/span&gt;
-                &lt;span class=&quot;mi&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt;
-            &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
-            &lt;span class=&quot;nn&quot;&gt;Event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;RedrawRequested&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; 
-                &lt;span class=&quot;n&quot;&gt;gl&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;.draw_frame&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;1.0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;1.0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;// ポリゴンの描画．&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;windowed_context&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;.swap_buffers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;.unwrap&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;// オフスクリーンに描画した結果を表示する&lt;/span&gt;
-            &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-            &lt;span class=&quot;mi&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;スタンフォードバニーを表示する&quot;&gt;スタンフォードバニーを表示する&lt;/h2&gt;
-&lt;p&gt;Objファイルを読み取り，スタンフォードバニーを描画する&lt;a href=&quot;https://github.com/ar90n/lab/tree/master/sandbox/rust-opengl-obj-loader&quot;&gt;サンプルプログラム&lt;/a&gt;を作成しました．
-このサンプルを実行すると，以下のような画面が表示されます．&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/img/2021-02-01-getting-started-with-glutin/media/bunny.gif&quot; alt=&quot;sample&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;全体の構成は，glutinのサンプルプログラムを大きく変更はありません，
-従って，比較的容易に読み取ることが可能かと思います．
-しかしながら，幾つか新しい試みを行っているため，それらについて紹介します．&lt;/p&gt;
-
-&lt;h3 id=&quot;gl_bindingsrsのソースツリーへの取り込み&quot;&gt;gl_bindings.rsのソースツリーへの取り込み&lt;/h3&gt;
-&lt;p&gt;前述した通り，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gl_bindings.rs&lt;/code&gt;はビルド時に動的に生成されます．従って，これらが提供する型を編集時に取得することはできません．
-そのため，このままではコード補完や静的解析を行うことができません．
-Rustによる開発では，これらのツールは非常に重要であるため，このままでは非常に辛い開発が強いられます．&lt;/p&gt;
-
-&lt;p&gt;そこで，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gl_buildings.rs&lt;/code&gt;をソースツリーに取り込んでしまうことにしました．
-具体的には，以下のように&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gl_bindings.rs&lt;/code&gt;の保存先を変更します．&lt;/p&gt;
-
-&lt;div class=&quot;language-rust highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;fn&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;mut&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dest&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;PathBuf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;from&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nd&quot;&gt;env!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;CARGO_MANIFEST_DIR&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;dest&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;.push&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;src&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-
-    &lt;span class=&quot;nd&quot;&gt;println!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;cargo:rerun-if-changed=build.rs&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-
-    &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;mut&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dest&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;.join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;gl_bindings.rs&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;.unwrap&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-    &lt;span class=&quot;nn&quot;&gt;Registry&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;Api&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Gl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Core&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Fallbacks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;All&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[])&lt;/span&gt;
-        &lt;span class=&quot;nf&quot;&gt;.write_bindings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;gl_generator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;StructGenerator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;mut&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;nf&quot;&gt;.unwrap&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;この変更により，初回のビルド以降は以下のように&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gl_bindings.rs&lt;/code&gt;がソースツリー内に存在します．
-従って，コード補完や静的解析が適切に動作します．&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; ./src
-context.rs      gl_bindings.rs  main.rs         obj.rs          shader.rs
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;注意点としては，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gl_bindings.rs&lt;/code&gt;は動的に生成されるものなのでリポジトリに含んではいけないことです．
-従って，以下のように&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.gitignore&lt;/code&gt;に追加します．&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; .gitignore
-src/gl_bindings.rs
-target
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;objファイルについて&quot;&gt;Objファイルについて&lt;/h3&gt;
-&lt;p&gt;Objファイルと呼ばれるファイルフォーマットには様々なものがあります．
-ここで使用するのは，3Dモデルを表現するために用いられるObjファイルです．
-また，Objファイルは頂点，面，法線など様々なデータを格納することができます．
-ここでは，以下のように頂点とそれらによって構成される面のみを対象とします．&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;v &amp;lt;頂点番号1&amp;gt; &amp;lt;X座標1&amp;gt; &amp;lt;Y座標1&amp;gt; &amp;lt;Z座標1&amp;gt;
-v &amp;lt;頂点番号2&amp;gt; &amp;lt;X座標2&amp;gt; &amp;lt;Y座標2&amp;gt; &amp;lt;Z座標2&amp;gt;
-
-...
-
-f &amp;lt;面番号1&amp;gt; &amp;lt;頂点番号i&amp;gt; &amp;lt;頂点番号j&amp;gt; &amp;lt;頂点番号k&amp;gt;
-
-...
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
-&lt;ol&gt;
-  &lt;li&gt;&lt;a href=&quot;https://docs.rs/glutin/0.26.0/glutin/&quot;&gt;glutin&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;</content><author><name></name></author><category term="Rust" /><category term="glutin" /><category term="OpenGL" /><category term="ComputerGraphics" /><summary type="html">はじめに glutin に入門した記録です． Objファイルをロードして，スタンフォードバニーを表示するサンプルプログラムを作成します．</summary></entry></feed>
+&lt;/ol&gt;</content><author><name></name></author><category term="Rust" /><category term="ComputerGraphics" /><summary type="html">はじめに Rustの勉強を兼ねて，こちらを参考にレイトレーシングを写経してみました．</summary></entry></feed>

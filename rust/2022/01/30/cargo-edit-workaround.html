@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>cargo-editが上手く動かない時の回避策 | lab note</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="cargo-editが上手く動かない時の回避策" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="cargo-edit workaround" />
+<meta property="og:description" content="cargo-edit workaround" />
+<link rel="canonical" href="https://lab.ar90n.net/rust/2022/01/30/cargo-edit-workaround.html" />
+<meta property="og:url" content="https://lab.ar90n.net/rust/2022/01/30/cargo-edit-workaround.html" />
+<meta property="og:site_name" content="lab note" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-01-30T00:00:00-06:00" />
+<script type="application/ld+json">
+{"url":"https://lab.ar90n.net/rust/2022/01/30/cargo-edit-workaround.html","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://lab.ar90n.net/rust/2022/01/30/cargo-edit-workaround.html"},"headline":"cargo-editが上手く動かない時の回避策","dateModified":"2022-01-30T00:00:00-06:00","datePublished":"2022-01-30T00:00:00-06:00","description":"cargo-edit workaround","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://lab.ar90n.net/feed.xml" title="lab note" /><!-- the google_analytics_id gets auto inserted from the config file -->
+
+
+
+<script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create','UA-90473091-1','auto');ga('require','displayfeatures');ga('send','pageview');</script>
+
+<link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">lab note</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About Me</a><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">cargo-editが上手く動かない時の回避策</h1><p class="page-description">cargo-edit workaround</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-01-30T00:00:00-06:00" itemprop="datePublished">
+        Jan 30, 2022
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      1 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#Rust">Rust</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#はじめに">はじめに</a></li>
+<li class="toc-entry toc-h2"><a href="#やったこと">やったこと</a></li>
+<li class="toc-entry toc-h2"><a href="#error-authenticating-no-auth-sock-variable-classssh-23-でcargo-editをインストールすることができない">error authenticating: no auth sock variable; class=Ssh (23) でcargo-editをインストールすることができない</a></li>
+<li class="toc-entry toc-h2"><a href="#command-failed-due-to-unhandled-error-authentication-required-but-no-callback-set-classssh-23-codeauth--16-で-cargo-add-できない">Command failed due to unhandled error: authentication required but no callback set; class=Ssh (23); code=Auth (-16) で cargo add できない</a></li>
+<li class="toc-entry toc-h2"><a href="#参考">参考</a></li>
+</ul><h2 id="はじめに">
+<a class="anchor" href="#%E3%81%AF%E3%81%98%E3%82%81%E3%81%AB" aria-hidden="true"><span class="octicon octicon-link"></span></a>はじめに</h2>
+<p><a href="https://github.com/killercup/cargo-edit">cargo-edit</a> v0.8.0が上手く動かなかったので，その対処法についてのメモです．</p>
+
+<h2 id="やったこと">
+<a class="anchor" href="#%E3%82%84%E3%81%A3%E3%81%9F%E3%81%93%E3%81%A8" aria-hidden="true"><span class="octicon octicon-link"></span></a>やったこと</h2>
+<ul>
+  <li>ssh-agentに秘密鍵を登録</li>
+  <li>v0.7.0にダウングレード</li>
+</ul>
+
+<h2 id="error-authenticating-no-auth-sock-variable-classssh-23-でcargo-editをインストールすることができない">
+<a class="anchor" href="#error-authenticating-no-auth-sock-variable-classssh-23-%E3%81%A7cargo-edit%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%81%99%E3%82%8B%E3%81%93%E3%81%A8%E3%81%8C%E3%81%A7%E3%81%8D%E3%81%AA%E3%81%84" aria-hidden="true"><span class="octicon octicon-link"></span></a><code class="language-plaintext highlighter-rouge">error authenticating: no auth sock variable; class=Ssh (23)</code> で<code class="language-plaintext highlighter-rouge">cargo-edit</code>をインストールすることができない</h2>
+<p>単純に <code class="language-plaintext highlighter-rouge">cargo install cargo-edit</code> をすると，以下の様に<code class="language-plaintext highlighter-rouge">ssh-agent</code>との連携に失敗してエラーとなりました．</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>cargo <span class="nb">install </span>cargo-edit
+    Updating crates.io index
+error: failed to fetch <span class="sb">`</span>https://github.com/rust-lang/crates.io-index<span class="sb">`</span>
+
+Caused by:
+  failed to authenticate when downloading repository: ssh://git@github.com/rust-lang/crates.io-index
+
+  <span class="k">*</span> attempted ssh-agent authentication, but no usernames succeeded: <span class="sb">`</span>git<span class="sb">`</span>
+
+  <span class="k">if </span>the git CLI succeeds <span class="k">then</span> <span class="sb">`</span>net.git-fetch-with-cli<span class="sb">`</span> may <span class="nb">help </span>here
+  https://doc.rust-lang.org/cargo/reference/config.html#netgit-fetch-with-cli
+
+Caused by:
+  error authenticating: no auth sock variable<span class="p">;</span> <span class="nv">class</span><span class="o">=</span>Ssh <span class="o">(</span>23<span class="o">)</span>
+</code></pre></div></div>
+
+<p>対処法はエラーメッセージの中に書いてあるので，以下の様にssh-agentの起動と秘密鍵の登録を行います．</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">eval</span> <span class="sb">`</span>ssh-agent <span class="nt">-s</span><span class="sb">`</span>
+Agent pid 1756
+<span class="nv">$ </span>ssh-add
+Identity added: &lt;path to home&gt;/.ssh/id_rsa <span class="o">(</span>&lt;mail address&gt;<span class="o">)</span>
+</code></pre></div></div>
+
+<p>再度，<code class="language-plaintext highlighter-rouge">cargo install cargo-edit</code> を実行すると無事にインストールできました．</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>cargo <span class="nb">install </span>cargo-edit
+    Updating crates.io index
+  Downloaded cargo-edit v0.8.0
+  Downloaded 1 crate <span class="o">(</span>61.1 KB<span class="o">)</span> <span class="k">in </span>0.40s
+  Installing cargo-edit v0.8.0
+
+...
+
+   Compiling crates-index v0.17.0
+   Compiling cargo-edit v0.8.0
+    Finished release <span class="o">[</span>optimized] target<span class="o">(</span>s<span class="o">)</span> <span class="k">in </span>1m 05s
+  Installing /usr/local/cargo/bin/cargo-add
+  Installing /usr/local/cargo/bin/cargo-rm
+  Installing /usr/local/cargo/bin/cargo-set-version
+  Installing /usr/local/cargo/bin/cargo-upgrade
+   Installed package <span class="sb">`</span>cargo-edit v0.8.0<span class="sb">`</span> <span class="o">(</span>executables <span class="sb">`</span>cargo-add<span class="sb">`</span>, <span class="sb">`</span>cargo-rm<span class="sb">`</span>, <span class="sb">`</span>cargo-set-version<span class="sb">`</span>, <span class="sb">`</span>cargo-upgrade<span class="sb">`</span><span class="o">)</span>
+</code></pre></div></div>
+
+<h2 id="command-failed-due-to-unhandled-error-authentication-required-but-no-callback-set-classssh-23-codeauth--16-で-cargo-add-できない">
+<a class="anchor" href="#command-failed-due-to-unhandled-error-authentication-required-but-no-callback-set-classssh-23-codeauth--16-%E3%81%A7-cargo-add-%E3%81%A7%E3%81%8D%E3%81%AA%E3%81%84" aria-hidden="true"><span class="octicon octicon-link"></span></a><code class="language-plaintext highlighter-rouge">Command failed due to unhandled error: authentication required but no callback set; class=Ssh (23); code=Auth (-16)</code> で <code class="language-plaintext highlighter-rouge">cargo add</code> できない</h2>
+<p><code class="language-plaintext highlighter-rouge">cargo add</code> でクレートを追加しようとすると，以下の様にエラーが発生します．</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>cargo add anyhow
+    Updating <span class="s1">'https://github.com/rust-lang/crates.io-index'</span> index
+Command failed due to unhandled error: authentication required but no callback <span class="nb">set</span><span class="p">;</span> <span class="nv">class</span><span class="o">=</span>Ssh <span class="o">(</span>23<span class="o">)</span><span class="p">;</span> <span class="nv">code</span><span class="o">=</span>Auth <span class="o">(</span><span class="nt">-16</span><span class="o">)</span>
+</code></pre></div></div>
+<p><a href="https://github.com/killercup/cargo-edit/issues/333">こちら</a>や<a href="https://github.com/killercup/cargo-edit/issues/515">こちら</a>など，同様のエラーに関する報告はちらほら上がっているようです．しかしながら，それらの回避策は私の環境では有効性を発揮しませんでした．
+従って，<code class="language-plaintext highlighter-rouge">cargo-edit</code> のバージョンを <code class="language-plaintext highlighter-rouge">v0.7.0</code> にダウンロードすることとしました．</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span> cargo <span class="nb">install</span> <span class="nt">--version</span> 0.7.0 cargo-edit
+  Downloaded cargo-edit v0.7.0
+  Downloaded 1 crate <span class="o">(</span>57.6 KB<span class="o">)</span> <span class="k">in </span>0.69s
+    Updating crates.io index
+  Installing cargo-edit v0.7.0
+
+...
+
+ Replacing /usr/local/cargo/bin/cargo-upgrade
+    Removing executable <span class="sb">`</span>/usr/local/cargo/bin/cargo-set-version<span class="sb">`</span> from previous version cargo-edit v0.8.0
+    Replaced package <span class="sb">`</span>cargo-edit v0.8.0<span class="sb">`</span> with <span class="sb">`</span>cargo-edit v0.7.0<span class="sb">`</span> <span class="o">(</span>executables <span class="sb">`</span>cargo-add<span class="sb">`</span>, <span class="sb">`</span>cargo-rm<span class="sb">`</span>, <span class="sb">`</span>cargo-upgrade<span class="sb">`</span><span class="o">)</span>
+</code></pre></div></div>
+
+<p>この結果，以下の様に <code class="language-plaintext highlighter-rouge">cargo add</code> が動作する様になりました．</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>cargo add anyhow
+    Updating <span class="s1">'https://github.com/rust-lng/crates.io-index'</span> index
+      Adding anyhow v1.0.53 to dependenciesa
+</code></pre></div></div>
+
+<h2 id="参考">
+<a class="anchor" href="#%E5%8F%82%E8%80%83" aria-hidden="true"><span class="octicon octicon-link"></span></a>参考</h2>
+<ul>
+  <li><a href="https://github.com/killercup/cargo-edit/issues/515">cargo add no longer works with Git using SSH in 0.8.0 #515
+</a></li>
+  <li><a href="https://github.com/killercup/cargo-edit/issues/333">SSH support #333 </a></li>
+</ul>
+
+  </div><a class="u-url" href="/rust/2022/01/30/cargo-edit-workaround.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>My lab notebook</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/ar90n" target="_blank" title="ar90n"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/ar90n" target="_blank" title="ar90n"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

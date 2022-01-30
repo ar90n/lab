@@ -20,7 +20,6 @@ SimpleITK
 numba
 smart-open[all]
 paaaaath[all]
-kkt
 jupytext
 joblib
 lightgbm

@@ -94,6 +94,7 @@ plugins:
   - jekyll-paginate
   - jekyll-sitemap
   - jekyll-scholar
+  - jekyll-linkpreview
   - jemoji
 
 # See https://jekyllrb.com/docs/pagination/

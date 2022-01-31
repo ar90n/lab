@@ -51,12 +51,13 @@ h3, h4 {
 }
 
 p {
-    margin-top:1rem !important; 
-    margin-bottom:1rem !important;   
+    margin-top:1.5rem !important; 
+    margin-bottom:1.5rem !important;   
+    line-height: 1.5 !important;
 }
 
 h1, h2, h3, h4 {
-    font-weight: normal !important;
+//    font-weight: normal !important;
     margin-bottom:0.5rem !important;  
     code {
       font-size: 100%;

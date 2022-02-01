@@ -341,9 +341,9 @@ h2 { margin-top: 2rem !important; }
 
 h3, h4 { margin-top: 1.5rem !important; }
 
-p { margin-top: 1rem !important; margin-bottom: 1rem !important; }
+p { margin-top: 1.5rem !important; margin-bottom: 1.5rem !important; line-height: 1.5 !important; }
 
-h1, h2, h3, h4 { font-weight: normal !important; margin-bottom: 0.5rem !important; }
+h1, h2, h3, h4 { margin-bottom: 0.5rem !important; }
 
 h1 code, h2 code, h3 code, h4 code { font-size: 100%; }
 
@@ -477,5 +477,7 @@ pre code { font-size: 15px !important; }
 .highlight .gd { color: #ff5555; }
 
 p code { font-size: 19px; }
+
+li code { font-size: 19px; }
 
 /*# sourceMappingURL=style.css.map */

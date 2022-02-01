@@ -1,4 +1,346 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="https://lab.ar90n.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://lab.ar90n.net/" rel="alternate" type="text/html" /><updated>2022-01-29T21:37:53-06:00</updated><id>https://lab.ar90n.net/feed.xml</id><title type="html">lab note</title><subtitle>My lab notebook</subtitle><entry><title type="html">cargo-editが上手く動かない時の回避策</title><link href="https://lab.ar90n.net/rust/2022/01/30/cargo-edit-workaround.html" rel="alternate" type="text/html" title="cargo-editが上手く動かない時の回避策" /><published>2022-01-30T00:00:00-06:00</published><updated>2022-01-30T00:00:00-06:00</updated><id>https://lab.ar90n.net/rust/2022/01/30/cargo-edit-workaround</id><content type="html" xml:base="https://lab.ar90n.net/rust/2022/01/30/cargo-edit-workaround.html">&lt;h2 id=&quot;はじめに&quot;&gt;はじめに&lt;/h2&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="https://lab.ar90n.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://lab.ar90n.net/" rel="alternate" type="text/html" /><updated>2022-02-01T10:06:28-06:00</updated><id>https://lab.ar90n.net/feed.xml</id><title type="html">lab note</title><subtitle>My lab notebook</subtitle><entry><title type="html">Goで類似ベクトルを検索する</title><link href="https://lab.ar90n.net/go/algorithm/machinelearning/vectorsimilaritysearch/2022/02/01/mimic-annoy-wiht-go.html" rel="alternate" type="text/html" title="Goで類似ベクトルを検索する" /><published>2022-02-01T00:00:00-06:00</published><updated>2022-02-01T00:00:00-06:00</updated><id>https://lab.ar90n.net/go/algorithm/machinelearning/vectorsimilaritysearch/2022/02/01/mimic-annoy-wiht-go</id><content type="html" xml:base="https://lab.ar90n.net/go/algorithm/machinelearning/vectorsimilaritysearch/2022/02/01/mimic-annoy-wiht-go.html">&lt;h2 id=&quot;はじめに&quot;&gt;はじめに&lt;/h2&gt;
+&lt;p&gt;類似ベクトル検索を実現する代表的な実装に&lt;a href=&quot;https://github.com/spotify/annoy&quot;&gt;Annoy&lt;/a&gt;があります．
+今回，Goの修練としてAnnoyの一部機能をGoで再実装しました．&lt;/p&gt;
+
+&lt;div class=&quot;jekyll-linkpreview-wrapper&quot;&gt;
+  &lt;p&gt;&lt;a href=&quot;https://github.com/ar90n/countrymaam&quot; target=&quot;_blank&quot;&gt;https://github.com/ar90n/countrymaam&lt;/a&gt;&lt;/p&gt;
+  &lt;div class=&quot;jekyll-linkpreview-wrapper-inner&quot;&gt;
+    &lt;div class=&quot;jekyll-linkpreview-content&quot;&gt;
+      &lt;div class=&quot;jekyll-linkpreview-image&quot;&gt;
+        &lt;a href=&quot;https://github.com/ar90n/countrymaam&quot; target=&quot;_blank&quot;&gt;
+          &lt;img src=&quot;https://opengraph.githubassets.com/54cee1c174a8c66937f6fa22784a7da1c457e03d62a61de4969e09ff205edff4/ar90n/countrymaam&quot; /&gt;
+        &lt;/a&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;jekyll-linkpreview-body&quot;&gt;
+        &lt;div class=&quot;jekyll-linkpreview-title&quot;&gt;
+          &lt;a href=&quot;https://github.com/ar90n/countrymaam&quot; target=&quot;_blank&quot;&gt;GitHub - ar90n/countrymaam: Plain ann-search implementation with Go&lt;/a&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;jekyll-linkpreview-description&quot;&gt;Plain ann-search implementation with Go. Contribute to ar90n/countrymaam development by creating an account on GitHub.&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;jekyll-linkpreview-footer&quot;&gt;
+      &lt;a href=&quot;//github.com&quot; target=&quot;_blank&quot;&gt;github.com&lt;/a&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;やったこと&quot;&gt;やったこと&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;kd-treeベースの探索アルゴリズムを実装&lt;/li&gt;
+  &lt;li&gt;random projection treeベースの探索アルゴリズムを実装&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/erikbern/ann-benchmarks&quot;&gt;ann-benchmarks&lt;/a&gt;にてベンチマークを測定&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;annoyの詳細&quot;&gt;Annoyの詳細&lt;/h2&gt;
+&lt;p&gt;Annoyの詳細については以下のページが大変勉強になりました．&lt;/p&gt;
+
+&lt;div class=&quot;jekyll-linkpreview-wrapper&quot;&gt;
+  &lt;p&gt;&lt;a href=&quot;https://techblog.zozo.com/entry/annoy-explanation&quot; target=&quot;_blank&quot;&gt;https://techblog.zozo.com/entry/annoy-explanation&lt;/a&gt;&lt;/p&gt;
+  &lt;div class=&quot;jekyll-linkpreview-wrapper-inner&quot;&gt;
+    &lt;div class=&quot;jekyll-linkpreview-content&quot;&gt;
+      &lt;div class=&quot;jekyll-linkpreview-image&quot;&gt;
+        &lt;a href=&quot;https://techblog.zozo.com/entry/annoy-explanation&quot; target=&quot;_blank&quot;&gt;
+          &lt;img src=&quot;https://cdn-ak.f.st-hatena.com/images/fotolife/v/vasilyjp/20201218/20201218144609.jpg&quot; /&gt;
+        &lt;/a&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;jekyll-linkpreview-body&quot;&gt;
+        &lt;div class=&quot;jekyll-linkpreview-title&quot;&gt;
+          &lt;a href=&quot;https://techblog.zozo.com/entry/annoy-explanation&quot; target=&quot;_blank&quot;&gt;近傍探索ライブラリ「Annoy」のコード詳解 - ZOZO TECH BLOG&lt;/a&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;jekyll-linkpreview-description&quot;&gt;はじめまして、ZOZO研究所福岡の家富です。画像検索システムのインフラ、機械学習まわりを担当しています。 今回は画像検索システムでお世話になっているAnnoyについてじっくり紹介したいと思います。 目次 目次 Annoyについて 近傍探索について Annoyのソースコードを読むときのポイント AnnoyIndexというクラスのインスタンスを作る インストール過程について PythonのC/C++拡張 Annoyの実装 1. add_item 2. build 3. get_nns_by_vector 4. build再考 他に問題となる点について CPU依存部分 ディスクかメモリか まとめ さ…&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;jekyll-linkpreview-footer&quot;&gt;
+      &lt;a href=&quot;//techblog.zozo.com&quot; target=&quot;_blank&quot;&gt;techblog.zozo.com&lt;/a&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;個人的には探索時のノードの取り扱い方が特に面白いと思ったので，そこの部分について少しだけ補足をしたいと思います．&lt;/p&gt;
+
+&lt;p&gt;上記ページでも解説されている通り，探索時は&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;D::pq_distance&lt;/code&gt;の結果を優先度として優先度付きキューにノードを追加します．
+以下に実際にこの処理を行う箇所のコードを示します．&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;err&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;T&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;margin&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;D&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;margin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;_f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;q&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;push&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;make_pair&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;D&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pq_distance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;margin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;static_cast&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;S&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nd&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;children&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])));&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;q&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;push&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;make_pair&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;D&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pq_distance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;margin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;static_cast&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;S&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nd&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;children&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])));&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;ここで，各変数と関数の詳細は以下の通りです．&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;D&lt;/code&gt;: ベクトル間のメトリック&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;D::margin&lt;/code&gt;: クエリ&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;v&lt;/code&gt;から際（上述の解説ページに倣います）までの符号付き距離を計算&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;D::pq_distance&lt;/code&gt;: 探索するノードの優先度を計算&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;d&lt;/code&gt;: 根ノードから現在のノードに至るまでの最悪の優先度&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;q&lt;/code&gt;: 探索するノードを決定するための優先度付きキュー&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nd&lt;/code&gt;: 現在のノード&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;従って，ここでは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;D::pq_distance(d, margin, 1)&lt;/code&gt;という優先度で&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nd-&amp;gt;children[1]&lt;/code&gt;を，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;D::pq_distance(d, margin, 0)&lt;/code&gt;という優先度で&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nd-&amp;gt;children[0]&lt;/code&gt;を，優先度キューに追加していることがわかります．&lt;/p&gt;
+
+&lt;p&gt;次に，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;D&lt;/code&gt;を&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Euclidean&lt;/code&gt;として&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;D::pq_distance&lt;/code&gt;の詳細を示します．&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Euclidean&lt;/code&gt;には&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pq_distance&lt;/code&gt;が実装されていないため，実際には&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Minkowski&lt;/code&gt;の実装となります．&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;k&quot;&gt;template&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;typename&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;inline&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;T&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;pq_distance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;distance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;T&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;margin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;child_nr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;child_nr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;margin&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;margin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;min&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;distance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;margin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;上記実装では，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;child_nr==0&lt;/code&gt;が成立する場合，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;margin&lt;/code&gt;の符号を反転しています．
+この処理の具体例を以下の図に示します．
+子ノードとして&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;children[1]&lt;/code&gt;を選択した場合を考えます．この時，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;query1&lt;/code&gt;に対するマージンは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;margin1&lt;/code&gt;，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;query2&lt;/code&gt;に対するマージンは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-margin2&lt;/code&gt;となります．
+同様に子ノードとして&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;children[0]&lt;/code&gt;を選択した場合を考えます．この時，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;query1&lt;/code&gt;に対するマージンは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-marign1&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;query2&lt;/code&gt;に対するマージンは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;margin2&lt;/code&gt;となります．&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/2022-02-01-mimic-annoy-wiht-go/cutplane.png&quot; alt=&quot;cutplane&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;その結果，子ノードの優先度は当該ノードが存在する側を正とした符号付き距離となります．&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;distance&lt;/code&gt;は前述の&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;d&lt;/code&gt;（現在のノードに至るまでの最悪の優先度）が割り当てられています．
+従って，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pq_distance&lt;/code&gt;は優先度が悪化した場合にその値を更新する振る舞いとなっていることが解ります．&lt;/p&gt;
+
+&lt;p&gt;この性質によって，クエリが存在する側（優先度が正）のノードの探索が完了すると，クエリが存在しない側（優先度が負）のノードの探索に取り掛かります．
+この様に, 場合分け等を行うことなく適切に次に探索すべきノードを選択できている点が非常に面白い実装だと思いました．&lt;/p&gt;
+
+&lt;h2 id=&quot;実装詳細&quot;&gt;実装詳細&lt;/h2&gt;
+&lt;p&gt;今回実装した主要なインターフェースと実装の関係を以下に示します．&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/2022-02-01-mimic-annoy-wiht-go/class.png&quot; alt=&quot;class&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;上図の各要素の詳細は詳細は以下のとおりです．&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Index: 類似ベクトル検索のインターフェース．このインターフェースを用いてデータの登録や検索を実施&lt;/li&gt;
+  &lt;li&gt;Candidate: 検索結果を表現する構造体&lt;/li&gt;
+  &lt;li&gt;flatIndex: 線形探索による類似ベクトル検索の実装&lt;/li&gt;
+  &lt;li&gt;bspTreeIndex: バイナリ空間分割木による類似ベクトル検索の実装&lt;/li&gt;
+  &lt;li&gt;CutPlane: 際のインターフェース．このインターフェースを用いて空間を分割&lt;/li&gt;
+  &lt;li&gt;kdCutPlane: Kd-Treeを実現するための際の実装&lt;/li&gt;
+  &lt;li&gt;rpCutPlane: Random Projection Treeを実現するための際の実装&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Kd-TreeとRandom Projection Treeとは際をどの様に計算するかの違いしかありません．
+そこで，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bspTreeIndex&lt;/code&gt;と&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CutPlane&lt;/code&gt;の組み合わせで表現することとしました．
+従って，Kd-Treeは&lt;/p&gt;
+
+&lt;div class=&quot;language-go highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;bspTreeIndex&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;U&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;kdCutPlane&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;U&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;と表現することができます．また，Random Projection Treeは&lt;/p&gt;
+
+&lt;div class=&quot;language-go highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;bspTreeIndex&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;U&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rpCutPlane&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;U&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;と表現することができます．&lt;/p&gt;
+
+&lt;h2 id=&quot;ベンチマーク&quot;&gt;ベンチマーク&lt;/h2&gt;
+&lt;p&gt;類似ベクトル検索のベンチマークに&lt;a href=&quot;https://github.com/erikbern/ann-benchmarks&quot;&gt;ann-benchmarks&lt;/a&gt;があります．
+今回の実装をこのベンチマークに対応させることで，既存の実装とパフォーマンスを比較しました．&lt;/p&gt;
+
+&lt;h3 id=&quot;ann-benchmarksへアルゴリズムを追加する&quot;&gt;ann-benchmarksへアルゴリズムを追加する&lt;/h3&gt;
+&lt;p&gt;ann-benchmarksへ新規にアルゴリズムを追加するためには，以下の作業が必要となります．
+また，これらの修正結果は&lt;a href=&quot;https://github.com/ar90n/countrymaam/tree/main/benchmark&quot;&gt;こちら&lt;/a&gt;から取得可能です．&lt;/p&gt;
+
+&lt;h4 id=&quot;アルゴリズムが動作するイメージのdockerfileを追加&quot;&gt;アルゴリズムが動作するイメージのDockerfileを追加&lt;/h4&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ann-benchmarks/install/Dockefile.&amp;lt;algorithm name&amp;gt;&lt;/code&gt;というファイルに追加するアルゴリズムが動作するイメージの定義を記述します．
+ベンチマークを実施するための共通処理は&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ann-benchmarks&lt;/code&gt;というイメージに実装されています．
+従って，このイメージを継承して不足分を追記することになります．&lt;/p&gt;
+
+&lt;p&gt;今回はGoでアルゴリズムを実装しました．
+従って，以下のように&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;実行ファイルをビルド&lt;/li&gt;
+  &lt;li&gt;ベンチマーク用イメージにコピー&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;という手順を踏むこととしました．&lt;/p&gt;
+
+&lt;div class=&quot;language-dockerfile highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; golang:1.18-rc as builder&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;go &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;github.com/ar90n/countrymaam/cmd/countrymaam@latest
+
+&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; ann-benchmarks&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;COPY&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; --from=builder /go/bin/countrymaam /usr/local/bin&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;類似ベクトル検索を行うプログラムを追加&quot;&gt;類似ベクトル検索を行うプログラムを追加&lt;/h4&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ann-benchmarks/ann_benchmarks/algorithms/&amp;lt;algorithm name&amp;gt;.py&lt;/code&gt;というファイルに類似ベクトル検索を行うプログラムを記述します．
+拡張子からも明らかですが，ベンチマークはPythonによって実装されています．
+従って，類似ベクトル検索アルゴリズムもPythonから呼び出す必要があります．
+具体的には，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;BaseANN&lt;/code&gt;を継承し以下のメソッドを実装します．&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;fit: インデックスを作成します．引数として，サイズが&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;(サンプル数,次元)&lt;/code&gt;の&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;numpy.array&lt;/code&gt;が渡されます&lt;/li&gt;
+  &lt;li&gt;set_query_arguments: テストセットに対する検索を行う前に一度だけ呼び出されます．検索に対するパラメータの設定を行います&lt;/li&gt;
+  &lt;li&gt;query: 類似ベクトル検索を行います．引数としてクエリと求める類似ベクトルの数が渡されます&lt;/li&gt;
+  &lt;li&gt;__init__: 引数として渡されたパラメータをもとにアルゴリズムの初期化します&lt;/li&gt;
+  &lt;li&gt;__str__: 現在のパラメータとクラス名を文字列として返します&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;今回の実装ではPythonインターフェースを実装していません．
+従って，実行ファイルをサブプロセスとして起動し，パイプを経由してデータの入出力を行います．
+作成したクラスを以下に示します．&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Countrymaam&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;BaseANN&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;__init__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;metric&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_metric&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;metric&lt;/span&gt;
+        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_index&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;index&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;kd-tree&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_n_trees&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;n_trees&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_leaf_size&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;leaf_size&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;fit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;X&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;astype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;float64&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;suffix&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;choices&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ascii_lowercase&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;16&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;index_file_path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;f&quot;index_&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;suffix&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;_&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getpid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;.bin&quot;&lt;/span&gt;
+
+        &lt;span class=&quot;c1&quot;&gt;# インデックスを作成し，ファイルに書き出す
+&lt;/span&gt;        &lt;span class=&quot;n&quot;&gt;p&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;subprocess&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Popen&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;&quot;countrymaam&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;&quot;train&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;&quot;--dim&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])),&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;&quot;--index&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;&quot;--leaf-size&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_leaf_size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;&quot;--tree-num&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_n_trees&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;&quot;--output&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;index_file_path&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stdin&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;subprocess&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PIPE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+        &lt;span class=&quot;n&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stdin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;struct&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;f&quot;=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ravel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)))&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;communicate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stdin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+        &lt;span class=&quot;c1&quot;&gt;# インデックスを読み，クエリの入力を待機する
+&lt;/span&gt;        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_pipe&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;subprocess&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Popen&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;&quot;countrymaam&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;&quot;predict&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;&quot;--dim&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])),&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;&quot;--index&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;&quot;--input&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;index_file_path&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stdin&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;subprocess&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PIPE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stdout&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;subprocess&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PIPE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;set_query_arguments&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;search_k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_search_k&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;search_k&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 探索ノード数を設定
+&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;v&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;astype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;float64&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_pipe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stdin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;struct&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;f&quot;=i&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_search_k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 探索ノード数
+&lt;/span&gt;        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_pipe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stdin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;struct&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;f&quot;=i&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 検索する類似ベクトル数
+&lt;/span&gt;        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_pipe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stdin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;struct&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;f&quot;=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# クエリベクトル
+&lt;/span&gt;        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_pipe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stdin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;flush&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+        &lt;span class=&quot;n&quot;&gt;rn&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;struct&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;unpack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;=i&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_pipe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stdout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rn&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;struct&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;unpack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;=i&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_pipe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stdout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;__str__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;f&quot;Countrymaam(index=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_index&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;, leaf_size=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_leaf_size&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; n_trees=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_n_trees&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;, search_k=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_search_k&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;)&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;ベンチマークの設定ファイルにアルゴリズムの設定を追加&quot;&gt;ベンチマークの設定ファイルにアルゴリズムの設定を追加&lt;/h4&gt;
+&lt;p&gt;ベンチマークに関する設定は&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ann-benchmarks/algos.yaml&lt;/code&gt;というファイルに追記します．
+このファイルは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;データ型&lt;/code&gt; -&amp;gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;メトリック&lt;/code&gt; -&amp;gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;アルゴリズム&lt;/code&gt; という階層構造になっています．
+従って，各アルゴリズムがサポートしているデータ型とメトリックに応じて，適切な位置に設定を記述する必要があります．&lt;/p&gt;
+
+&lt;p&gt;データ型とメトリックの組み合わせは以下の通りです．&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;float
+    &lt;ul&gt;
+      &lt;li&gt;any&lt;/li&gt;
+      &lt;li&gt;euclidean&lt;/li&gt;
+      &lt;li&gt;angular&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;bit
+    &lt;ul&gt;
+      &lt;li&gt;hamming&lt;/li&gt;
+      &lt;li&gt;jaccard&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;今回実装したアルゴリズムはユークリッド距離にのみ対応しているため&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;euclidean&lt;/code&gt;に追記します．&lt;/p&gt;
+
+&lt;p&gt;アルゴリズムの階層に記述するパラメータは以下の通りです．&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;docker-tag: 使用するDockerイメージのタグ&lt;/li&gt;
+  &lt;li&gt;module: アルゴリズムが実装されているモジュール&lt;/li&gt;
+  &lt;li&gt;constructor: アルゴリズムの実装クラス&lt;/li&gt;
+  &lt;li&gt;base-args: 全計測に渡ってconstructorに渡される引数の共通部分&lt;/li&gt;
+  &lt;li&gt;run-groups: constructorとset_query_arguments渡される引数の可変部分&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;最終的な差分は以下の様になりました．&lt;/p&gt;
+
+&lt;div class=&quot;language-diff highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gh&quot;&gt;diff --git a/algos.yaml b/algos.yaml
+index 7c1ebe6..f170633 100644
+&lt;/span&gt;&lt;span class=&quot;gd&quot;&gt;--- a/algos.yaml
+&lt;/span&gt;&lt;span class=&quot;gi&quot;&gt;+++ b/algos.yaml
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;@@ -391,6 +391,28 @@&lt;/span&gt; float:
+           query-args: [[0.6, 0.8, 0.9, 1.0, 1.02, 1.05, 1.1, 1.2]]
+ 
+   euclidean:
+&lt;span class=&quot;gi&quot;&gt;+    countrymaam-kd:
++      docker-tag: ann-benchmarks-countrymaam
++      module: ann_benchmarks.algorithms.countrymaam
++      constructor: Countrymaam
++      base-args: [&quot;@metric&quot;]
++      run-groups:
++        kd:
++          arg-groups:
++            - {&quot;index&quot;: [&quot;rkd-tree&quot;], &quot;n_trees&quot;: [8, 16, 32, 64],
++               &quot;leaf_size&quot;:[8, 16, 32, 64]}
++          query-args: [[16, 32, 64, 128, 256, 512, 1024, 2048]]
++    countrymaam-rp:
++      docker-tag: ann-benchmarks-countrymaam
++      module: ann_benchmarks.algorithms.countrymaam
++      constructor: Countrymaam
++      base-args: [&quot;@metric&quot;]
++      run-groups:
++        rp:
++          arg-groups:
++            - {&quot;index&quot;: [&quot;rrp-tree&quot;], &quot;n_trees&quot;: [8, 16, 32, 64],
++               &quot;leaf_size&quot;:[8, 16, 32, 64]}
++          query-args: [[16, 32, 64, 128, 256, 512, 1024, 2048]]
+&lt;/span&gt;     vamana(diskann):
+       docker-tag: ann-benchmarks-diskann
+       module: ann_benchmarks.algorithms.diskann
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;run-groups&lt;/code&gt;における&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;arg-groups&lt;/code&gt;が&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;__init__&lt;/code&gt;に渡されるパラメータを，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;query-args&lt;/code&gt;が&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;set_query_arguments&lt;/code&gt;に渡されるパラメータを表します．
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;arg-groups&lt;/code&gt;の様に複数の属性からなるパラメータは各属性の直積が渡されます．&lt;/p&gt;
+
+&lt;h3 id=&quot;ベンチマークの実行&quot;&gt;ベンチマークの実行&lt;/h3&gt;
+&lt;p&gt;ベンチマークは以下のコマンドで実行します．&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;install.py&lt;/code&gt;はコンテナの作成を，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;run.py&lt;/code&gt;はベンチマークを実行します．
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;lt;algorithm name&amp;gt;&lt;/code&gt;と&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;lt;dataset name&amp;gt;&lt;/code&gt;は省略可能です．省略した場合，適用可能な全てのアルゴリズムまたはデータセットに対して処理を適用します．&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python install.py &lt;span class=&quot;nt&quot;&gt;--algorithm&lt;/span&gt; &amp;lt;algorithm name&amp;gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python run.py &lt;span class=&quot;nt&quot;&gt;--algorithm&lt;/span&gt; &amp;lt;algorithm name&amp;gt; &lt;span class=&quot;nt&quot;&gt;--dataset&lt;/span&gt; &amp;lt;dataset name&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;結果&quot;&gt;結果&lt;/h3&gt;
+&lt;p&gt;以下の結果は，fashion-mnist&lt;a class=&quot;citation&quot; href=&quot;#xiao2017/online&quot;&gt;(Xiao et al., 2017)&lt;/a&gt;に対するベンチマークです．図中の&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;flann&lt;/code&gt;と&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;annoy&lt;/code&gt;は&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ann-benchmarks&lt;/code&gt;のデフォルト設定を用いています．&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/2022-02-01-mimic-annoy-wiht-go/fashion-mnist-784-euclidean.png&quot; alt=&quot;result&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;CPU: AMD Ryzen 9 3950X&lt;/li&gt;
+  &lt;li&gt;Memory:  64GB&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+&lt;ol class=&quot;bibliography&quot;&gt;&lt;li&gt;&lt;span id=&quot;xiao2017/online&quot;&gt;Xiao, H., Rasul, K., &amp;amp; Vollgraf, R. (2017). &lt;i&gt;Fashion-MNIST: a Novel Image Dataset for Benchmarking Machine Learning Algorithms&lt;/i&gt;.&lt;/span&gt;&lt;/li&gt;&lt;/ol&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/erikbern/ann-benchmarks&quot;&gt;ann-benchmarks&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/spotify/annoy&quot;&gt;Annoy&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><category term="Go" /><category term="Algorithm" /><category term="MachineLearning" /><category term="VectorSimilaritySearch" /><summary type="html">はじめに 類似ベクトル検索を実現する代表的な実装にAnnoyがあります． 今回，Goの修練としてAnnoyの一部機能をGoで再実装しました．</summary></entry><entry><title type="html">cargo-editが上手く動かない時の回避策</title><link href="https://lab.ar90n.net/rust/2022/01/30/cargo-edit-workaround.html" rel="alternate" type="text/html" title="cargo-editが上手く動かない時の回避策" /><published>2022-01-30T00:00:00-06:00</published><updated>2022-01-30T00:00:00-06:00</updated><id>https://lab.ar90n.net/rust/2022/01/30/cargo-edit-workaround</id><content type="html" xml:base="https://lab.ar90n.net/rust/2022/01/30/cargo-edit-workaround.html">&lt;h2 id=&quot;はじめに&quot;&gt;はじめに&lt;/h2&gt;
 &lt;p&gt;&lt;a href=&quot;https://github.com/killercup/cargo-edit&quot;&gt;cargo-edit&lt;/a&gt; v0.8.0が上手く動かなかったので，その対処法についてのメモです．&lt;/p&gt;
 
 &lt;h2 id=&quot;やったこと&quot;&gt;やったこと&lt;/h2&gt;
@@ -2518,34 +2860,4 @@ May 23 03:26:21 slime systemd[1]: Started Serial Getty on ttyUSB0.
   &lt;li&gt;&lt;a href=&quot;https://qiita.com/falcon8823/items/cf6ace48b94946330f24&quot;&gt;Ubuntu 15.10 でシリアルコンソールを有効にする&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;https://gihyo.jp/admin/serial/01/ubuntu-recipe/0555&quot;&gt;Ubuntu Weekly Recipe 第555回　いま，あらためてudev&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;https://thinkami.hatenablog.com/entry/2015/06/25/064658&quot;&gt;Raspberry Pi 2 + systemd + udevで、USBデバイス挿入時にサービスを起動する&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name></name></author><category term="Ubuntu" /><summary type="html">はじめに 普段SSHで管理しているサーバーが，ネットワーク関連のトラブルに見舞われると，いつも通りにログインできず色々と大変です． そこで，Ubuntu 20.04をシリアルコンソール経由で操作する環境を構築します．</summary></entry><entry><title type="html">Rustでレイトレーシングをしてみる</title><link href="https://lab.ar90n.net/rust/computergraphics/2021/03/30/ray-tracing-in-weekend.html" rel="alternate" type="text/html" title="Rustでレイトレーシングをしてみる" /><published>2021-03-30T00:00:00-05:00</published><updated>2021-03-30T00:00:00-05:00</updated><id>https://lab.ar90n.net/rust/computergraphics/2021/03/30/ray-tracing-in-weekend</id><content type="html" xml:base="https://lab.ar90n.net/rust/computergraphics/2021/03/30/ray-tracing-in-weekend.html">&lt;h2 id=&quot;はじめに&quot;&gt;はじめに&lt;/h2&gt;
-&lt;p&gt;Rustの勉強を兼ねて，&lt;a href=&quot;http://in1weekend.blogspot.com/&quot;&gt;こちら&lt;/a&gt;を参考にレイトレーシングを写経してみました．&lt;/p&gt;
-
-&lt;div class=&quot;github-card&quot; data-github=&quot;ar90n/ray-tracing-in-weekends-with-rust&quot; data-width=&quot;400&quot; data-height=&quot;153&quot; data-theme=&quot;default&quot;&gt;&lt;/div&gt;
-&lt;script src=&quot;//cdn.jsdelivr.net/github-cards/latest/widget.js&quot;&gt;&lt;/script&gt;
-
-&lt;h2 id=&quot;メモ&quot;&gt;メモ&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;十分な数のRayを計算しなければ綺麗な画像は得られない．レイトレーシング結果のサンプルで，画素が黒く欠損しているのは十分な数のRayを計算していないから&lt;/li&gt;
-  &lt;li&gt;Rayによってランダムにサンプリングすることで，ブラーやボケやアンチエイリアシングを表現する&lt;/li&gt;
-  &lt;li&gt;思っていたよりも単純&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;結果&quot;&gt;結果&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;1週目
-&lt;img src=&quot;https://raw.githubusercontent.com/ar90n/ray-tracing-in-weekends-with-rust/main/assets/output_firest_weekend.jpg&quot; alt=&quot;first_weekend&quot; /&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;2週目
-&lt;img src=&quot;https://raw.githubusercontent.com/ar90n/ray-tracing-in-weekends-with-rust/main/assets/output_second_weekend.jpg&quot; alt=&quot;second_weekend&quot; /&gt;&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
-&lt;ol&gt;
-  &lt;li&gt;&lt;a href=&quot;http://in1weekend.blogspot.com/2016/01/ray-tracing-in-one-weekend.html&quot;&gt;Ray Tracing in One Weekend&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://in1weekend.blogspot.com/2016/01/ray-tracing-second-weekend.html&quot;&gt;Ray Tracing: the Next Week&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;</content><author><name></name></author><category term="Rust" /><category term="ComputerGraphics" /><summary type="html">はじめに Rustの勉強を兼ねて，こちらを参考にレイトレーシングを写経してみました．</summary></entry></feed>
+&lt;/ul&gt;</content><author><name></name></author><category term="Ubuntu" /><summary type="html">はじめに 普段SSHで管理しているサーバーが，ネットワーク関連のトラブルに見舞われると，いつも通りにログインできず色々と大変です． そこで，Ubuntu 20.04をシリアルコンソール経由で操作する環境を構築します．</summary></entry></feed>

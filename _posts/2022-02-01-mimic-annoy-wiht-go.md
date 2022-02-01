@@ -150,23 +150,9 @@ COPY --from=builder /go/bin/countrymaam /usr/local/bin
 
 今回の実装ではPythonインターフェースを実装していません．
 従って，実行ファイルをサブプロセスとして起動し，パイプを経由してデータの入出力を行います．
-作成したプログラムを以下に示します．
+作成したクラスを以下に示します．
 
 ```python
-from __future__ import absolute_import
-from ann_benchmarks.algorithms.base import BaseANN
-
-import subprocess
-
-import struct
-import subprocess
-import sys
-import os
-import glob
-import numpy as np
-import random
-import string
-
 class Countrymaam(BaseANN):
     def __init__(self, metric, params):
         self._metric = metric
@@ -187,7 +173,7 @@ class Countrymaam(BaseANN):
             "--index", self._index,
             "--leaf-size", str(self._leaf_size),
             "--tree-num", str(self._n_trees),
-       	    "--output", index_file_path
+            "--output", index_file_path
         ], stdin=subprocess.PIPE)
 
         p.stdin.write(struct.pack(f"={X.size}d", *np.ravel(X)))
@@ -200,7 +186,7 @@ class Countrymaam(BaseANN):
             "predict",
             "--dim", str(len(X[0])),
             "--index", self._index,
-       	    "--input", index_file_path
+            "--input", index_file_path
         ], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     def set_query_arguments(self, search_k):

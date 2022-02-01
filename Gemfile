@@ -25,6 +25,7 @@ group :jekyll_plugins do
   gem 'jekyll-paginate'
   gem 'jekyll-sitemap'
   gem 'jekyll-scholar'
+  gem 'jekyll-linkpreview'
 end
 
 gem "kramdown-math-katex"

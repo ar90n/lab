@@ -9,6 +9,7 @@
 .sass-cache
 .tweet-cache
 __pycache__
+_cache
 _notebooks/.ipynb_checkpoints
 _posts/2020-10-10-analysis-of-moving-average-filter.md
 _posts/2020-10-21-accessing-file-with-unified-pythonic-api.md
@@ -19,6 +20,6 @@ _posts/2021-05-30-gaussian-mixture-model-with-softmax.md
 _posts/2021-06-06-accessing-file-wiht-unified-pythonic-api2.md
 _posts/2021-08-01-writing-simple-ping-example.md
 _posts/2021-09-30-simple-guided-filter-rs.md
+_posts/2022-02-16-kdtree-and-curse-of-dimensionality.md
 _site
-_cache
 ~*

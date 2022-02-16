@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Pythonでpingの実装してみる | lab note</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Pythonでpingの実装してみる" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Writing simple ping example" />
+<meta property="og:description" content="Writing simple ping example" />
+<link rel="canonical" href="https://lab.ar90n.net/python/network/2021/08/01/writing-simple-ping-example.html" />
+<meta property="og:url" content="https://lab.ar90n.net/python/network/2021/08/01/writing-simple-ping-example.html" />
+<meta property="og:site_name" content="lab note" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-08-01T00:00:00-05:00" />
+<script type="application/ld+json">
+{"url":"https://lab.ar90n.net/python/network/2021/08/01/writing-simple-ping-example.html","@type":"BlogPosting","headline":"Pythonでpingの実装してみる","dateModified":"2021-08-01T00:00:00-05:00","datePublished":"2021-08-01T00:00:00-05:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://lab.ar90n.net/python/network/2021/08/01/writing-simple-ping-example.html"},"description":"Writing simple ping example","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/linkpreview.css"><link type="application/atom+xml" rel="alternate" href="https://lab.ar90n.net/feed.xml" title="lab note" /><!-- the google_analytics_id gets auto inserted from the config file -->
+
+
+
+<script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create','UA-90473091-1','auto');ga('require','displayfeatures');ga('send','pageview');</script>
+
+<link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">lab note</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About Me</a><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Pythonでpingの実装してみる</h1><p class="page-description">Writing simple ping example</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-08-01T00:00:00-05:00" itemprop="datePublished">
+        Aug 1, 2021
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      2 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#Python">Python</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#Network">Network</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-wrap flex-justify-end">
+          <div class="px-2">
+
+    <a href="https://github.com/ar90n/lab/tree/fastpages/_notebooks/2021-08-01-writing-simple-ping-example.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/ar90n/lab/fastpages?filepath=_notebooks%2F2021-08-01-writing-simple-ping-example.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/ar90n/lab/blob/fastpages/_notebooks/2021-08-01-writing-simple-ping-example.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#はじめに">はじめに </a></li>
+<li class="toc-entry toc-h2"><a href="#やったこと">やったこと </a></li>
+<li class="toc-entry toc-h2"><a href="#ICMPについて">ICMPについて </a></li>
+<li class="toc-entry toc-h2"><a href="#Pythonによる実装">Pythonによる実装 </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#エコー要求とエコー応答に対応するデータ構造">エコー要求とエコー応答に対応するデータ構造 </a></li>
+<li class="toc-entry toc-h3"><a href="#Rawソケットの作成">Rawソケットの作成 </a></li>
+<li class="toc-entry toc-h3"><a href="#IPデータグラムのパース">IPデータグラムのパース </a></li>
+<li class="toc-entry toc-h3"><a href="#エコー要求の送信とエコー応答の受信">エコー要求の送信とエコー応答の受信 </a></li>
+<li class="toc-entry toc-h3"><a href="#実行結果">実行結果 </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#参考">参考 </a></li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2021-08-01-writing-simple-ping-example.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="はじめに">
+<a class="anchor" href="#%E3%81%AF%E3%81%98%E3%82%81%E3%81%AB" aria-hidden="true"><span class="octicon octicon-link"></span></a>はじめに<a class="anchor-link" href="#%E3%81%AF%E3%81%98%E3%82%81%E3%81%AB"> </a>
+</h2>
+<p>ネットワークの疎通確認を行う際など，pingコマンドにお世話になっている方は多いと思います．私も勿論その一人です．
+ですが，実際pingは何をしているのか？という点は前々理解していませんでした．そこで，pythonにてpingのサブセット（エコー要求とエコー応答のみ）を実装してみました．</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="やったこと">
+<a class="anchor" href="#%E3%82%84%E3%81%A3%E3%81%9F%E3%81%93%E3%81%A8" aria-hidden="true"><span class="octicon octicon-link"></span></a>やったこと<a class="anchor-link" href="#%E3%82%84%E3%81%A3%E3%81%9F%E3%81%93%E3%81%A8"> </a>
+</h2>
+<ul>
+<li>Pythonでpingコマンドのサブセットを実装</li>
+<li>エコー要求に対してエコー応答が返信されることを確認</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="ICMPについて">
+<a class="anchor" href="#ICMP%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6" aria-hidden="true"><span class="octicon octicon-link"></span></a>ICMPについて<a class="anchor-link" href="#ICMP%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6"> </a>
+</h2>
+<p>ICMPとはInternet Control Message Protocolの略称です．名前の通り，インターネットの通信に関する情報の送信に用いられます．
+pingコマンドは，このプロトコルのエコー要求とエコー応答という二つのメッセージをやりとりすることで，端末間の疎通確認を行います．</p>
+<p>エコー要求とエコー応答のパケットフォーマットは以下の通りです．</p>
+<p><img src="data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%20896%20408%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Ainkspace%3D%22http%3A%2F%2Fwww.inkscape.org%2Fnamespaces%2Finkscape%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%3E%0A%20%20%3Cdefs%20id%3D%22defs_block%22%3E%0A%20%20%20%20%3Cfilter%20height%3D%221.504%22%20id%3D%22filter_blur%22%20inkspace%3Acollect%3D%22always%22%20width%3D%221.1575%22%20x%3D%22-0.07875%22%20y%3D%22-0.252%22%3E%0A%20%20%20%20%20%20%3CfeGaussianBlur%20id%3D%22feGaussianBlur3780%22%20inkspace%3Acollect%3D%22always%22%20stdDeviation%3D%224.2%22%20%2F%3E%0A%20%20%20%20%3C%2Ffilter%3E%0A%20%20%3C%2Fdefs%3E%0A%20%20%3Ctitle%3Eblockdiag%3C%2Ftitle%3E%0A%20%20%3Cdesc%3E%7B%0A%20%20colwidth%20%3D%2032%0A%20%20node_height%20%3D%2072%0A%0A%20%200-7%3A%20Type%0A%20%208-15%3A%20Code%0A%20%2016-31%3A%20Checksum%0A%20%2032-47%3A%20Identification%0A%20%2048-63%3A%20Sequence%20Number%0A%20%2064-95%3A%20Data%5Bcolheight%20%3D%202%5D%0A%7D%0A%3C%2Fdesc%3E%0A%20%20%3Cpath%20d%3D%22M%2064%2048%20L%2064%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Ctext%20fill%3D%22rgb%280%2C0%2C0%29%22%20font-family%3D%22sans-serif%22%20font-size%3D%2211%22%20font-style%3D%22normal%22%20font-weight%3D%22normal%22%20text-anchor%3D%22middle%22%20textLength%3D%227%22%20x%3D%2264.5%22%20y%3D%2242%22%3E0%3C%2Ftext%3E%0A%20%20%3Cpath%20d%3D%22M%2088%2064%20L%2088%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20112%2064%20L%20112%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20136%2064%20L%20136%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20160%2064%20L%20160%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20184%2064%20L%20184%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20208%2064%20L%20208%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20232%2064%20L%20232%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20256%2048%20L%20256%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20280%2064%20L%20280%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20304%2064%20L%20304%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20328%2064%20L%20328%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20352%2064%20L%20352%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20376%2064%20L%20376%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20400%2064%20L%20400%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20424%2064%20L%20424%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20448%2048%20L%20448%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Ctext%20fill%3D%22rgb%280%2C0%2C0%29%22%20font-family%3D%22sans-serif%22%20font-size%3D%2211%22%20font-style%3D%22normal%22%20font-weight%3D%22normal%22%20text-anchor%3D%22middle%22%20textLength%3D%2215%22%20x%3D%22448.5%22%20y%3D%2242%22%3E16%3C%2Ftext%3E%0A%20%20%3Cpath%20d%3D%22M%20472%2064%20L%20472%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20496%2064%20L%20496%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20520%2064%20L%20520%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20544%2064%20L%20544%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20568%2064%20L%20568%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20592%2064%20L%20592%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20616%2064%20L%20616%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20640%2048%20L%20640%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20664%2064%20L%20664%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20688%2064%20L%20688%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20712%2064%20L%20712%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20736%2064%20L%20736%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20760%2064%20L%20760%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20784%2064%20L%20784%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20808%2064%20L%20808%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20832%2048%20L%20832%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Ctext%20fill%3D%22rgb%280%2C0%2C0%29%22%20font-family%3D%22sans-serif%22%20font-size%3D%2211%22%20font-style%3D%22normal%22%20font-weight%3D%22normal%22%20text-anchor%3D%22middle%22%20textLength%3D%2215%22%20x%3D%22832.5%22%20y%3D%2242%22%3E32%3C%2Ftext%3E%0A%20%20%3Crect%20fill%3D%22rgb%28255%2C255%2C255%29%22%20height%3D%2272%22%20stroke%3D%22rgb%28255%2C255%2C255%29%22%20width%3D%22192%22%20x%3D%2264%22%20y%3D%2280%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%2064%2080%20L%20256%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20256%2080%20L%20256%20152%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20256%20152%20L%2064%20152%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%2064%20152%20L%2064%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Ctext%20fill%3D%22rgb%280%2C0%2C0%29%22%20font-family%3D%22sans-serif%22%20font-size%3D%2211%22%20font-style%3D%22normal%22%20font-weight%3D%22normal%22%20text-anchor%3D%22middle%22%20textLength%3D%2226%22%20x%3D%22160.0%22%20y%3D%22122%22%3EType%3C%2Ftext%3E%0A%20%20%3Crect%20fill%3D%22rgb%28255%2C255%2C255%29%22%20height%3D%2272%22%20stroke%3D%22rgb%28255%2C255%2C255%29%22%20width%3D%22192%22%20x%3D%22256%22%20y%3D%2280%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20256%2080%20L%20448%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20448%2080%20L%20448%20152%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20448%20152%20L%20256%20152%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20256%20152%20L%20256%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Ctext%20fill%3D%22rgb%280%2C0%2C0%29%22%20font-family%3D%22sans-serif%22%20font-size%3D%2211%22%20font-style%3D%22normal%22%20font-weight%3D%22normal%22%20text-anchor%3D%22middle%22%20textLength%3D%2226%22%20x%3D%22352.0%22%20y%3D%22122%22%3ECode%3C%2Ftext%3E%0A%20%20%3Crect%20fill%3D%22rgb%28255%2C255%2C255%29%22%20height%3D%2272%22%20stroke%3D%22rgb%28255%2C255%2C255%29%22%20width%3D%22384%22%20x%3D%22448%22%20y%3D%2280%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20448%2080%20L%20832%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20832%2080%20L%20832%20152%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20832%20152%20L%20448%20152%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20448%20152%20L%20448%2080%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Ctext%20fill%3D%22rgb%280%2C0%2C0%29%22%20font-family%3D%22sans-serif%22%20font-size%3D%2211%22%20font-style%3D%22normal%22%20font-weight%3D%22normal%22%20text-anchor%3D%22middle%22%20textLength%3D%2252%22%20x%3D%22640.0%22%20y%3D%22122%22%3EChecksum%3C%2Ftext%3E%0A%20%20%3Crect%20fill%3D%22rgb%28255%2C255%2C255%29%22%20height%3D%2272%22%20stroke%3D%22rgb%28255%2C255%2C255%29%22%20width%3D%22384%22%20x%3D%2264%22%20y%3D%22152%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%2064%20152%20L%20448%20152%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20448%20152%20L%20448%20224%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20448%20224%20L%2064%20224%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%2064%20224%20L%2064%20152%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Ctext%20fill%3D%22rgb%280%2C0%2C0%29%22%20font-family%3D%22sans-serif%22%20font-size%3D%2211%22%20font-style%3D%22normal%22%20font-weight%3D%22normal%22%20text-anchor%3D%22middle%22%20textLength%3D%2261%22%20x%3D%22256.5%22%20y%3D%22194%22%3EIdentification%3C%2Ftext%3E%0A%20%20%3Crect%20fill%3D%22rgb%28255%2C255%2C255%29%22%20height%3D%2272%22%20stroke%3D%22rgb%28255%2C255%2C255%29%22%20width%3D%22384%22%20x%3D%22448%22%20y%3D%22152%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20448%20152%20L%20832%20152%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20832%20152%20L%20832%20224%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20832%20224%20L%20448%20224%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20448%20224%20L%20448%20152%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Ctext%20fill%3D%22rgb%280%2C0%2C0%29%22%20font-family%3D%22sans-serif%22%20font-size%3D%2211%22%20font-style%3D%22normal%22%20font-weight%3D%22normal%22%20text-anchor%3D%22middle%22%20textLength%3D%2293%22%20x%3D%22640.5%22%20y%3D%22194%22%3ESequence%20Number%3C%2Ftext%3E%0A%20%20%3Crect%20fill%3D%22rgb%28255%2C255%2C255%29%22%20height%3D%22144%22%20stroke%3D%22rgb%28255%2C255%2C255%29%22%20width%3D%22768%22%20x%3D%2264%22%20y%3D%22224%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%2064%20224%20L%20832%20224%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20832%20224%20L%20832%20368%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20832%20368%20L%2064%20368%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M%2064%20368%20L%2064%20224%22%20fill%3D%22none%22%20stroke%3D%22rgb%280%2C0%2C0%29%22%20%2F%3E%0A%20%20%3Ctext%20fill%3D%22rgb%280%2C0%2C0%29%22%20font-family%3D%22sans-serif%22%20font-size%3D%2211%22%20font-style%3D%22normal%22%20font-weight%3D%22normal%22%20text-anchor%3D%22middle%22%20textLength%3D%2224%22%20x%3D%22448.0%22%20y%3D%22302%22%3EData%3C%2Ftext%3E%0A%3C%2Fsvg%3E%0A" alt="svg image"></p>
+<p>なお，これらのメッセージはIPデータグラムのペイロードとして送受信されます．</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Pythonによる実装">
+<a class="anchor" href="#Python%E3%81%AB%E3%82%88%E3%82%8B%E5%AE%9F%E8%A3%85" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pythonによる実装<a class="anchor-link" href="#Python%E3%81%AB%E3%82%88%E3%82%8B%E5%AE%9F%E8%A3%85"> </a>
+</h2>
+<h3 id="エコー要求とエコー応答に対応するデータ構造">
+<a class="anchor" href="#%E3%82%A8%E3%82%B3%E3%83%BC%E8%A6%81%E6%B1%82%E3%81%A8%E3%82%A8%E3%82%B3%E3%83%BC%E5%BF%9C%E7%AD%94%E3%81%AB%E5%AF%BE%E5%BF%9C%E3%81%99%E3%82%8B%E3%83%87%E3%83%BC%E3%82%BF%E6%A7%8B%E9%80%A0" aria-hidden="true"><span class="octicon octicon-link"></span></a>エコー要求とエコー応答に対応するデータ構造<a class="anchor-link" href="#%E3%82%A8%E3%82%B3%E3%83%BC%E8%A6%81%E6%B1%82%E3%81%A8%E3%82%A8%E3%82%B3%E3%83%BC%E5%BF%9C%E7%AD%94%E3%81%AB%E5%AF%BE%E5%BF%9C%E3%81%99%E3%82%8B%E3%83%87%E3%83%BC%E3%82%BF%E6%A7%8B%E9%80%A0"> </a>
+</h3>
+<p>上述のパケットフォーマットにおける<code>Type</code>は，エコー要求では<code>8</code>が，エコー応答では<code>0</code>が設定されます．
+従って，以下のように<code>ICMPType</code>として定義することができます．</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+
+<span class="k">class</span> <span class="nc">ICMPType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">ECHOREPLY</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">ECHO</span> <span class="o">=</span> <span class="mi">8</span>
+
+    <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>また，パケットフォーマットからチェックサムフィールドを確認することができます．
+このチェックサムは以下の手順で計算します．</p>
+<ol>
+<li>チェックサムフィールドを<code>0</code>で埋める</li>
+<li>パケットを16ビット単位で区切る（パケット長が奇数バイトである場合は<code>0x00</code>を末尾に追加）</li>
+<li>16ビット単位で区切ったデータを1の補数で加算していき合計値を求める</li>
+<li>加算結果の1の補数を最終結果とする．この時，0の表現としては<code>0xffff</code>を用いる．</li>
+</ol>
+<p>以上の手順でチェックサムを計算する関数<code>calc_checksum</code>を以下のように定義します．</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">calc_checksum</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">+=</span> <span class="sa">b</span><span class="s2">"</span><span class="se">\x00</span><span class="s2">"</span>
+    <span class="n">u16_counts</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="n">checksum</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="sa">f</span><span class="s2">"!</span><span class="si">{</span><span class="n">u16_counts</span><span class="si">}</span><span class="s2">H"</span><span class="p">,</span> <span class="n">data</span><span class="p">))</span>
+    <span class="k">while</span> <span class="mh">0xFFFF</span> <span class="o">&lt;</span> <span class="n">checksum</span><span class="p">:</span>
+        <span class="n">checksum</span> <span class="o">=</span> <span class="p">(</span><span class="n">checksum</span> <span class="o">&amp;</span> <span class="mh">0xFFFF</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">checksum</span> <span class="o">&gt;&gt;</span> <span class="mi">16</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">checksum</span> <span class="o">!=</span> <span class="mh">0xFFFF</span><span class="p">:</span>
+        <span class="n">checksum</span> <span class="o">=</span> <span class="o">~</span><span class="n">checksum</span>
+    <span class="k">return</span> <span class="n">checksum</span> <span class="o">&amp;</span> <span class="mh">0xFFFF</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>以下に示す<code>ICMPEcho</code>がエコー要求とエコー応答を表現するデータ構造となります．<code>checksum</code>がコンストラクタ引数として指定されなかった場合は，<code>calc_checksum</code>にて計算します．</p>
+<p><code>ICMPEcho</code>はネットワークを通して送受信されます．従って，シリアライズを行う<code>to_bytes</code>と，デシリアライズを行う<code>from_bytes</code>を実装しています．</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">ICMPEcho</span><span class="p">:</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">ICMPType</span>
+    <span class="n">code</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">seq</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span>
+    <span class="n">checksum</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">checksum</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"checksum"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"checksum"</span><span class="p">,</span> <span class="n">calc_checksum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">()))</span>
+
+    <span class="k">def</span> <span class="nf">to_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"!BBHHH</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2">s"</span><span class="p">,</span>
+            <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">code</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">checksum</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">seq</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_bytes</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">packed</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"ICMPEcho"</span><span class="p">:</span>
+        <span class="n">_type</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">checksum</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">seq</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">"!BBHHH"</span><span class="p">,</span> <span class="n">packed</span><span class="p">[:</span><span class="mi">8</span><span class="p">])</span>
+        <span class="nb">type</span> <span class="o">=</span> <span class="n">ICMPType</span><span class="p">(</span><span class="n">_type</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">packed</span><span class="p">[</span><span class="mi">8</span><span class="p">:]</span>
+        <span class="k">return</span> <span class="n">ICMPEcho</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">seq</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">checksum</span><span class="o">=</span><span class="n">checksum</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Rawソケットの作成">
+<a class="anchor" href="#Raw%E3%82%BD%E3%82%B1%E3%83%83%E3%83%88%E3%81%AE%E4%BD%9C%E6%88%90" aria-hidden="true"><span class="octicon octicon-link"></span></a>Rawソケットの作成<a class="anchor-link" href="#Raw%E3%82%BD%E3%82%B1%E3%83%83%E3%83%88%E3%81%AE%E4%BD%9C%E6%88%90"> </a>
+</h3>
+<p>TCPやUDPを用いた時と同様，ICMPでもソケットを用いてネットワークプログラミングを行います．
+しかしながら，ICMPパケットはIPデータグラムのペイロードとするため，IPデータグラムを操作する必要があります．</p>
+<p>IPデータグラムの操作はRawソケットを用いることで実現できます．そこで，ソケットを作成する関数<code>raw_socket</code>を以下のように定義しました．
+<code>socket.socket</code>の第２引数には<code>socket.SOCK_RAW</code>を第３引数には<code>socket.IPPROTO_ICMP</code>を指定します．これは，RawソケットをICMPから利用することを表していいます．</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">contextmanager</span>
+
+<span class="nd">@contextmanager</span>
+<span class="k">def</span> <span class="nf">raw_socket</span><span class="p">():</span>
+    <span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_RAW</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">IPPROTO_ICMP</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="n">sock</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">sock</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="IPデータグラムのパース">
+<a class="anchor" href="#IP%E3%83%87%E3%83%BC%E3%82%BF%E3%82%B0%E3%83%A9%E3%83%A0%E3%81%AE%E3%83%91%E3%83%BC%E3%82%B9" aria-hidden="true"><span class="octicon octicon-link"></span></a>IPデータグラムのパース<a class="anchor-link" href="#IP%E3%83%87%E3%83%BC%E3%82%BF%E3%82%B0%E3%83%A9%E3%83%A0%E3%81%AE%E3%83%91%E3%83%BC%E3%82%B9"> </a>
+</h3>
+<p>Rawソケットによって受信したデータはIPデータグラムです．従って，これを適切にパースし，エコー応答をペイロードとして取り出す必要があります．
+今回，以下のようにIPヘッダを表現する<code>IPHeader</code>と，IPデータグラムをパースする<code>parse_ip_datagram</code>関数を実装しました．
+<code>parse_ip_datagram</code>関数では，受信したデータの先頭２０バイトから<code>IPHeader</code>インスタンスを作成し，残りのデータをペイロードとします．</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">IPHeader</span><span class="p">:</span>
+    <span class="n">v</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">hl</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">tos</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="nb">len</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">off</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">ttl</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">p</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="nb">sum</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">src</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">dst</span><span class="p">:</span> <span class="nb">str</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_bytes</span><span class="p">(</span><span class="n">packed</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"IPHeader"</span><span class="p">:</span>
+        <span class="n">v_hl</span><span class="p">,</span> <span class="n">tos</span><span class="p">,</span> <span class="nb">len</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">off</span><span class="p">,</span> <span class="n">ttl</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="nb">sum</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">dst</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span>
+            <span class="s2">"!BBHHHBBHII"</span><span class="p">,</span> <span class="n">packed</span>
+        <span class="p">)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">v_hl</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span>
+        <span class="n">hl</span> <span class="o">=</span> <span class="n">v_hl</span> <span class="o">&amp;</span> <span class="mh">0x0F</span>
+
+        <span class="k">return</span> <span class="n">IPHeader</span><span class="p">(</span>
+            <span class="n">v</span><span class="p">,</span>
+            <span class="n">hl</span><span class="p">,</span>
+            <span class="n">tos</span><span class="p">,</span>
+            <span class="nb">len</span><span class="p">,</span>
+            <span class="nb">id</span><span class="p">,</span>
+            <span class="n">off</span><span class="p">,</span>
+            <span class="n">ttl</span><span class="p">,</span>
+            <span class="n">p</span><span class="p">,</span>
+            <span class="nb">sum</span><span class="p">,</span>
+            <span class="n">socket</span><span class="o">.</span><span class="n">inet_ntoa</span><span class="p">(</span><span class="n">src</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">byteorder</span><span class="o">=</span><span class="s2">"big"</span><span class="p">)),</span>
+            <span class="n">socket</span><span class="o">.</span><span class="n">inet_ntoa</span><span class="p">(</span><span class="n">dst</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">byteorder</span><span class="o">=</span><span class="s2">"big"</span><span class="p">)),</span>
+        <span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">parse_ip_datagram</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">IPHeader</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">]:</span>
+    <span class="n">ip_header</span> <span class="o">=</span> <span class="n">IPHeader</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">data</span><span class="p">[:</span><span class="mi">20</span><span class="p">])</span>
+    <span class="n">payload</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">20</span><span class="p">:]</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">ip_header</span><span class="p">,</span> <span class="n">payload</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="エコー要求の送信とエコー応答の受信">
+<a class="anchor" href="#%E3%82%A8%E3%82%B3%E3%83%BC%E8%A6%81%E6%B1%82%E3%81%AE%E9%80%81%E4%BF%A1%E3%81%A8%E3%82%A8%E3%82%B3%E3%83%BC%E5%BF%9C%E7%AD%94%E3%81%AE%E5%8F%97%E4%BF%A1" aria-hidden="true"><span class="octicon octicon-link"></span></a>エコー要求の送信とエコー応答の受信<a class="anchor-link" href="#%E3%82%A8%E3%82%B3%E3%83%BC%E8%A6%81%E6%B1%82%E3%81%AE%E9%80%81%E4%BF%A1%E3%81%A8%E3%82%A8%E3%82%B3%E3%83%BC%E5%BF%9C%E7%AD%94%E3%81%AE%E5%8F%97%E4%BF%A1"> </a>
+</h3>
+<p>これまで実装してきた関数とデータ構造を用いて，エコー要求を送信しエコー応答を受信する関数<code>ping</code>を実装しました．
+以下に示されるように，エコー要求をソケットに書き込み，ソケットから読み取ったエコー応答とIPヘッダを出力します．</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">print_response</span><span class="p">(</span><span class="n">ip_header</span><span class="p">:</span> <span class="n">IPHeader</span><span class="p">,</span> <span class="n">echo_reply</span><span class="p">:</span> <span class="n">ICMPEcho</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"ping echo reply from </span><span class="si">{</span><span class="n">ip_header</span><span class="o">.</span><span class="n">src</span><span class="si">}</span><span class="s2">: icmp_seq=</span><span class="si">{</span><span class="n">echo_reply</span><span class="o">.</span><span class="n">seq</span><span class="si">}</span><span class="s2"> ttl=</span><span class="si">{</span><span class="n">ip_header</span><span class="o">.</span><span class="n">ttl</span><span class="si">}</span><span class="s2">"</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">ping</span><span class="p">(</span><span class="n">host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">seq</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">raw_socket</span><span class="p">()</span> <span class="k">as</span> <span class="n">sock</span><span class="p">:</span>
+        <span class="n">packet</span> <span class="o">=</span> <span class="n">ICMPEcho</span><span class="p">(</span><span class="n">ICMPType</span><span class="o">.</span><span class="n">ECHO</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">seq</span><span class="p">,</span> <span class="sa">b</span><span class="s2">"</span><span class="se">\xff</span><span class="s2">"</span><span class="p">)</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">()</span>
+        <span class="n">sock</span><span class="o">.</span><span class="n">sendto</span><span class="p">(</span><span class="n">packet</span><span class="p">,</span> <span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="n">ip_header</span><span class="p">,</span> <span class="n">payload</span> <span class="o">=</span> <span class="n">parse_ip_datagram</span><span class="p">(</span><span class="n">sock</span><span class="o">.</span><span class="n">recvfrom</span><span class="p">(</span><span class="mi">4096</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">echo_reply</span> <span class="o">=</span> <span class="n">ICMPEcho</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+        <span class="n">print_response</span><span class="p">(</span><span class="n">ip_header</span><span class="p">,</span> <span class="n">echo_reply</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="実行結果">
+<a class="anchor" href="#%E5%AE%9F%E8%A1%8C%E7%B5%90%E6%9E%9C" aria-hidden="true"><span class="octicon octicon-link"></span></a>実行結果<a class="anchor-link" href="#%E5%AE%9F%E8%A1%8C%E7%B5%90%E6%9E%9C"> </a>
+</h3>
+<p>実際に<code>8.8.8.8</code>に対して<code>ping</code>を呼び出した結果を以下に示します．
+エコー要求に対して適切なエコー応答が帰ってきていることが確認できます．</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">ping</span><span class="p">(</span><span class="s2">"8.8.8.8"</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>ping echo reply from 8.8.8.8: icmp_seq=0 ttl=37
+ping echo reply from 8.8.8.8: icmp_seq=1 ttl=37
+ping echo reply from 8.8.8.8: icmp_seq=2 ttl=37
+ping echo reply from 8.8.8.8: icmp_seq=3 ttl=37
+ping echo reply from 8.8.8.8: icmp_seq=4 ttl=37
+ping echo reply from 8.8.8.8: icmp_seq=5 ttl=37
+ping echo reply from 8.8.8.8: icmp_seq=6 ttl=37
+ping echo reply from 8.8.8.8: icmp_seq=7 ttl=37
+ping echo reply from 8.8.8.8: icmp_seq=8 ttl=37
+ping echo reply from 8.8.8.8: icmp_seq=9 ttl=37
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="参考">
+<a class="anchor" href="#%E5%8F%82%E8%80%83" aria-hidden="true"><span class="octicon octicon-link"></span></a>参考<a class="anchor-link" href="#%E5%8F%82%E8%80%83"> </a>
+</h2>
+<ul>
+<li>村山公保，2004年，基礎からわかるTCP/IP ネットワーク実験プログラミング（第2版），オーム社</li>
+</ul>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><a class="u-url" href="/python/network/2021/08/01/writing-simple-ping-example.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>My lab notebook</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/ar90n" target="_blank" title="ar90n"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/ar90n" target="_blank" title="ar90n"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

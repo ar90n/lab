@@ -1,6 +1,7 @@
 FROM node:12.19.0-buster-slim as nodejs
 
-FROM fastai/jekyll:latest
+#FROM fastai/jekyll:latest
+FROM fastai/jekyll:2021-02-05
 
 WORKDIR /fastpages
 COPY . .

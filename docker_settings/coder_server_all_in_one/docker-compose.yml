@@ -1,0 +1,20 @@
+version: "3"
+services:
+  coder:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    user: "${UID}:${GID}"
+    volumes:
+      - ~/.aws:/home/coder/.aws
+      - ~/.config:/home/coder/.config
+      - ~/workspace:/home/coder/workspace
+      - /mnt/data:/data
+    ports:
+      - 9090:8080
+    environment:
+      - DOCKER_USER=${USER}
+    restart: always
+
+volumes:
+  notebooks:

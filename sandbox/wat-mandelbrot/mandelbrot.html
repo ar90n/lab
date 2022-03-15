@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Mandelbrot Set</title>
+</head>
+
+<body>
+  <canvas id="cnvs" width="512" height="512"></canvas>
+  <script>  
+    const cnvs_size = 512;
+    const pixel_count = cnvs_size * cnvs_size;
+    const canvas = document.getElementById("cnvs");
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, 512, 512);
+
+    const ns_start = pixel_count * 4;
+    const cmap_start = ns_start + pixel_count * 4;
+    const org_real = -2.0;
+    const org_imag = -1.33;
+    const dx = 1 / 192;
+    const dy = 1 / 192;
+
+    const memory = new WebAssembly.Memory({ initial: 160 });
+    const cmap_view = new Uint32Array(memory.buffer, cmap_start, 16);
+    cmap_view[0] = 0xff421e42;
+    cmap_view[1] = 0xff190719;
+    cmap_view[2] = 0xff090109;
+    cmap_view[3] = 0xff040404;
+    cmap_view[4] = 0xff000700;
+    cmap_view[5] = 0xff0c2c0c;
+    cmap_view[6] = 0xff185218;
+    cmap_view[7] = 0xff397d39;
+    cmap_view[8] = 0xff86b586;
+    cmap_view[9] = 0xffd3ecd3;
+    cmap_view[10] = 0xfff1e9f1;
+    cmap_view[11] = 0xfff8c9f8;
+    cmap_view[12] = 0xffffaaff;
+    cmap_view[13] = 0xffcc80cc;
+    cmap_view[14] = 0xff995799;
+    cmap_view[15] = 0xff6a346a;
+
+    const importObject = {
+      env: {
+        buffer: memory,
+        cnvs_size,
+        ns_start,
+        cmap_start,
+        org_real,
+        org_imag,
+        dx,
+        dy,
+      }
+    }
+
+    const image_data = new ImageData(new Uint8ClampedArray(memory.buffer, 0, ns_start), cnvs_size, cnvs_size);
+    (async () => {
+      let obj = await WebAssembly.instantiateStreaming(fetch("mandelbrot.wasm"), importObject);
+      const main = obj.instance.exports.main;
+
+      main();
+      ctx.putImageData(image_data, 0, 0);
+    })();
+  </script>
+</body>

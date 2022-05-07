@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "understanding-computation-practice"
+version = "0.1.0"
+description = ""
+authors = ["Masahiro Wada <argon.argon.argon@gmail.com>"]
+readme = "README.md"
+packages = [{include = "understanding_computation_practice"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pytest = "^7.1.2"
+pyright = "^1.1.244"
+TatSu = "^5.8.0"
+
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.13.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pyright]
+include = ["alfort", "examples"]
+stubPath ="stubs"
+typeCheckingMode = "strict"
+reportMissingImports = true
+reportMissingTypeStubs = false
+pythonVersion = "3.10"
+pythonPlatform = "Linux"
+

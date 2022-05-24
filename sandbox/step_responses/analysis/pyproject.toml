@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "analysis"
+version = "0.1.0"
+description = ""
+authors = ["Masahiro Wada <argon.argon.argon@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "~3.10"
+numpy = "^1.22.4"
+scipy = "^1.8.1"
+scikit-image = "^0.19.2"
+joblib = "^1.1.0"
+matplotlib = "^3.5.2"
+
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.13.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

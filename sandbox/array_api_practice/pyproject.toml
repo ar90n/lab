@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "array-api-practice"
+version = "0.1.0"
+description = ""
+authors = ["Masahiro Wada <argon.argon.argon@gmail.com>"]
+readme = "README.md"
+packages = [{include = "array_api_practice"}]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+numpy = "^1.22.4"
+torch = "^1.8.*"
+pytest = "^7.1.2"
+hypothesis = "^6.46.11"
+
+[[tool.poetry.source]]
+name = "torch"
+url = "https://download.pytorch.org/whl/cpu"
+secondary = true
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pyright]
+stubPath ="array-api/spec/API_specification/"

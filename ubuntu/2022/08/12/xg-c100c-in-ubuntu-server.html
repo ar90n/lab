@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>XG-C100Cを追加してオンボードNICとブリッジ接続する | lab note</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="XG-C100Cを追加してオンボードNICとブリッジ接続する" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Bridge connection between XG-C100C and onboard nic" />
+<meta property="og:description" content="Bridge connection between XG-C100C and onboard nic" />
+<link rel="canonical" href="https://lab.ar90n.net/ubuntu/2022/08/12/xg-c100c-in-ubuntu-server.html" />
+<meta property="og:url" content="https://lab.ar90n.net/ubuntu/2022/08/12/xg-c100c-in-ubuntu-server.html" />
+<meta property="og:site_name" content="lab note" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-08-12T00:00:00-05:00" />
+<script type="application/ld+json">
+{"url":"https://lab.ar90n.net/ubuntu/2022/08/12/xg-c100c-in-ubuntu-server.html","@type":"BlogPosting","headline":"XG-C100Cを追加してオンボードNICとブリッジ接続する","dateModified":"2022-08-12T00:00:00-05:00","datePublished":"2022-08-12T00:00:00-05:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://lab.ar90n.net/ubuntu/2022/08/12/xg-c100c-in-ubuntu-server.html"},"description":"Bridge connection between XG-C100C and onboard nic","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/linkpreview.css"><link type="application/atom+xml" rel="alternate" href="https://lab.ar90n.net/feed.xml" title="lab note" /><!-- the google_analytics_id gets auto inserted from the config file -->
+
+
+
+<script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create','UA-90473091-1','auto');ga('require','displayfeatures');ga('send','pageview');</script>
+
+<link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">lab note</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About Me</a><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">XG-C100Cを追加してオンボードNICとブリッジ接続する</h1><p class="page-description">Bridge connection between XG-C100C and onboard nic</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-08-12T00:00:00-05:00" itemprop="datePublished">
+        Aug 12, 2022
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      1 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#Ubuntu">Ubuntu</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#はじめに">はじめに</a></li>
+<li class="toc-entry toc-h2"><a href="#やったこと">やったこと</a></li>
+<li class="toc-entry toc-h2"><a href="#xg-c100cの導入">XG-C100Cの導入</a></li>
+<li class="toc-entry toc-h2"><a href="#nic間のブリッジ接続">NIC間のブリッジ接続</a></li>
+<li class="toc-entry toc-h2"><a href="#参考">参考</a></li>
+</ul><h2 id="はじめに">
+<a class="anchor" href="#%E3%81%AF%E3%81%98%E3%82%81%E3%81%AB" aria-hidden="true"><span class="octicon octicon-link"></span></a>はじめに</h2>
+<p>Ubuntu 22.04で運用している開発用マシンに<a href="https://www.asus.com/jp/Networking-IoT-Servers/Wired-Networking/All-series/XG-C100C/">XG-C100C</a>を追加した記録です。
+最終的に以下のような環境を構築します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>┌───────────────┐                     ┌──────────────┐              ┌────────────────┐
+│               │                     │              │              │                │
+│               │ 10.0.0.100/24       │              │ Dynamic      │                │
+│  MacBook Pro  ├─────────────────────┤  Dev Server  ├──────────────┤  Home Network  │
+│               │                     │              │              │                │
+│               │                     │              │              │                │
+└───────────────┘                     └──────────────┘              └────────────────┘
+</code></pre></div></div>
+
+<h2 id="やったこと">
+<a class="anchor" href="#%E3%82%84%E3%81%A3%E3%81%9F%E3%81%93%E3%81%A8" aria-hidden="true"><span class="octicon octicon-link"></span></a>やったこと</h2>
+<ul>
+  <li>Ubuntu22.04にXG-C100Cを導入</li>
+  <li>既存のNIC（オンボード）とXG-C100Cとの間をブリッジ接続</li>
+</ul>
+
+<h2 id="xg-c100cの導入">
+<a class="anchor" href="#xg-c100c%E3%81%AE%E5%B0%8E%E5%85%A5" aria-hidden="true"><span class="octicon octicon-link"></span></a>XG-C100Cの導入</h2>
+<p>ASUSの<a href="https://www.asus.com/jp/Networking-IoT-Servers/Wired-Networking/All-series/XG-C100C/HelpDesk_Download/">サイト</a>にあるドライバはバージョンが古い（5.0.3.3）ため私の環境（kernel 5.15.0-43）でコンパイルすることができませんでした。
+そこで、 <a href="https://www.marvell.com/support/downloads.html">Marvellのダウンロードページ</a>からAQC107Cを選択してドライバを取得します。</p>
+
+<p>ダウンロード完了後、以下のように指示通り作業を行うとドライバを導入します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ unzip Marvell_Linux_2.5.5.zip
+Archive:  Marvell_Linux_2.5.5.zip
+   creating: 05-23-22_Marvell_Linux_2.5.5/
+  inflating: 05-23-22_Marvell_Linux_2.5.5/atlantic-2.5.5.0-1.noarch.rpm
+ extracting: 05-23-22_Marvell_Linux_2.5.5/atlantic.tar.gz
+  inflating: 05-23-22_Marvell_Linux_2.5.5/README.txt
+  inflating: 05-23-22_Marvell_Linux_2.5.5/Release_Notes_Linux_2.5.5.txt
+$ cd 05-23-22_Marvell_Linux_2.5.5
+$ tar -zxf atlantic.tar.gz
+$ sudo ./dkms.sh install
+</code></pre></div></div>
+
+<p>追加したNICの名称を確認します。正しい方法がわからないので、<code class="language-plaintext highlighter-rouge">dmesg</code> からそれっぽいものを持ってきます。
+今回追加したNICは<code class="language-plaintext highlighter-rouge">enp4s0</code>という名称が付けられているようです。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo dmesg| grep atlantic
+[    2.502420] atlantic 0000:04:00.0: enabling device (0000 -&gt; 0002)
+[    2.540366] atlantic: Detect ATL2FW 1030012
+[    5.859800] atlantic 0000:04:00.0 enp4s0: renamed from eth1
+[   17.700034] atlantic 0000:04:00.0 enp4s0: atlantic: link change old 0 new 1000
+</code></pre></div></div>
+
+<h2 id="nic間のブリッジ接続">
+<a class="anchor" href="#nic%E9%96%93%E3%81%AE%E3%83%96%E3%83%AA%E3%83%83%E3%82%B8%E6%8E%A5%E7%B6%9A" aria-hidden="true"><span class="octicon octicon-link"></span></a>NIC間のブリッジ接続</h2>
+
+<p>‘/etc/netplan/00-installer-config.yaml’を修正して既存のNIC(<code class="language-plaintext highlighter-rouge">eno1</code>)とブリッジ接続します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cat /etc/netplan/00-installer-config.yaml
+# This is the network config written by 'subiquity'
+network:
+  ethernets:
+    eno1: {}
+    enp4s0: {}
+  bridges:
+    br0:
+      interfaces:
+        - eno1
+        - enp4s0
+      dhcp4: true
+  version: 2
+</code></pre></div></div>
+
+<p>MacBook Pro &lt;-&gt; Home Network間の通信を透過的に行うためufwを設定します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo ufw allow from 10.0.0.0/24
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">/etc/default/ufw ufw.org</code>も以下のように修正します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ diff /etc/default/ufw ufw.org
+19c19
+&lt; DEFAULT_FORWARD_POLICY="ACCEPT"
+---
+&gt; DEFAULT_FORWARD_POLICY="DROP"
+</code></pre></div></div>
+
+<h2 id="参考">
+<a class="anchor" href="#%E5%8F%82%E8%80%83" aria-hidden="true"><span class="octicon octicon-link"></span></a>参考</h2>
+
+<ul>
+  <li><a href="https://www.marvell.com/support/downloads.html">Marvell Drivers</a></li>
+  <li><a href="https://netplan.io/reference">Netplan reference</a></li>
+</ul>
+
+  </div><a class="u-url" href="/ubuntu/2022/08/12/xg-c100c-in-ubuntu-server.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>My lab notebook</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/ar90n" target="_blank" title="ar90n"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/ar90n" target="_blank" title="ar90n"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

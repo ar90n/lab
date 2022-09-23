@@ -43,8 +43,8 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
 [package.extras]
-azure-pipelines = ["coverage", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "zope.interface", "pytest-azurepipelines"]
-dev = ["coverage", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "zope.interface", "sphinx", "pre-commit"]
+azure-pipelines = ["coverage", "hypothesis", "pympler", "pytest (>=4.3.0)", "pytest-azurepipelines", "six", "zope.interface"]
+dev = ["coverage", "hypothesis", "pre-commit", "pympler", "pytest (>=4.3.0)", "six", "sphinx", "zope.interface"]
 docs = ["sphinx", "zope.interface"]
 tests = ["coverage", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "zope.interface"]
 
@@ -65,10 +65,7 @@ optional = false
 python-versions = "*"
 
 [package.dependencies]
-soupsieve = [
-    ">1.2",
-    "<2.0",
-]
+soupsieve = ">1.2,<2.0"
 
 [package.extras]
 html5lib = ["html5lib"]
@@ -302,8 +299,8 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 zipp = ">=0.5"
 
 [package.extras]
-docs = ["sphinx", "rst.linker"]
-testing = ["packaging", "importlib-resources"]
+docs = ["rst.linker", "sphinx"]
+testing = ["importlib-resources", "packaging"]
 
 [[package]]
 name = "ipykernel"
@@ -321,7 +318,7 @@ tornado = ">=4.2"
 traitlets = ">=4.1.0"
 
 [package.extras]
-test = ["pytest (!=5.3.4)", "pytest-cov", "flaky", "nose"]
+test = ["flaky", "nose", "pytest (!=5.3.4)", "pytest-cov"]
 
 [[package]]
 name = "ipython"
@@ -341,18 +338,19 @@ pexpect = {version = "*", markers = "sys_platform != \"win32\""}
 pickleshare = "*"
 prompt-toolkit = ">=2.0.0,<3.0.0 || >3.0.0,<3.0.1 || >3.0.1,<3.1.0"
 pygments = "*"
+setuptools = ">=18.5"
 traitlets = ">=4.2"
 
 [package.extras]
-all = ["nose (>=0.10.1)", "Sphinx (>=1.3)", "testpath", "nbformat", "ipywidgets", "qtconsole", "numpy (>=1.14)", "notebook", "ipyparallel", "ipykernel", "pygments", "requests", "nbconvert"]
+all = ["Sphinx (>=1.3)", "ipykernel", "ipyparallel", "ipywidgets", "nbconvert", "nbformat", "nose (>=0.10.1)", "notebook", "numpy (>=1.14)", "pygments", "qtconsole", "requests", "testpath"]
 doc = ["Sphinx (>=1.3)"]
 kernel = ["ipykernel"]
 nbconvert = ["nbconvert"]
 nbformat = ["nbformat"]
-notebook = ["notebook", "ipywidgets"]
+notebook = ["ipywidgets", "notebook"]
 parallel = ["ipyparallel"]
 qtconsole = ["qtconsole"]
-test = ["nose (>=0.10.1)", "requests", "testpath", "pygments", "nbformat", "ipykernel", "numpy (>=1.14)"]
+test = ["ipykernel", "nbformat", "nose (>=0.10.1)", "numpy (>=1.14)", "pygments", "requests", "testpath"]
 
 [[package]]
 name = "ipython-genutils"
@@ -378,7 +376,7 @@ traitlets = ">=4.3.1"
 widgetsnbextension = ">=3.5.0,<3.6.0"
 
 [package.extras]
-test = ["pytest (>=3.6.0)", "pytest-cov", "mock"]
+test = ["mock", "pytest (>=3.6.0)", "pytest-cov"]
 
 [[package]]
 name = "jedi"
@@ -437,11 +435,12 @@ python-versions = "*"
 attrs = ">=17.4.0"
 importlib-metadata = {version = "*", markers = "python_version < \"3.8\""}
 pyrsistent = ">=0.14.0"
+setuptools = "*"
 six = ">=1.11.0"
 
 [package.extras]
 format = ["idna", "jsonpointer (>1.13)", "rfc3987", "strict-rfc3339", "webcolors"]
-format_nongpl = ["idna", "jsonpointer (>1.13)", "webcolors", "rfc3986-validator (>0.1.0)", "rfc3339-validator"]
+format_nongpl = ["idna", "jsonpointer (>1.13)", "rfc3339-validator", "rfc3986-validator (>0.1.0)", "webcolors"]
 
 [[package]]
 name = "jupyter"
@@ -599,11 +598,11 @@ testpath = "*"
 traitlets = ">=4.2"
 
 [package.extras]
-all = ["pytest", "pytest-cov", "ipykernel", "jupyter-client (>=5.3.1)", "ipywidgets (>=7)", "pebble", "tornado (>=4.0)", "sphinx (>=1.5.1)", "sphinx-rtd-theme", "nbsphinx (>=0.2.12)", "sphinxcontrib-github-alt", "ipython", "mock"]
-docs = ["sphinx (>=1.5.1)", "sphinx-rtd-theme", "nbsphinx (>=0.2.12)", "sphinxcontrib-github-alt", "ipython", "jupyter-client (>=5.3.1)"]
+all = ["ipykernel", "ipython", "ipywidgets (>=7)", "jupyter-client (>=5.3.1)", "mock", "nbsphinx (>=0.2.12)", "pebble", "pytest", "pytest-cov", "sphinx (>=1.5.1)", "sphinx-rtd-theme", "sphinxcontrib-github-alt", "tornado (>=4.0)"]
+docs = ["ipython", "jupyter-client (>=5.3.1)", "nbsphinx (>=0.2.12)", "sphinx (>=1.5.1)", "sphinx-rtd-theme", "sphinxcontrib-github-alt"]
 execute = ["jupyter-client (>=5.3.1)"]
 serve = ["tornado (>=4.0)"]
-test = ["pytest", "pytest-cov", "ipykernel", "jupyter-client (>=5.3.1)", "ipywidgets (>=7)", "pebble", "mock"]
+test = ["ipykernel", "ipywidgets (>=7)", "jupyter-client (>=5.3.1)", "mock", "pebble", "pytest", "pytest-cov"]
 
 [[package]]
 name = "nbformat"
@@ -620,7 +619,7 @@ jupyter-core = "*"
 traitlets = ">=4.1"
 
 [package.extras]
-test = ["testpath", "pytest", "pytest-cov"]
+test = ["pytest", "pytest-cov", "testpath"]
 
 [[package]]
 name = "networkx"
@@ -634,7 +633,7 @@ python-versions = ">=3.5"
 decorator = ">=4.3.0"
 
 [package.extras]
-all = ["numpy", "scipy", "pandas", "matplotlib", "pygraphviz", "pydot", "pyyaml", "gdal", "lxml", "pytest"]
+all = ["gdal", "lxml", "matplotlib", "numpy", "pandas", "pydot", "pygraphviz", "pytest", "pyyaml", "scipy"]
 gdal = ["gdal"]
 lxml = ["lxml"]
 matplotlib = ["matplotlib"]
@@ -670,7 +669,7 @@ tornado = ">=5.0"
 traitlets = ">=4.2.1"
 
 [package.extras]
-test = ["nose", "coverage", "requests", "nose-warnings-filters", "nbval", "nose-exclude", "selenium", "pytest", "pytest-cov", "nose-exclude"]
+test = ["coverage", "nbval", "nose", "nose-exclude", "nose-exclude", "nose-warnings-filters", "pytest", "pytest-cov", "requests", "selenium"]
 
 [[package]]
 name = "numpy"
@@ -784,14 +783,11 @@ wcwidth = "*"
 
 [[package]]
 name = "protobuf"
-version = "3.12.0"
+version = "3.18.3"
 description = "Protocol Buffers"
 category = "main"
 optional = false
-python-versions = "*"
-
-[package.dependencies]
-six = ">=1.9"
+python-versions = ">=3.5"
 
 [[package]]
 name = "ptyprocess"
@@ -910,7 +906,7 @@ traitlets = "*"
 
 [package.extras]
 doc = ["Sphinx (>=1.3)"]
-test = ["pytest", "mock"]
+test = ["mock", "pytest"]
 
 [[package]]
 name = "qtpy"
@@ -944,12 +940,12 @@ pyyaml = "*"
 redis = ">=3.3.2,<3.5.0"
 
 [package.extras]
-all = ["blist", "scipy", "pyyaml", "flask", "atari-py", "uvicorn", "pygments", "pandas", "msgpack (>=0.6.2)", "tensorboardx", "dm-tree", "werkzeug", "gym", "opencv-python-headless", "requests", "tabulate", "lz4"]
+all = ["atari-py", "blist", "dm-tree", "flask", "gym[atari]", "lz4", "msgpack (>=0.6.2)", "opencv-python-headless", "pandas", "pygments", "pyyaml", "requests", "scipy", "tabulate", "tensorboardX", "uvicorn", "werkzeug"]
 dashboard = ["requests"]
-rllib = ["tabulate", "tensorboardx", "pandas", "atari-py", "dm-tree", "gym", "lz4", "opencv-python-headless", "pyyaml", "scipy"]
-serve = ["uvicorn", "pygments", "werkzeug", "flask", "pandas", "blist"]
+rllib = ["atari-py", "dm-tree", "gym[atari]", "lz4", "opencv-python-headless", "pandas", "pyyaml", "scipy", "tabulate", "tensorboardX"]
+serve = ["blist", "flask", "pandas", "pygments", "uvicorn", "werkzeug"]
 streaming = ["msgpack (>=0.6.2)"]
-tune = ["tabulate", "tensorboardx", "pandas"]
+tune = ["pandas", "tabulate", "tensorboardX"]
 
 [[package]]
 name = "redis"
@@ -977,7 +973,7 @@ idna = ">=2.5,<3"
 urllib3 = ">=1.21.1,<1.25.0 || >1.25.0,<1.25.1 || >1.25.1,<1.26"
 
 [package.extras]
-security = ["pyOpenSSL (>=0.14)", "cryptography (>=1.3.4)"]
+security = ["cryptography (>=1.3.4)", "pyOpenSSL (>=0.14)"]
 socks = ["PySocks (>=1.5.6,!=1.5.7)", "win-inet-pton"]
 
 [[package]]
@@ -1010,9 +1006,9 @@ scipy = ">=1.0.1"
 tifffile = ">=2019.7.26"
 
 [package.extras]
-docs = ["sphinx (>=1.8,<=2.4.4)", "numpydoc (>=0.9)", "sphinx-gallery (>=0.3.1)", "sphinx-copybutton", "pytest-runner", "scikit-learn", "matplotlib (>=3.0.1)", "dask[array] (>=0.15.0)", "cloudpickle (>=0.2.1)", "pandas (>=0.23.0)", "seaborn (>=0.7.1)", "pooch (>=0.5.2)"]
-optional = ["simpleitk", "astropy (>=1.2.0)", "qtpy", "pyamg", "dask[array] (>=0.15.0)", "cloudpickle (>=0.2.1)", "pooch (>=0.5.2)"]
-test = ["pytest (!=3.7.3)", "pytest-cov", "pytest-localserver", "flake8", "codecov"]
+docs = ["cloudpickle (>=0.2.1)", "dask[array] (>=0.15.0)", "matplotlib (>=3.0.1)", "numpydoc (>=0.9)", "pandas (>=0.23.0)", "pooch (>=0.5.2)", "pytest-runner", "scikit-learn", "seaborn (>=0.7.1)", "sphinx (>=1.8,<=2.4.4)", "sphinx-copybutton", "sphinx-gallery (>=0.3.1)"]
+optional = ["SimpleITK", "astropy (>=1.2.0)", "cloudpickle (>=0.2.1)", "dask[array] (>=0.15.0)", "pooch (>=0.5.2)", "pyamg", "qtpy"]
+test = ["codecov", "flake8", "pytest (!=3.7.3)", "pytest-cov", "pytest-localserver"]
 
 [[package]]
 name = "scikit-learn"
@@ -1051,6 +1047,18 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "setuptools"
+version = "59.6.0"
+description = "Easily download, build, install, upgrade, and uninstall Python packages"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.extras]
+docs = ["furo", "jaraco.packaging (>=8.2)", "jaraco.tidelift (>=1.4)", "pygments-github-lexers (==0.0.5)", "rst.linker (>=1.9)", "sphinx", "sphinx-inline-tabs", "sphinxcontrib-towncrier"]
+testing = ["flake8-2020", "jaraco.envs (>=2.2)", "jaraco.path (>=3.2.0)", "mock", "paver", "pip (>=19.1)", "pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=1.0.1)", "pytest-flake8", "pytest-mypy", "pytest-virtualenv (>=1.2.7)", "pytest-xdist", "sphinx", "virtualenv (>=13.0.0)", "wheel"]
+
+[[package]]
 name = "six"
 version = "1.14.0"
 description = "Python 2 and 3 compatibility utilities"
@@ -1072,10 +1080,10 @@ boto3 = "*"
 requests = "*"
 
 [package.extras]
-all = ["requests", "boto", "boto3", "google-cloud-storage"]
+all = ["boto", "boto3", "google-cloud-storage", "requests"]
 aws = ["boto", "boto3"]
 gcp = ["google-cloud-storage"]
-test = ["mock", "moto", "pathlib2", "responses", "boto3", "google-compute-engine (==2.8.12)", "paramiko", "parameterizedtestcase", "pytest", "pytest-rerunfailures"]
+test = ["boto3", "google-compute-engine (==2.8.12)", "mock", "moto[server]", "parameterizedtestcase", "paramiko", "pathlib2", "pytest", "pytest-rerunfailures", "responses"]
 
 [[package]]
 name = "soupsieve"
@@ -1154,7 +1162,7 @@ ipython-genutils = "*"
 six = "*"
 
 [package.extras]
-test = ["pytest", "mock"]
+test = ["mock", "pytest"]
 
 [[package]]
 name = "typing-extensions"
@@ -1174,7 +1182,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4"
 
 [package.extras]
 brotli = ["brotlipy (>=0.6.0)"]
-secure = ["certifi", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "pyOpenSSL (>=0.14)", "ipaddress"]
+secure = ["certifi", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "ipaddress", "pyOpenSSL (>=0.14)"]
 socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 
 [[package]]
@@ -1225,8 +1233,8 @@ optional = false
 python-versions = ">=3.6"
 
 [package.extras]
-docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
-testing = ["jaraco.itertools", "func-timeout"]
+docs = ["jaraco.packaging (>=3.2)", "rst.linker (>=1.9)", "sphinx"]
+testing = ["func-timeout", "jaraco.itertools"]
 
 [metadata]
 lock-version = "1.1"
@@ -1729,7 +1737,6 @@ pillow = [
     {file = "Pillow-7.1.2-cp38-cp38-win32.whl", hash = "sha256:4b02b9c27fad2054932e89f39703646d0c543f21d3cc5b8e05434215121c28cd"},
     {file = "Pillow-7.1.2-cp38-cp38-win_amd64.whl", hash = "sha256:3d25dd8d688f7318dca6d8cd4f962a360ee40346c15893ae3b95c061cdbc4079"},
     {file = "Pillow-7.1.2-pp373-pypy36_pp73-win32.whl", hash = "sha256:0f01e63c34f0e1e2580cc0b24e86a5ccbbfa8830909a52ee17624c4193224cd9"},
-    {file = "Pillow-7.1.2-py3.8-macosx-10.9-x86_64.egg", hash = "sha256:70e3e0d99a0dcda66283a185f80697a9b08806963c6149c8e6c5f452b2aa59c0"},
     {file = "Pillow-7.1.2.tar.gz", hash = "sha256:a0b49960110bc6ff5fead46013bcb8825d101026d466f3a4de3476defe0fb0dd"},
 ]
 prometheus-client = [
@@ -1740,22 +1747,27 @@ prompt-toolkit = [
     {file = "prompt_toolkit-3.0.3.tar.gz", hash = "sha256:a402e9bf468b63314e37460b68ba68243d55b2f8c4d0192f85a019af3945050e"},
 ]
 protobuf = [
-    {file = "protobuf-3.12.0-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:bb1aced9dcebc46f0b320f24222cc8ffdfd2e47d2bafd4d2e5913cc6f7e3fc98"},
-    {file = "protobuf-3.12.0-cp27-cp27mu-manylinux1_x86_64.whl", hash = "sha256:ccce142ebcfbc35643a5012cf398497eb18e8d021333cced4d5401f034a8cef5"},
-    {file = "protobuf-3.12.0-cp35-cp35m-macosx_10_9_intel.whl", hash = "sha256:a7532d971e4ab2019a9f6aa224b209756b6b9e702940ca85a4b1ed1d03f45396"},
-    {file = "protobuf-3.12.0-cp35-cp35m-manylinux1_x86_64.whl", hash = "sha256:eab18765eb5c7bad1b2de7ae3774192b46e1873011682e36bcd70ccf75f2748a"},
-    {file = "protobuf-3.12.0-cp35-cp35m-win32.whl", hash = "sha256:61364bcd2d85277ab6155bb7c5267e6a64786a919f1a991e29eb536aa5330a3d"},
-    {file = "protobuf-3.12.0-cp35-cp35m-win_amd64.whl", hash = "sha256:0d69d76b00d0eb5124cb33a34a793383a5bbbf9ac3e633207c09988717c5da85"},
-    {file = "protobuf-3.12.0-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:95f035bbafec7dbaa0f1c72eda8108b763c1671fcb6e577e93da2d52eb47fbcf"},
-    {file = "protobuf-3.12.0-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:b4e8ecb1eb3d011f0ccc13f8bb0a2d481aa05b733e6e22e9d46a3f61dbbef0de"},
-    {file = "protobuf-3.12.0-cp36-cp36m-win32.whl", hash = "sha256:9d6a517ce33cbdc64b52a17c56ce17b0b20679c945ed7420e7c6bc6686ff0494"},
-    {file = "protobuf-3.12.0-cp36-cp36m-win_amd64.whl", hash = "sha256:1c55277377dd35e508e9d86c67a545f6d8d242d792af487678eeb75c07974ee2"},
-    {file = "protobuf-3.12.0-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:9593a6cdfc491f2caf62adb1c03170e9e8748d0a69faa2b3970e39a92fbd05a2"},
-    {file = "protobuf-3.12.0-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:47a541ac44f2dcc8d49b615bcf3ed7ba4f33af9791118cecc3d17815fab652d9"},
-    {file = "protobuf-3.12.0-cp37-cp37m-win32.whl", hash = "sha256:d538eecc0b80accfb73c8167f39aaa167a5a50f31b1295244578c8eff8e9d602"},
-    {file = "protobuf-3.12.0-cp37-cp37m-win_amd64.whl", hash = "sha256:00c2c276aca3af220d422e6a8625b1f5399c821c9b6f1c83e8a535aa8f48cc6c"},
-    {file = "protobuf-3.12.0-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:35bc1b96241b8ea66dbf386547ef2e042d73dcc0bf4b63566e3ef68722bb24d1"},
-    {file = "protobuf-3.12.0-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:7aaa820d629f8a196763dd5ba21fd272fa038f775a845a52e21fa67862abcd35"},
+    {file = "protobuf-3.18.3-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:370a6b885e94adda021d4cbe43accdfbf6a02af651a0be337a28906a3fa77f3d"},
+    {file = "protobuf-3.18.3-cp36-cp36m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6741d7d1cfcbdd6cf610f38b7976cf8c0b41022203555298925e4061b6616608"},
+    {file = "protobuf-3.18.3-cp36-cp36m-win32.whl", hash = "sha256:3149c373e9b7ce296bb24d42a3eb677d620185b5dff2c390b2cf57baf79afdc1"},
+    {file = "protobuf-3.18.3-cp36-cp36m-win_amd64.whl", hash = "sha256:850da2072d98c6e576b7eb29734cdde6fd9f5d157e43d7818d79f4b373ef5d51"},
+    {file = "protobuf-3.18.3-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:0c44e01f74109decea196b5b313b08edb5316df77313995594a6981e95674259"},
+    {file = "protobuf-3.18.3-cp37-cp37m-manylinux2014_aarch64.whl", hash = "sha256:85d1fb5ff1d638a0045bbe4f01a8f287023aa4f2b29011445b1be0edc74a2103"},
+    {file = "protobuf-3.18.3-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:cde2a73b03049b904dbc5d0f500b97e11abb4109dbe2940e6a1595e2eef4e8a9"},
+    {file = "protobuf-3.18.3-cp37-cp37m-win32.whl", hash = "sha256:b03966ca4d1aa7850f5bf0d841c22a8eeb6ce091f77e585ffeb8b95a6b0a96c4"},
+    {file = "protobuf-3.18.3-cp37-cp37m-win_amd64.whl", hash = "sha256:d52a687e2c74c40f45abd6906f833d4e40f0f8cfa4226a80e4695fedafe6c57e"},
+    {file = "protobuf-3.18.3-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:700787cb56b4cb7b8ed5f7d197b9d8f30080f257f3c7431eec1fdd8060660929"},
+    {file = "protobuf-3.18.3-cp38-cp38-manylinux2014_aarch64.whl", hash = "sha256:e9bffd52d6ee039a1cafb72475b2900c6fd0f0dca667fb7a09af0a3e119e78cb"},
+    {file = "protobuf-3.18.3-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:8117b52c2531e4033f7d02b9be5a78564da41a8b02c255e1b731ad4bd75e7dc0"},
+    {file = "protobuf-3.18.3-cp38-cp38-win32.whl", hash = "sha256:15cdecb0d192ab5f17cdc21a9c0ae7b5c6c4451e42c8a888a4f3344c190e369c"},
+    {file = "protobuf-3.18.3-cp38-cp38-win_amd64.whl", hash = "sha256:e68ad00695547d9397dd14abd3efba23cb31cef67228f4512d41396971889812"},
+    {file = "protobuf-3.18.3-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:474247630834f93214fafce49d2ee6ff4c036c8c5382b88432b7eae6f08f131b"},
+    {file = "protobuf-3.18.3-cp39-cp39-manylinux2014_aarch64.whl", hash = "sha256:a7f91a4e5bf3cc58b2830c9cb01b04ac5e211c288048e9296cd407ec0455fb89"},
+    {file = "protobuf-3.18.3-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6380aae2683d0d1b41199e591c8ba06f867e8a778d44309af87073c1b34a9f3a"},
+    {file = "protobuf-3.18.3-cp39-cp39-win32.whl", hash = "sha256:98d414513ec44bb3ba77ebdeffcbbe6ebbf3630c767d37a285890c2414fdd4e2"},
+    {file = "protobuf-3.18.3-cp39-cp39-win_amd64.whl", hash = "sha256:93bca9aaeee8008e15696c2a6b5e56b992da03f9d237ff54310e397d635f8305"},
+    {file = "protobuf-3.18.3-py2.py3-none-any.whl", hash = "sha256:abbcb8ecd19cfb729b9b71f9a453e37c0c1c017be4bff47804ff25150685386d"},
+    {file = "protobuf-3.18.3.tar.gz", hash = "sha256:196a153e487c0e20d62259872bbf2e1c4fa18e2ce97e20984fcbf9d8b151058d"},
 ]
 ptyprocess = [
     {file = "ptyprocess-0.6.0-py2.py3-none-any.whl", hash = "sha256:d7cc528d76e76342423ca640335bd3633420dc1366f258cb31d05e865ef5ca1f"},
@@ -1908,7 +1920,6 @@ redis = [
     {file = "redis-3.4.1.tar.gz", hash = "sha256:0dcfb335921b88a850d461dc255ff4708294943322bd55de6cfd68972490ca1f"},
 ]
 requests = [
-    {file = "requests-2.23.0-py2.7.egg", hash = "sha256:5d2d0ffbb515f39417009a46c14256291061ac01ba8f875b90cad137de83beb4"},
     {file = "requests-2.23.0-py2.py3-none-any.whl", hash = "sha256:43999036bfa82904b6af1d99e4882b560e5e2c68e5c4b0aa03b655f3d7d73fee"},
     {file = "requests-2.23.0.tar.gz", hash = "sha256:b3f43d496c6daba4493e7c431722aeb7dbc6288f52a6e04e7b6023b0247817e6"},
 ]
@@ -1975,6 +1986,10 @@ scipy = [
 send2trash = [
     {file = "Send2Trash-1.5.0-py3-none-any.whl", hash = "sha256:f1691922577b6fa12821234aeb57599d887c4900b9ca537948d2dac34aea888b"},
     {file = "Send2Trash-1.5.0.tar.gz", hash = "sha256:60001cc07d707fe247c94f74ca6ac0d3255aabcb930529690897ca2a39db28b2"},
+]
+setuptools = [
+    {file = "setuptools-59.6.0-py3-none-any.whl", hash = "sha256:4ce92f1e1f8f01233ee9952c04f6b81d1e02939d6e1b488428154974a4d0783e"},
+    {file = "setuptools-59.6.0.tar.gz", hash = "sha256:22c7348c6d2976a52632c67f7ab0cdf40147db7789f9aed18734643fe9cf3373"},
 ]
 six = [
     {file = "six-1.14.0-py2.py3-none-any.whl", hash = "sha256:8f3cd2e254d8f793e7f3d6d9df77b92252b52637291d0f0da013c76ea2724b6c"},

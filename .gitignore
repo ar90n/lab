@@ -9,7 +9,7 @@ __pycache__
 /_*.local
 
 _environment.local
+_freeze
 
 .devcontainer
 /_site/
-/docs

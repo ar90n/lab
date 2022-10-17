@@ -24,6 +24,10 @@ website:
     palette: dark
   google-analytics: "UA-90473091-1"
 
+execute:
+  freeze: true
+  cache: true
+
 format:
   html:
     theme: flatly

@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.218">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2021-02-01">
+<meta name="description" content="Getting started with glutin">
+
+<title>lab_note - glutinに入門してみる</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../logo.png" rel="icon" type="image/png">
+<script src="../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+<script type="text/plain" cookie-consent="tracking">
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-90473091-1', 'auto');
+
+ga('send', {
+  hitType: 'pageview',
+  'anonymizeIp': true,
+});
+</script>
+
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"headline",
+  "consent_type":"express",
+  "palette":"dark",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  });
+});
+</script> 
+  
+
+
+<link rel="stylesheet" href="../styles.css">
+<meta name="twitter:title" content="lab_note - glutinに入門してみる">
+<meta name="twitter:description" content="Getting started with glutin">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">lab_note</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../about.html">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../projects.html">
+ <span class="menu-text">Projects</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/ar90n"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/ar90n"><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#はじめに" id="toc-はじめに" class="nav-link active" data-scroll-target="#はじめに">はじめに</a></li>
+  <li><a href="#glutinとは" id="toc-glutinとは" class="nav-link" data-scroll-target="#glutinとは">glutinとは</a></li>
+  <li><a href="#サンプルプログラムの解析" id="toc-サンプルプログラムの解析" class="nav-link" data-scroll-target="#サンプルプログラムの解析">サンプルプログラムの解析</a>
+  <ul class="collapse">
+  <li><a href="#サンプルプログラムの実行" id="toc-サンプルプログラムの実行" class="nav-link" data-scroll-target="#サンプルプログラムの実行">サンプルプログラムの実行</a></li>
+  <li><a href="#gl_bindings.rsの生成" id="toc-gl_bindings.rsの生成" class="nav-link" data-scroll-target="#gl_bindings.rsの生成"><code>gl_bindings.rs</code>の生成</a></li>
+  <li><a href="#ウィンドウの表示とポリゴンの描画" id="toc-ウィンドウの表示とポリゴンの描画" class="nav-link" data-scroll-target="#ウィンドウの表示とポリゴンの描画">ウィンドウの表示とポリゴンの描画</a></li>
+  </ul></li>
+  <li><a href="#スタンフォードバニーを表示する" id="toc-スタンフォードバニーを表示する" class="nav-link" data-scroll-target="#スタンフォードバニーを表示する">スタンフォードバニーを表示する</a>
+  <ul class="collapse">
+  <li><a href="#gl_bindings.rsのソースツリーへの取り込み" id="toc-gl_bindings.rsのソースツリーへの取り込み" class="nav-link" data-scroll-target="#gl_bindings.rsのソースツリーへの取り込み">gl_bindings.rsのソースツリーへの取り込み</a></li>
+  <li><a href="#objファイルについて" id="toc-objファイルについて" class="nav-link" data-scroll-target="#objファイルについて">Objファイルについて</a></li>
+  </ul></li>
+  <li><a href="#参考" id="toc-参考" class="nav-link" data-scroll-target="#参考">参考</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">glutinに入門してみる</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Rust</div>
+    <div class="quarto-category">glutin</div>
+    <div class="quarto-category">OpenGL</div>
+    <div class="quarto-category">コンピュータグラフィックス</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Getting started with glutin
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 1, 2021</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="はじめに" class="level2">
+<h2 class="anchored" data-anchor-id="はじめに">はじめに</h2>
+<p><a href="https://github.com/rust-windowing/glutin">glutin</a> に入門した記録です． Objファイルをロードして，スタンフォードバニーを表示するサンプルプログラムを作成します．</p>
+</section>
+<section id="glutinとは" class="level2">
+<h2 class="anchored" data-anchor-id="glutinとは">glutinとは</h2>
+<p>Rustで記述されたOpenGLのラッパーライブラリです． OpenGLのラッパーライブラリには抽象度が高いものから低いものまで様々あります． 本ライブラリは，それらの中でも抽象度が低い，低レベルな機能を提供することを目的としたライブラリです． したがって，OpenGL相当の非常にプリミティブな機能しか提供されていません．</p>
+<p>glutinの実装の興味深い点に，ユーザが指定したAPIのバインディングをビルド時に動的に生成する点が挙げられます． この機能の利用方法については， サンプルプログラムの動作を通じて後述します．</p>
+</section>
+<section id="サンプルプログラムの解析" class="level2">
+<h2 class="anchored" data-anchor-id="サンプルプログラムの解析">サンプルプログラムの解析</h2>
+<section id="サンプルプログラムの実行" class="level3">
+<h3 class="anchored" data-anchor-id="サンプルプログラムの実行">サンプルプログラムの実行</h3>
+<p><a href="https://github.com/rust-windowing/glutin#try-it">リポジトリページ</a>にある手順に従ってサンプルプログラムを実行します．</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git clone https://github.com/rust-windowing/glutin</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cd glutin</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cargo run <span class="at">--example</span> window</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>すると，以下のようなウィンドウが表示されます．</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../assets/img/2021-02-01-getting-started-with-glutin/media/sample.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">sample</figcaption><p></p>
+</figure>
+</div>
+</section>
+<section id="gl_bindings.rsの生成" class="level3">
+<h3 class="anchored" data-anchor-id="gl_bindings.rsの生成"><code>gl_bindings.rs</code>の生成</h3>
+<p>それでは，このサンプルプログラムの詳細をみていきます．</p>
+<p>まず，<code>Cargo.toml</code>を見てみます．すると，以下のように<code>build.rs</code>がbuild scriptが設定されていることが確認できます．</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[</span><span class="dt">package</span><span class="kw">]</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="dt">name</span> <span class="op">=</span> <span class="st">"glutin_examples"</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="er">...</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="dt">build</span> <span class="op">=</span> <span class="st">"build.rs"</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="er">...</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="kw">[</span><span class="dt">build-dependencies</span><span class="kw">]</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="dt">gl_generator</span> <span class="op">=</span> <span class="st">"0.14"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><code>build.rs</code>を確認すると，１２行目から１４行目において，GLES 2.0のバインディングを生成していることが確認できます． この処理は，<a href="https://github.com/brendanzab/gl-rs/tree/master/gl_generator">gl_generator</a>を用いて実現されています．</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="pp">gl_generator::</span><span class="op">{</span>Api<span class="op">,</span> Fallbacks<span class="op">,</span> Profile<span class="op">,</span> Registry<span class="op">};</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="pp">std::</span>env<span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="pp">std::fs::</span>File<span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="pp">std::path::</span><span class="dt">PathBuf</span><span class="op">;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> main() <span class="op">{</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> dest <span class="op">=</span> <span class="dt">PathBuf</span><span class="pp">::</span>from(<span class="op">&amp;</span><span class="pp">env::</span>var(<span class="st">"OUT_DIR"</span>)<span class="op">.</span>unwrap())<span class="op">;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="pp">println!</span>(<span class="st">"cargo:rerun-if-changed=build.rs"</span>)<span class="op">;</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> <span class="kw">mut</span> file <span class="op">=</span> <span class="pp">File::</span>create(<span class="op">&amp;</span>dest<span class="op">.</span>join(<span class="st">"gl_bindings.rs"</span>))<span class="op">.</span>unwrap()<span class="op">;</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="pp">Registry::</span>new(<span class="pp">Api::</span>Gles2<span class="op">,</span> (<span class="dv">3</span><span class="op">,</span> <span class="dv">3</span>)<span class="op">,</span> <span class="pp">Profile::</span>Core<span class="op">,</span> <span class="pp">Fallbacks::</span>All<span class="op">,</span> [])</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>write_bindings(<span class="pp">gl_generator::</span>StructGenerator<span class="op">,</span> <span class="op">&amp;</span><span class="kw">mut</span> file)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>unwrap()<span class="op">;</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>次に，実際にどのようあファイルが生成されているかを確認します． 環境変数<code>OUT_DIR</code>は<code>cargo</code>によって設定されてしまうため，任意の値を設定することができません． そこで，以下のように環境変数名を変更します．</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git diff</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">diff</span> <span class="at">--git</span> a/glutin_examples/build.rs b/glutin_examples/build.rs</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">index</span> 77f6fa5..4ff7c4e 100644</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">---</span> a/glutin_examples/build.rs</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="ex">+++</span> b/glutin_examples/build.rs</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="ex">@@</span> <span class="at">-4,7</span> +4,7 @@ use std::fs::File<span class="kw">;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a> <span class="ex">use</span> std::path::PathBuf<span class="kw">;</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a> <span class="ex">fn</span> main<span class="er">(</span><span class="kw">)</span> <span class="kw">{</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span>    let dest = PathBuf::from<span class="er">(</span><span class="kw">&amp;</span><span class="ex">env::var</span><span class="er">(</span><span class="st">"OUT_DIR"</span><span class="kw">)</span><span class="fu">.unwrap()</span><span class="kw">);</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="ex">+</span>    let dest = PathBuf::from<span class="er">(</span><span class="kw">&amp;</span><span class="ex">env::var</span><span class="er">(</span><span class="st">"TMP_OUT_DIR"</span><span class="kw">)</span><span class="fu">.unwrap()</span><span class="kw">);</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>     <span class="ex">println!</span><span class="er">(</span><span class="st">"cargo:rerun-if-changed=build.rs"</span><span class="kw">);</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>そして，ビルドすると<code>gl_bindings.rs</code>というファイルが作成されていることが確認できます． ファイルの内容を確認すると，<code>GLES 2.0</code>に利用されるデータ構造のバインディングか確認できます．</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> TMP_OUT_DIR=<span class="kw">`</span><span class="bu">pwd</span><span class="kw">`</span> cargo build <span class="at">--example</span> window</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ls gl_bindings.rs</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="ex">gl_bindings.rs</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> head <span class="at">-n</span> 32 gl_bindings.rs</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        <span class="ex">mod</span> __gl_imports {</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>            <span class="ex">pub</span> use std::mem<span class="kw">;</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>            <span class="ex">pub</span> use std::marker::Send<span class="kw">;</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>            <span class="ex">pub</span> use std::os::raw<span class="kw">;</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        <span class="er">}</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        <span class="ex">pub</span> mod types {</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>            <span class="co">#![allow(non_camel_case_types, non_snake_case, dead_code, missing_copy_implementations)]</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="ex">//</span> Common types from OpenGL 1.1</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="ex">pub</span> type GLenum = super::__gl_imports::raw::c_uint<span class="kw">;</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="ex">pub</span> type GLboolean = super::__gl_imports::raw::c_uchar<span class="kw">;</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="ex">pub</span> type GLbitfield = super::__gl_imports::raw::c_uint<span class="kw">;</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="ex">pub</span> type GLvoid = super::__gl_imports::raw::c_void<span class="kw">;</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="ex">pub</span> type GLbyte = super::__gl_imports::raw::c_char<span class="kw">;</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="ex">pub</span> type GLshort = super::__gl_imports::raw::c_short<span class="kw">;</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="ex">pub</span> type GLint = super::__gl_imports::raw::c_int<span class="kw">;</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="ex">pub</span> type GLclampx = super::__gl_imports::raw::c_int<span class="kw">;</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="ex">pub</span> type GLubyte = super::__gl_imports::raw::c_uchar<span class="kw">;</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="ex">pub</span> type GLushort = super::__gl_imports::raw::c_ushort<span class="kw">;</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="ex">pub</span> type GLuint = super::__gl_imports::raw::c_uint<span class="kw">;</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="ex">pub</span> type GLsizei = super::__gl_imports::raw::c_int<span class="kw">;</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="ex">pub</span> type GLfloat = super::__gl_imports::raw::c_float<span class="kw">;</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a><span class="ex">pub</span> type GLclampf = super::__gl_imports::raw::c_float<span class="kw">;</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a><span class="ex">pub</span> type GLdouble = super::__gl_imports::raw::c_double<span class="kw">;</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="ex">pub</span> type GLclampd = super::__gl_imports::raw::c_double<span class="kw">;</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="ex">pub</span> type GLeglImageOES = <span class="pp">*</span>const super::__gl_imports::raw::c_void<span class="kw">;</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a><span class="ex">pub</span> type GLchar = super::__gl_imports::raw::c_char<span class="kw">;</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="ex">pub</span> type GLcharARB = super::__gl_imports::raw::c_char<span class="kw">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>次に，ターゲットのAPIを<code>Api::Gl</code>に変更して<code>'gl_bindings.rs</code>を生成してみます. すると，先ほど生成した<code>gl_bindings.rs</code>とは内容が異なることが確認できます． このように，ターゲットや機能に合わせて，バックエンドを静的に切り替えて使用することが可能です．</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> mv gl_bindings.rs gl_bindings_gles2.rs</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git diff</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">diff</span> <span class="at">--git</span> a/glutin_examples/build.rs b/glutin_examples/build.rs</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="ex">index</span> 77f6fa5..7e149bd 100644</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="ex">---</span> a/glutin_examples/build.rs</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="ex">+++</span> b/glutin_examples/build.rs</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="ex">@@</span> <span class="at">-4,12</span> +4,12 @@ use std::fs::File<span class="kw">;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a> <span class="ex">use</span> std::path::PathBuf<span class="kw">;</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a> <span class="ex">fn</span> main<span class="er">(</span><span class="kw">)</span> <span class="kw">{</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span>    let dest = PathBuf::from<span class="er">(</span><span class="kw">&amp;</span><span class="ex">env::var</span><span class="er">(</span><span class="st">"OUT_DIR"</span><span class="kw">)</span><span class="fu">.unwrap()</span><span class="kw">);</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="ex">+</span>    let dest = PathBuf::from<span class="er">(</span><span class="kw">&amp;</span><span class="ex">env::var</span><span class="er">(</span><span class="st">"TMP_OUT_DIR"</span><span class="kw">)</span><span class="fu">.unwrap()</span><span class="kw">);</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>     <span class="ex">println!</span><span class="er">(</span><span class="st">"cargo:rerun-if-changed=build.rs"</span><span class="kw">);</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>     <span class="bu">let</span> <span class="va">mut</span> <span class="va">file</span> <span class="op">=</span> <span class="va">File</span><span class="op">::</span><span class="va">create</span><span class="er">(</span><span class="kw">&amp;</span><span class="ex">dest.join</span><span class="er">(</span><span class="st">"gl_bindings.rs"</span><span class="kw">))</span><span class="fu">.unwrap()</span><span class="kw">;</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span>    Registry::new<span class="er">(</span><span class="ex">Api::Gles2,</span> <span class="er">(</span><span class="ex">3,</span> 3<span class="kw">)</span><span class="ex">,</span> Profile::Core, Fallbacks::All, []<span class="kw">)</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="ex">+</span>    Registry::new<span class="er">(</span><span class="ex">Api::Gl,</span> <span class="er">(</span><span class="ex">3,</span> 3<span class="kw">)</span><span class="ex">,</span> Profile::Core, Fallbacks::All, []<span class="kw">)</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>         <span class="ex">.write_bindings</span><span class="er">(</span><span class="ex">gl_generator::StructGenerator,</span> <span class="kw">&amp;</span><span class="ex">mut</span> file<span class="kw">)</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>         <span class="fu">.unwrap()</span><span class="kw">;</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a> <span class="kw">}</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> TMP_OUT_DIR=<span class="kw">`</span><span class="bu">pwd</span><span class="kw">`</span> cargo build <span class="at">--example</span> window</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> diff gl_bindings.rs gl_bindings_gles2.rs <span class="kw">|</span> <span class="fu">head</span> <span class="at">-n</span> 32</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="ex">121a122</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> #[allow<span class="kw">(</span><span class="ex">dead_code,</span> non_upper_case_globals<span class="kw">)</span><span class="ex">]</span> pub const ACTIVE_ATOMIC_COUNTER_BUFFERS: types::GLenum = 0x92D9<span class="kw">;</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="ex">123a125,126</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> #[allow<span class="kw">(</span><span class="ex">dead_code,</span> non_upper_case_globals<span class="kw">)</span><span class="ex">]</span> pub const ACTIVE_PROGRAM: types::GLenum = 0x8259<span class="kw">;</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> #[allow<span class="kw">(</span><span class="ex">dead_code,</span> non_upper_case_globals<span class="kw">)</span><span class="ex">]</span> pub const ACTIVE_RESOURCES: types::GLenum = 0x92F5<span class="kw">;</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a><span class="ex">128a132</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> #[allow<span class="kw">(</span><span class="ex">dead_code,</span> non_upper_case_globals<span class="kw">)</span><span class="ex">]</span> pub const ACTIVE_VARIABLES: types::GLenum = 0x9305<span class="kw">;</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="ex">129a134,136</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> #[allow<span class="kw">(</span><span class="ex">dead_code,</span> non_upper_case_globals<span class="kw">)</span><span class="ex">]</span> pub const ALIASED_POINT_SIZE_RANGE: types::GLenum = 0x846D<span class="kw">;</span></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> #[allow<span class="kw">(</span><span class="ex">dead_code,</span> non_upper_case_globals<span class="kw">)</span><span class="ex">]</span> pub const ALL_BARRIER_BITS: types::GLenum = 0xFFFFFFFF<span class="kw">;</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> #[allow<span class="kw">(</span><span class="ex">dead_code,</span> non_upper_case_globals<span class="kw">)</span><span class="ex">]</span> pub const ALL_SHADER_BITS: types::GLenum = 0xFFFFFFFF<span class="kw">;</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a><span class="ex">130a138</span></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> #[allow<span class="kw">(</span><span class="ex">dead_code,</span> non_upper_case_globals<span class="kw">)</span><span class="ex">]</span> pub const ALPHA_BITS: types::GLenum = 0x0D55<span class="kw">;</span></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a><span class="ex">133,135d140</span></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span> #[allow<span class="kw">(</span><span class="ex">dead_code,</span> non_upper_case_globals<span class="kw">)</span><span class="ex">]</span> pub const AND: types::GLenum = 0x1501<span class="kw">;</span></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span> #[allow<span class="kw">(</span><span class="ex">dead_code,</span> non_upper_case_globals<span class="kw">)</span><span class="ex">]</span> pub const AND_INVERTED: types::GLenum = 0x1504<span class="kw">;</span></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span> #[allow<span class="kw">(</span><span class="ex">dead_code,</span> non_upper_case_globals<span class="kw">)</span><span class="ex">]</span> pub const AND_REVERSE: types::GLenum = 0x1502<span class="kw">;</span></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a><span class="ex">136a142</span></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> #[allow<span class="kw">(</span><span class="ex">dead_code,</span> non_upper_case_globals<span class="kw">)</span><span class="ex">]</span> pub const ANY_SAMPLES_PASSED_CONSERVATIVE: types::GLenum = 0x8D6A<span class="kw">;</span></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a><span class="ex">138a145,152</span></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> #[allow<span class="kw">(</span><span class="ex">dead_code,</span> non_upper_case_globals<span class="kw">)</span><span class="ex">]</span> pub const ARRAY_SIZE: types::GLenum = 0x92FB<span class="kw">;</span></span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> #[allow<span class="kw">(</span><span class="ex">dead_code,</span> non_upper_case_globals<span class="kw">)</span><span class="ex">]</span> pub const ARRAY_STRIDE: types::GLenum = 0x92FE<span class="kw">;</span></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> #[allow<span class="kw">(</span><span class="ex">dead_code,</span> non_upper_case_globals<span class="kw">)</span><span class="ex">]</span> pub const ATOMIC_COUNTER_BARRIER_BIT: types::GLenum = 0x00001000<span class="kw">;</span></span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> #[allow<span class="kw">(</span><span class="ex">dead_code,</span> non_upper_case_globals<span class="kw">)</span><span class="ex">]</span> pub const ATOMIC_COUNTER_BUFFER: types::GLenum = 0x92C0<span class="kw">;</span></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> #[allow<span class="kw">(</span><span class="ex">dead_code,</span> non_upper_case_globals<span class="kw">)</span><span class="ex">]</span> pub const ATOMIC_COUNTER_BUFFER_BINDING: types::GLenum = 0x92C1<span class="kw">;</span></span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> #[allow<span class="kw">(</span><span class="ex">dead_code,</span> non_upper_case_globals<span class="kw">)</span><span class="ex">]</span> pub const ATOMIC_COUNTER_BUFFER_INDEX: types::GLenum = 0x9301<span class="kw">;</span></span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> #[allow<span class="kw">(</span><span class="ex">dead_code,</span> non_upper_case_globals<span class="kw">)</span><span class="ex">]</span> pub const ATOMIC_COUNTER_BUFFER_SIZE: types::GLenum = 0x92C3<span class="kw">;</span></span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> #[allow<span class="kw">(</span><span class="ex">dead_code,</span> non_upper_case_globals<span class="kw">)</span><span class="ex">]</span> pub const ATOMIC_COUNTER_BUFFER_START: types::GLenum = 0x92C2<span class="kw">;</span></span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a><span class="ex">141,146d154</span></span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span> #[allow<span class="kw">(</span><span class="ex">dead_code,</span> non_upper_case_globals<span class="kw">)</span><span class="ex">]</span> pub const BACK_LEFT: types::GLenum = 0x0402<span class="kw">;</span></span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span> #[allow<span class="kw">(</span><span class="ex">dead_code,</span> non_upper_case_globals<span class="kw">)</span><span class="ex">]</span> pub const BACK_RIGHT: types::GLenum = 0x0403<span class="kw">;</span></span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span> #[allow<span class="kw">(</span><span class="ex">dead_code,</span> non_upper_case_globals<span class="kw">)</span><span class="ex">]</span> pub const BGR: types::GLenum = 0x80E0<span class="kw">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="ウィンドウの表示とポリゴンの描画" class="level3">
+<h3 class="anchored" data-anchor-id="ウィンドウの表示とポリゴンの描画">ウィンドウの表示とポリゴンの描画</h3>
+<p>先ほど実行したサンプルプログラムに対応するコードは<a href="https://github.com/rust-windowing/glutin/blob/master/glutin_examples/examples/window.rs">こちら</a>になります． それでは，こちらの内容を先頭から紹介していきます．</p>
+<p>まずは，<code>support</code>モジュールと利用する<code>glutin</code>のモジュールのインポートです． <code>support</code>モジュールは，ポリゴンの生成と描画，頂点シェーダ，フラグメントシェーダなど，サンプルプログラムに表示された三角形を描画するための処理が含まれています．</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">mod</span> support<span class="op">;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="pp">glutin::event::</span><span class="op">{</span>Event<span class="op">,</span> WindowEvent<span class="op">};</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="pp">glutin::event_loop::</span><span class="op">{</span>ControlFlow<span class="op">,</span> EventLoop<span class="op">};</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="pp">glutin::window::</span>WindowBuilder<span class="op">;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="pp">glutin::</span>ContextBuilder<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>次にmain関数です．main関数では，まず初めにイベントループ，ウィンドウ，このウインドウと紐づいたGLコンテキストを作成します． コード中の<code>windowed_context</code>とは，ウインドウとこのウィンドウに紐づいたGLコンテキストとを表現する構造体になります．</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> main() <span class="op">{</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> el <span class="op">=</span> <span class="pp">EventLoop::</span>new()<span class="op">;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> wb <span class="op">=</span> <span class="pp">WindowBuilder::</span>new()<span class="op">.</span>with_title(<span class="st">"A fantastic window!"</span>)<span class="op">;</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> windowed_context <span class="op">=</span> <span class="pp">ContextBuilder::</span>new()<span class="op">.</span>build_windowed(wb<span class="op">,</span> <span class="op">&amp;</span>el)<span class="op">.</span>unwrap()<span class="op">;</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> windowed_context <span class="op">=</span> <span class="kw">unsafe</span> <span class="op">{</span> windowed_context<span class="op">.</span>make_current()<span class="op">.</span>unwrap() <span class="op">};</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="pp">println!</span>(<span class="st">"Pixel format of the window's GL context: {:?}"</span><span class="op">,</span> windowed_context<span class="op">.</span>get_pixel_format())<span class="op">;</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">...</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>次にコンテキストの取得を行います．この処理は，<code>support::load</code>によって実現します． <code>support::load</code>では，以下のような処理が実行されます．</p>
+<ul>
+<li>頂点シェーダとフラグメントシェーダのコンパイル</li>
+<li>シェーダプログラムの作成</li>
+<li>三角形のポリゴンを表す頂点バッファオブジェクトと頂点配列オブジェクトの作成</li>
+<li>上記各種リソースのGLコンテキストへの割り当て</li>
+</ul>
+<p>このコンテキストは上述のGLコンテキストを内部に持ち，各種描画処理を移譲します．</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> gl <span class="op">=</span> <span class="pp">support::</span>load(<span class="op">&amp;</span>windowed_context<span class="op">.</span>context())<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>最後にイベントハンドラです．このイベントハンドラは先ほど作成したイベントループ渡され，何かイベントが発生するたびに呼び出されます． 従って，イベントハンドラでは，発生したイベントの識別とそのイベントに対応する振る舞いを記述する必要があります． 各イベントに対する振る舞いについては，コード中にコメントとして追記しました．</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>    el<span class="op">.</span>run(<span class="kw">move</span> <span class="op">|</span>event<span class="op">,</span> _<span class="op">,</span> control_flow<span class="op">|</span> <span class="op">{</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>        <span class="pp">println!</span>(<span class="st">"{:?}"</span><span class="op">,</span> event)<span class="op">;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>        <span class="op">*</span>control_flow <span class="op">=</span> <span class="pp">ControlFlow::</span>Wait<span class="op">;</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">match</span> event <span class="op">{</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>            <span class="pp">Event::</span>LoopDestroyed <span class="op">=&gt;</span> <span class="cf">return</span><span class="op">,</span> <span class="co">// イベントループか破棄されたのでインベントハンドラから抜ける</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>            <span class="pp">Event::</span>WindowEvent <span class="op">{</span> event<span class="op">,</span> <span class="op">..</span> <span class="op">}</span> <span class="op">=&gt;</span> <span class="cf">match</span> event <span class="op">{</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>                <span class="pp">WindowEvent::</span>Resized(physical_size) <span class="op">=&gt;</span> windowed_context<span class="op">.</span>resize(physical_size)<span class="op">,</span> <span class="co">// ウインドウをリサイズ</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>                <span class="pp">WindowEvent::</span>CloseRequested <span class="op">=&gt;</span> <span class="op">*</span>control_flow <span class="op">=</span> <span class="pp">ControlFlow::</span>Exit<span class="op">,</span> <span class="co">// ウインドウを閉じる</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>                _ <span class="op">=&gt;</span> ()<span class="op">,</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>            <span class="op">},</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>            <span class="pp">Event::</span>RedrawRequested(_) <span class="op">=&gt;</span> <span class="op">{</span> </span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>                gl<span class="op">.</span>draw_frame([<span class="dv">1.0</span><span class="op">,</span> <span class="dv">0.5</span><span class="op">,</span> <span class="dv">0.7</span><span class="op">,</span> <span class="dv">1.0</span>])<span class="op">;</span> <span class="co">// ポリゴンの描画．</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>                windowed_context<span class="op">.</span>swap_buffers()<span class="op">.</span>unwrap()<span class="op">;</span> <span class="co">// オフスクリーンに描画した結果を表示する</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>            _ <span class="op">=&gt;</span> ()<span class="op">,</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="スタンフォードバニーを表示する" class="level2">
+<h2 class="anchored" data-anchor-id="スタンフォードバニーを表示する">スタンフォードバニーを表示する</h2>
+<p>Objファイルを読み取り，スタンフォードバニーを描画する<a href="https://github.com/ar90n/lab/tree/master/sandbox/rust-opengl-obj-loader">サンプルプログラム</a>を作成しました． このサンプルを実行すると，以下のような画面が表示されます．</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../assets/img/2021-02-01-getting-started-with-glutin/media/bunny.gif" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">sample</figcaption><p></p>
+</figure>
+</div>
+<p>全体の構成は，glutinのサンプルプログラムを大きく変更はありません， 従って，比較的容易に読み取ることが可能かと思います． しかしながら，幾つか新しい試みを行っているため，それらについて紹介します．</p>
+<section id="gl_bindings.rsのソースツリーへの取り込み" class="level3">
+<h3 class="anchored" data-anchor-id="gl_bindings.rsのソースツリーへの取り込み">gl_bindings.rsのソースツリーへの取り込み</h3>
+<p>前述した通り，<code>gl_bindings.rs</code>はビルド時に動的に生成されます．従って，これらが提供する型を編集時に取得することはできません． そのため，このままではコード補完や静的解析を行うことができません． Rustによる開発では，これらのツールは非常に重要であるため，このままでは非常に辛い開発が強いられます．</p>
+<p>そこで，<code>gl_buildings.rs</code>をソースツリーに取り込んでしまうことにしました． 具体的には，以下のように<code>gl_bindings.rs</code>の保存先を変更します．</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> main() <span class="op">{</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> <span class="kw">mut</span> dest <span class="op">=</span> <span class="dt">PathBuf</span><span class="pp">::</span>from(<span class="pp">env!</span>(<span class="st">"CARGO_MANIFEST_DIR"</span>))<span class="op">;</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    dest<span class="op">.</span>push(<span class="st">"src"</span>)<span class="op">;</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="pp">println!</span>(<span class="st">"cargo:rerun-if-changed=build.rs"</span>)<span class="op">;</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> <span class="kw">mut</span> file <span class="op">=</span> <span class="pp">File::</span>create(<span class="op">&amp;</span>dest<span class="op">.</span>join(<span class="st">"gl_bindings.rs"</span>))<span class="op">.</span>unwrap()<span class="op">;</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="pp">Registry::</span>new(<span class="pp">Api::</span>Gl<span class="op">,</span> (<span class="dv">3</span><span class="op">,</span> <span class="dv">1</span>)<span class="op">,</span> <span class="pp">Profile::</span>Core<span class="op">,</span> <span class="pp">Fallbacks::</span>All<span class="op">,</span> [])</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>write_bindings(<span class="pp">gl_generator::</span>StructGenerator<span class="op">,</span> <span class="op">&amp;</span><span class="kw">mut</span> file)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>unwrap()<span class="op">;</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>この変更により，初回のビルド以降は以下のように<code>gl_bindings.rs</code>がソースツリー内に存在します． 従って，コード補完や静的解析が適切に動作します．</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ls ./src</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="ex">context.rs</span>      gl_bindings.rs  main.rs         obj.rs          shader.rs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>注意点としては，<code>gl_bindings.rs</code>は動的に生成されるものなのでリポジトリに含んではいけないことです． 従って，以下のように<code>.gitignore</code>に追加します．</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cat .gitignore</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="ex">src/gl_bindings.rs</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="ex">target</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="objファイルについて" class="level3">
+<h3 class="anchored" data-anchor-id="objファイルについて">Objファイルについて</h3>
+<p>Objファイルと呼ばれるファイルフォーマットには様々なものがあります． ここで使用するのは，3Dモデルを表現するために用いられるObjファイルです． また，Objファイルは頂点，面，法線など様々なデータを格納することができます． ここでは，以下のように頂点とそれらによって構成される面のみを対象とします．</p>
+<pre><code>v &lt;頂点番号1&gt; &lt;X座標1&gt; &lt;Y座標1&gt; &lt;Z座標1&gt;
+v &lt;頂点番号2&gt; &lt;X座標2&gt; &lt;Y座標2&gt; &lt;Z座標2&gt;
+
+...
+
+f &lt;面番号1&gt; &lt;頂点番号i&gt; &lt;頂点番号j&gt; &lt;頂点番号k&gt;
+
+...
+</code></pre>
+</section>
+</section>
+<section id="参考" class="level2">
+<h2 class="anchored" data-anchor-id="参考">参考</h2>
+<ol type="1">
+<li><a href="https://docs.rs/glutin/0.26.0/glutin/">glutin</a></li>
+</ol>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+      <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+  </div>
+</footer>
+
+
+
+</body></html>

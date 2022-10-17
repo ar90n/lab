@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.218">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2022-02-16">
+<meta name="description" content="kd-tree and curse of dimensionality">
+
+<title>lab_note - KD木と次元の呪い</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../logo.png" rel="icon" type="image/png">
+<script src="../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+<script type="text/plain" cookie-consent="tracking">
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-90473091-1', 'auto');
+
+ga('send', {
+  hitType: 'pageview',
+  'anonymizeIp': true,
+});
+</script>
+
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"headline",
+  "consent_type":"express",
+  "palette":"dark",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  });
+});
+</script> 
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../styles.css">
+<meta name="twitter:title" content="lab_note - KD木と次元の呪い">
+<meta name="twitter:description" content="kd-tree and curse of dimensionality">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">lab_note</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../about.html">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../projects.html">
+ <span class="menu-text">Projects</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/ar90n"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/ar90n"><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#はじめに" id="toc-はじめに" class="nav-link active" data-scroll-target="#はじめに">はじめに</a></li>
+  <li><a href="#やったこと" id="toc-やったこと" class="nav-link" data-scroll-target="#やったこと">やったこと</a></li>
+  <li><a href="#kd木による近傍探索" id="toc-kd木による近傍探索" class="nav-link" data-scroll-target="#kd木による近傍探索">KD木による近傍探索</a></li>
+  <li><a href="#次元の変化に対する近傍探索のパフォーマンス検証" id="toc-次元の変化に対する近傍探索のパフォーマンス検証" class="nav-link" data-scroll-target="#次元の変化に対する近傍探索のパフォーマンス検証">次元の変化に対する近傍探索のパフォーマンス検証</a></li>
+  <li><a href="#高次元データの性質" id="toc-高次元データの性質" class="nav-link" data-scroll-target="#高次元データの性質">高次元データの性質</a></li>
+  <li><a href="#参考文献" id="toc-参考文献" class="nav-link" data-scroll-target="#参考文献">参考文献</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">KD木と次元の呪い</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">機械学習</div>
+    <div class="quarto-category">数学</div>
+    <div class="quarto-category">Python</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    kd-tree and curse of dimensionality
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 16, 2022</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="はじめに" class="level2">
+<h2 class="anchored" data-anchor-id="はじめに">はじめに</h2>
+<p>取り扱うデータが高次元になると次元の呪いと呼ばれる問題が生じることが広く知られています． この次元の呪いが示す問題は, 使用される文脈に応じて様々であると思います． ここでは，KD木を用いた近傍探索における問題について考察します．</p>
+</section>
+<section id="やったこと" class="level2">
+<h2 class="anchored" data-anchor-id="やったこと">やったこと</h2>
+<ul>
+<li>データの次元が高くなるにつれてKD木による近傍探索の効率が低下することを実験的に検証</li>
+<li>高次元データの特徴からKD木の探索が非効率的になる原因を考察</li>
+</ul>
+</section>
+<section id="kd木による近傍探索" class="level2">
+<h2 class="anchored" data-anchor-id="kd木による近傍探索">KD木による近傍探索</h2>
+<p>ここでは，KD木を用いた近傍探索について考えます．KD木は軸並行な超平面を分離平面として，探索空間を再帰的に二つの超矩形に分割します． 従って，近傍探索は根からクエリが存在する側の超矩形を選択する深さ優先探索によって実現します．</p>
+<p>選ばれなかった側の超矩形に対する探索は，<strong>現在の最近傍までの距離<span class="math inline">\(r_q\)</span>が，クエリから分離平面までの距離<span class="math inline">\(r_d\)</span>より小さい場合（最近傍がクエリから半径<span class="math inline">\(r_d\)</span>の超球内に存在）</strong>は省略することができます．これは，分離平面の向こう側には現状の最近傍よりも良いデータは存在しないためです．この性質により，KD木を用いることで探索範囲を狭めることができます．</p>
+</section>
+<section id="次元の変化に対する近傍探索のパフォーマンス検証" class="level2">
+<h2 class="anchored" data-anchor-id="次元の変化に対する近傍探索のパフォーマンス検証">次元の変化に対する近傍探索のパフォーマンス検証</h2>
+<p>データ数Nを32768, データ次元Dを<span class="math inline">\(1 \dots 1024\)</span>まで変化させた時，線形探索およびKD木による最近傍点探索に必要な時間を測定しました． データのサンプルとクエリは，各次元の値が<span class="math inline">\([0.0 \dots 1.0]\)</span>に一様に分布する乱数としました．</p>
+<p>以下に上述の測定を行うコードとその結果を示します．</p>
+<div class="cell" data-execution_count="86">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> timeit</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.spatial <span class="im">import</span> KDTree</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="dv">32768</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="dv">32</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> []</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">11</span>):</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    D <span class="op">=</span> <span class="dv">2</span> <span class="op">**</span> i</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    heystack <span class="op">=</span> np.random.random((N,D))</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    kd_tree <span class="op">=</span> KDTree(heystack)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    needle <span class="op">=</span> np.random.random(D)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    flat_scan <span class="op">=</span> <span class="kw">lambda</span>:np.argmin(np.linalg.norm(heystack <span class="op">-</span> needle, axis<span class="op">=</span><span class="dv">1</span>))</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    kd_tree_search <span class="op">=</span> <span class="kw">lambda</span>: kd_tree.query(needle)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    flat_scan_time <span class="op">=</span> timeit.timeit(flat_scan, number<span class="op">=</span>n) <span class="op">/</span> n</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    kd_tree_time <span class="op">=</span> timeit.timeit(kd_tree_search, number<span class="op">=</span>n) <span class="op">/</span> n</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    result.append((flat_scan_time, kd_tree_time))</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> np.array(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="98">
+<div class="cell-output cell-output-display">
+<p><img src="2022-02-16-kdtree-and-curse-of-dimensionality_files/figure-html/cell-3-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>上図からデータの次元が高くなるにつれて，線形探索とKD木による探索との探索時間の差が小さくなっていることが確認できます． このことから，高次元データに対してはKD木が上手く機能していないことがわかります．</p>
+</section>
+<section id="高次元データの性質" class="level2">
+<h2 class="anchored" data-anchor-id="高次元データの性質">高次元データの性質</h2>
+<p>d次元における1辺の長さが<span class="math inline">\(2r\)</span>の超立方体と半径<span class="math inline">\(r\)</span>の超球の体積をそれぞれ<span class="math inline">\(V_C\left(d\right)\)</span>および<span class="math inline">\(V_S\left(d\right)\)</span>とします．するとこれらは以下のように表されます．</p>
+<p><span class="math display">\[
+\begin{aligned}
+V_C\left(d\right) &amp;= \left(2r\right)^{d} \\
+V_S\left(d\right) &amp;= \frac{r^{d}\pi^{\frac{d}{2}}}{\frac{d}{2}\Gamma\left(\frac{d}{2}\right)}
+\end{aligned}
+\]</span></p>
+<p>次にこれらの比<span class="math inline">\(\frac{V_S}{V_C}\)</span>を考えます．</p>
+<p><span class="math display">\[
+\begin{aligned}
+\frac{V_S\left(d\right)}{V_C\left(d\right)} &amp;= \frac{\frac{r^{d}\pi^{\frac{d}{2}}}{\frac{d}{2}\Gamma\left(\frac{d}{2}\right)}}{ \left(2r\right)^{d}}\\
+&amp;= \left(\frac{\sqrt{\pi}}{2}\right)^{d}\frac{1}{\frac{d}{2}\Gamma\left(\frac{d}{2}\right)}
+\end{aligned}
+\]</span></p>
+<p>ここで</p>
+<p><span class="math display">\[
+\begin{aligned}
+\frac{\pi}{2} &amp;\simeq 0.886\\
+&amp; \lt 1
+\end{aligned}
+\]</span></p>
+<p>となるので，</p>
+<p><span class="math display">\[
+\begin{aligned}
+\lim_{d \rightarrow \infty} \frac{V_S\left(d\right)}{V_C\left(d\right)} &amp;= 0
+\end{aligned}
+\]</span></p>
+<p>となります．　また，実際に<span class="math inline">\(\frac{V_S\left(d\right)}{V_C\left(d\right)}\)</span>を計算した結果を以下に示します．この結果より，<span class="math inline">\(\frac{V_S\left(d\right)}{V_C\left(d\right)}\)</span>は高速に<span class="math inline">\(0\)</span>へ収束することが確認できます．</p>
+<div class="cell" data-execution_count="131">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.special <span class="im">import</span> gamma</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> vs_over_vc(d: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ((math.sqrt(math.pi) <span class="op">/</span> <span class="dv">2</span>) <span class="op">**</span> d) <span class="op">/</span> gamma(d <span class="op">/</span> <span class="dv">2</span> <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>pd.DataFrame([(i, vs_over_vc(i)) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">10</span>)], columns<span class="op">=</span>[<span class="st">"d"</span>, <span class="st">"vs/vc"</span>]).set_index(<span class="st">"d"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="131">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>vs/vc</th>
+    </tr>
+    <tr>
+      <th>d</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>1.000000</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.785398</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.523599</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.308425</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0.164493</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>0.080746</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>0.036912</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>0.015854</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>0.006442</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<p>次に，KD木において探索領域が1辺の長さが<span class="math inline">\(2r_d\)</span>の超立方体に区切られ，クエリがその中心に位置する場合を考えます． ここで，データは探索領域中に一様に分布するものとします．すると，クエリを中心とした半径<span class="math inline">\(r_d\)</span>の超球内にデータが存在する確率は$ <span class="math inline">\(となります．この値はデータの次元が高くなるほど小さくなります．したがって、高次元データにおいては，クエリを中心とした半径\)</span>r_d$の超球内にはほとんどデータが存在せず，大多数は超立方体の角に存在すると考えられます．</p>
+<p>また，上述の結果について超立方体の対角線に着目すると非常に面白い性質を確認できます．ここで，d次元における１辺の長さが<span class="math inline">\(r\)</span>である超立方体の対角線の長さ<span class="math inline">\(d_{d}\left(r\right)\)</span>を考えます．この<span class="math inline">\(d_{d}\left(r\right)\)</span>は以下の様に求めることができます．</p>
+<p><span class="math display">\[
+\begin{aligned}
+d_{d}\left(r\right) &amp;= \sqrt{\sum^{d}r^{2}}\\
+&amp;= \sqrt{d}r
+\end{aligned}
+\]</span></p>
+<p>以上の結果より，<span class="math inline">\(d\)</span>次元の超立方体の対角線の長さは<span class="math inline">\(\sqrt{d}\)</span>に比例して大きくなることがわかります．これは，データの大多数が超立方体の角に存在するという前述の結果とも一致します．この性質について非常に興味深い図があったので紹介します．</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figure class="figure">
+<img src="../assets/img/2022-02-16-kdtree-and-curse-of-dimensionality/relationship_sphere_and_cube.png" title="2次元， ４次元，$d$次元における超球と超立方体との関係．(d/2)^(1/2)は誤りです．正しくはd^(1/2)/2" class="img-fluid figure-img">
+</figure>
+<p></p><figcaption class="figure-caption">class</figcaption><p></p>
+</figure>
+</div>
+<p>上図は左から，2次元，4次元，<span class="math inline">\(d\)</span>次元における超立方体と超球との関係のイメージです．<span class="math inline">\(d_{2}\left(1\right) = \sqrt{2}\)</span>であることから，超立方体が超球に内包されています．また<span class="math inline">\(d_{4}\left(1\right) = 2\)</span>であることから，超立方体が超球に内接しています．同様に<span class="math inline">\(d_{d}\left(1\right)=\sqrt{d}\)</span>であることから，超立方体の角が超球の外へ飛び出しています．</p>
+<p>この図はあくまでもイメージです．従って実際の高次元空間はこんなにも単純ではないのかもしれません．しかしながら， <strong>低次元では超球に内包されていた超立方体が 高次元ではその角が超球をはみ出してしまう</strong> という性質は直感に反しており非常に興味深いと思いました．</p>
+<p>先に述べた通り，KD木による高速な近傍探索は最近傍がクエリから半径<span class="math inline">\(r_d\)</span>の超球内に存在する場合に探索を省略することができるためでした．従って，この条件が成立しない高次元データでは探索を省略することはできません．この結果，KD木による探索の効率はデータの次元が高くなるにつれて低下します．</p>
+</section>
+<section id="参考文献" class="level2">
+<h2 class="anchored" data-anchor-id="参考文献">参考文献</h2>
+<ul>
+<li>Computer Science Theory for the Information Age, Spring 2012, Venkatesan Guruswami and Ravi Kannanb, 2012</li>
+<li>Kd木, Wikipedia, http://ja.wikipedia.org/w/index.php?title=Kd%E6%9C%A8</li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+      <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+  </div>
+</footer>
+
+
+
+</body></html>

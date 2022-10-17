@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.218">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2020-06-27">
+<meta name="description" content="Linear algebra in 3d coordinates">
+
+<title>lab_note - 三次元空間における行列演算の復習</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../logo.png" rel="icon" type="image/png">
+<script src="../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+<script type="text/plain" cookie-consent="tracking">
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-90473091-1', 'auto');
+
+ga('send', {
+  hitType: 'pageview',
+  'anonymizeIp': true,
+});
+</script>
+
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"headline",
+  "consent_type":"express",
+  "palette":"dark",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  });
+});
+</script> 
+  
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../styles.css">
+<meta name="twitter:title" content="lab_note - 三次元空間における行列演算の復習">
+<meta name="twitter:description" content="Linear algebra in 3d coordinates">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">lab_note</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../about.html">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../projects.html">
+ <span class="menu-text">Projects</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/ar90n"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/ar90n"><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#任意の単位ベクトルへの射影行列" id="toc-任意の単位ベクトルへの射影行列" class="nav-link active" data-scroll-target="#任意の単位ベクトルへの射影行列">任意の単位ベクトルへの射影行列</a></li>
+  <li><a href="#法線ベクトルに直交する平面への射影行列" id="toc-法線ベクトルに直交する平面への射影行列" class="nav-link" data-scroll-target="#法線ベクトルに直交する平面への射影行列">法線ベクトルに直交する平面への射影行列</a></li>
+  <li><a href="#任意の単位ベクトルを回転軸とした回転行列" id="toc-任意の単位ベクトルを回転軸とした回転行列" class="nav-link" data-scroll-target="#任意の単位ベクトルを回転軸とした回転行列">任意の単位ベクトルを回転軸とした回転行列</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">三次元空間における行列演算の復習</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">数学</div>
+    <div class="quarto-category">線形代数</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Linear algebra in 3d coordinates
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 27, 2020</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<p>ぱっと思いつかなかったのでメモ．</p>
+<section id="任意の単位ベクトルへの射影行列" class="level3">
+<h3 class="anchored" data-anchor-id="任意の単位ベクトルへの射影行列">任意の単位ベクトルへの射影行列</h3>
+<p>任意の単位ベクトルを<span class="math inline">\(\vec{n}\)</span>とすると，<span class="math inline">\(\vec{n}\)</span>への射影行列<span class="math inline">\(P_{p}\)</span>は以下の様に表されます．</p>
+<p><span class="math display">\[
+P_{p} = \vec{n}\vec{n}^{T}
+\]</span></p>
+</section>
+<section id="法線ベクトルに直交する平面への射影行列" class="level3">
+<h3 class="anchored" data-anchor-id="法線ベクトルに直交する平面への射影行列">法線ベクトルに直交する平面への射影行列</h3>
+<p>法線ベクトルへの射影を元のベクトルから引くことで，法線ベクトルと直交する平面への射影が可能となります． そのため，法線ベクトルと直交する平面への射影行列<span class="math inline">\(P_{o}\)</span>は以下のように表されます．</p>
+<p><span class="math display">\[
+\begin{aligned}
+P_{o} &amp;= I - P_{p} \\
+      &amp;= I - \vec{n}\vec{n}^{T}
+\end{aligned}
+\]</span></p>
+</section>
+<section id="任意の単位ベクトルを回転軸とした回転行列" class="level3">
+<h3 class="anchored" data-anchor-id="任意の単位ベクトルを回転軸とした回転行列">任意の単位ベクトルを回転軸とした回転行列</h3>
+<p>任意の単位ベクトル<span class="math inline">\(\vec{n}\)</span>を以下のように定義します． <span class="math display">\[
+\vec{n} = \left(n_x, n_y, n_z \right)
+\]</span></p>
+<p>ここで，Z軸方向の単位ベクトル<span class="math inline">\(\vec{e_{z}}\)</span>を<span class="math inline">\(\vec{n}\)</span>に変換する行列<span class="math inline">\(P\)</span>を考えます．<span class="math inline">\(P\)</span>はY軸回転<span class="math inline">\(R_{y}\)</span>とZ軸回転<span class="math inline">\(R_{z}\)</span>の積で以下のように表現できます． <span class="math display">\[
+\begin{aligned}
+c_{\theta} &amp;= \frac{n_{x}}{\sqrt{n_{x}^{2} + n_{y}^{2}}} \\\\
+s_{\theta} &amp;= \frac{n_{y}}{\sqrt{n_{x}^{2} + n_{y}^{2}}} \\\\
+c_{\phi} &amp;= \frac{n_{z}}{\sqrt{n_{x}^{2} + n_{y}^{2} + n_{z}^{2}}} \\\\
+s_{\phi} &amp;= \frac{\sqrt{n_{x}^{2} + n_{y}^{2}}}{\sqrt{n_{x}^{2} + n_{y}^{2} + n_{z}^{2}}} \\\\
+R_{xz} &amp;= \left(\begin{array}{rrr}
+c_{\phi} &amp; 0 &amp; s_{\phi} \\\\
+0 &amp; 1 &amp; 0 \\\\
+-s_{\phi}&amp; 0 &amp; c_{\phi}
+\end{array}\right)\\\\
+R_{xy} &amp;= \left(\begin{array}{rrr}
+c_{\theta} &amp; -s_{\theta} &amp; 0 \\\\
+s_{\theta} &amp; c_{\theta} &amp; 0 \\\\
+0 &amp; 0 &amp; 1
+\end{array}\right)\\\\
+P &amp;= R_{xy} * R_{xz}
+\end{aligned}
+\]</span></p>
+<p><span class="math inline">\(P\)</span>によって変換されたZ軸を<span class="math inline">\(\vec{e_{z}'}(=\vec{n})\)</span>とすると，所望の任意の単位ベクトルを回転軸とする回転行列は以下の３つの変換の合成で表すことができます．</p>
+<ol type="1">
+<li><span class="math inline">\(\vec{e_{z}}\)</span>を<span class="math inline">\(\vec{e_{z}}'\)</span>に変換する<span class="math inline">\(P\)</span></li>
+<li><span class="math inline">\(\vec{e_{z}}\)</span>を回転軸とする回転<span class="math inline">\(R_{a}\)</span></li>
+<li><span class="math inline">\(\vec{e_{z}}'\)</span>を<span class="math inline">\(\vec{e_{z}}\)</span>に変換する<span class="math inline">\(P^{T}\)</span></li>
+</ol>
+<p>したがって，最終的な回転行列<span class="math inline">\(R\)</span>は以下のように表されます．</p>
+<p><span class="math display">\[
+\begin{aligned}
+R_{a} &amp;= \left(\begin{array}{rrr}
+\cos\left(a\right) &amp; -\sin\left(a\right) &amp; 0 \\\\
+\sin\left(a\right) &amp; \cos\left(a\right) &amp; 0 \\\\
+0 &amp; 0 &amp; 1
+\end{array}\right) \\\\
+R &amp;= P * R_{a} * P^{T} \\\\
+&amp;= \left(\begin{array}{rrr}
+\mathit{n_{x}}^{2} + {\left(\mathit{n_{y}}^{2} + \mathit{n_{z}}^{2}\right)} \cos\left(a\right) &amp; -\mathit{n_{x}} \mathit{n_{y}} \cos\left(a\right) + \mathit{n_{x}} \mathit{n_{y}} - {\left(\mathit{n_{z}}^{3} + {\left(\mathit{n_{x}}^{2} + \mathit{n_{y}}^{2}\right)} \mathit{n_{z}}\right)} \sin\left(a\right) &amp; -\mathit{n_{x}} \mathit{n_{z}} \cos\left(a\right) + \mathit{n_{x}} \mathit{n_{z}} + \mathit{n_{y}} \sin\left(a\right) \\\\
+-\mathit{n_{x}} \mathit{n_{y}} \cos\left(a\right) + \mathit{n_{x}} \mathit{n_{y}} + {\left(\mathit{n_{z}}^{3} + {\left(\mathit{n_{x}}^{2} + \mathit{n_{y}}^{2}\right)} \mathit{n_{z}}\right)} \sin\left(a\right) &amp; \mathit{n_{y}}^{2} + {\left(\mathit{n_{x}}^{2} + \mathit{n_{z}}^{2}\right)} \cos\left(a\right) &amp; -\mathit{n_{y}} \mathit{n_{z}} \cos\left(a\right) + \mathit{n_{y}} \mathit{n_{z}} - \mathit{n_{x}} \sin\left(a\right) \\\\
+-\mathit{n_{x}} \mathit{n_{z}} \cos\left(a\right) + \mathit{n_{x}} \mathit{n_{z}} - {\left(\mathit{n_{x}}^{2} \mathit{n_{y}} + \mathit{n_{y}}^{3} + \mathit{n_{y}} \mathit{n_{z}}^{2}\right)} \sin\left(a\right) &amp; -\mathit{n_{y}} \mathit{n_{z}} \cos\left(a\right) + \mathit{n_{y}} \mathit{n_{z}} + {\left(\mathit{n_{x}}^{3} + \mathit{n_{x}} \mathit{n_{y}}^{2} + \mathit{n_{x}} \mathit{n_{z}}^{2}\right)} \sin\left(a\right) &amp; \mathit{n_{z}}^{2} + {\left(\mathit{n_{x}}^{2} + \mathit{n_{y}}^{2}\right)} \cos\left(a\right)
+\end{array}\right) \\\\
+&amp;= \left(\begin{array}{rrr}
+\cos\left(a\right) + \mathit{n_{x}}^{2} \left(1-\cos\left(a\right)\right) &amp; \mathit{n_{x}} \mathit{n_{y}} \left(1 - \cos\left(a\right) \right) - \mathit{n_{z}}\sin\left(a\right) &amp; \mathit{n_{x}} \mathit{n_{z}} \left( 1 -  \cos\left(a\right) \right) + \mathit{n_{y}} \sin\left(a\right) \\\\
+\mathit{n_{x}} \mathit{n_{y}}\left( 1 -  \cos\left(a\right) \right) + \mathit{n_{z}} \sin\left(a\right) &amp; \cos\left(a\right) + \mathit{n_{y}}^{2}\left( 1-  \cos\left(a\right)\right) &amp; \mathit{n_{y}} \mathit{n_{z}}
+\left( 1- \cos\left(a\right) \right) - \mathit{n_{x}} \sin\left(a\right) \\\\
+\mathit{n_{x}} \mathit{n_{z}}\left(1- \cos\left(a\right) \right) - \mathit{n_{y}}\sin\left(a\right) &amp; \mathit{n_{y}} \mathit{n_{z}} \left(1- \cos\left(a\right) \right) + \mathit{n_{x}}\sin\left(a\right) &amp; \cos\left(a\right) + \mathit{n_{z}}^{2} \left( 1-\cos\left(a\right) \right)
+\end{array}\right)
+\end{aligned}
+\]</span></p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+      <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+  </div>
+</footer>
+
+
+
+</body></html>

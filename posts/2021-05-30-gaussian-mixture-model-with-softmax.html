@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.218">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2021-05-30">
+<meta name="description" content="Gaussian Mixture Model with softmax function">
+
+<title>lab_note - ソフトマックス関数を用いた混合ガウスモデルの計算</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../logo.png" rel="icon" type="image/png">
+<script src="../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+<script type="text/plain" cookie-consent="tracking">
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-90473091-1', 'auto');
+
+ga('send', {
+  hitType: 'pageview',
+  'anonymizeIp': true,
+});
+</script>
+
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"headline",
+  "consent_type":"express",
+  "palette":"dark",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  });
+});
+</script> 
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../styles.css">
+<meta name="twitter:title" content="lab_note - ソフトマックス関数を用いた混合ガウスモデルの計算">
+<meta name="twitter:description" content="Gaussian Mixture Model with softmax function">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">lab_note</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../about.html">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../projects.html">
+ <span class="menu-text">Projects</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/ar90n"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/ar90n"><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#はじめに" id="toc-はじめに" class="nav-link active" data-scroll-target="#はじめに">はじめに</a></li>
+  <li><a href="#やったこと" id="toc-やったこと" class="nav-link" data-scroll-target="#やったこと">やったこと</a></li>
+  <li><a href="#混合ガウスモデルについて" id="toc-混合ガウスモデルについて" class="nav-link" data-scroll-target="#混合ガウスモデルについて">混合ガウスモデルについて</a></li>
+  <li><a href="#勾配法によるパラメータの推定" id="toc-勾配法によるパラメータの推定" class="nav-link" data-scroll-target="#勾配法によるパラメータの推定">勾配法によるパラメータの推定</a></li>
+  <li><a href="#emアルゴリズムによるパラメータの推定" id="toc-emアルゴリズムによるパラメータの推定" class="nav-link" data-scroll-target="#emアルゴリズムによるパラメータの推定">EMアルゴリズムによるパラメータの推定</a>
+  <ul class="collapse">
+  <li><a href="#eステップ" id="toc-eステップ" class="nav-link" data-scroll-target="#eステップ">Eステップ</a></li>
+  <li><a href="#mステップ" id="toc-mステップ" class="nav-link" data-scroll-target="#mステップ">Mステップ</a></li>
+  </ul></li>
+  <li><a href="#参考文献" id="toc-参考文献" class="nav-link" data-scroll-target="#参考文献">参考文献</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">ソフトマックス関数を用いた混合ガウスモデルの計算</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">MachineLearning</div>
+    <div class="quarto-category">SignalProcessing</div>
+    <div class="quarto-category">Python</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Gaussian Mixture Model with softmax function
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">May 30, 2021</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="はじめに" class="level2">
+<h2 class="anchored" data-anchor-id="はじめに">はじめに</h2>
+<p>多峰性のある分布表現する方法として，ガウス分布の線形結合を用いる混合ガウスモデルが広く知られています． しかしがなら，観測したサンプルから混合ガウスモデルのパラメータを解析的の求めることはできません． そのため，EMアルゴリズム等を用いて数値計算的にパラメータを推定します．</p>
+<p>EMアルゴリズムを用いた混合ガウスモデルのパラメータ推定は多くの資料で解説されています． これらの資料を読み解こうと何度か挑戦しましたが，どうもしっくりと来ませんでした． ですが，参考[1]述べられている，線形結合の重みとしてソフトマックス関数を用いる方法がとても理解しやすかったので，自分なりの理解をまとめました．</p>
+</section>
+<section id="やったこと" class="level2">
+<h2 class="anchored" data-anchor-id="やったこと">やったこと</h2>
+<ul>
+<li>線形結合の重みとしてソフトマックス関数を用いた場合における各パラメータの導関数を計算</li>
+<li>勾配法によって混合ガウスモデルのパラメータを推定</li>
+<li>EMアルゴリズムによって混合ガウスモデルのパラメータを推定</li>
+</ul>
+</section>
+<section id="混合ガウスモデルについて" class="level2">
+<h2 class="anchored" data-anchor-id="混合ガウスモデルについて">混合ガウスモデルについて</h2>
+<p>平均を<span class="math inline">\(\mu\)</span>，標準偏差を<span class="math inline">\(\sigma\)</span>としたとき，ガウス分布<span class="math inline">\(\phi\left(x; \mu, \sigma\right)\)</span>は以下の様に表されます．</p>
+<p><span class="math display">\[
+\begin{aligned}
+\phi\left(x; \mu, \sigma\right) &amp; = \frac{1}{\sqrt{2 \pi \sigma^{2}}} \exp{\left(- \frac{\left(x - \mu\right)^{2}}{2\sigma^{2}}\right)}
+\end{aligned}
+\]</span></p>
+<p>この時，ガウス分布の線形結合からなる混合ガウスモデル<span class="math inline">\(q\left(x; \vec{\theta}\right)\)</span>は以下の様に表すことができます．</p>
+<p><span class="math display">\[
+\begin{aligned}
+q\left(x; \vec{\theta}\right) &amp;= \sum_{l=1}^{m} w_{l}\phi\left(x; \mu_{l}, \sigma_{l}\right)
+\end{aligned}
+\]</span></p>
+<p>ここで，<span class="math inline">\(\vec{\theta} = \left(w_{1}, \dots, w_{m},\mu_{1}, \dots, \mu_{m}, \sigma_{1}, \dots, \sigma_{m}\right)\)</span>であり，<span class="math inline">\(w_{l}\)</span>は線形結合の重みを，<span class="math inline">\(\mu_{l}\)</span>は各ガウス分布の平均を，<span class="math inline">\(\sigma_{l}\)</span>は各ガウス分布の標準偏差をそれぞれ表します．</p>
+<p><span class="math inline">\(q\left(x; \vec{\theta}\right)\)</span> が分布であるためには，<span class="math inline">\(x\)</span>に対して</p>
+<p><span class="math display">\[
+\begin{aligned}
+q\left(x; \vec{\theta}\right) &amp;\geq 0 \\
+\int q\left(x; \vec{\theta}\right) &amp;= 1
+\end{aligned}
+\]</span></p>
+<p>である必要があります．従って，<span class="math inline">\(w_{1}, \dots, w_{m}\)</span>は以下の条件を満たす必要があります．</p>
+<p><span class="math display">\[
+\begin{aligned}
+w_{1} \dots w_{m} &amp;\geq 0 \\
+\sum_{l=1}^{m} w_{l} &amp;= 1
+\end{aligned}
+\]</span></p>
+<p>次に最尤推定によってパラメータ<span class="math inline">\(\vec{\theta}\)</span>を推定します．ここでは，尤度関数<span class="math inline">\(L\left(\vec{\theta}\right)\)</span>を以下の様に定義します．</p>
+<p><span class="math display">\[
+\begin{aligned}
+L\left(\vec{\theta}\right) &amp;= \prod _{i=1}^{n} q\left(x_{i}; \vec{\theta}\right)
+\end{aligned}
+\]</span></p>
+<p>また，<span class="math inline">\(w_{l}\)</span>に対する拘束条件を考慮しなくてはなりません．従って，最尤推定量<span class="math inline">\(\vec{\theta}\)</span>は以下の様に表されます．</p>
+<p><span class="math display">\[
+\begin{aligned}
+\hat{\vec{\theta}} &amp;= \argmax_{\vec{\theta}} L\left(\vec{\theta}\right) &amp; \text{subject to } \begin{cases}
+  w_{1} \dots w_{m} &amp;\geq 0\\
+\sum_{l=1}^{m} w_{l} &amp;= 1
+  \end{cases}
+\end{aligned}
+\]</span></p>
+<p>拘束条件付きの最適化にはラグランジュの未定乗数法が多く用いられていると思います．今回のケースにおいても同様です．</p>
+<p>しかしながら，ラグランジュの未定乗数法を用いる方法はあまりしっくり来きませんでした．（理解できなかった） そこで，ここでは参考[1]にある<span class="math inline">\(w_{l}\)</span>としてソフトマック関数を用いる方法を採用します．従って<span class="math inline">\(w_{l}\)</span>は<span class="math inline">\(\gamma_{l}\)</span>を用いて</p>
+<p><span class="math display">\[
+\begin{aligned}
+w_{l} &amp;= \frac{\exp{\left(\gamma_{l}\right)}}{\sum_{l' = 1}^{m}\exp{\left(\gamma_{l’}\right)}}
+\end{aligned}
+\]</span></p>
+<p>と表現することにします．ソフトマックス関数は上述の拘束条件を満たすため，拘束条件を考えることなく最適化を行うことができます．また，ここでは１次元の混合ガウスモデルについて述べましたが，多次元の場合も同様です．</p>
+</section>
+<section id="勾配法によるパラメータの推定" class="level2">
+<h2 class="anchored" data-anchor-id="勾配法によるパラメータの推定">勾配法によるパラメータの推定</h2>
+<p>それでは，対数尤度関数<span class="math inline">\(\log L\left(\vec{\theta}\right)\)</span>の各パラメータに対する導関数を計算していきます．まずは，<span class="math inline">\(\gamma_{l}\)</span>についてです．</p>
+<p><span class="math display">\[
+\begin{aligned}
+\frac{\partial w_{k}}{\partial \gamma_{l}} &amp;= \frac{\partial}{\partial \gamma_{l}} \frac{\exp{\left(\gamma_{k}\right)}}{\sum_{k'=1}^{m}\exp{\left(\gamma_{k'}\right)}} \\
+&amp;= \frac{\exp{\left(\gamma_{k}\right)}}{\sum_{k'=1}^{m}\exp{\left(\gamma_{k'}\right)}}\delta_{k,l} - \frac{\exp{\left(\gamma_{k}\right)}\exp{\left(\gamma_{l}\right)}}{\left(\sum_{k'=1}^{m}\exp{\left(\gamma_{k'}\right)}\right)^{2}}\\
+&amp;= \frac{\exp{\left(\gamma_{k}\right)}}{\sum_{k'=1}^{m}\exp{\left(\gamma_{k'}\right)}}\left(\delta_{k,l} - \frac{\exp{\left(\gamma_{l}\right)}}{\sum_{k'=1}^{m}\exp{\left(\gamma_{k'}\right)}}\right)\\
+&amp;= w_{k}\left(\delta_{k,l} - w_{l}\right)\\
+\frac{\partial}{\partial \gamma_{l}} \log L\left(\vec{\theta}\right) &amp;= \frac{\partial}{\partial \gamma_{l}} \sum_{i=1}^{n} \log \sum_{k}^{m} w_{k}\phi\left(x_{i}; \mu_{k}, \sigma_{k}\right) \\
+&amp;= \sum_{i=1}^{n}\frac{1}{\sum_{k'=1}^{m} w_{k'}\phi\left(x_{i}; \mu_{k'}, \sigma_{k'}\right)} \sum_{k=1}^{m} \phi\left(x_{i}; \mu_{k}, \sigma_{k}\right) \frac{\partial w_{k}}{\partial \gamma_{l}}\\
+&amp;=  \sum_{i=1}^{n} \frac{\sum_{k=1}^{m} w_{k}\phi\left(x_{i}; \mu_{k}, \sigma_{k}\right)\delta_{k,l} -w_{l}\sum_{k=1}^{m} w_{k}\phi\left(x_{i}; \mu_{k}, \sigma_{k}\right)}{\sum_{k'=1}^{m} w_{k'}\phi\left(x_{i}; \mu_{k'}, \sigma_{k'}\right)} \\
+&amp;=  \sum_{i=1}^{n} \frac{w_{l}\phi\left(x_{i}; \mu_{l}, \sigma_{l}\right)}{\sum_{k'=1}^{m} w_{k'}\phi\left(x_{i}; \mu_{k'}, \sigma_{k'}\right)} - w_{l} \\
+\end{aligned}
+\]</span></p>
+<p>次に，<span class="math inline">\(\mu_{l}\)</span>についてです．</p>
+<p><span class="math display">\[
+\begin{aligned}
+\frac{\partial}{\partial \mu_{l}}\phi\left(x_{i}; \mu_{k}, \sigma_{k}\right) &amp;= \frac{1}{\sqrt{2 \pi \sigma_{k}^{2}}}\frac{\partial}{\partial \mu_{l}}  \exp{\left(- \frac{\left(x_{i} - \mu_{k}\right)^{2}}{2\sigma_{k}^{2}}\right)} \\
+&amp;= \frac{1}{\sqrt{2 \pi \sigma_{k}^{2}}} \exp{\left(- \frac{\left(x_{i} - \mu_{k}\right)^{2}}{2\sigma_{k}^{2}}\right)} \frac{x_{i} - \mu_{k}}{\sigma_{k}^{2}} \delta_{k,l} \\
+&amp;= \frac{x_{i} - \mu_{k}}{\sigma_{k}^{2}}  \phi\left(x_{i}; \mu_{k}, \sigma_{k}\right) \delta_{k,l}\\
+\frac{\partial}{\partial \mu_{l}} \log L\left(\vec{\theta}\right) &amp;= \frac{\partial}{\partial \mu_{l}} \sum_{i=1}^{n} \log \sum_{k}^{m} w_{k}\phi\left(x_{i}; \mu_{k}, \sigma_{k}\right) \\
+&amp;= \sum_{i=1}^{n}\frac{1}{\sum_{k'=1}^{m} w_{k'}\phi\left(x_{i}; \mu_{k'}, \sigma_{k'}\right)} \sum_{k=1}^{m}   w_{k}  \frac{\partial}{\partial \mu_{l}}  \phi\left(x_{i}; \mu_{k}, \sigma_{k}\right)\\
+&amp;= \sum_{i=1}^{n}\frac{1}{\sum_{k'=1}^{m} w_{k'}\phi\left(x_{i}; \mu_{k'}, \sigma_{k'}\right)} \sum_{k=1}^{m}   w_{k} \frac{x_{i} - \mu_{k}}{\sigma_{k}^{2}}  \phi\left(x_{i}; \mu_{k}, \sigma_{k}\right) \delta_{k,l}\\
+&amp;= \sum_{i=1}^{n}\frac{1}{\sum_{k'=1}^{m} w_{k'}\phi\left(x_{i}; \mu_{k'}, \sigma_{k'}\right)}   w_{l} \frac{x_{i} - \mu_{l}}{\sigma_{l}^{2}}  \phi\left(x_{i}; \mu_{l}, \sigma_{l}\right)\\
+&amp;= \frac{1}{\sigma_{l}^{2}} \sum_{i=1}^{n} \left(x_{i} - \mu_{l}\right) \frac{w_{l} \phi\left(x_{i}; \mu_{l}, \sigma_{l}\right)  }{\sum_{k'=1}^{m} w_{k'}\phi\left(x_{i}; \mu_{k'}, \sigma_{k'}\right)}  \\
+\end{aligned}
+\]</span></p>
+<p>最後に，<span class="math inline">\(\sigma_{l}\)</span>についてです．</p>
+<p><span class="math display">\[
+\begin{aligned}
+\frac{\partial}{\partial \sigma_{l}}\phi\left(x_{i}; \mu_{k}, \sigma_{k}\right) &amp;= \frac{1}{\sqrt{2 \pi}} \frac{\partial}{\partial \sigma_{l}}  \sigma_{k}^{-1} \exp{\left(- \frac{\left(x_{i} - \mu_{k}\right)^{2}}{2\sigma_{k}^{2}}\right)} \\
+&amp;= -\frac{1}{\sqrt{2\pi}\sigma_{k}^{2}} \exp{\left(- \frac{\left(x - \mu_{k}\right)^{2}}{2\sigma_{k}^{2}}\right)} \delta_{k,l}  + \frac{\left(x_{i} - \mu_{k}\right)^{2}}{\sqrt{2\pi}\sigma_{k}^{4}} \exp{\left(- \frac{\left(x - \mu_{k}\right)^{2}}{2\sigma_{k}^{2}}\right)} \delta_{k,l}\\
+&amp;= \frac{\left(x_{i} - \mu_{k}\right)^{2} - \sigma_{k}^{2}}{\sigma_{k}^{3}} \phi\left(x_{i}; \mu_{k}, \sigma_{k}\right)\delta_{k,l}\\
+\frac{\partial}{\partial \sigma_{l}} \log L\left(\vec{\theta}\right) &amp;= \frac{\partial}{\partial \sigma_{l}} \sum_{i=1}^{n} \log \sum_{k}^{m} w_{k}\phi\left(x_{i}; \mu_{k}, \sigma_{k}\right) \\
+&amp;= \sum_{i=1}^{n}\frac{1}{\sum_{k'=1}^{m} w_{k'}\phi\left(x_{i}; \mu_{k'}, \sigma_{k'}\right)} \sum_{k=1}^{m}   w_{k}  \frac{\partial}{\partial \sigma_{l}}  \phi\left(x_{i}; \mu_{k}, \sigma_{k}\right)\\
+&amp;= \sum_{i=1}^{n}\frac{1}{\sum_{k'=1}^{m} w_{k'}\phi\left(x_{i}; \mu_{k'}, \sigma_{k'}\right)} \sum_{k=1}^{m}   w_{k}  \frac{\left(x_{i} - \mu_{k}\right)^{2} - \sigma_{k}^{2}}{\sigma_{k}^{3}} \phi\left(x_{i}; \mu_{k}, \sigma_{k}\right)\delta_{k,l}\\
+&amp;= \frac{1}{\sigma_{l}^{3}}\sum_{i=1}^{n}  \left(\left(x_{i} - \mu_{l}\right)^{2} - \sigma_{l}^{2}\right) \frac{w_{l}\phi\left(x_{i}; \mu_{l}, \sigma_{l}\right)}{\sum_{k'=1}^{m} w_{k'}\phi\left(x_{i}; \mu_{k'}, \sigma_{k'}\right)}  
+\end{aligned}
+\]</span></p>
+<p>ここで，</p>
+<p><span class="math display">\[
+\begin{aligned}
+\eta_{i,l} &amp;=  \frac{w_{l}\phi\left(x_{i}; \mu_{l}, \sigma_{l}\right)}{\sum_{k'=1}^{m} w_{k'}\phi\left(x_{i}; \mu_{k'}, \sigma_{k'}\right)}
+\end{aligned}
+\]</span></p>
+<p>と置きます．すると最終的な導関数は以下の様に表されます．</p>
+<p><span class="math display">\[
+\begin{aligned}
+\frac{\partial}{\partial \gamma_{l}} \log L\left(\vec{\theta}\right) &amp;= \sum_{i=1}^{n} \eta_{i,l} - w_{l} \\
+\frac{\partial}{\partial \mu_{l}} \log L\left(\vec{\theta}\right) &amp;= \frac{1}{\sigma_{l}^{2}} \sum_{i=1}^{n} \left(x_{i} - \mu_{l}\right) \eta_{i,l}\\
+\frac{\partial}{\partial \sigma_{l}} \log L\left(\vec{\theta}\right) &amp;=\frac{1}{\sigma_{l}^{3}}\sum_{i=1}^{n}  \left(\left(x_{i} - \mu_{l}\right)^{2} - \sigma_{l}^{2}\right)\eta_{i,l}
+\end{aligned}
+\]</span></p>
+<p>次に勾配法を用いてパラメータの推定を行っていきます．具体的な手順は以下の通りです．</p>
+<ol type="1">
+<li><span class="math inline">\(\hat{\gamma_{l}}\)</span>, <span class="math inline">\(\hat{\mu_{l}}\)</span>, <span class="math inline">\(\hat{\sigma_{l}}\)</span>をランダムな値で初期化</li>
+<li>以下に示す様にパラメータを更新<br>
+<span class="math display">\[
+\begin{aligned}
+\hat{\gamma_{l}} &amp;= \hat{\gamma_{l}} + \epsilon \frac{\partial}{\partial \gamma_{l}} \log L\left(\vec{\theta}\right) \\
+\hat{\mu_{l}} &amp;= \hat{\mu_{l}} + \epsilon \frac{\partial}{\partial \mu_{l}} \log L\left(\vec{\theta}\right) \\
+\hat{\sigma_{l}} &amp;= \hat{\sigma_{l}} + \epsilon \frac{\partial}{\partial \sigma_{l}} \log L\left(\vec{\theta}\right) \\
+\end{aligned}
+\]</span></li>
+<li>一定回数または収束するまで2.を繰り返す</li>
+</ol>
+<p>実際にパラメータ推定に関するコードを記述する前に，推定を行うデータを作成します． 今回，<span class="math inline">\(\vec{\mu} = \left(3.1, -1.3, 0.5\right)\)</span>, <span class="math inline">\(\vec{\sigma} = \left(0.8, 1.0, 0.5 \right)\)</span>, <span class="math inline">\(\vec{w} = \left(0.25, 0.25, 0.5\right)\)</span>として，2048個の標本をサンプリングすることで検証用のデータを作成しました．</p>
+<div class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">99</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>mus <span class="op">=</span>  np.array([<span class="fl">3.1</span>, <span class="op">-</span><span class="fl">1.3</span>, <span class="fl">0.5</span>])</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>sigmas <span class="op">=</span>  np.array([<span class="fl">0.8</span>, <span class="fl">1.0</span>, <span class="fl">0.5</span>])</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>ns <span class="op">=</span> np.array([<span class="dv">512</span>, <span class="dv">512</span>, <span class="dv">1024</span>])</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> np.<span class="bu">sum</span>(ns)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>ws <span class="op">=</span> ns <span class="op">/</span> N</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> [np.random.normal(m, s, n) <span class="cf">for</span> n, m, s <span class="kw">in</span> <span class="bu">zip</span>(ns, mus, sigmas)]</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>all_data <span class="op">=</span> np.hstack(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>勾配法によるパラメータ推定を行います．<code>train_grad</code> が上述したパラメータ推定の根幹になります． ここでは，<span class="math inline">\(\epsilon = 0.0001\)</span>とし，パラメータの変化量の絶対値和が一定値以下となる場合を収束と判定しています．</p>
+<div class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> phi(xs, mus, sigmas):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    num <span class="op">=</span> np.exp(<span class="op">-</span><span class="fl">0.5</span> <span class="op">*</span> ((xs <span class="op">-</span> mus[:,np.newaxis]) <span class="op">/</span> sigmas[:,np.newaxis]) <span class="op">**</span> <span class="fl">2.0</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    den <span class="op">=</span> np.sqrt(<span class="dv">2</span> <span class="op">*</span> np.pi) <span class="op">*</span> sigmas[:,np.newaxis]</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> num <span class="op">/</span> den</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> eta(xs, ws, mus, sigmas):</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    num <span class="op">=</span> ws[:, np.newaxis] <span class="op">*</span> phi(xs, mus, sigmas)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    den <span class="op">=</span> np.<span class="bu">sum</span>(num, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> num <span class="op">/</span> den</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> softmax(gammas):</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    num <span class="op">=</span> np.exp(gammas)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    den <span class="op">=</span> np.<span class="bu">sum</span>(num, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> num <span class="op">/</span> den</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> grad_gamma(etas, ws):</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.<span class="bu">sum</span>(etas, axis<span class="op">=</span><span class="dv">1</span>) <span class="op">-</span> etas.shape[<span class="dv">1</span>] <span class="op">*</span> ws</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> grad_mu(xs, etas, mus, sigmas):</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    num <span class="op">=</span> np.<span class="bu">sum</span>((xs <span class="op">-</span> mus[:, np.newaxis]) <span class="op">*</span> etas, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    den <span class="op">=</span>sigmas <span class="op">**</span> <span class="fl">2.0</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> num <span class="op">/</span> den</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> grad_sigma(xs, etas, mus, sigmas):</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    num <span class="op">=</span> np.<span class="bu">sum</span>((((xs <span class="op">-</span> mus[:, np.newaxis]) <span class="op">/</span> sigmas[:,np.newaxis]) <span class="op">**</span> <span class="fl">2.0</span> <span class="op">-</span> <span class="fl">1.0</span>) <span class="op">*</span> etas, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    den <span class="op">=</span> sigmas </span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> num <span class="op">/</span> den</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> train_grad(xs):</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    mus_hat <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> np.<span class="bu">max</span>(np.<span class="bu">abs</span>(xs)) <span class="op">*</span> (np.random.rand(<span class="dv">3</span>) <span class="op">-</span> <span class="fl">0.5</span>)</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    sigmas_hat <span class="op">=</span> np.random.rand(<span class="dv">3</span>)</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    gammas_hat <span class="op">=</span> np.random.rand(<span class="dv">3</span>)</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    eps <span class="op">=</span> <span class="fl">0.0001</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>    loss <span class="op">=</span> <span class="bu">float</span>(<span class="st">'inf'</span>)</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>    criteria <span class="op">=</span> <span class="fl">1e-10</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>    <span class="bu">iter</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="bu">iter</span> <span class="op">&lt;</span> <span class="dv">30000</span>:</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>        ws_hat <span class="op">=</span> softmax(gammas_hat)</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>        etas_hat <span class="op">=</span> eta(xs, ws_hat, mus_hat, sigmas_hat)</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>        delta_gammas <span class="op">=</span> eps <span class="op">*</span> grad_gamma(etas_hat, ws_hat)</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>        delta_mus <span class="op">=</span> eps <span class="op">*</span> grad_mu(xs, etas_hat, mus_hat, sigmas_hat)</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>        delta_sigmas <span class="op">=</span> eps <span class="op">*</span> grad_sigma(xs, etas_hat, mus_hat, sigmas_hat)</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>        gammas_hat <span class="op">+=</span> delta_gammas</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>        mus_hat <span class="op">+=</span> delta_mus</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>        sigmas_hat <span class="op">+=</span> delta_sigmas</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>        loss <span class="op">=</span> np.<span class="bu">sum</span>(np.<span class="bu">abs</span>(np.hstack([delta_gammas, delta_mus, delta_sigmas])))</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> loss <span class="op">&lt;</span> criteria:</span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>        <span class="bu">iter</span> <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>    ws_hat <span class="op">=</span> softmax(gammas_hat)</span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> loss, <span class="bu">iter</span>, (ws_hat, mus_hat, sigmas_hat)</span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>loss, <span class="bu">iter</span>, (ws_hat_grad, mus_hat_grad, sigmas_hat_grad) <span class="op">=</span> train_grad(all_data)</span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"loss: </span><span class="sc">{</span>loss<span class="sc">}</span><span class="ss">, iterations: </span><span class="sc">{</span><span class="bu">iter</span><span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>loss: 9.995055674503072e-08, iterations: 16943</code></pre>
+</div>
+</div>
+<p>最後に推定したパラメータ<code>ws_hat_grad</code>, <code>mus_hat_grad</code>, <code>sigmas_hat_grad</code> を用いた分布と，訓練データとをプロットして比較します． 勾配法による推定は，パラメータの並びについて曖昧さがあります．これは，<span class="math inline">\(\hat{w_{l}}\)</span>と<span class="math inline">\(w_{l}\)</span>とが必ずしも対応するとは限らないことを意味します．（他のパラメータも同様）</p>
+<p>そこで，プロットに先立ち<code>ws_hat_grad</code>, <code>mus_hat_grad</code>, <code>sigmas_hat_grad</code>と<code>ws</code>, <code>mus</code>, <code>sigmas</code>とを比較して，並び順を入れ変えることでこの問題に対応します． この処理は<code>permute</code> にて行われます．</p>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> altair <span class="im">as</span> alt</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> permute(ws, mus, sigmas, ws_hat, mus_hat, sigmas_hat):</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    preds <span class="op">=</span> np.vstack([ws_hat, mus_hat, sigmas_hat])</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    acts <span class="op">=</span> np.vstack([ws, mus, sigmas])</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    corr <span class="op">=</span> preds.T <span class="op">@</span> acts <span class="op">/</span> (np.linalg.norm(preds, axis<span class="op">=</span><span class="dv">0</span>)[:, np.newaxis] <span class="op">@</span> np.linalg.norm(acts, axis<span class="op">=</span><span class="dv">0</span>)[np.newaxis,:])</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    perm <span class="op">=</span> np.argmax(corr, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    ws_hat <span class="op">=</span> ws_hat[perm]</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    mus_hat <span class="op">=</span> mus_hat[perm]</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    sigmas_hat <span class="op">=</span> sigmas_hat[perm]</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (ws_hat, mus_hat, sigmas_hat)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot(data, ws_hat, mus_hat, sigmas_hat):</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    bins <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">6</span>, <span class="dv">6</span>, <span class="dv">128</span>)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    hists <span class="op">=</span> {<span class="ss">f"Class </span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">"</span>: (<span class="dv">128</span> <span class="op">/</span> (<span class="dv">12</span> <span class="op">*</span> N)) <span class="op">*</span> np.histogram(d, bins<span class="op">=</span>bins)[<span class="dv">0</span>] <span class="cf">for</span> i, d <span class="kw">in</span> <span class="bu">enumerate</span>(data)}</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    bin_centers <span class="op">=</span> (bins[:<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> bins[<span class="dv">1</span>:]) <span class="op">/</span> <span class="dv">2</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    bars <span class="op">=</span> alt.Chart(pd.DataFrame({</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Bin"</span>: bin_centers,</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>        <span class="op">**</span>hists,</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    })).transform_fold(</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>        fold<span class="op">=</span>[<span class="ss">f"Class </span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(data))],</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>        as_<span class="op">=</span>[<span class="st">"Class"</span>, <span class="st">"Probability"</span>]</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    ).mark_bar(opacity<span class="op">=</span><span class="fl">0.5</span>).encode(</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>        alt.X(<span class="st">"Bin:Q"</span>),</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>        alt.Y(<span class="st">"Probability:Q"</span>),</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>        alt.Color(<span class="st">'Class:N'</span>)</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>    envelopes <span class="op">=</span> {<span class="ss">f"Class </span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">"</span>: v <span class="cf">for</span> i, v <span class="kw">in</span> <span class="bu">enumerate</span>(ws_hat[:, np.newaxis] <span class="op">*</span> phi(bin_centers, mus_hat, sigmas_hat))}</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>    lines <span class="op">=</span> alt.Chart(</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>    pd.DataFrame({</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Bin"</span>: bin_centers,</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>        <span class="op">**</span>envelopes,</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>    })).transform_fold(</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>        fold<span class="op">=</span>[<span class="ss">f"Class </span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(data))],</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>        as_<span class="op">=</span>[<span class="st">"Class"</span>, <span class="st">"Probability"</span>]</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>    ).mark_line(size<span class="op">=</span><span class="dv">3</span>).encode(</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>        alt.X(<span class="st">"Bin:Q"</span>),</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>        alt.Y(<span class="st">"Probability:Q"</span>),</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>        alt.Color(<span class="st">'Class:N'</span>)</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> bars <span class="op">+</span> lines</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>ws_hat_grad, mus_hat_grad, sigmas_hat_grad <span class="op">=</span> permute(ws, mus, sigmas, ws_hat_grad, mus_hat_grad, sigmas_hat_grad)</span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>plot(data, ws_hat_grad, mus_hat_grad, sigmas_hat_grad)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+
+<div id="altair-viz-00f80e264b6545ca880dde43922625d2"></div>
+<script type="text/javascript">
+  (function(spec, embedOpt){
+    let outputDiv = document.currentScript.previousElementSibling;
+    if (outputDiv.id !== "altair-viz-00f80e264b6545ca880dde43922625d2") {
+      outputDiv = document.getElementById("altair-viz-00f80e264b6545ca880dde43922625d2");
+    }
+    const paths = {
+      "vega": "https://cdn.jsdelivr.net/npm//vega@5?noext",
+      "vega-lib": "https://cdn.jsdelivr.net/npm//vega-lib?noext",
+      "vega-lite": "https://cdn.jsdelivr.net/npm//vega-lite@4.8.1?noext",
+      "vega-embed": "https://cdn.jsdelivr.net/npm//vega-embed@6?noext",
+    };
+
+    function loadScript(lib) {
+      return new Promise(function(resolve, reject) {
+        var s = document.createElement('script');
+        s.src = paths[lib];
+        s.async = true;
+        s.onload = () => resolve(paths[lib]);
+        s.onerror = () => reject(`Error loading script: ${paths[lib]}`);
+        document.getElementsByTagName("head")[0].appendChild(s);
+      });
+    }
+
+    function showError(err) {
+      outputDiv.innerHTML = `<div class="error" style="color:red;">${err}</div>`;
+      throw err;
+    }
+
+    function displayChart(vegaEmbed) {
+      vegaEmbed(outputDiv, spec, embedOpt)
+        .catch(err => showError(`Javascript Error: ${err.message}<br>This usually means there's a typo in your chart specification. See the javascript console for the full traceback.`));
+    }
+
+    if(typeof define === "function" && define.amd) {
+      requirejs.config({paths});
+      require(["vega-embed"], displayChart, err => showError(`Error loading script: ${err.message}`));
+    } else if (typeof vegaEmbed === "function") {
+      displayChart(vegaEmbed);
+    } else {
+      loadScript("vega")
+        .then(() => loadScript("vega-lite"))
+        .then(() => loadScript("vega-embed"))
+        .catch(showError)
+        .then(() => displayChart(vegaEmbed));
+    }
+  })({"config": {"view": {"continuousWidth": 400, "continuousHeight": 300}}, "layer": [{"data": {"name": "data-628cef0de49739f89b125ce26d4699a5"}, "mark": {"type": "bar", "opacity": 0.5}, "encoding": {"color": {"type": "nominal", "field": "Class"}, "x": {"type": "quantitative", "field": "Bin"}, "y": {"type": "quantitative", "field": "Probability"}}, "transform": [{"fold": ["Class 0", "Class 1", "Class 2"], "as": ["Class", "Probability"]}]}, {"data": {"name": "data-6a7b0b5e0d1d220050268898b2937c2b"}, "mark": {"type": "line", "size": 3}, "encoding": {"color": {"type": "nominal", "field": "Class"}, "x": {"type": "quantitative", "field": "Bin"}, "y": {"type": "quantitative", "field": "Probability"}}, "transform": [{"fold": ["Class 0", "Class 1", "Class 2"], "as": ["Class", "Probability"]}]}], "$schema": "https://vega.github.io/schema/vega-lite/v4.8.1.json", "datasets": {"data-628cef0de49739f89b125ce26d4699a5": [{"Bin": -5.952755905511811, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -5.858267716535433, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -5.7637795275590555, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -5.669291338582677, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -5.574803149606299, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -5.480314960629921, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -5.3858267716535435, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -5.291338582677165, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -5.196850393700787, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -5.102362204724409, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -5.0078740157480315, "Class 0": 0.0, "Class 1": 0.005208333333333333, "Class 2": 0.0}, {"Bin": -4.913385826771654, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -4.818897637795276, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -4.724409448818898, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -4.62992125984252, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -4.535433070866142, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -4.440944881889764, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -4.346456692913385, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -4.251968503937007, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -4.15748031496063, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -4.062992125984252, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -3.968503937007874, "Class 0": 0.0, "Class 1": 0.005208333333333333, "Class 2": 0.0}, {"Bin": -3.8740157480314963, "Class 0": 0.0, "Class 1": 0.005208333333333333, "Class 2": 0.0}, {"Bin": -3.779527559055118, "Class 0": 0.0, "Class 1": 0.010416666666666666, "Class 2": 0.0}, {"Bin": -3.6850393700787403, "Class 0": 0.0, "Class 1": 0.005208333333333333, "Class 2": 0.0}, {"Bin": -3.590551181102362, "Class 0": 0.0, "Class 1": 0.005208333333333333, "Class 2": 0.0}, {"Bin": -3.4960629921259843, "Class 0": 0.0, "Class 1": 0.010416666666666666, "Class 2": 0.0}, {"Bin": -3.4015748031496065, "Class 0": 0.0, "Class 1": 0.010416666666666666, "Class 2": 0.0}, {"Bin": -3.3070866141732287, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -3.2125984251968505, "Class 0": 0.0, "Class 1": 0.005208333333333333, "Class 2": 0.0}, {"Bin": -3.1181102362204722, "Class 0": 0.0, "Class 1": 0.026041666666666664, "Class 2": 0.0}, {"Bin": -3.0236220472440944, "Class 0": 0.0, "Class 1": 0.005208333333333333, "Class 2": 0.0}, {"Bin": -2.9291338582677167, "Class 0": 0.0, "Class 1": 0.03125, "Class 2": 0.0}, {"Bin": -2.834645669291339, "Class 0": 0.0, "Class 1": 0.005208333333333333, "Class 2": 0.0}, {"Bin": -2.7401574803149606, "Class 0": 0.0, "Class 1": 0.03645833333333333, "Class 2": 0.0}, {"Bin": -2.6456692913385824, "Class 0": 0.0, "Class 1": 0.057291666666666664, "Class 2": 0.0}, {"Bin": -2.5511811023622046, "Class 0": 0.0, "Class 1": 0.05208333333333333, "Class 2": 0.0}, {"Bin": -2.456692913385827, "Class 0": 0.0, "Class 1": 0.05208333333333333, "Class 2": 0.0}, {"Bin": -2.362204724409449, "Class 0": 0.0, "Class 1": 0.046875, "Class 2": 0.0}, {"Bin": -2.267716535433071, "Class 0": 0.0, "Class 1": 0.041666666666666664, "Class 2": 0.0}, {"Bin": -2.173228346456693, "Class 0": 0.0, "Class 1": 0.06770833333333333, "Class 2": 0.0}, {"Bin": -2.078740157480315, "Class 0": 0.0, "Class 1": 0.08333333333333333, "Class 2": 0.0}, {"Bin": -1.984251968503937, "Class 0": 0.0, "Class 1": 0.08854166666666666, "Class 2": 0.0}, {"Bin": -1.8897637795275593, "Class 0": 0.0, "Class 1": 0.08854166666666666, "Class 2": 0.0}, {"Bin": -1.7952755905511815, "Class 0": 0.0, "Class 1": 0.11979166666666666, "Class 2": 0.0}, {"Bin": -1.7007874015748032, "Class 0": 0.0, "Class 1": 0.078125, "Class 2": 0.0}, {"Bin": -1.606299212598425, "Class 0": 0.0, "Class 1": 0.08854166666666666, "Class 2": 0.0}, {"Bin": -1.5118110236220472, "Class 0": 0.0, "Class 1": 0.109375, "Class 2": 0.0}, {"Bin": -1.4173228346456694, "Class 0": 0.0, "Class 1": 0.07291666666666666, "Class 2": 0.0}, {"Bin": -1.3228346456692917, "Class 0": 0.0, "Class 1": 0.08333333333333333, "Class 2": 0.0}, {"Bin": -1.2283464566929134, "Class 0": 0.0, "Class 1": 0.05208333333333333, "Class 2": 0.0}, {"Bin": -1.1338582677165352, "Class 0": 0.0, "Class 1": 0.09375, "Class 2": 0.005208333333333333}, {"Bin": -1.0393700787401574, "Class 0": 0.0, "Class 1": 0.10416666666666666, "Class 2": 0.005208333333333333}, {"Bin": -0.9448818897637796, "Class 0": 0.0, "Class 1": 0.10416666666666666, "Class 2": 0.005208333333333333}, {"Bin": -0.8503937007874018, "Class 0": 0.0, "Class 1": 0.11979166666666666, "Class 2": 0.005208333333333333}, {"Bin": -0.7559055118110241, "Class 0": 0.0, "Class 1": 0.08854166666666666, "Class 2": 0.026041666666666664}, {"Bin": -0.6614173228346458, "Class 0": 0.0, "Class 1": 0.08854166666666666, "Class 2": 0.03125}, {"Bin": -0.5669291338582676, "Class 0": 0.0, "Class 1": 0.0625, "Class 2": 0.03645833333333333}, {"Bin": -0.4724409448818898, "Class 0": 0.0, "Class 1": 0.125, "Class 2": 0.09895833333333333}, {"Bin": -0.37795275590551203, "Class 0": 0.0, "Class 1": 0.06770833333333333, "Class 2": 0.11979166666666666}, {"Bin": -0.28346456692913424, "Class 0": 0.0, "Class 1": 0.0625, "Class 2": 0.13020833333333331}, {"Bin": -0.18897637795275601, "Class 0": 0.0, "Class 1": 0.0625, "Class 2": 0.125}, {"Bin": -0.09448818897637778, "Class 0": 0.0, "Class 1": 0.07291666666666666, "Class 2": 0.19791666666666666}, {"Bin": 0.0, "Class 0": 0.0, "Class 1": 0.03125, "Class 2": 0.19270833333333331}, {"Bin": 0.09448818897637778, "Class 0": 0.0, "Class 1": 0.041666666666666664, "Class 2": 0.2552083333333333}, {"Bin": 0.18897637795275557, "Class 0": 0.0, "Class 1": 0.026041666666666664, "Class 2": 0.33854166666666663}, {"Bin": 0.2834645669291338, "Class 0": 0.0, "Class 1": 0.020833333333333332, "Class 2": 0.34375}, {"Bin": 0.37795275590551203, "Class 0": 0.0, "Class 1": 0.020833333333333332, "Class 2": 0.36979166666666663}, {"Bin": 0.4724409448818898, "Class 0": 0.0, "Class 1": 0.015625, "Class 2": 0.40104166666666663}, {"Bin": 0.5669291338582676, "Class 0": 0.0, "Class 1": 0.015625, "Class 2": 0.44791666666666663}, {"Bin": 0.6614173228346454, "Class 0": 0.005208333333333333, "Class 1": 0.005208333333333333, "Class 2": 0.40625}, {"Bin": 0.7559055118110236, "Class 0": 0.005208333333333333, "Class 1": 0.026041666666666664, "Class 2": 0.3177083333333333}, {"Bin": 0.8503937007874018, "Class 0": 0.0, "Class 1": 0.015625, "Class 2": 0.3020833333333333}, {"Bin": 0.9448818897637796, "Class 0": 0.005208333333333333, "Class 1": 0.005208333333333333, "Class 2": 0.3020833333333333}, {"Bin": 1.0393700787401574, "Class 0": 0.005208333333333333, "Class 1": 0.005208333333333333, "Class 2": 0.171875}, {"Bin": 1.1338582677165352, "Class 0": 0.005208333333333333, "Class 1": 0.005208333333333333, "Class 2": 0.22395833333333331}, {"Bin": 1.228346456692913, "Class 0": 0.010416666666666666, "Class 1": 0.005208333333333333, "Class 2": 0.13541666666666666}, {"Bin": 1.3228346456692912, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.09895833333333333}, {"Bin": 1.4173228346456694, "Class 0": 0.015625, "Class 1": 0.0, "Class 2": 0.08854166666666666}, {"Bin": 1.5118110236220472, "Class 0": 0.010416666666666666, "Class 1": 0.0, "Class 2": 0.041666666666666664}, {"Bin": 1.606299212598425, "Class 0": 0.046875, "Class 1": 0.005208333333333333, "Class 2": 0.03645833333333333}, {"Bin": 1.7007874015748028, "Class 0": 0.015625, "Class 1": 0.0, "Class 2": 0.026041666666666664}, {"Bin": 1.795275590551181, "Class 0": 0.026041666666666664, "Class 1": 0.0, "Class 2": 0.026041666666666664}, {"Bin": 1.8897637795275593, "Class 0": 0.010416666666666666, "Class 1": 0.005208333333333333, "Class 2": 0.015625}, {"Bin": 1.984251968503937, "Class 0": 0.046875, "Class 1": 0.005208333333333333, "Class 2": 0.0}, {"Bin": 2.078740157480315, "Class 0": 0.05208333333333333, "Class 1": 0.0, "Class 2": 0.005208333333333333}, {"Bin": 2.1732283464566926, "Class 0": 0.03125, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 2.2677165354330704, "Class 0": 0.09895833333333333, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 2.362204724409448, "Class 0": 0.078125, "Class 1": 0.005208333333333333, "Class 2": 0.0}, {"Bin": 2.456692913385826, "Class 0": 0.07291666666666666, "Class 1": 0.005208333333333333, "Class 2": 0.0}, {"Bin": 2.5511811023622046, "Class 0": 0.08333333333333333, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 2.6456692913385833, "Class 0": 0.09895833333333333, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 2.740157480314961, "Class 0": 0.13020833333333331, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 2.834645669291339, "Class 0": 0.125, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 2.9291338582677167, "Class 0": 0.171875, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 3.0236220472440944, "Class 0": 0.11979166666666666, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 3.1181102362204722, "Class 0": 0.10416666666666666, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 3.21259842519685, "Class 0": 0.09895833333333333, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 3.307086614173228, "Class 0": 0.09375, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 3.4015748031496056, "Class 0": 0.09895833333333333, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 3.4960629921259834, "Class 0": 0.13541666666666666, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 3.590551181102362, "Class 0": 0.09895833333333333, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 3.6850393700787407, "Class 0": 0.14583333333333331, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 3.7795275590551185, "Class 0": 0.09895833333333333, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 3.8740157480314963, "Class 0": 0.11979166666666666, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 3.968503937007874, "Class 0": 0.041666666666666664, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 4.062992125984252, "Class 0": 0.07291666666666666, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 4.15748031496063, "Class 0": 0.0625, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 4.251968503937007, "Class 0": 0.0625, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 4.346456692913385, "Class 0": 0.026041666666666664, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 4.440944881889763, "Class 0": 0.026041666666666664, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 4.535433070866141, "Class 0": 0.03645833333333333, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 4.6299212598425195, "Class 0": 0.015625, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 4.724409448818898, "Class 0": 0.015625, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 4.818897637795276, "Class 0": 0.010416666666666666, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 4.913385826771654, "Class 0": 0.010416666666666666, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 5.0078740157480315, "Class 0": 0.005208333333333333, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 5.102362204724409, "Class 0": 0.005208333333333333, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 5.196850393700787, "Class 0": 0.005208333333333333, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 5.291338582677165, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 5.385826771653543, "Class 0": 0.005208333333333333, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 5.48031496062992, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 5.574803149606299, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 5.669291338582678, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 5.7637795275590555, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 5.858267716535433, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 5.952755905511811, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}], "data-6a7b0b5e0d1d220050268898b2937c2b": [{"Bin": -5.952755905511811, "Class 0": 1.5290331011355568e-32, "Class 1": 3.4745171985017745e-06, "Class 2": 5.5033630587274166e-36}, {"Bin": -5.858267716535433, "Class 0": 6.642472276042084e-32, "Class 1": 5.170494731038079e-06, "Class 2": 5.631090691755188e-35}, {"Bin": -5.7637795275590555, "Class 0": 2.8418100568645173e-31, "Class 1": 7.634294049276847e-06, "Class 2": 5.567992305646497e-34}, {"Bin": -5.669291338582677, "Class 0": 1.1973270011577505e-30, "Class 1": 1.1184197223317794e-05, "Class 2": 5.320426866485821e-33}, {"Bin": -5.574803149606299, "Class 0": 4.968015467861433e-30, "Class 1": 1.6256981056316654e-05, "Class 2": 4.912879092136522e-32}, {"Bin": -5.480314960629921, "Class 0": 2.0300443943073153e-29, "Class 1": 2.3446289982230606e-05, "Class 2": 4.383968462546292e-31}, {"Bin": -5.3858267716535435, "Class 0": 8.169219489603855e-29, "Class 1": 3.355115797672397e-05, "Class 2": 3.780424014415465e-30}, {"Bin": -5.291338582677165, "Class 0": 3.2374869565173696e-28, "Class 1": 4.7636521970696384e-05, "Class 2": 3.1503249458411434e-29}, {"Bin": -5.196850393700787, "Class 0": 1.263536881733178e-27, "Class 1": 6.710760295087871e-05, "Class 2": 2.5369501753886308e-28}, {"Bin": -5.102362204724409, "Class 0": 4.8564648777519514e-27, "Class 1": 9.379993919328148e-05, "Class 2": 1.9742869306831e-27}, {"Bin": -5.0078740157480315, "Class 0": 1.8382518619244733e-26, "Class 1": 0.00013008659220824226, "Class 2": 1.4847397990704793e-26}, {"Bin": -4.913385826771654, "Class 0": 6.852392168444967e-26, "Class 1": 0.00017900355928781661, "Class 2": 1.0790266635127276e-25}, {"Bin": -4.818897637795276, "Class 0": 2.5155435409517894e-25, "Class 1": 0.0002443936658166704, "Class 2": 7.57802004692273e-25}, {"Bin": -4.724409448818898, "Class 0": 9.094396836315008e-25, "Class 1": 0.00033106812895927285, "Class 2": 5.143053830947877e-24}, {"Bin": -4.62992125984252, "Class 0": 3.2379370117083426e-24, "Class 1": 0.0004449835461309031, "Class 2": 3.3730916150299683e-23}, {"Bin": -4.535433070866142, "Class 0": 1.1353122516856349e-23, "Class 1": 0.0005934302497545105, "Class 2": 2.13784862570938e-22}, {"Bin": -4.440944881889764, "Class 0": 3.9202583296945e-23, "Class 1": 0.0007852257947657955, "Class 2": 1.3093854531441629e-21}, {"Bin": -4.346456692913385, "Class 0": 1.3331115195651216e-22, "Class 1": 0.001030904854426023, "Class 2": 7.749966396178227e-21}, {"Bin": -4.251968503937007, "Class 0": 4.4644782284547055e-22, "Class 1": 0.0013428940856236458, "Class 2": 4.4327564862525315e-20}, {"Bin": -4.15748031496063, "Class 0": 1.4724052959487634e-21, "Class 1": 0.0017356577309970132, "Class 2": 2.450133088443388e-19}, {"Bin": -4.062992125984252, "Class 0": 4.7822961350691435e-21, "Class 1": 0.002225797050684238, "Class 2": 1.308721459389875e-18}, {"Bin": -3.968503937007874, "Class 0": 1.529670859644213e-20, "Class 1": 0.0028320843732403895, "Class 2": 6.75532921565289e-18}, {"Bin": -3.8740157480314963, "Class 0": 4.818501012338627e-20, "Class 1": 0.003575410920503313, "Class 2": 3.3696714702940804e-17}, {"Bin": -3.779527559055118, "Class 0": 1.4947836846538387e-19, "Class 1": 0.0044786269224206645, "Class 2": 1.6243153552319491e-16}, {"Bin": -3.6850393700787403, "Class 0": 4.566644207680105e-19, "Class 1": 0.005566253229999132, "Class 2": 7.566497373948913e-16}, {"Bin": -3.590551181102362, "Class 0": 1.3739421194007979e-18, "Class 1": 0.006864045969791915, "Class 2": 3.4061295995297187e-15}, {"Bin": -3.4960629921259843, "Class 0": 4.070915909491327e-18, "Class 1": 0.008398400014905718, "Class 2": 1.4817304230103692e-14}, {"Bin": -3.4015748031496065, "Class 0": 1.1878682073676157e-17, "Class 1": 0.010195583329731568, "Class 2": 6.229009229807458e-14}, {"Bin": -3.3070866141732287, "Class 0": 3.413475730498623e-17, "Class 1": 0.012280802594009654, "Class 2": 2.5305242162372627e-13}, {"Bin": -3.2125984251968505, "Class 0": 9.66001527635072e-17, "Class 1": 0.014677110767542734, "Class 2": 9.934448618468373e-13}, {"Bin": -3.1181102362204722, "Class 0": 2.69222430234451e-16, "Class 1": 0.01740417906042141, "Class 2": 3.768936192644112e-12}, {"Bin": -3.0236220472440944, "Class 0": 7.389194537908058e-16, "Class 1": 0.020476968553397343, "Class 2": 1.3817693305400548e-11}, {"Bin": -2.9291338582677167, "Class 0": 1.9972636320089745e-15, "Class 1": 0.023904349692808104, "Class 2": 4.8954662381614476e-11}, {"Bin": -2.834645669291339, "Class 0": 5.316503704233351e-15, "Class 1": 0.02768773011339401, "Class 2": 1.6760783545546568e-10}, {"Bin": -2.7401574803149606, "Class 0": 1.3936999382420515e-14, "Class 1": 0.03181976164886617, "Class 2": 5.545443975700209e-10}, {"Bin": -2.6456692913385824, "Class 0": 3.598030777942924e-14, "Class 1": 0.03628320485829113, "Class 2": 1.7730462875613589e-09}, {"Bin": -2.5511811023622046, "Class 0": 9.147720791033341e-14, "Class 1": 0.04105003286106602, "Class 2": 5.47829698131486e-09}, {"Bin": -2.456692913385827, "Class 0": 2.2904106805358846e-13, "Class 1": 0.04608085482653674, "Class 2": 1.6357345129217433e-08}, {"Bin": -2.362204724409449, "Class 0": 5.647630216199414e-13, "Class 1": 0.05132473246401291, "Class 2": 4.7197805822795666e-08}, {"Bin": -2.267716535433071, "Class 0": 1.3714234756382737e-12, "Class 1": 0.05671945002779363, "Class 2": 1.316050480795527e-07}, {"Bin": -2.173228346456693, "Class 0": 3.279663894356941e-12, "Class 1": 0.062192279855042366, "Class 2": 3.546214767693342e-07}, {"Bin": -2.078740157480315, "Class 0": 7.723951380634613e-12, "Class 1": 0.06766126194432326, "Class 2": 9.234199792118207e-07}, {"Bin": -1.984251968503937, "Class 0": 1.7914395470737917e-11, "Class 1": 0.07303698870147526, "Class 2": 2.3236742554642704e-06}, {"Bin": -1.8897637795275593, "Class 0": 4.091826554365001e-11, "Class 1": 0.07822485631411667, "Class 2": 5.650579282773874e-06}, {"Bin": -1.7952755905511815, "Class 0": 9.204171639200377e-11, "Class 1": 0.08312771420444656, "Class 2": 1.3278604820126905e-05}, {"Bin": -1.7007874015748032, "Class 0": 2.0389408846634477e-10, "Class 1": 0.08764881580389652, "Class 2": 3.0154606562121632e-05}, {"Bin": -1.606299212598425, "Class 0": 4.4481251030742e-10, "Class 1": 0.09169494968678582, "Class 2": 6.61754089097979e-05}, {"Bin": -1.5118110236220472, "Class 0": 9.55656427971374e-10, "Class 1": 0.09517961193981747, "Class 2": 0.00014033995972537473}, {"Bin": -1.4173228346456694, "Class 0": 2.0219900336584485e-09, "Class 1": 0.09802607023743264, "Class 2": 0.00028761253399114543}, {"Bin": -1.3228346456692917, "Class 0": 4.213166954517356e-09, "Class 1": 0.10017016863605835, "Class 2": 0.0005696079159957945}, {"Bin": -1.2283464566929134, "Class 0": 8.645512856968098e-09, "Class 1": 0.1015627301442534, "Class 2": 0.0010901492762713115}, {"Bin": -1.1338582677165352, "Class 0": 1.7471302613055086e-08, "Class 1": 0.10217143149646345, "Class 2": 0.002016218857353188}, {"Bin": -1.0393700787401574, "Class 0": 3.4770604752860255e-08, "Class 1": 0.10198205034077931, "Class 2": 0.0036035547156770403}, {"Bin": -0.9448818897637796, "Class 0": 6.814776792926906e-08, "Class 1": 0.10099901764441942, "Class 2": 0.006223953165023903}, {"Bin": -0.8503937007874018, "Class 0": 1.3153564553842253e-07, "Class 1": 0.09924524535671626, "Class 2": 0.010388270700715468}, {"Bin": -0.7559055118110241, "Class 0": 2.5002746549824213e-07, "Class 1": 0.09676123868922037, "Class 2": 0.016755675736117637}, {"Bin": -0.6614173228346458, "Class 0": 4.680415508719956e-07, "Class 1": 0.09360354104050678, "Class 2": 0.026116945512091535}, {"Bin": -0.5669291338582676, "Class 0": 8.628464848734692e-07, "Class 1": 0.08984259492909158, "Class 2": 0.03933911321096423}, {"Bin": -0.4724409448818898, "Class 0": 1.566516926505436e-06, "Class 1": 0.08556013190307493, "Class 2": 0.05726226142971122}, {"Bin": -0.37795275590551203, "Class 0": 2.800845047504353e-06, "Class 1": 0.08084622635147795, "Class 2": 0.08054789067120517}, {"Bin": -0.28346456692913424, "Class 0": 4.93168701815028e-06, "Class 1": 0.07579616116265206, "Class 2": 0.10949179996745621}, {"Bin": -0.18897637795275601, "Class 0": 8.551737556472265e-06, "Class 1": 0.07050725669327702, "Class 2": 0.1438304256157847}, {"Bin": -0.09448818897637778, "Class 0": 1.460379254823589e-05, "Class 1": 0.06507580870286066, "Class 2": 0.18258356508176976}, {"Bin": 0.0, "Class 0": 2.456005748095325e-05, "Class 1": 0.05959426664377911, "Class 2": 0.22398263359257262}, {"Bin": 0.09448818897637778, "Class 0": 4.0676683476091554e-05, "Class 1": 0.054148762433731346, "Class 2": 0.2655270421746267}, {"Bin": 0.18897637795275557, "Class 0": 6.634590558986368e-05, "Class 1": 0.048817073467133654, "Class 2": 0.3041899878179719}, {"Bin": 0.2834645669291338, "Class 0": 0.00010657004519856312, "Class 1": 0.04366707428509852, "Class 2": 0.3367617984303015}, {"Bin": 0.37795275590551203, "Class 0": 0.0001685809926698981, "Class 1": 0.03875570121726643, "Class 2": 0.3602819226402615}, {"Bin": 0.4724409448818898, "Class 0": 0.00026262405147738516, "Class 1": 0.034128425502932554, "Class 2": 0.3724807817388192}, {"Bin": 0.5669291338582676, "Class 0": 0.0004029144287586201, "Class 1": 0.029819204679870415, "Class 2": 0.37214056734899215}, {"Bin": 0.6614173228346454, "Class 0": 0.0006087564513473521, "Class 1": 0.0258508607818654, "Class 2": 0.35929560726953885}, {"Bin": 0.7559055118110236, "Class 0": 0.0009057884248604545, "Class 1": 0.022235818022928736, "Class 2": 0.3352266573754487}, {"Bin": 0.8503937007874018, "Class 0": 0.0013272795085760346, "Class 1": 0.01897712258592003, "Class 2": 0.3022504335955365}, {"Bin": 0.9448818897637796, "Class 0": 0.0019153601425218093, "Class 1": 0.016069662823576653, "Class 2": 0.26335226950913937}, {"Bin": 1.0393700787401574, "Class 0": 0.0027220176396963616, "Class 1": 0.01350150915929537, "Class 2": 0.22174250277721508}, {"Bin": 1.1338582677165352, "Class 0": 0.003809639297896131, "Class 1": 0.01125529846213612, "Class 2": 0.18042743353452587}, {"Bin": 1.228346456692913, "Class 0": 0.005250845186859764, "Class 1": 0.009309596669317775, "Class 2": 0.14187240962172468}, {"Bin": 1.3228346456692912, "Class 0": 0.007127332228564329, "Class 1": 0.007640184837963267, "Class 2": 0.10780404715874392}, {"Bin": 1.4173228346456694, "Class 0": 0.009527462007452712, "Class 1": 0.00622122652028996, "Class 2": 0.07916148499179601}, {"Bin": 1.5118110236220472, "Class 0": 0.012542377883609668, "Class 1": 0.005026287350259244, "Class 2": 0.05617389609639193}, {"Bin": 1.606299212598425, "Class 0": 0.016260540229656395, "Class 1": 0.004029190131554631, "Class 2": 0.03852094276697449}, {"Bin": 1.7007874015748028, "Class 0": 0.020760723882624392, "Class 1": 0.00320469984506564, "Class 2": 0.025527072709499728}, {"Bin": 1.795275590551181, "Class 0": 0.026103722728521347, "Class 1": 0.00252904237805613, "Class 2": 0.016347331519700116}, {"Bin": 1.8897637795275593, "Class 0": 0.03232323624365756, "Class 1": 0.001980268154929104, "Class 2": 0.010116597505157794}, {"Bin": 1.984251968503937, "Class 0": 0.03941664520873915, "Class 1": 0.0015384771486849139, "Class 2": 0.006050117652060544}, {"Bin": 2.078740157480315, "Class 0": 0.04733658390194205, "Class 1": 0.0011859250589295837, "Class 2": 0.0034965111336415066}, {"Bin": 2.1732283464566926, "Class 0": 0.05598434503302317, "Class 1": 0.0009070319628853055, "Class 2": 0.0019527549963734025}, {"Bin": 2.2677165354330704, "Class 0": 0.0652061747139768, "Class 1": 0.0006883147662590527, "Class 2": 0.001053907139977148}, {"Bin": 2.362204724409448, "Class 0": 0.07479340035187096, "Class 1": 0.000518263628191853, "Class 2": 0.0005496657576847719}, {"Bin": 2.456692913385826, "Class 0": 0.08448707332119507, "Class 1": 0.0003871805435688828, "Class 2": 0.00027703635567725645}, {"Bin": 2.5511811023622046, "Class 0": 0.09398741119056135, "Class 1": 0.00028699575224065726, "Class 2": 0.00013493250880792053}, {"Bin": 2.6456692913385833, "Class 0": 0.10296782566514927, "Class 1": 0.00021107488538224883, "Class 2": 6.3509423705007e-05}, {"Bin": 2.740157480314961, "Class 0": 0.11109277872605032, "Class 1": 0.00015402698162389697, "Class 2": 2.888693707362315e-05}, {"Bin": 2.834645669291339, "Class 0": 0.11803819254765534, "Class 1": 0.00011152088243052568, "Class 2": 1.2697159223850588e-05}, {"Bin": 2.9291338582677167, "Class 0": 0.1235127254463164, "Class 1": 8.011516640189247e-05, "Class 2": 5.393285154328679e-06}, {"Bin": 3.0236220472440944, "Class 0": 0.12727798539055668, "Class 1": 5.710477576001702e-05, "Class 2": 2.2138181672082844e-06}, {"Bin": 3.1181102362204722, "Class 0": 0.12916573310515594, "Class 1": 4.038585404825731e-05, "Class 2": 8.781571830095358e-07}, {"Bin": 3.21259842519685, "Class 0": 0.12909034669325165, "Class 1": 2.833904833453898e-05, "Class 2": 3.366234106418613e-07}, {"Bin": 3.307086614173228, "Class 0": 0.12705526149686372, "Class 1": 1.9730604988059106e-05, "Class 2": 1.2469760739979915e-07}, {"Bin": 3.4015748031496056, "Class 0": 0.12315271050502477, "Class 1": 1.3629963460321314e-05, "Class 2": 4.463891934171765e-08}, {"Bin": 3.4960629921259834, "Class 0": 0.11755679263339812, "Class 1": 9.3421778471334e-06, "Class 2": 1.5442263925859658e-08}, {"Bin": 3.590551181102362, "Class 0": 0.11051059453482073, "Class 1": 6.353319842337592e-06, "Class 2": 5.162380553627329e-09}, {"Bin": 3.6850393700787407, "Class 0": 0.10230869275398745, "Class 1": 4.286989873090623e-06, "Class 2": 1.6677494587972025e-09}, {"Bin": 3.7795275590551185, "Class 0": 0.09327678933625173, "Class 1": 2.8701417450968552e-06, "Class 2": 5.206589611633624e-10}, {"Bin": 3.8740157480314963, "Class 0": 0.08375043578617432, "Class 1": 1.9065727551866827e-06, "Class 2": 1.5707882122946249e-10}, {"Bin": 3.968503937007874, "Class 0": 0.0740547628269248, "Class 1": 1.2566159549512892e-06, "Class 2": 4.5795590828135715e-11}, {"Bin": 4.062992125984252, "Class 0": 0.0644868774802644, "Class 1": 8.217711794771925e-07, "Class 2": 1.2902428057331043e-11}, {"Bin": 4.15748031496063, "Class 0": 0.0553021651477825, "Class 1": 5.332101303638447e-07, "Class 2": 3.512861058397904e-12}, {"Bin": 4.251968503937007, "Class 0": 0.04670521271410475, "Class 1": 3.4327725395285344e-07, "Class 2": 9.242559313654006e-13}, {"Bin": 4.346456692913385, "Class 0": 0.038845526058339186, "Class 1": 2.1927585467460707e-07, "Class 2": 2.349985955255177e-13}, {"Bin": 4.440944881889763, "Class 0": 0.0318177227509249, "Class 1": 1.3897470057937684e-07, "Class 2": 5.774043268260506e-14}, {"Bin": 4.535433070866141, "Class 0": 0.025665493094905262, "Class 1": 8.73936405622879e-08, "Class 2": 1.3709971378021462e-14}, {"Bin": 4.6299212598425195, "Class 0": 0.020388372752471358, "Class 1": 5.452843895356837e-08, "Class 2": 3.145826808573009e-15}, {"Bin": 4.724409448818898, "Class 0": 0.015950266759005467, "Class 1": 3.375712470247991e-08, "Class 2": 6.975491551540243e-16}, {"Bin": 4.818897637795276, "Class 0": 0.012288695124842217, "Class 1": 2.0735140421603637e-08, "Class 2": 1.4947087326102285e-16}, {"Bin": 4.913385826771654, "Class 0": 0.00932386597145258, "Class 1": 1.2637107011601245e-08, "Class 2": 3.0951384006545794e-17}, {"Bin": 5.0078740157480315, "Class 0": 0.0069668860528493606, "Class 1": 7.641656203734371e-09, "Class 2": 6.193630919168074e-18}, {"Bin": 5.102362204724409, "Class 0": 0.0051266518570678475, "Class 1": 4.584864196279727e-09, "Class 2": 1.197711770025134e-18}, {"Bin": 5.196850393700787, "Class 0": 0.003715192985834586, "Class 1": 2.729383786359623e-09, "Class 2": 2.238211174745443e-19}, {"Bin": 5.291338582677165, "Class 0": 0.0026514373105752335, "Class 1": 1.6121367857593307e-09, "Class 2": 4.0419556959281833e-20}, {"Bin": 5.385826771653543, "Class 0": 0.001863518813989068, "Class 1": 9.447965915925915e-10, "Class 2": 7.053810446735009e-21}, {"Bin": 5.48031496062992, "Class 0": 0.0012898482933822604, "Class 1": 5.493813313137896e-10, "Class 2": 1.1895912685148756e-21}, {"Bin": 5.574803149606299, "Class 0": 0.0008792166791817614, "Class 1": 3.1696304221367176e-10, "Class 2": 1.9387128891916138e-22}, {"Bin": 5.669291338582678, "Class 0": 0.0005902087400361491, "Class 1": 1.8144395560906263e-10, "Class 2": 3.053310521858919e-23}, {"Bin": 5.7637795275590555, "Class 0": 0.0003901825006667243, "Class 1": 1.030565343082981e-10, "Class 2": 4.64697352149796e-24}, {"Bin": 5.858267716535433, "Class 0": 0.00025402845824094806, "Class 1": 5.807747295279298e-11, "Class 2": 6.834569565149671e-25}, {"Bin": 5.952755905511811, "Class 0": 0.00016287311040831878, "Class 1": 3.247424318086083e-11, "Class 2": 9.713905755161071e-26}]}}, {"mode": "vega-lite"});
+</script>
+</div>
+</div>
+<p>以上の結果より，適切に推定できていることが確認できました．しかしながら，勾配法による方法は</p>
+<ul>
+<li>初期値によっては推定に失敗する場合がある</li>
+<li><span class="math inline">\(\epsilon\)</span>の選択によっては推定に失敗する場合がある</li>
+<li>収束が遅い</li>
+</ul>
+<p>という問題があります．これらの問題に対応するため，EMアルゴリズムによるパラメータ推定を以下に述べます．</p>
+</section>
+<section id="emアルゴリズムによるパラメータの推定" class="level2">
+<h2 class="anchored" data-anchor-id="emアルゴリズムによるパラメータの推定">EMアルゴリズムによるパラメータの推定</h2>
+<p>次にEMアルゴリズムによるパラメータの推定を行います．EMアルゴリズムは混合ガウスモデルのパラメータ推定以外にも利用可能な汎用的なアルゴリズムです．しかしながら，ここではあまり深入りせずに混合ガウスモデルのパラメータ推定方法の一つとして取り扱います．</p>
+<p>EMアルゴリズムはEステップとMステップを交互に繰り返すことで実現します．両ステップについての詳細を以下に述べます．</p>
+<section id="eステップ" class="level3">
+<h3 class="anchored" data-anchor-id="eステップ">Eステップ</h3>
+<p>Eステップでは，対数尤度関数<span class="math inline">\(\log L\left(\vec{\theta}\right)\)</span>に対して，現在の推定値<span class="math inline">\(\hat{\vec{\theta}}\)</span>で接する下界<span class="math inline">\(b\left(\vec{\theta}\right)\)</span>を求めます．すなわち，<span class="math inline">\(b\left(\vec{\theta}\right)\)</span>は以下の関係を満たす必要があります．</p>
+<p><span class="math display">\[
+\begin{aligned}
+b\left(\vec{\theta}\right)  &amp;\leq \log L\left(\vec{\theta}\right) \\
+b\left(\hat{\vec{\theta}}\right)  &amp;= \log L\left(\hat{\vec{\theta}}\right) \\
+\end{aligned}
+\]</span></p>
+<p>下界<span class="math inline">\(b\left(\vec{\theta}\right)\)</span>を求めると聞くと非常に複雑そうに思えます．しかしながら，混合ガウスモデルのパラメータ推定という用途に限定するとそこまで複雑でもありません．まず，対数尤度関数<span class="math inline">\(\log L\left(\vec{\theta}\right)\)</span>に対して<a href="https://ja.wikipedia.org/wiki/%E3%82%A4%E3%82%A7%E3%83%B3%E3%82%BB%E3%83%B3%E3%81%AE%E4%B8%8D%E7%AD%89%E5%BC%8F">イェンセンの不等式</a>を適用し，下界<span class="math inline">\(b'\left(\vec{\theta}; \bf{A}\right)\)</span>を求めていきます．ここで，<span class="math inline">\(\bf{A} = \left\{a_{i,l}\right\}\)</span>であり，<span class="math inline">\(b\left(\vec{\theta}\right) = b'\left(\vec{\theta}; \hat{\bf{A}}\right)\)</span>であるとします．</p>
+<p><span class="math display">\[
+\begin{aligned}
+\log L\left(\vec{\theta}\right) &amp;=  \sum_{i=1}^{n} \log \sum_{l}^{m} w_{l}\phi\left(x_{i}; \mu_{l}, \sigma_{l}\right) \\
+&amp;= \sum_{i=1}^{n} \log \sum_{l}^{m}  a_{i,l}\frac{w_{l}\phi\left(x_{i}; \mu_{l}, \sigma_{l}\right)}{a_{i,l}} \\
+&amp;\geq \sum_{i=1}^{n} \sum_{l}^{m}  a_{i,l} \log\frac{w_{l}\phi\left(x_{i}; \mu_{l}, \sigma_{l}\right)}{a_{i,l}} \\
+&amp;= b'\left(\vec{\theta}; \bf{A}\right)
+\end{aligned}
+\]</span></p>
+<p>次に，<span class="math inline">\(b'\left(\hat{\vec{\theta}}; \hat{\bf{A}}\right) = \log L\left(\hat{\vec{\theta}}\right)\)</span>となる<span class="math inline">\(\hat{\bf{A}}\)</span>を求めます． <span class="math display">\[
+\begin{aligned}
+b'\left(\hat{\vec{\theta}}; \bf{A}\right)　&amp;=  \sum_{i=1}^{n} \sum_{l}^{m}  a_{i,l} \log\frac{\hat{w_{l}}\phi\left(x_{i}; \hat{\mu_{l}}, \hat{\sigma_{l}}\right)}{a_{i,l}} \\
+&amp; \text{ここで$\hat{\vec{\theta}}$に対する$\eta_{i,l} $である$\hat{\eta}_{i,l}$を考えます} \\
+\hat{\eta}_{i,l} &amp;=  \frac{\hat{w}_{l}\phi\left(x_{i}; \hat{\mu}_{l}, \hat{\sigma}_{l}\right)}{\sum_{k'=1}^{m} \hat{w}_{k'}\phi\left(x_{i}; \hat{\mu}_{k'}, \hat{\sigma}_{k'}\right)} \\
+&amp;  \text{そして$a_{i,l} = \hat{\eta}_{i,l}$とすると} \\
+b'\left(\hat{\vec{\theta}}; \bf{A}\right)　&amp;=  \sum_{i=1}^{n} \sum_{l}^{m}  \hat{\eta}_{i,l} \log\frac{\hat{w_{l}}\phi\left(x_{i}; \hat{\mu_{l}}, \hat{\sigma_{l}}\right)}{\hat{\eta}_{i,l}} \\
+&amp;= \sum_{i=1}^{n} \sum_{l}^{m}  \hat{\eta}_{i,l} \log \sum_{l'=1}^{m} \hat{w}_{l'}\phi\left(x_{i}; \hat{\mu}_{l'}, \hat{\sigma}_{l'}\right) \\
+&amp;=  \left(\sum_{l}^{m}  \hat{\eta}_{i,l}\right)\sum_{i=1}^{n} \log \sum_{l'=1}^{m} \hat{w}_{l'}\phi\left(x_{i}; \hat{\mu}_{l'}, \hat{\sigma}_{l'}\right) \\
+&amp;=  \sum_{i=1}^{n} \log \sum_{l'=1}^{m} \hat{w}_{l'}\phi\left(x_{i}; \hat{\mu}_{l'}, \hat{\sigma}_{l'}\right) \\
+&amp;= \log L\left(\vec{\theta}\right)
+\end{aligned}
+\]</span></p>
+<p>従って，<span class="math inline">\(\hat{\bf{A}} = \left\{\hat{\eta}_{i,l}\right\}\)</span>とすると，</p>
+<p><span class="math display">\[
+\begin{aligned}
+b\left(\vec{\theta}\right) &amp;= b'\left(\vec{\theta}; \hat{\bf{A}}\right)\\
+&amp;= \sum_{i=1}^{n} \sum_{l}^{m}  \hat{\eta}_{i,l} \log\frac{w_{l}\phi\left(x_{i}; \mu_{l}, \sigma_{l}\right)}{\hat{\eta}_{i,l}} \\
+\end{aligned}
+\]</span></p>
+<p>以上の様に，下界<span class="math inline">\(b\left(\vec{\theta}\right)\)</span>を求めることは，現在の推定値<span class="math inline">\(\hat{\vec{\theta}}\)</span>を用いて<span class="math inline">\(\hat{\eta}_{i,l}\)</span>を求めることで実現します．</p>
+</section>
+<section id="mステップ" class="level3">
+<h3 class="anchored" data-anchor-id="mステップ">Mステップ</h3>
+<p>Mステップでは，<span class="math inline">\(b\left(\vec{\theta}\right)\)</span>が最大となる<span class="math inline">\(\hat{\theta}'\)</span>を求めます．<span class="math inline">\(\hat{\theta}'\)</span>は<span class="math inline">\(b\left(\vec{\theta}\right)\)</span>の各パラメータに対する導関数が<span class="math inline">\(0\)</span>となる<span class="math inline">\(\theta\)</span>を採用します．まずは， <span class="math inline">\(\gamma_{l}\)</span>についてです</p>
+<p><span class="math display">\[
+\begin{aligned}
+\frac{\partial}{\partial \gamma_{l}} b\left(\vec{\theta}\right) &amp;= \frac{\partial}{\partial \gamma_{l}} \sum_{i=1}^{n} \sum_{k}^{m}  \hat{\eta}_{i,k} \log\frac{w_{k}\phi\left(x_{i}; \mu_{k}, {\sigma_{k}}\right)}{\hat{\eta}_{i,k}} \\
+&amp;=  \sum_{i=1}^{n} \sum_{k}^{m} \hat{\eta}_{i,k} \frac{\hat{\eta}_{i,k}}{w_{k}\phi\left(x_{i}; \mu_{k}, \sigma_{k}\right)} \frac{\phi\left(x_{i}; \mu_{k}, \sigma_{k}\right)}{\gamma_{l}} \frac{\partial w_{k}}{\partial \gamma_{l}} \\
+&amp;= \sum_{i=1}^{n} \sum_{k}^{m} \frac{\hat{\eta}_{i,k}}{w_{k}} w_{k}\left(\delta_{k,l} - w_{l}\right) \\
+&amp;= \sum_{i=1}^{n} \sum_{k}^{m} \hat{\eta}_{i,k}\delta_{k,l} - w_{l}\hat{\eta}_{i,k} \\
+&amp;= \sum_{i=1}^{n} \hat{\eta}_{i,l} - w_{l}\left(\sum_{k}^{m} \hat{\eta}_{i,k}\right) \\
+&amp;= \sum_{i=1}^{n} \hat{\eta}_{i,l} - w_{l} \\
+&amp; \text{$\frac{\partial}{\partial \gamma_{l}} b\left(\hat{\vec{\theta}}\right) = 0$より}\\
+\sum_{i=1}^{n} \hat{w}_{l} &amp;= \sum_{i=1}^{n} \hat{\eta}_{i,l} \\
+n\hat{w}_{l} &amp;= \sum_{i=1}^{n} \hat{\eta}_{i,l} \\
+\hat{w}_{l} &amp;= \frac{1}{n} \sum_{i=1}^{n} \hat{\eta}_{i,l}
+\end{aligned}
+\]</span></p>
+<p>次に，<span class="math inline">\(\mu_{l}\)</span>についてです．</p>
+<p><span class="math display">\[
+\begin{aligned}
+\frac{\partial}{\partial \mu_{l}} b\left(\vec{\theta}\right) &amp;= \frac{\partial}{\partial \mu_{l}} \sum_{i=1}^{n} \sum_{k}^{m}  \hat{\eta}_{i,k} \log\frac{w_{k}\phi\left(x_{i}; \mu_{k}, \sigma_{k}\right)}{\hat{\eta}_{i,k}} \\
+&amp;= \sum_{i=1}^{n} \sum_{k}^{m} \hat{\eta}_{i,k} \frac{\hat{\eta}_{i,k}}{w_{k}\phi\left(x_{i}; \mu_{k}, \sigma_{k}\right)} \frac{ w_{k}}{\hat{\eta}_{i,k} } \frac{\partial }{\partial \mu_{l}}  \phi\left(x_{i}; \mu_{k}, \sigma_{k}\right)\\
+&amp;= \sum_{i=1}^{n} \sum_{k}^{m}  \frac{\hat{\eta}_{i,k}}{\phi\left(x_{i}; \mu_{k}, \sigma_{k}\right)} \frac{x_{i} - \mu_{k}}{\sigma_{k}^{2}}  \phi\left(x_{i}; \mu_{k}, \sigma_{k}\right) \delta_{k,l}\\
+&amp;= \frac{1}{\sigma_{l}^{2}} \sum_{i=1}^{n}  \hat{\eta}_{i,l}x_{i} - \hat{\eta}_{i,l}\mu_{l}\\
+&amp; \text{$\frac{\partial}{\partial \mu_{l}} b\left(\hat{\vec{\theta}}\right) = 0$より}\\
+\hat{\mu}_{l} \sum_{i=1}^{n}\hat{\eta}_{i,l}&amp;=  \sum_{i=1}^{n}\hat{\eta}_{i,l}x_{i}  \\
+\hat{\mu}_{l} &amp;=  \frac{\sum_{i=1}^{n}\hat{\eta}_{i,l}x_{i}  }{\sum_{i=1}^{n}\hat{\eta}_{i,l}}\\
+\end{aligned}
+\]</span></p>
+<p>最後に，<span class="math inline">\(\sigma_{l}\)</span>についてです．</p>
+<p><span class="math display">\[
+\begin{aligned}
+\frac{\partial}{\partial \sigma_{l}} b\left(\vec{\theta}\right) &amp;= \frac{\partial}{\partial \sigma_{l}} \sum_{i=1}^{n} \sum_{k}^{m}  \hat{\eta}_{i,k} \log\frac{w_{k}\phi\left(x_{i}; \mu_{k}, \sigma_{k}\right)}{\hat{\eta}_{i,k}} \\
+&amp;= \sum_{i=1}^{n} \sum_{k}^{m} \hat{\eta}_{i,k} \frac{\hat{\eta}_{i,k}}{w_{k}\phi\left(x_{i}; \mu_{k}, \sigma_{k}\right)} \frac{ w_{k}}{\hat{\eta}_{i,k} } \frac{\partial }{\partial \sigma_{l}}  \phi\left(x_{i}; \mu_{k}, \sigma_{k}\right)\\
+&amp;= \sum_{i=1}^{n} \sum_{k}^{m}  \frac{\hat{\eta}_{i,k}}{\phi\left(x_{i}; \mu_{k}, \sigma_{k}\right)}\frac{\left(x_{i} - \mu_{k}\right)^{2} - \sigma_{k}^{2}}{\sigma_{k}^{3}} \phi\left(x_{i}; \mu_{k}, \sigma_{k}\right)\delta_{k,l}\\
+&amp;= \frac{1}{\sigma_{l}^{3}} \sum_{i=1}^{n} \hat{\eta}_{i,l}\left(x_{i} - \mu_{l}\right)^{2} - \hat{\eta}_{i,l}\sigma_{l}^{2} \\
+&amp; \text{$\frac{\partial}{\partial \mu_{l}} b\left(\hat{\vec{\theta}}\right) = 0$より}\\
+\hat{\sigma}_{l}^{2} \sum_{i=1}^{n}\hat{\eta}_{i,l}&amp;=  \sum_{i=1}^{n} \hat{\eta}_{i,l}\left(x_{i} - \mu_{l}\right)^{2} \\
+\hat{\sigma}_{l}  &amp;= \sqrt{\frac{\sum_{i=1}^{n} \hat{\eta}_{i,l}\left(x_{i} - \mu_{l}\right)^{2}}{\sum_{i=1}^{n}\hat{\eta}_{i,l}}}\\
+\end{aligned}
+\]</span></p>
+<p>まとめると，Mステップでは以下の様にパラメータを更新します．</p>
+<p><span class="math display">\[
+\begin{aligned}
+\hat{w}_{l} &amp;= \frac{1}{n} \sum_{i=1}^{n} \hat{\eta}_{i,l}\\
+\hat{\mu}_{l} &amp;=  \frac{\sum_{i=1}^{n}\hat{\eta}_{i,l}x_{i}  }{\sum_{i=1}^{n}\hat{\eta}_{i,l}}\\
+\hat{\sigma}_{l}  &amp;= \sqrt{\frac{\sum_{i=1}^{n} \hat{\eta}_{i,l}\left(x_{i} - \mu_{l}\right)^{2}}{\sum_{i=1}^{n}\hat{\eta}_{i,l}}}\\
+\end{aligned}
+\]</span></p>
+<p>次にEMアルゴリズムを用いてパラメータの推定を行っていきます．具体的な手順は以下の通りです．</p>
+<ol type="1">
+<li><span class="math inline">\(\hat{\gamma_{l}}\)</span>, <span class="math inline">\(\hat{\mu_{l}}\)</span>, <span class="math inline">\(\hat{\sigma_{l}}\)</span>をランダムな値で初期化</li>
+<li><span class="math inline">\(\hat{\eta_{i,l}}\)</span>を更新し，下界<span class="math inline">\(b\left(\vec{\theta}\right)\)</span>を求める（Eステップ） <span class="math display">\[
+\begin{aligned}
+\hat{\eta_{i,l}} &amp;= \frac{\hat{w}_{l}\phi\left(x_{i}; \hat{\mu}_{l}, \hat{\sigma}_{l}\right)}{\sum_{k'=1}^{m} \hat{w}_{k'}\phi\left(x_{i}; \hat{\mu}_{k'}, \hat{\sigma}_{k'}\right)}
+\end{aligned}
+\]</span></li>
+<li>下界<span class="math inline">\(b\left(\vec{\theta}\right)\)</span>を最大化する<span class="math inline">\(\hat{\vec{\theta}}'\)</span>を求める（Mステップ） <span class="math display">\[
+\begin{aligned}
+\hat{w}_{l} &amp;= \frac{1}{n} \sum_{i=1}^{n} \hat{\eta}_{i,l}\\
+\hat{\mu}_{l} &amp;=  \frac{\sum_{i=1}^{n}\hat{\eta}_{i,l}x_{i}  }{\sum_{i=1}^{n}\hat{\eta}_{i,l}}\\
+\hat{\sigma}_{l}  &amp;= \sqrt{\frac{\sum_{i=1}^{n} \hat{\eta}_{i,l}\left(x_{i} - \mu_{l}\right)^{2}}{\sum_{i=1}^{n}\hat{\eta}_{i,l}}}\\
+\end{aligned}
+\]</span></li>
+<li>一定回数または収束するまで2〜3を繰り返す</li>
+</ol>
+<p>EMアルゴリズムによるパラメータ推定を行うコードは以下の通りです．勾配法の時と同様に<code>train_em</code> が上述したパラメータ推定の根幹になります． そして，全パラメータの変化量の絶対値和が一定値以下となる場合を収束と判定しています．また，入力については勾配法で用いたものを再度使用します．</p>
+<div class="cell" data-execution_count="31">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> opt_w(etas):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.average(etas, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> opt_mu(xs, etas):</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    num <span class="op">=</span> np.<span class="bu">sum</span>(etas <span class="op">*</span> xs, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    den <span class="op">=</span> np.<span class="bu">sum</span>(etas, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> num <span class="op">/</span> den</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> opt_sigma(xs, etas, mus):</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    num <span class="op">=</span> np.<span class="bu">sum</span>((xs <span class="op">-</span> mus[:, np.newaxis]) <span class="op">**</span> <span class="dv">2</span> <span class="op">*</span> etas, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    den <span class="op">=</span> np.<span class="bu">sum</span>(etas, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.sqrt(num <span class="op">/</span> den)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> train_em(xs):</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    mus_hat <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> np.<span class="bu">max</span>(np.<span class="bu">abs</span>(xs)) <span class="op">*</span> (np.random.rand(<span class="dv">3</span>) <span class="op">-</span> <span class="fl">0.5</span>)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    sigmas_hat <span class="op">=</span> np.random.rand(<span class="dv">3</span>)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    ws_hat <span class="op">=</span> np.random.rand(<span class="dv">3</span>)</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    loss <span class="op">=</span> <span class="bu">float</span>(<span class="st">'inf'</span>)</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    criteria <span class="op">=</span> <span class="fl">1e-10</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="bu">iter</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="bu">iter</span> <span class="op">&lt;</span> <span class="dv">10000</span>:</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>        <span class="co"># E step</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>        etas_hat <span class="op">=</span> eta(xs, ws_hat, mus_hat, sigmas_hat)</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>        <span class="co"># M Step</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>        delta_ws <span class="op">=</span> ws_hat</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>        delta_mus <span class="op">=</span> mus_hat</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>        delta_sigmas <span class="op">=</span> sigmas_hat</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>        ws_hat <span class="op">=</span> opt_w(etas_hat)</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>        mus_hat <span class="op">=</span> opt_mu(xs, etas_hat)</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>        sigmas_hat <span class="op">=</span> opt_sigma(xs, etas_hat, mus_hat)</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>        delta_ws <span class="op">-=</span> ws_hat</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>        delta_mus <span class="op">-=</span> mus_hat</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>        delta_sigmas <span class="op">-=</span> sigmas_hat</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>        loss <span class="op">=</span> np.<span class="bu">sum</span>(np.<span class="bu">abs</span>(np.hstack([delta_ws, delta_mus, delta_sigmas])))</span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> loss <span class="op">&lt;</span> criteria:</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>        <span class="bu">iter</span> <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> loss, <span class="bu">iter</span>, (ws_hat, mus_hat, sigmas_hat)</span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>loss, <span class="bu">iter</span>, (ws_hat_em, mus_hat_em, sigmas_hat_em) <span class="op">=</span> train_em(all_data)</span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"loss: </span><span class="sc">{</span>loss<span class="sc">}</span><span class="ss">, iterations: </span><span class="sc">{</span><span class="bu">iter</span><span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ws_hat_em, mus_hat_em, sigmas_hat_em)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>loss: 9.965148151103165e-11, iterations: 1254
+[0.47878854 0.27353509 0.24767637] [ 0.51716133 -1.10900049  3.16175044] [0.51084106 1.06776561 0.76372732]</code></pre>
+</div>
+</div>
+<p>勾配法と比較して，イテレーション回数が10分の1程度であることが確認できます． 勾配法の時と同様に訓練データと推定したパラメータによる分布とをプロットして確認します．</p>
+<div class="cell" data-execution_count="30">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>ws_hat_em, mus_hat_em, sigmas_hat_em <span class="op">=</span> permute(ws, mus, sigmas, ws_hat_em, mus_hat_em, sigmas_hat_em)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>plot(data, ws_hat_em, mus_hat_em, sigmas_hat_em)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="30">
+
+<div id="altair-viz-6f2eb1009d01467fb199a06dc11e79b1"></div>
+<script type="text/javascript">
+  (function(spec, embedOpt){
+    let outputDiv = document.currentScript.previousElementSibling;
+    if (outputDiv.id !== "altair-viz-6f2eb1009d01467fb199a06dc11e79b1") {
+      outputDiv = document.getElementById("altair-viz-6f2eb1009d01467fb199a06dc11e79b1");
+    }
+    const paths = {
+      "vega": "https://cdn.jsdelivr.net/npm//vega@5?noext",
+      "vega-lib": "https://cdn.jsdelivr.net/npm//vega-lib?noext",
+      "vega-lite": "https://cdn.jsdelivr.net/npm//vega-lite@4.8.1?noext",
+      "vega-embed": "https://cdn.jsdelivr.net/npm//vega-embed@6?noext",
+    };
+
+    function loadScript(lib) {
+      return new Promise(function(resolve, reject) {
+        var s = document.createElement('script');
+        s.src = paths[lib];
+        s.async = true;
+        s.onload = () => resolve(paths[lib]);
+        s.onerror = () => reject(`Error loading script: ${paths[lib]}`);
+        document.getElementsByTagName("head")[0].appendChild(s);
+      });
+    }
+
+    function showError(err) {
+      outputDiv.innerHTML = `<div class="error" style="color:red;">${err}</div>`;
+      throw err;
+    }
+
+    function displayChart(vegaEmbed) {
+      vegaEmbed(outputDiv, spec, embedOpt)
+        .catch(err => showError(`Javascript Error: ${err.message}<br>This usually means there's a typo in your chart specification. See the javascript console for the full traceback.`));
+    }
+
+    if(typeof define === "function" && define.amd) {
+      requirejs.config({paths});
+      require(["vega-embed"], displayChart, err => showError(`Error loading script: ${err.message}`));
+    } else if (typeof vegaEmbed === "function") {
+      displayChart(vegaEmbed);
+    } else {
+      loadScript("vega")
+        .then(() => loadScript("vega-lite"))
+        .then(() => loadScript("vega-embed"))
+        .catch(showError)
+        .then(() => displayChart(vegaEmbed));
+    }
+  })({"config": {"view": {"continuousWidth": 400, "continuousHeight": 300}}, "layer": [{"data": {"name": "data-628cef0de49739f89b125ce26d4699a5"}, "mark": {"type": "bar", "opacity": 0.5}, "encoding": {"color": {"type": "nominal", "field": "Class"}, "x": {"type": "quantitative", "field": "Bin"}, "y": {"type": "quantitative", "field": "Probability"}}, "transform": [{"fold": ["Class 0", "Class 1", "Class 2"], "as": ["Class", "Probability"]}]}, {"data": {"name": "data-89ff874b8368ca114bf2d028b94059cb"}, "mark": {"type": "line", "size": 3}, "encoding": {"color": {"type": "nominal", "field": "Class"}, "x": {"type": "quantitative", "field": "Bin"}, "y": {"type": "quantitative", "field": "Probability"}}, "transform": [{"fold": ["Class 0", "Class 1", "Class 2"], "as": ["Class", "Probability"]}]}], "$schema": "https://vega.github.io/schema/vega-lite/v4.8.1.json", "datasets": {"data-628cef0de49739f89b125ce26d4699a5": [{"Bin": -5.952755905511811, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -5.858267716535433, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -5.7637795275590555, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -5.669291338582677, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -5.574803149606299, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -5.480314960629921, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -5.3858267716535435, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -5.291338582677165, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -5.196850393700787, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -5.102362204724409, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -5.0078740157480315, "Class 0": 0.0, "Class 1": 0.005208333333333333, "Class 2": 0.0}, {"Bin": -4.913385826771654, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -4.818897637795276, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -4.724409448818898, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -4.62992125984252, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -4.535433070866142, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -4.440944881889764, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -4.346456692913385, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -4.251968503937007, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -4.15748031496063, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -4.062992125984252, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -3.968503937007874, "Class 0": 0.0, "Class 1": 0.005208333333333333, "Class 2": 0.0}, {"Bin": -3.8740157480314963, "Class 0": 0.0, "Class 1": 0.005208333333333333, "Class 2": 0.0}, {"Bin": -3.779527559055118, "Class 0": 0.0, "Class 1": 0.010416666666666666, "Class 2": 0.0}, {"Bin": -3.6850393700787403, "Class 0": 0.0, "Class 1": 0.005208333333333333, "Class 2": 0.0}, {"Bin": -3.590551181102362, "Class 0": 0.0, "Class 1": 0.005208333333333333, "Class 2": 0.0}, {"Bin": -3.4960629921259843, "Class 0": 0.0, "Class 1": 0.010416666666666666, "Class 2": 0.0}, {"Bin": -3.4015748031496065, "Class 0": 0.0, "Class 1": 0.010416666666666666, "Class 2": 0.0}, {"Bin": -3.3070866141732287, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": -3.2125984251968505, "Class 0": 0.0, "Class 1": 0.005208333333333333, "Class 2": 0.0}, {"Bin": -3.1181102362204722, "Class 0": 0.0, "Class 1": 0.026041666666666664, "Class 2": 0.0}, {"Bin": -3.0236220472440944, "Class 0": 0.0, "Class 1": 0.005208333333333333, "Class 2": 0.0}, {"Bin": -2.9291338582677167, "Class 0": 0.0, "Class 1": 0.03125, "Class 2": 0.0}, {"Bin": -2.834645669291339, "Class 0": 0.0, "Class 1": 0.005208333333333333, "Class 2": 0.0}, {"Bin": -2.7401574803149606, "Class 0": 0.0, "Class 1": 0.03645833333333333, "Class 2": 0.0}, {"Bin": -2.6456692913385824, "Class 0": 0.0, "Class 1": 0.057291666666666664, "Class 2": 0.0}, {"Bin": -2.5511811023622046, "Class 0": 0.0, "Class 1": 0.05208333333333333, "Class 2": 0.0}, {"Bin": -2.456692913385827, "Class 0": 0.0, "Class 1": 0.05208333333333333, "Class 2": 0.0}, {"Bin": -2.362204724409449, "Class 0": 0.0, "Class 1": 0.046875, "Class 2": 0.0}, {"Bin": -2.267716535433071, "Class 0": 0.0, "Class 1": 0.041666666666666664, "Class 2": 0.0}, {"Bin": -2.173228346456693, "Class 0": 0.0, "Class 1": 0.06770833333333333, "Class 2": 0.0}, {"Bin": -2.078740157480315, "Class 0": 0.0, "Class 1": 0.08333333333333333, "Class 2": 0.0}, {"Bin": -1.984251968503937, "Class 0": 0.0, "Class 1": 0.08854166666666666, "Class 2": 0.0}, {"Bin": -1.8897637795275593, "Class 0": 0.0, "Class 1": 0.08854166666666666, "Class 2": 0.0}, {"Bin": -1.7952755905511815, "Class 0": 0.0, "Class 1": 0.11979166666666666, "Class 2": 0.0}, {"Bin": -1.7007874015748032, "Class 0": 0.0, "Class 1": 0.078125, "Class 2": 0.0}, {"Bin": -1.606299212598425, "Class 0": 0.0, "Class 1": 0.08854166666666666, "Class 2": 0.0}, {"Bin": -1.5118110236220472, "Class 0": 0.0, "Class 1": 0.109375, "Class 2": 0.0}, {"Bin": -1.4173228346456694, "Class 0": 0.0, "Class 1": 0.07291666666666666, "Class 2": 0.0}, {"Bin": -1.3228346456692917, "Class 0": 0.0, "Class 1": 0.08333333333333333, "Class 2": 0.0}, {"Bin": -1.2283464566929134, "Class 0": 0.0, "Class 1": 0.05208333333333333, "Class 2": 0.0}, {"Bin": -1.1338582677165352, "Class 0": 0.0, "Class 1": 0.09375, "Class 2": 0.005208333333333333}, {"Bin": -1.0393700787401574, "Class 0": 0.0, "Class 1": 0.10416666666666666, "Class 2": 0.005208333333333333}, {"Bin": -0.9448818897637796, "Class 0": 0.0, "Class 1": 0.10416666666666666, "Class 2": 0.005208333333333333}, {"Bin": -0.8503937007874018, "Class 0": 0.0, "Class 1": 0.11979166666666666, "Class 2": 0.005208333333333333}, {"Bin": -0.7559055118110241, "Class 0": 0.0, "Class 1": 0.08854166666666666, "Class 2": 0.026041666666666664}, {"Bin": -0.6614173228346458, "Class 0": 0.0, "Class 1": 0.08854166666666666, "Class 2": 0.03125}, {"Bin": -0.5669291338582676, "Class 0": 0.0, "Class 1": 0.0625, "Class 2": 0.03645833333333333}, {"Bin": -0.4724409448818898, "Class 0": 0.0, "Class 1": 0.125, "Class 2": 0.09895833333333333}, {"Bin": -0.37795275590551203, "Class 0": 0.0, "Class 1": 0.06770833333333333, "Class 2": 0.11979166666666666}, {"Bin": -0.28346456692913424, "Class 0": 0.0, "Class 1": 0.0625, "Class 2": 0.13020833333333331}, {"Bin": -0.18897637795275601, "Class 0": 0.0, "Class 1": 0.0625, "Class 2": 0.125}, {"Bin": -0.09448818897637778, "Class 0": 0.0, "Class 1": 0.07291666666666666, "Class 2": 0.19791666666666666}, {"Bin": 0.0, "Class 0": 0.0, "Class 1": 0.03125, "Class 2": 0.19270833333333331}, {"Bin": 0.09448818897637778, "Class 0": 0.0, "Class 1": 0.041666666666666664, "Class 2": 0.2552083333333333}, {"Bin": 0.18897637795275557, "Class 0": 0.0, "Class 1": 0.026041666666666664, "Class 2": 0.33854166666666663}, {"Bin": 0.2834645669291338, "Class 0": 0.0, "Class 1": 0.020833333333333332, "Class 2": 0.34375}, {"Bin": 0.37795275590551203, "Class 0": 0.0, "Class 1": 0.020833333333333332, "Class 2": 0.36979166666666663}, {"Bin": 0.4724409448818898, "Class 0": 0.0, "Class 1": 0.015625, "Class 2": 0.40104166666666663}, {"Bin": 0.5669291338582676, "Class 0": 0.0, "Class 1": 0.015625, "Class 2": 0.44791666666666663}, {"Bin": 0.6614173228346454, "Class 0": 0.005208333333333333, "Class 1": 0.005208333333333333, "Class 2": 0.40625}, {"Bin": 0.7559055118110236, "Class 0": 0.005208333333333333, "Class 1": 0.026041666666666664, "Class 2": 0.3177083333333333}, {"Bin": 0.8503937007874018, "Class 0": 0.0, "Class 1": 0.015625, "Class 2": 0.3020833333333333}, {"Bin": 0.9448818897637796, "Class 0": 0.005208333333333333, "Class 1": 0.005208333333333333, "Class 2": 0.3020833333333333}, {"Bin": 1.0393700787401574, "Class 0": 0.005208333333333333, "Class 1": 0.005208333333333333, "Class 2": 0.171875}, {"Bin": 1.1338582677165352, "Class 0": 0.005208333333333333, "Class 1": 0.005208333333333333, "Class 2": 0.22395833333333331}, {"Bin": 1.228346456692913, "Class 0": 0.010416666666666666, "Class 1": 0.005208333333333333, "Class 2": 0.13541666666666666}, {"Bin": 1.3228346456692912, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.09895833333333333}, {"Bin": 1.4173228346456694, "Class 0": 0.015625, "Class 1": 0.0, "Class 2": 0.08854166666666666}, {"Bin": 1.5118110236220472, "Class 0": 0.010416666666666666, "Class 1": 0.0, "Class 2": 0.041666666666666664}, {"Bin": 1.606299212598425, "Class 0": 0.046875, "Class 1": 0.005208333333333333, "Class 2": 0.03645833333333333}, {"Bin": 1.7007874015748028, "Class 0": 0.015625, "Class 1": 0.0, "Class 2": 0.026041666666666664}, {"Bin": 1.795275590551181, "Class 0": 0.026041666666666664, "Class 1": 0.0, "Class 2": 0.026041666666666664}, {"Bin": 1.8897637795275593, "Class 0": 0.010416666666666666, "Class 1": 0.005208333333333333, "Class 2": 0.015625}, {"Bin": 1.984251968503937, "Class 0": 0.046875, "Class 1": 0.005208333333333333, "Class 2": 0.0}, {"Bin": 2.078740157480315, "Class 0": 0.05208333333333333, "Class 1": 0.0, "Class 2": 0.005208333333333333}, {"Bin": 2.1732283464566926, "Class 0": 0.03125, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 2.2677165354330704, "Class 0": 0.09895833333333333, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 2.362204724409448, "Class 0": 0.078125, "Class 1": 0.005208333333333333, "Class 2": 0.0}, {"Bin": 2.456692913385826, "Class 0": 0.07291666666666666, "Class 1": 0.005208333333333333, "Class 2": 0.0}, {"Bin": 2.5511811023622046, "Class 0": 0.08333333333333333, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 2.6456692913385833, "Class 0": 0.09895833333333333, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 2.740157480314961, "Class 0": 0.13020833333333331, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 2.834645669291339, "Class 0": 0.125, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 2.9291338582677167, "Class 0": 0.171875, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 3.0236220472440944, "Class 0": 0.11979166666666666, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 3.1181102362204722, "Class 0": 0.10416666666666666, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 3.21259842519685, "Class 0": 0.09895833333333333, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 3.307086614173228, "Class 0": 0.09375, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 3.4015748031496056, "Class 0": 0.09895833333333333, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 3.4960629921259834, "Class 0": 0.13541666666666666, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 3.590551181102362, "Class 0": 0.09895833333333333, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 3.6850393700787407, "Class 0": 0.14583333333333331, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 3.7795275590551185, "Class 0": 0.09895833333333333, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 3.8740157480314963, "Class 0": 0.11979166666666666, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 3.968503937007874, "Class 0": 0.041666666666666664, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 4.062992125984252, "Class 0": 0.07291666666666666, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 4.15748031496063, "Class 0": 0.0625, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 4.251968503937007, "Class 0": 0.0625, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 4.346456692913385, "Class 0": 0.026041666666666664, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 4.440944881889763, "Class 0": 0.026041666666666664, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 4.535433070866141, "Class 0": 0.03645833333333333, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 4.6299212598425195, "Class 0": 0.015625, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 4.724409448818898, "Class 0": 0.015625, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 4.818897637795276, "Class 0": 0.010416666666666666, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 4.913385826771654, "Class 0": 0.010416666666666666, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 5.0078740157480315, "Class 0": 0.005208333333333333, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 5.102362204724409, "Class 0": 0.005208333333333333, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 5.196850393700787, "Class 0": 0.005208333333333333, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 5.291338582677165, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 5.385826771653543, "Class 0": 0.005208333333333333, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 5.48031496062992, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 5.574803149606299, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 5.669291338582678, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 5.7637795275590555, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 5.858267716535433, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}, {"Bin": 5.952755905511811, "Class 0": 0.0, "Class 1": 0.0, "Class 2": 0.0}], "data-89ff874b8368ca114bf2d028b94059cb": [{"Bin": -5.952755905511811, "Class 0": 1.507240816870627e-32, "Class 1": 3.354730254888837e-06, "Class 2": 7.443939106934326e-36}, {"Bin": -5.858267716535433, "Class 0": 6.549704584314472e-32, "Class 1": 5.0016522523670345e-06, "Class 2": 7.552697012425111e-35}, {"Bin": -5.7637795275590555, "Class 0": 2.802927926569255e-31, "Class 1": 7.3985568354914765e-06, "Class 2": 7.406195426504231e-34}, {"Bin": -5.669291338582677, "Class 0": 1.1812812262540028e-30, "Class 1": 1.0858208287735036e-05, "Class 2": 7.019111259500435e-33}, {"Bin": -5.574803149606299, "Class 0": 4.90281861124564e-30, "Class 1": 1.581054916615673e-05, "Class 2": 6.429288872609176e-32}, {"Bin": -5.480314960629921, "Class 0": 2.0039620967913897e-29, "Class 1": 2.2840908538085888e-05, "Class 2": 5.691642404228373e-31}, {"Bin": -5.3858267716535435, "Class 0": 8.066485040687979e-29, "Class 1": 3.2738398247694e-05, "Class 2": 4.869743956617083e-30}, {"Bin": -5.291338582677165, "Class 0": 3.197645502777487e-28, "Class 1": 4.655637020601911e-05, "Class 2": 4.026878278892708e-29}, {"Bin": -5.196850393700787, "Class 0": 1.2483243752025667e-27, "Class 1": 6.568684932831781e-05, "Class 2": 3.218286706613465e-28}, {"Bin": -5.102362204724409, "Class 0": 4.7992761401798836e-27, "Class 1": 9.195077263063018e-05, "Class 2": 2.4858494008775722e-27}, {"Bin": -5.0078740157480315, "Class 0": 1.8170847356487665e-26, "Class 1": 0.00012770560743017022, "Class 2": 1.8557469332891667e-26}, {"Bin": -4.913385826771654, "Class 0": 6.775257007221688e-26, "Class 1": 0.00017597143855286796, "Class 2": 1.3389259002774825e-25}, {"Bin": -4.818897637795276, "Class 0": 2.487869069667625e-25, "Class 1": 0.00024057585311416038, "Class 2": 9.336587847640506e-25}, {"Bin": -4.724409448818898, "Class 0": 8.996641611700025e-25, "Class 1": 0.00032631686323751126, "Class 2": 6.292361816824771e-24}, {"Bin": -4.62992125984252, "Class 0": 3.2039407250731496e-24, "Class 1": 0.00043914165433766813, "Class 2": 4.098576449286235e-23}, {"Bin": -4.535433070866142, "Class 0": 1.1236723075818867e-23, "Class 1": 0.0005863371106199392, "Class 2": 2.5801576792524635e-22}, {"Bin": -4.440944881889764, "Class 0": 3.8810213875315723e-23, "Class 1": 0.000776725859594969, "Class 2": 1.5698324739652569e-21}, {"Bin": -4.346456692913385, "Class 0": 1.320090017513648e-22, "Class 1": 0.0010208590405354702, "Class 2": 9.231116332630146e-21}, {"Bin": -4.251968503937007, "Class 0": 4.421933536482793e-22, "Class 1": 0.0013311942310223171, "Class 2": 5.24625013529308e-20}, {"Bin": -4.15748031496063, "Class 0": 1.4587203014691654e-21, "Class 1": 0.0017222441072572519, "Class 2": 2.8816260185385373e-19}, {"Bin": -4.062992125984252, "Class 0": 4.73895949376285e-21, "Class 1": 0.0022106786704094317, "Class 2": 1.5297487048898623e-18}, {"Bin": -3.968503937007874, "Class 0": 1.5161602935378454e-20, "Class 1": 0.002815361500689252, "Class 2": 7.848676437494707e-18}, {"Bin": -3.8740157480314963, "Class 0": 4.7770346763045664e-20, "Class 1": 0.003557298808001493, "Class 2": 3.891944254200347e-17}, {"Bin": -3.779527559055118, "Class 0": 1.482254650793081e-19, "Class 1": 0.004459479369536612, "Class 2": 1.8652225210328709e-16}, {"Bin": -3.6850393700787403, "Class 0": 4.529376290202287e-19, "Class 1": 0.005546584125431453, "Class 2": 8.639498709188506e-16}, {"Bin": -3.590551181102362, "Class 0": 1.363029125056332e-18, "Class 1": 0.0068445465657725356, "Class 2": 3.867588779735406e-15}, {"Bin": -3.4960629921259843, "Class 0": 4.0394573051579815e-18, "Class 1": 0.0083799493475631, "Class 2": 1.6733465521619187e-14}, {"Bin": -3.4015748031496065, "Class 0": 1.178940972865183e-17, "Class 1": 0.010179248989128198, "Class 2": 6.997217100049916e-14}, {"Bin": -3.3070866141732287, "Class 0": 3.388537166051907e-17, "Class 1": 0.01226782901913076, "Class 2": 2.827864906891506e-13}, {"Bin": -3.2125984251968505, "Class 0": 9.591435226842783e-17, "Class 1": 0.014668892445376608, "Class 2": 1.1045511244669389e-12}, {"Bin": -3.1181102362204722, "Class 0": 2.6736594901782876e-16, "Class 1": 0.017402216485314665, "Class 2": 4.169719491904601e-12}, {"Bin": -3.0236220472440944, "Class 0": 7.339724290913935e-16, "Class 1": 0.020482805576921757, "Class 2": 1.5213239821528136e-11}, {"Bin": -2.9291338582677167, "Class 0": 1.9842872860136735e-15, "Class 1": 0.023919491965589797, "Class 2": 5.3645146703623726e-11}, {"Bin": -2.834645669291339, "Class 0": 5.2829987249518955e-15, "Class 1": 0.027713545659759916, "Class 2": 1.828239202085203e-10}, {"Bin": -2.7401574803149606, "Class 0": 1.38518447330428e-14, "Class 1": 0.03185736616132341, "Class 2": 6.021843310459633e-10}, {"Bin": -2.6456692913385824, "Class 0": 3.5767276879351985e-14, "Class 1": 0.03633333595751688, "Class 2": 1.9169895204567625e-09}, {"Bin": -2.5511811023622046, "Class 0": 9.095263619477844e-14, "Class 1": 0.04111291921442779, "Class 2": 5.897987945830576e-09}, {"Bin": -2.456692913385827, "Class 0": 2.277696522585942e-13, "Class 1": 0.04615608750800528, "Class 2": 1.7538073124364757e-08}, {"Bin": -2.362204724409449, "Class 0": 5.617299488077231e-13, "Class 1": 0.05141114711314743, "Class 2": 5.040269127903452e-08}, {"Bin": -2.267716535433071, "Class 0": 1.364301800118967e-12, "Class 1": 0.05681502907060363, "Class 2": 1.399972260192361e-07}, {"Bin": -2.173228346456693, "Class 0": 3.2632059043362103e-12, "Class 1": 0.06229408414937763, "Class 2": 3.758192213495936e-07}, {"Bin": -2.078740157480315, "Class 0": 7.686518147812651e-12, "Class 1": 0.06776540060718612, "Class 2": 9.75062379295554e-07}, {"Bin": -1.984251968503937, "Class 0": 1.7830601274912322e-11, "Class 1": 0.0731386345164496, "Class 2": 2.445004520904027e-06}, {"Bin": -1.8897637795275593, "Class 0": 4.0733663645440766e-11, "Class 1": 0.07831831201791806, "Class 2": 5.925442478814914e-06}, {"Bin": -1.7952755905511815, "Class 0": 9.16414833351542e-11, "Class 1": 0.0832065321957389, "Class 2": 1.3878922820037565e-05}, {"Bin": -1.7007874015748032, "Class 0": 2.0304013816515888e-10, "Class 1": 0.08770597055759244, "Class 2": 3.141843792623738e-05}, {"Bin": -1.606299212598425, "Class 0": 4.430195006105189e-10, "Class 1": 0.09172305860748738, "Class 2": 6.873964279436338e-05}, {"Bin": -1.5118110236220472, "Class 0": 9.519517551994145e-10, "Class 1": 0.09517119681033209, "Class 2": 0.00014535293554461984}, {"Bin": -1.4173228346456694, "Class 0": 2.014457862871278e-09, "Class 1": 0.09797384809982172, "Class 2": 0.00029705317418664387}, {"Bin": -1.3228346456692917, "Class 0": 4.1980981589233e-09, "Class 1": 0.10006735817112263, "Class 2": 0.0005867301986788772}, {"Bin": -1.2283464566929134, "Class 0": 8.615850273429001e-09, "Class 1": 0.10140335765106141, "Class 2": 0.0011200477552185657}, {"Bin": -1.1338582677165352, "Class 0": 1.741385204630911e-08, "Class 1": 0.10195061962277242, "Class 2": 0.0020664670856394623}, {"Bin": -1.0393700787401574, "Class 0": 3.466112943544616e-08, "Class 1": 0.1016962729075138, "Class 2": 0.003684803207411563}, {"Bin": -0.9448818897637796, "Class 0": 6.794253125702711e-08, "Class 1": 0.10064630527952931, "Class 2": 0.006350295852758226}, {"Bin": -0.8503937007874018, "Class 0": 1.3115712504503112e-07, "Class 1": 0.09882532914249499, "Class 2": 0.010577121019977044}, {"Bin": -0.7559055118110241, "Class 0": 2.493407185974766e-07, "Class 1": 0.09627562247193772, "Class 2": 0.017026870849549822}, {"Bin": -0.6614173228346458, "Class 0": 4.6681594090424265e-07, "Class 1": 0.09305549720661287, "Class 2": 0.026490860419151406}, {"Bin": -0.5669291338582676, "Class 0": 8.606950435502472e-07, "Class 1": 0.08923708300939373, "Class 2": 0.03983374518228206}, {"Bin": -0.4724409448818898, "Class 0": 1.5628024337640209e-06, "Class 1": 0.0849036439806626, "Class 2": 0.05788953637015876}, {"Bin": -0.37795275590551203, "Class 0": 2.7945379296561883e-06, "Class 1": 0.08014656757211966, "Class 2": 0.081309793093451}, {"Bin": -0.28346456692913424, "Class 0": 4.921155532785065e-06, "Class 1": 0.07506217735685579, "Class 2": 0.1103772309148956}, {"Bin": -0.18897637795275601, "Class 0": 8.534445835312089e-06, "Class 1": 0.0697485239523443, "Class 2": 0.1448138124382618}, {"Bin": -0.09448818897637778, "Class 0": 1.4575877665251309e-05, "Class 1": 0.06430230152096095, "Class 2": 0.1836260675968946}, {"Bin": 0.0, "Class 0": 2.45157540453396e-05, "Class 1": 0.058816021851165114, "Class 2": 0.22503627710854923}, {"Bin": 0.09448818897637778, "Class 0": 4.0607565123568065e-05, "Class 1": 0.05337555560720844, "Class 2": 0.2665413476222558}, {"Bin": 0.18897637795275557, "Class 0": 6.623991952287177e-05, "Class 1": 0.04805812291005422, "Class 2": 0.30511987508333366}, {"Bin": 0.2834645669291338, "Class 0": 0.00010641033137285134, "Class 1": 0.04293078519695277, "Class 2": 0.3375749878249114}, {"Bin": 0.37795275590551203, "Class 0": 0.0001683445061544067, "Class 1": 0.03804945955778769, "Class 2": 0.36096398907971894}, {"Bin": 0.4724409448818898, "Class 0": 0.0002622800471731482, "Class 1": 0.03345844756729344, "Class 2": 0.3730365176707324}, {"Bin": 0.5669291338582676, "Class 0": 0.0004024229228617643, "Class 1": 0.029190444818158193, "Class 2": 0.372591268455877}, {"Bin": 0.6614173228346454, "Class 0": 0.0006080668419948006, "Class 1": 0.025266976279427634, "Class 2": 0.35967301216122366}, {"Bin": 0.7559055118110236, "Class 0": 0.0009048385300276544, "Class 1": 0.021699187132908974, "Class 2": 0.3355651762264076}, {"Bin": 0.8503937007874018, "Class 0": 0.0013259953527779151, "Class 1": 0.018488909243074576, "Class 2": 0.30257968880679875}, {"Bin": 0.9448818897637796, "Class 0": 0.0019136568807562647, "Class 1": 0.015629919779115386, "Class 2": 0.2636917320403606}, {"Bin": 1.0393700787401574, "Class 0": 0.0027198020289051716, "Class 1": 0.013109310205620497, "Class 2": 0.22209925811453635}, {"Bin": 1.1338582677165352, "Class 0": 0.003806814092534693, "Class 1": 0.010908890049114606, "Class 2": 0.18079714030585287}, {"Bin": 1.228346456692913, "Class 0": 0.005247315726933487, "Class 1": 0.0090065594836582, "Class 2": 0.142242658283714}, {"Bin": 1.3228346456692912, "Class 0": 0.007123015292809496, "Class 1": 0.007377596718684577, "Class 2": 0.1081588390593352}, {"Bin": 1.4173228346456694, "Class 0": 0.009522296719804958, "Class 1": 0.005995819285458118, "Class 2": 0.07948552153896554}, {"Bin": 1.5118110236220472, "Class 0": 0.012536338102763757, "Class 1": 0.004834591571828612, "Class 2": 0.056455712569310756}, {"Bin": 1.606299212598425, "Class 0": 0.01625364745410115, "Class 1": 0.0038676634775960104, "Class 2": 0.038754453097426776}, {"Bin": 1.7007874015748028, "Class 0": 0.020753059321443182, "Class 1": 0.003069836186710853, "Class 2": 0.02571160489282682}, {"Bin": 1.795275590551181, "Class 0": 0.026095436891197886, "Class 1": 0.002417460328382377, "Class 2": 0.016486581467146523}, {"Bin": 1.8897637795275593, "Class 0": 0.032314554265920975, "Class 1": 0.0018887789910898081, "Class 2": 0.010217058833943459}, {"Bin": 1.984251968503937, "Class 0": 0.03940786622456491, "Class 1": 0.001464133116877066, "Class 2": 0.006119487183291564}, {"Bin": 2.078740157480315, "Class 0": 0.04732807313946071, "Class 1": 0.0011260498508051263, "Class 2": 0.003542403423058343}, {"Bin": 2.1732283464566926, "Class 0": 0.05597651796122256, "Class 1": 0.0008592356815965436, "Class 2": 0.0019818686242084526}, {"Bin": 2.2677165354330704, "Class 0": 0.06519947345552822, "Class 1": 0.0006504959889912396, "Class 2": 0.0010716317187402374}, {"Bin": 2.362204724409448, "Class 0": 0.07478826361094351, "Class 1": 0.0004886012516942995, "Class 2": 0.0005600284769177097}, {"Bin": 2.456692913385826, "Class 0": 0.08448390211493327, "Class 1": 0.0003641180098301054, "Class 2": 0.0002828580326894719}, {"Bin": 2.5511811023622046, "Class 0": 0.09398653355389047, "Class 1": 0.00026922003623624044, "Class 2": 0.00013807681986012328}, {"Bin": 2.6456692913385833, "Class 0": 0.10296946405644235, "Class 1": 0.0001974923280527621, "Class 2": 6.514287016515641e-05}, {"Bin": 2.740157480314961, "Class 0": 0.11109702396383787, "Class 1": 0.00014373770726429822, "Class 2": 2.9703447419413632e-05}, {"Bin": 2.834645669291339, "Class 0": 0.11804498768545055, "Class 1": 0.00010379318287257247, "Class 2": 1.3090031106065884e-05}, {"Bin": 2.9291338582677167, "Class 0": 0.12352186205547025, "Class 1": 7.436089011971121e-05, "Class 2": 5.5753014503025955e-06}, {"Bin": 3.0236220472440944, "Class 0": 0.12728911337013762, "Class 1": 5.285644649052446e-05, "Class 2": 2.295038016128805e-06}, {"Bin": 3.1181102362204722, "Class 0": 0.12917838355124225, "Class 1": 3.727597209714338e-05, "Class 2": 9.130725096674613e-07}, {"Bin": 3.21259842519685, "Class 0": 0.12910396576641195, "Class 1": 2.6081803971198416e-05, "Class 2": 3.5108680305102664e-07}, {"Bin": 3.307086614173228, "Class 0": 0.12706925186639684, "Class 1": 1.8106058026846737e-05, "Class 2": 1.304720832592906e-07}, {"Bin": 3.4015748031496056, "Class 0": 0.12316647603083021, "Class 1": 1.2470613580584117e-05, "Class 2": 4.68613226834115e-08}, {"Bin": 3.4960629921259834, "Class 0": 0.11756978161067579, "Class 1": 8.521761384391355e-06, "Class 2": 1.6266920432537017e-08}, {"Bin": 3.590551181102362, "Class 0": 0.11052233711766465, "Class 1": 5.77761434860383e-06, "Class 2": 5.457452899045981e-09}, {"Bin": 3.6850393700787407, "Class 0": 0.10231882903367329, "Class 1": 3.886380896984677e-06, "Class 2": 1.7695730846548363e-09}, {"Bin": 3.7795275590551185, "Class 0": 0.09328508583120151, "Class 1": 2.5937003985506064e-06, "Class 2": 5.545501995256617e-10}, {"Bin": 3.8740157480314963, "Class 0": 0.08375678959510098, "Class 1": 1.7174016970487925e-06, "Class 2": 1.6796047020785953e-10}, {"Bin": 3.968503937007874, "Class 0": 0.07405919417493519, "Class 1": 1.128240277127802e-06, "Class 2": 4.9166257538479154e-11}, {"Bin": 4.062992125984252, "Class 0": 0.06448951263963155, "Class 1": 7.353751404820926e-07, "Class 2": 1.3909806087404994e-11}, {"Bin": 4.15748031496063, "Class 0": 0.05530321258442898, "Class 1": 4.75547521002397e-07, "Class 2": 3.803372426530327e-12}, {"Bin": 4.251968503937007, "Class 0": 0.04670493571665021, "Class 1": 3.051100637849737e-07, "Class 2": 1.0051028065193346e-12}, {"Bin": 4.346456692913385, "Class 0": 0.03884421504882211, "Class 1": 1.9422126402048531e-07, "Class 2": 2.5671188264483775e-13}, {"Bin": 4.440944881889763, "Class 0": 0.031815670026083466, "Class 1": 1.2266330237948469e-07, "Class 2": 6.336877500567201e-14}, {"Bin": 4.535433070866141, "Class 0": 0.025662972025016936, "Class 1": 7.686173120280665e-08, "Class 2": 1.5118144981862355e-14}, {"Bin": 4.6299212598425195, "Class 0": 0.020385622614471428, "Class 1": 4.778408831735819e-08, "Class 2": 3.4859050540241065e-15}, {"Bin": 4.724409448818898, "Class 0": 0.015947483540540795, "Class 1": 2.9473660702655755e-08, "Class 2": 7.768308356014822e-16}, {"Bin": 4.818897637795276, "Class 0": 0.012286027918213854, "Class 1": 1.8036924518051574e-08, "Class 2": 1.6731358788833623e-16}, {"Bin": 4.913385826771654, "Class 0": 0.009321418053485768, "Class 1": 1.0951371935069556e-08, "Class 2": 3.482810319410248e-17}, {"Bin": 5.0078740157480315, "Class 0": 0.0069647194474910116, "Class 1": 6.5970868703834846e-09, "Class 2": 7.0068413918585e-18}, {"Bin": 5.102362204724409, "Class 0": 0.005124794091814866, "Class 1": 3.942879547276609e-09, "Class 2": 1.362412454621668e-18}, {"Bin": 5.196850393700787, "Class 0": 0.003713644842034045, "Class 1": 2.3380427602542524e-09, "Class 2": 2.5602877449361284e-19}, {"Bin": 5.291338582677165, "Class 0": 0.0026501805763796005, "Class 1": 1.3755266925555038e-09, "Class 2": 4.650105474746849e-20}, {"Bin": 5.385826771653543, "Class 0": 0.001862523319036428, "Class 1": 8.029032726727794e-10, "Class 2": 8.16264077191255e-21}, {"Bin": 5.48031496062992, "Class 0": 0.0012890777843661738, "Class 1": 4.64980849649654e-10, "Class 2": 1.3848171028105356e-21}, {"Bin": 5.574803149606299, "Class 0": 0.0008786333464232501, "Class 1": 2.671680608351061e-10, "Class 2": 2.2706385505588756e-22}, {"Bin": 5.669291338582678, "Class 0": 0.0005897764032300108, "Class 1": 1.523041168649645e-10, "Class 2": 3.5983006678186607e-23}, {"Bin": 5.7637795275590555, "Class 0": 0.0003898685978414266, "Class 1": 8.614228350572824e-11, "Class 2": 5.511131146621586e-24}, {"Bin": 5.858267716535433, "Class 0": 0.00025380505785841545, "Class 1": 4.833912116305381e-11, "Class 2": 8.157890965270345e-25}, {"Bin": 5.952755905511811, "Class 0": 0.00016271719225522064, "Class 1": 2.6912791920080985e-11, "Class 2": 1.1671022356664043e-25}]}}, {"mode": "vega-lite"});
+</script>
+</div>
+</div>
+<p>以上の結果より，適切に推定できていることが確認できました．EMアルゴリズムの勾配法に対する利点としては，</p>
+<ul>
+<li><span class="math inline">\(\epsilon\)</span>を設定する必要がない</li>
+<li>勾配法よりも高速に収束する</li>
+</ul>
+<p>という点があげられます．しかしながら，</p>
+<ul>
+<li>初期値によっては推定に失敗する場合がある</li>
+</ul>
+<p>という問題は継続して存在します．したがって，実用を考えると複数の初期値でパラメータを推定するなどの工夫が必要になるかもしれません．</p>
+</section>
+</section>
+<section id="参考文献" class="level2">
+<h2 class="anchored" data-anchor-id="参考文献">参考文献</h2>
+<ol type="1">
+<li>杉山将，統計的機械学習 : 生成モデルに基づくパターン認識，オーム社，2009</li>
+</ol>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+      <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+  </div>
+</footer>
+
+
+
+</body></html>

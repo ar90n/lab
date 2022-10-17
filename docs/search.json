@@ -721,6 +721,13 @@
     "text": "---\naliases:\n- /ImageProcessing/Rust/2021/09/30/simple-guided-filter-rs\ncategories:\n- Rust\n- 画像処理\ndate: '2021-09-30'\ndescription: An implementation of GuidedFilter by Rust\noutput-file: 2021-09-30-simple-guided-filter-rs.html\ntitle: \"Rust\\u306B\\u3088\\u308B\\u30B7\\u30F3\\u30D7\\u30EB\\u306AGuidedFilter\\u306E\\u5B9F\\\n  \\u88C5\"\ntoc: true\nimage: /assets/img/2021-09-30-simple-guided-filter-rs/media/output.jpg\n---"
   },
   {
+    "objectID": "posts/2021-09-30-simple-guided-filter-rs.html#はじめに",
+    "href": "posts/2021-09-30-simple-guided-filter-rs.html#はじめに",
+    "title": "lab_note",
+    "section": "はじめに",
+    "text": "はじめに\n高速なエッジ保持平滑化フィルタとしてGuidedFilter[1]が広く知られています．この記事では輝度信号に限定したシンプルな実装を紹介します．なお，実装にはRustとimageクレートを用いました．"
+  },
+  {
     "objectID": "posts/2021-09-30-simple-guided-filter-rs.html#やったこと",
     "href": "posts/2021-09-30-simple-guided-filter-rs.html#やったこと",
     "title": "lab_note",
@@ -1055,12 +1062,5 @@
     "title": "Goで類似ベクトルを検索する",
     "section": "参考",
     "text": "参考\n\n\n[1] Ann-benchmarks. GitHub repository. https://github.com/erikbern/ann-benchmarks; GitHub.\n\n\n[2] Annoy. GitHub repository. https://github.com/spotify/annoy; GitHub.\n\n\n[3] Fashion-MNIST: A novel image dataset for benchmarking machine learning algorithms: 2017. https://arxiv.org/abs/cs.LG/1708.07747."
-  },
-  {
-    "objectID": "posts/2021-09-30-simple-guided-filter-rs.html#はじめに",
-    "href": "posts/2021-09-30-simple-guided-filter-rs.html#はじめに",
-    "title": "lab_note",
-    "section": "はじめに",
-    "text": "はじめに\n高速なエッジ保持平滑化フィルタとしてGuidedFilter[1]が広く知られています．この記事では輝度信号に限定したシンプルな実装を紹介します．なお，実装にはRustとimageクレートを用いました．"
   }
 ]

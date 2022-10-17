@@ -11,3 +11,5 @@ __pycache__
 _environment.local
 
 .devcontainer
+/_site/
+/docs

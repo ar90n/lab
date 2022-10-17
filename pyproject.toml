@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "lab-note"
+version = "0.1.0"
+description = ""
+authors = ["Masahiro Wada <argon.argon.argon@gmail.com>"]
+readme = "README.md"
+packages = [{include = "lab_note"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+jupyter = "^1.0.0"
+numpy = "^1.23.3"
+matplotlib = "^3.6.1"
+pandas = "^1.5.0"
+nbdev = "^2.3.7"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,40 @@
+---
+title: Projects
+sidebar: none
+format: 
+  html: 
+    page-layout: full
+execute:
+  echo: false
+---
+
+
+```{python}
+import os
+from IPython.display import HTML
+import urllib.request
+import json
+req = urllib.request.Request("https://api.github.com/users/ar90n/repos?per_page=4096")
+req.add_header('Accept', 'application/vnd.github+json')
+req.add_header('Authorization', os.environ.get("GITHUB_TOKEN"))
+
+my_projects = {}
+with urllib.request.urlopen(req) as res:
+  for repo in json.loads(res.read().decode('utf-8')):
+    if "my-projects" in repo["topics"]:
+      my_projects.setdefault(repo["language"], []).append(repo)
+
+tags = []
+for lang, prjs in my_projects.items():
+  card_tags = []
+  for prj in prjs:
+    card_tag = f"""<a href="https://github.com/{prj["full_name"]}"><img src="https://gh-card.dev/repos/{prj["full_name"]}.svg" style="margin: 3px"></a>"""
+    card_tags.append(card_tag)
+  tags.append(f"""<div>
+        <h3>{lang}</h3>
+        <div>{"".join(card_tags)}</div>
+    </div>""")
+HTML(f"""<div>{"".join(tags)}</div>""")
+```
+
+<script src="//cdn.jsdelivr.net/github-cards/latest/widget.js"></script>

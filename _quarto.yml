@@ -1,0 +1,33 @@
+project:
+  type: website
+
+website:
+  title: "lab_note"
+  favicon: logo.png
+  twitter-card: true
+  site-url: https://lab.ar90n.net
+  navbar:
+    search: true
+    right:
+      - text: About
+        file: about.qmd
+      - text: Projects
+        file: projects.qmd
+      - icon: github
+        href: https://github.com/ar90n
+      - icon: twitter
+        href: https://twitter.com/ar90n
+  cookie-consent:
+    type: express
+    style: headline
+    palette: dark
+  google-analytics: "UA-90473091-1"
+
+format:
+  html:
+    theme: flatly
+    css: styles.css
+    toc: true
+
+
+

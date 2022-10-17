@@ -1,0 +1,34 @@
+---
+title: 和田政弘
+about:
+  template: solana
+  links:
+    - icon: twitter
+      text: Twitter
+      href: https://twitter.com/ar90n
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/ar90n/
+    - icon: github
+      text: Github
+      href: https://github.com/ar90n
+
+---
+
+都内でソフトウェアエンジニアをやっています。
+
+画像処理、信号処理、Python、Rust、などに興味があります。
+
+## 経歴
+
+フリーランス | ソフトウェアエンジニア | 2022/1 - 現在
+
+キャディ株式会社 | ソフトウェアエンジニア | 2020/6 - 2022/1
+
+エルピクセル株式会社 | ソフトウェアエンジニア | 2017/10 - 2020/5
+
+テラリコンインコーポレイテッド日本支店 | ソフトウェアエンジニア | 2014/10 - 2017/10
+
+株式会社コロプラ | ソフトウェアエンジニア | 22013/2 - 2014/10
+
+株式会社モルフォ | ソフトウェアエンジニア | 2011/4 - 2013/2

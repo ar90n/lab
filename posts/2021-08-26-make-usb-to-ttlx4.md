@@ -3,7 +3,7 @@ toc: true
 layout: post
 date: 2021-08-26
 description: make USB to TTLx4 
-categories: [hardware]
+categories: [ハードウェア]
 title: USB to TTLx4ケーブルの作成
 ---
 

@@ -3,7 +3,7 @@ toc: true
 layout: post
 date: 2021-03-30
 description: Raytracing in weekend
-categories: [Rust, ComputerGraphics]
+categories: [Rust, コンピュータグラフィックス]
 title: Rustでレイトレーシングをしてみる
 ---
 

@@ -3,7 +3,7 @@ toc: true
 layout: post
 date: 2020-05-31
 description: An implementation of Poisson Blending Algorithm in 5 lines
-categories: [ImageProcessing, Python]
+categories: [画像処理, Python]
 title: 5行で書くポアソンブレンディング
 ---
 

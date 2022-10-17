@@ -3,7 +3,7 @@ toc: true
 layout: post
 date: 2022-01-03
 description: AWS Amplify tips
-categories: [AWS, Web, Cloud, Amplify]
+categories: [AWS, Web, クラウド, Amplify]
 title: AWS Amplifyのメモ
 ---
 

@@ -20,11 +20,11 @@ jobs:
       run: |
         curl -L -o quarto.deb "https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-amd64.deb"
         dpkg -i quarto.deb
-      with:
+      env:
         QUARTO_VERSION: "1.2.218"
     - name: Publish
       run: |
         echo "GITHUB_TOKEN=${GITHUB_TOKEN}" > _environment
         quarto publish gh-pages --no-prompt --no-browser
-      with:
+      env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

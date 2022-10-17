@@ -5,6 +5,8 @@ date: 2020-05-31
 description: An implementation of Poisson Blending Algorithm in 5 lines
 categories: [画像処理, Python]
 title: 5行で書くポアソンブレンディング
+nocite: |
+  @poisson-image-editing, @pb-5l
 ---
 
 ## はじめに
@@ -52,7 +54,5 @@ poisson_blendの入力と出力との関係を以下の図に示します．以�
 )を作成しました．よろしければ，こちらも参考にしてください.
 
 ## 参考
-* [Poisson Image Editing](https://ja.wikipedia.org/wiki/Poisson_Image_Editing)
-* [ar90n/poisson-blending-in-5lines](https://github.com/ar90n/poisson-blending-in-5lines
-)
-
+::: {#refs}
+:::

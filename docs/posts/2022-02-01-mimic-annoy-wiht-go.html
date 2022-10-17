@@ -85,6 +85,25 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 
@@ -500,7 +519,7 @@ cookieconsent.run({
 </section>
 <section id="結果" class="level3">
 <h3 class="anchored" data-anchor-id="結果">結果</h3>
-<p>以下の結果は，fashion-mnistに対するベンチマークです．図中の<code>flann</code>と<code>annoy</code>は<code>ann-benchmarks</code>のデフォルト設定を用いています．</p>
+<p>以下の結果は，fashion-mnist <span class="citation" data-cites="xiao2017/online">[<a href="#ref-xiao2017/online" role="doc-biblioref">3</a>]</span> に対するベンチマークです．図中の<code>flann</code>と<code>annoy</code>は<code>ann-benchmarks</code>のデフォルト設定を用いています．</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="../assets/img/2022-02-01-mimic-annoy-wiht-go/fashion-mnist-784-euclidean.png" class="img-fluid figure-img"></p>
@@ -515,11 +534,17 @@ cookieconsent.run({
 </section>
 <section id="参考" class="level2">
 <h2 class="anchored" data-anchor-id="参考">参考</h2>
-<ul>
-<li>Fashion-MNIST: a Novel Image Dataset for Benchmarking Machine Learning Algorithms, Han Xiao and Kashif Rasul and Roland Vollgraf, 2017</li>
-<li><a href="https://github.com/erikbern/ann-benchmarks">ann-benchmarks</a></li>
-<li><a href="https://github.com/spotify/annoy">Annoy</a></li>
-</ul>
+<div id="refs" class="references csl-bib-body" role="doc-bibliography">
+<div id="ref-ann-benchmarks" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">Ann-benchmarks. <em>GitHub repository</em>. <a href="https://github.com/erikbern/ann-benchmarks" class="uri">https://github.com/erikbern/ann-benchmarks</a>; GitHub.</div>
+</div>
+<div id="ref-Annoy" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">Annoy. <em>GitHub repository</em>. <a href="https://github.com/spotify/annoy" class="uri">https://github.com/spotify/annoy</a>; GitHub.</div>
+</div>
+<div id="ref-xiao2017/online" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">[3] </div><div class="csl-right-inline">Fashion-MNIST: A novel image dataset for benchmarking machine learning algorithms: 2017. <a href="https://arxiv.org/abs/cs.LG/1708.07747"><em>https://arxiv.org/abs/cs.LG/1708.07747</em></a>.</div>
+</div>
+</div>
 
 
 </section>

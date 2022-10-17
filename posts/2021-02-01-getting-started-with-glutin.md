@@ -5,6 +5,8 @@ date: 2021-02-01
 description: Getting started with glutin
 categories: [Rust, glutin, OpenGL, コンピュータグラフィックス]
 title: glutinに入門してみる
+nocite: |
+  @glutin
 ---
 
 ## はじめに
@@ -340,4 +342,5 @@ f <面番号1> <頂点番号i> <頂点番号j> <頂点番号k>
 ```
 
 ## 参考
-1. [glutin](https://docs.rs/glutin/0.26.0/glutin/)
+::: {#refs}
+:::

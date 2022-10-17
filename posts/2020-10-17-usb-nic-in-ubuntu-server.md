@@ -5,6 +5,8 @@ date: 2020-10-17
 description: USB-NIC in Ubuntu Server
 categories: [Ubuntu]
 title: Ubuntu 20.04 LTS Server でUSB-NICを使う
+nocite: |
+  @ubuntu-wifi-16
 ---
 
 ## はじめに
@@ -93,4 +95,5 @@ enx000ec6853d1a: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
 ```
 
 ## 参考
-* [Ubuntu 16.04.5で有線LANが繋がらない](https://qiita.com/tackey/items/794ea92e5cb31f9febbc)
+::: {#refs}
+:::

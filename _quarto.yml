@@ -24,6 +24,9 @@ website:
     palette: dark
   google-analytics: "UA-90473091-1"
 
+bibliography: references.bib
+csl: acm-sig-proceedings.csl
+
 execute:
   freeze: true
   cache: true

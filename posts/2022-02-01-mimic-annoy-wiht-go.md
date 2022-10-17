@@ -5,6 +5,8 @@ date: 2022-02-01
 description: mimic annoy with go
 categories: [Go, アルゴリズム, 機械学習, 類似ベクトル検索]
 title: Goで類似ベクトルを検索する
+nocite: |
+  @Annoy, @ann-benchmarks
 ---
 
 ## はじめに
@@ -287,14 +289,13 @@ $ python run.py --algorithm <algorithm name> --dataset <dataset name>
 ```
 
 ### 結果
-以下の結果は，fashion-mnistに対するベンチマークです．図中の`flann`と`annoy`は`ann-benchmarks`のデフォルト設定を用いています．
+以下の結果は，fashion-mnist [@xiao2017/online] に対するベンチマークです．図中の`flann`と`annoy`は`ann-benchmarks`のデフォルト設定を用いています．
 
 ![result](/assets/img/2022-02-01-mimic-annoy-wiht-go/fashion-mnist-784-euclidean.png)
 
 * CPU: AMD Ryzen 9 3950X
 * Memory:  64GB
 
-## 参考
-* Fashion-MNIST: a Novel Image Dataset for Benchmarking Machine Learning Algorithms, Han Xiao and Kashif Rasul and Roland Vollgraf, 2017
-* [ann-benchmarks](https://github.com/erikbern/ann-benchmarks)
-* [Annoy](https://github.com/spotify/annoy)
+## 参考 
+::: {#refs}
+:::

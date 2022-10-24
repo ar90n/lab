@@ -2,7 +2,6 @@
 toc: true
 layout: post
 date: 2020-06-27
-description: Linear algebra in 3d coordinates
 categories: [数学, 線形代数]
 title: 三次元空間における行列演算の復習
 ---

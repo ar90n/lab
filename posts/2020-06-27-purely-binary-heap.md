@@ -2,7 +2,6 @@
 toc: true
 layout: post
 date: 2020-06-27
-description: An implementation of purely binary heap
 categories: [アルゴリズム]
 title: 純粋なバイナリヒープ 
 ---

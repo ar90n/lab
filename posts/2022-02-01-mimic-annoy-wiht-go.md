@@ -2,7 +2,6 @@
 toc: true
 layout: post
 date: 2022-02-01
-description: mimic annoy with go
 categories: [Go, アルゴリズム, 機械学習, 類似ベクトル検索]
 title: Goで類似ベクトルを検索する
 nocite: |

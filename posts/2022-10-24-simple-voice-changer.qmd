@@ -2,6 +2,7 @@
 title: ARモデルによるシンプルなボイスチェンジャ
 date: 2022-10-24
 categories: [Python, 信号処理]
+image: /_freeze/posts/2022-10-24-simple-voice-changer/figure-html/cell-2-output-1.png
 format:
   html:
     code-fold: false

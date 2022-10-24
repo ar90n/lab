@@ -2,7 +2,6 @@
 toc: true
 layout: post
 date: 2020-10-12
-description: A study of handling Japanese characters in DICOM
 categories: [DICOM]
 title: DICOMにおける文字コードの取り扱い
 ---

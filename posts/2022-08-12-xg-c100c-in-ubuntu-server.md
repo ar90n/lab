@@ -2,7 +2,6 @@
 toc: true
 layout: post
 date: 2022-08-12
-description: Bridge connection between XG-C100C and onboard nic
 categories: [Ubuntu]
 title: XG-C100Cを追加してオンボードNICとブリッジ接続する
 ---

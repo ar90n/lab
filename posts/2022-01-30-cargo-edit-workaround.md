@@ -2,7 +2,6 @@
 toc: true
 layout: post
 date: 2022-01-30
-description: cargo-edit workaround
 categories: [Rust]
 title: cargo-editが上手く動かない時の回避策
 ---

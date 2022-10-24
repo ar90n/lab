@@ -2,7 +2,6 @@
 toc: true
 layout: post
 date: 2021-02-01
-description: Getting started with glutin
 categories: [Rust, glutin, OpenGL, コンピュータグラフィックス]
 title: glutinに入門してみる
 nocite: |

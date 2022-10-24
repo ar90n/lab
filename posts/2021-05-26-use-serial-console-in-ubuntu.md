@@ -2,7 +2,6 @@
 toc: true
 layout: post
 date: 2021-05-26
-description: Use serial console in Ubuntu 20.04
 categories: [Ubuntu]
 title: Ubuntu 20.04をシリアルコンソール経由で操作する
 ---

@@ -2,7 +2,6 @@
 toc: true
 layout: post
 date: 2021-08-21
-description: k3s cluster on Raspberry Pi 4
 categories: [Kubernetes]
 title: k3sクラスタ on Raspberry Pi 4
 ---

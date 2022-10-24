@@ -2,7 +2,6 @@
 toc: true
 layout: post
 date: 2020-10-17
-description: USB-NIC in Ubuntu Server
 categories: [Ubuntu]
 title: Ubuntu 20.04 LTS Server でUSB-NICを使う
 nocite: |

@@ -2,7 +2,6 @@
 toc: true
 layout: post
 date: 2021-01-06
-description: Install starship
 categories: [開発環境]
 title: starshipの導入
 ---

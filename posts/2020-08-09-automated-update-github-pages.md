@@ -2,7 +2,6 @@
 toc: true
 layout: post
 date: 2020-08-09
-description: Update GitHubPages automatically
 categories: [Elm, Web]
 title: GitHub ActionsでWebサイトを自動更新する
 ---

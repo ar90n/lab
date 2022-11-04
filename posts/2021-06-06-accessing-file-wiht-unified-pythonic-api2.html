@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.218">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2021-06-06">
+
+<title>lab_note - paaaaathによる統一的なファイルアクセス</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../logo.png" rel="icon" type="image/png">
+<script src="../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+<script type="text/plain" cookie-consent="tracking">
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-90473091-1', 'auto');
+
+ga('send', {
+  hitType: 'pageview',
+  'anonymizeIp': true,
+});
+</script>
+
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"headline",
+  "consent_type":"express",
+  "palette":"dark",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  });
+});
+</script> 
+  
+
+
+<link rel="stylesheet" href="../styles.css">
+<meta property="og:title" content="lab_note - paaaaathによる統一的なファイルアクセス">
+<meta property="og:description" content="以前の記事で，smart_openによって統一的にファイルアクセスが可能であることを紹介しました． しかしながら，//を適切に扱うことができないため，URLを扱うには問題がありました． そこで，この問題を解決しsmart_openをラップしたpaaaaathを作成しました．">
+<meta property="og:site-name" content="lab_note">
+<meta name="twitter:title" content="lab_note - paaaaathによる統一的なファイルアクセス">
+<meta name="twitter:description" content="以前の記事で，smart_openによって統一的にファイルアクセスが可能であることを紹介しました． しかしながら，//を適切に扱うことができないため，URLを扱うには問題がありました． そこで，この問題を解決しsmart_openをラップしたpaaaaathを作成しました．">
+<meta name="twitter:site" content="@ar90n">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">lab_note</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../about.html">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../projects.html">
+ <span class="menu-text">Projects</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/ar90n"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/ar90n"><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#はじめに" id="toc-はじめに" class="nav-link active" data-scroll-target="#はじめに">はじめに</a></li>
+  <li><a href="#やったこと" id="toc-やったこと" class="nav-link" data-scroll-target="#やったこと">やったこと</a></li>
+  <li><a href="#paaaaathについて" id="toc-paaaaathについて" class="nav-link" data-scroll-target="#paaaaathについて">paaaaathについて</a></li>
+  <li><a href="#クラウドストレージwebからファイルを読み込む" id="toc-クラウドストレージwebからファイルを読み込む" class="nav-link" data-scroll-target="#クラウドストレージwebからファイルを読み込む">クラウドストレージ，Webからファイルを読み込む</a></li>
+  <li><a href="#クラウドストレージ上のファイルを操作する" id="toc-クラウドストレージ上のファイルを操作する" class="nav-link" data-scroll-target="#クラウドストレージ上のファイルを操作する">クラウドストレージ上のファイルを操作する</a></li>
+  <li><a href="#参考" id="toc-参考" class="nav-link" data-scroll-target="#参考">参考</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">paaaaathによる統一的なファイルアクセス</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">クラウド</div>
+    <div class="quarto-category">Python</div>
+    <div class="quarto-category">AWS</div>
+    <div class="quarto-category">GCP</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 6, 2021</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="はじめに" class="level2">
+<h2 class="anchored" data-anchor-id="はじめに">はじめに</h2>
+<p><a href="https://lab.ar90n.net/cloud/python/aws/gcp/2020/10/21/accessing-file-with-unified-pythonic-api.html">以前の記事</a>で，smart_openによって統一的にファイルアクセスが可能であることを紹介しました． しかしながら，<code>//</code>を適切に扱うことができないため，URLを扱うには問題がありました． そこで，この問題を解決しsmart_openをラップした<a href="https://pypi.org/project/paaaaath/">paaaaath</a>を作成しました．</p>
+</section>
+<section id="やったこと" class="level2">
+<h2 class="anchored" data-anchor-id="やったこと">やったこと</h2>
+<ul>
+<li>paaaaathの導入</li>
+<li>paaaaathによるクラウドストレージ上のファイルを操作</li>
+</ul>
+</section>
+<section id="paaaaathについて" class="level2">
+<h2 class="anchored" data-anchor-id="paaaaathについて">paaaaathについて</h2>
+<p>paaaaathはローカルマシン上のファイルパスのみでは無く，http, s3, gcsといったプロトコルのURLもpathlib.Pathと同様に取り扱うことができます．ファイルの読み書きはsmart_openに処理を委譲することで実現します．また，s3, gcsについては，mkdir, iterdirs, exitsといった処理にも対応しています．サポートしている機能の詳細については，<a href="https://github.com/ar90n/paaaaath">リポジトリ</a>を確認してくさい．</p>
+<p>以下にpipを用いたpaaaaathの導入方法を示します．ここでは，extrasとして<code>all</code>を指定しました．ほかにも，<code>http</code>, <code>gcs</code>,<code>s3</code> が指定可能です．<code>all</code>はこれら全てを指定することと同義です．</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> pip install paaaaath[all]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="クラウドストレージwebからファイルを読み込む" class="level2">
+<h2 class="anchored" data-anchor-id="クラウドストレージwebからファイルを読み込む">クラウドストレージ，Webからファイルを読み込む</h2>
+<p>smart_openによる<a href="https://lab.ar90n.net/cloud/python/aws/gcp/2020/10/21/accessing-file-with-unified-pythonic-api.html#%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89%E3%82%B9%E3%83%88%E3%83%AC%E3%83%BC%E3%82%B8%EF%BC%8CWeb%E3%81%8B%E3%82%89%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%82%92%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%82%80">サンプル</a>をpaaaaathを用いて書き直しました．Pathlikeオブジェクトとして取り扱うことができるので，全体的にシンプルになっていることが確認できると思います．こちらも，事前に適切な認証情報を設定しておく必要があります．</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> paaaaath <span class="im">import</span> Path</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> imageio</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>sources <span class="op">=</span> {</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"S3"</span>: <span class="st">"s3://landsat-pds/L8/003/017/LC80030172015001LGN00/LC80030172015001LGN00_BQA.TIF"</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"HTTP"</span>:  <span class="st">"https://s3-us-west-2.amazonaws.com/landsat-pds/L8/003/017/LC80030172015001LGN00/LC80030172015001LGN00_BQA.TIF"</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"FILESYSTEM"</span>: <span class="st">"/tmp/LC80030172015001LGN00_BQA.TIF"</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> protocol, url <span class="kw">in</span> sources.items():</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> imageio.imread(Path(url).read_bytes())</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    plt.figure()</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="ss">f"from </span><span class="sc">{</span>protocol<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    plt.imshow(img, cmap<span class="op">=</span><span class="st">'gray'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="2021-06-06-accessing-file-wiht-unified-pythonic-api2_files/figure-html/cell-4-output-1.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="2021-06-06-accessing-file-wiht-unified-pythonic-api2_files/figure-html/cell-4-output-2.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="2021-06-06-accessing-file-wiht-unified-pythonic-api2_files/figure-html/cell-4-output-3.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="クラウドストレージ上のファイルを操作する" class="level2">
+<h2 class="anchored" data-anchor-id="クラウドストレージ上のファイルを操作する">クラウドストレージ上のファイルを操作する</h2>
+<p>paaaaathを用いてクラウドストレージ上のファイルを読み書きする例を以下に示します．</p>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>sample_path <span class="op">=</span> Path(<span class="st">"s3://paaaaath-examples/sample.txt"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>sample_path.write_text(<span class="st">"paaaaath example"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> sample_path.read_text() <span class="op">==</span> <span class="st">"paaaaath example"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>また，paaaaathはPathlikeオブジェクトを提供します．そのため，単純なファイルの読み書きだけでは無く，より多くの機能を提供することが可能です．以下に，iterdirを用いてクラウドストレージ上のファイル一覧を取得する例を示します．</p>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>paths <span class="op">=</span> <span class="bu">list</span>(Path(sources[<span class="st">"S3"</span>]).parent.iterdir())</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> paths[<span class="dv">0</span>].exists()</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>paths      </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<pre><code>[S3Path('s3://landsat-pds/L8/003/017/LC80030172015001LGN00/LC80030172015001LGN00_B1.TIF'),
+ S3Path('s3://landsat-pds/L8/003/017/LC80030172015001LGN00/LC80030172015001LGN00_B1.TIF.ovr'),
+ S3Path('s3://landsat-pds/L8/003/017/LC80030172015001LGN00/LC80030172015001LGN00_B10.TIF'),
+ S3Path('s3://landsat-pds/L8/003/017/LC80030172015001LGN00/LC80030172015001LGN00_B10.TIF.ovr'),
+ S3Path('s3://landsat-pds/L8/003/017/LC80030172015001LGN00/LC80030172015001LGN00_B11.TIF'),
+ S3Path('s3://landsat-pds/L8/003/017/LC80030172015001LGN00/LC80030172015001LGN00_B11.TIF.ovr'),
+ S3Path('s3://landsat-pds/L8/003/017/LC80030172015001LGN00/LC80030172015001LGN00_B2.TIF'),
+ S3Path('s3://landsat-pds/L8/003/017/LC80030172015001LGN00/LC80030172015001LGN00_B2.TIF.ovr'),
+ S3Path('s3://landsat-pds/L8/003/017/LC80030172015001LGN00/LC80030172015001LGN00_B3.TIF'),
+ S3Path('s3://landsat-pds/L8/003/017/LC80030172015001LGN00/LC80030172015001LGN00_B3.TIF.ovr'),
+ S3Path('s3://landsat-pds/L8/003/017/LC80030172015001LGN00/LC80030172015001LGN00_B4.TIF'),
+ S3Path('s3://landsat-pds/L8/003/017/LC80030172015001LGN00/LC80030172015001LGN00_B4.TIF.ovr'),
+ S3Path('s3://landsat-pds/L8/003/017/LC80030172015001LGN00/LC80030172015001LGN00_B5.TIF'),
+ S3Path('s3://landsat-pds/L8/003/017/LC80030172015001LGN00/LC80030172015001LGN00_B5.TIF.ovr'),
+ S3Path('s3://landsat-pds/L8/003/017/LC80030172015001LGN00/LC80030172015001LGN00_B6.TIF'),
+ S3Path('s3://landsat-pds/L8/003/017/LC80030172015001LGN00/LC80030172015001LGN00_B6.TIF.ovr'),
+ S3Path('s3://landsat-pds/L8/003/017/LC80030172015001LGN00/LC80030172015001LGN00_B7.TIF'),
+ S3Path('s3://landsat-pds/L8/003/017/LC80030172015001LGN00/LC80030172015001LGN00_B7.TIF.ovr'),
+ S3Path('s3://landsat-pds/L8/003/017/LC80030172015001LGN00/LC80030172015001LGN00_B8.TIF'),
+ S3Path('s3://landsat-pds/L8/003/017/LC80030172015001LGN00/LC80030172015001LGN00_B8.TIF.ovr'),
+ S3Path('s3://landsat-pds/L8/003/017/LC80030172015001LGN00/LC80030172015001LGN00_B9.TIF'),
+ S3Path('s3://landsat-pds/L8/003/017/LC80030172015001LGN00/LC80030172015001LGN00_B9.TIF.ovr'),
+ S3Path('s3://landsat-pds/L8/003/017/LC80030172015001LGN00/LC80030172015001LGN00_BQA.TIF'),
+ S3Path('s3://landsat-pds/L8/003/017/LC80030172015001LGN00/LC80030172015001LGN00_BQA.TIF.ovr'),
+ S3Path('s3://landsat-pds/L8/003/017/LC80030172015001LGN00/LC80030172015001LGN00_MTL.json'),
+ S3Path('s3://landsat-pds/L8/003/017/LC80030172015001LGN00/LC80030172015001LGN00_MTL.txt'),
+ S3Path('s3://landsat-pds/L8/003/017/LC80030172015001LGN00/LC80030172015001LGN00_thumb_large.jpg'),
+ S3Path('s3://landsat-pds/L8/003/017/LC80030172015001LGN00/LC80030172015001LGN00_thumb_small.jpg'),
+ S3Path('s3://landsat-pds/L8/003/017/LC80030172015001LGN00/index.html')]</code></pre>
+</div>
+</div>
+</section>
+<section id="参考" class="level2">
+<h2 class="anchored" data-anchor-id="参考">参考</h2>
+<div id="refs" class="references csl-bib-body" role="doc-bibliography">
+<div id="ref-smartopen" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">Smartopen. <em>GitHub repository</em>. <a href="https://github.com/RaRe-Technologies/smart_open" class="uri">https://github.com/RaRe-Technologies/smart_open</a>; GitHub.</div>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+      <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+  </div>
+</footer>
+
+
+
+</body></html>

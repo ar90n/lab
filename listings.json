@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/2022-11-05-develop-octoprint-plugin.html",
       "/posts/2022-10-24-simple-voice-changer.html",
       "/posts/2022-08-12-xg-c100c-in-ubuntu-server.html",
       "/posts/2022-02-16-kdtree-and-curse-of-dimensionality.html",

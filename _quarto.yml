@@ -5,9 +5,12 @@ project:
 website:
   title: "lab_note"
   favicon: logo.png
-  twitter-card: true
+  open-graph: true
+  twitter-card: 
+    site: "@ar90n"
   site-url: https://lab.ar90n.net
   image: logo.png
+  description: my laboratory
   navbar:
     search: true
     right:

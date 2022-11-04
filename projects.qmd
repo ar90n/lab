@@ -5,6 +5,8 @@ format:
   html: 
     page-layout: full
 execute:
+  freeze: false
+  cache: false
   echo: false
 ---
 

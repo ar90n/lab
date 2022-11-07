@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/2022-11-08-dot-benchmark-in-go.html",
       "/posts/2022-11-05-develop-octoprint-plugin.html",
       "/posts/2022-10-24-simple-voice-changer.html",
       "/posts/2022-08-12-xg-c100c-in-ubuntu-server.html",
@@ -26,8 +27,8 @@
       "/posts/2020-10-12-character-encodings-in-dicom.html",
       "/posts/2020-10-10-analysis-of-moving-average-filter.html",
       "/posts/2020-08-09-automated-update-github-pages.html",
-      "/posts/2020-06-27-linear-algebra-in-3d-coordinates.html",
       "/posts/2020-06-27-purely-binary-heap.html",
+      "/posts/2020-06-27-linear-algebra-in-3d-coordinates.html",
       "/posts/2020-05-31-poisson-blending-in-5-lines.html",
       "/posts/2020-05-25-Ray-k3s-raspi4.html"
     ]

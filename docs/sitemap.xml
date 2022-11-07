@@ -6,7 +6,7 @@
   </url>
   <url>
     <loc>https://lab.ar90n.net/index.html</loc>
-    <lastmod>2022-11-04T04:28:00.678Z</lastmod>
+    <lastmod>2022-11-05T17:36:39.912Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/projects.html</loc>
@@ -127,5 +127,9 @@
   <url>
     <loc>https://lab.ar90n.net/posts/2022-02-01-mimic-annoy-wiht-go.html</loc>
     <lastmod>2022-11-04T04:28:24.299Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lab.ar90n.net/posts/2022-11-08-dot-benchmark-in-go.html</loc>
+    <lastmod>2022-11-05T17:36:32.500Z</lastmod>
   </url>
 </urlset>

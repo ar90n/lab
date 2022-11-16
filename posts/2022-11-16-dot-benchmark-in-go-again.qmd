@@ -1,0 +1,352 @@
+---
+title: 続・Goによるdot積のベンチマーク
+date: 2022-11-16
+categories: [Go, 線形代数]
+image: /_freeze/posts/2022-11-16-dot-benchmark-in-go-again/figure-html/cell-14-output-1.png
+format:
+  html:
+    code-fold: false
+jupyter: gophernotes
+nocite: |
+    @tokyo2021go, @Weaviate
+---
+
+```{go}
+//| echo: false
+//| output: false
+
+$mkdir -p /tmp/dot_benchmark_in_go_again
+%cd /tmp/dot_benchmark_in_go_again
+$rm -f go.mod 
+$go mod init dot_benchmark_in_go_again
+$go get gonum.org/v1/gonum/...@latest
+$go get github.com/semi-technologies/weaviate/adapters/repos/db/vector/hnsw/distancer/asm
+```
+
+## はじめに
+[Weaviate](https://github.com/semi-technologies/weaviate)というGo実装の類似ベクトル検索エンジンで使用しているdot積が非常に早そうだったので再度ベンチマークを取ってみました。
+
+## やったこと
+* Weaviateのdot積をベンチマーク対象に追加
+* ベンチマーク条件変更
+  * データ型をfloat32に変更
+  * GOMAXPROCSを1に設定
+
+
+## Weaviateのdot積について
+Weaviateの[dot積](https://github.com/semi-technologies/weaviate/blob/master/adapters/repos/db/vector/hnsw/distancer/asm/dot_amd64.s)、[avo]()に生成されたアセンブリコードとして提供されています。
+動作環境はAVX2がサポートされている必要がありますが、環境では非常に高速な動作が期待できます。
+
+## 対象コード
+単純なループによる実装
+```{go}
+func CalcDot(a, b []float32) float32 {
+    var dot float32 = 0.0
+    size := len(a)
+    for i := 0; i < size; i++ {
+        dot += a[i] * b[i]
+    }
+    return dot
+}
+```
+
+ループアンロールによる実装（N=2）
+```{go}
+func CalcDotUnroll2(a, b []float32) float32 {
+    const N = 2
+    var dot float32 = 0.0
+
+	i := 0
+    size := len(a)
+    prologue_size := size % N
+	for ; i < prologue_size; i++ {
+		dot += a[i] * b[i]
+	}
+
+	for ; i < size; i += N {
+		mul0 := a[i+0] * b[i+0]
+		mul1 := a[i+1] * b[i+1]
+		dot += mul0 + mul1
+	}
+
+	return dot
+}
+```
+
+ループアンロールによる実装（N=4）
+```{go}
+func CalcDotUnroll4(a, b []float32) float32 {
+    const N = 4
+    var dot float32 = 0.0
+
+	i := 0
+    size := len(a)
+    prologue_size := size % N
+	for ; i < prologue_size; i++ {
+		dot += a[i] * b[i]
+	}
+
+	for ; i < size; i += N {
+		mul0 := a[i+0] * b[i+0]
+		mul1 := a[i+1] * b[i+1]
+		mul2 := a[i+2] * b[i+2]
+		mul3 := a[i+3] * b[i+3]
+		dot += mul0 + mul1 + mul2 + mul3
+	}
+
+	return dot
+}
+```
+
+
+ループアンロールによる実装（N=8）
+```{go}
+func CalcDotUnroll8(a, b []float32) float32 {
+    const N = 8
+    var dot float32 = 0.0
+
+	i := 0
+    size := len(a)
+    prologue_size := size % N
+	for ; i < prologue_size; i++ {
+		dot += a[i] * b[i]
+	}
+
+	for ; i < size; i += N {
+		mul0 := a[i+0] * b[i+0]
+		mul1 := a[i+1] * b[i+1]
+		mul2 := a[i+2] * b[i+2]
+		mul3 := a[i+3] * b[i+3]
+		mul4 := a[i+4] * b[i+4]
+		mul5 := a[i+5] * b[i+5]
+		mul6 := a[i+6] * b[i+6]
+		mul7 := a[i+7] * b[i+7]
+		dot += mul0 + mul1 + mul2 + mul3 + mul4 + mul5 + mul6 + mul7 
+	}
+
+	return dot
+}
+```
+
+Gonumによる実装（blas）
+```{go}
+import (
+    "gonum.org/v1/gonum/blas/blas32"
+)
+
+func CalcDotByGonumBlas(a, b []float32) float32 {
+    size := len(a)
+    av := blas32.Vector{
+        N: size,
+        Inc:  1,
+        Data: a,
+    }
+    bv := blas32.Vector{
+        N: size,
+        Inc:  1,
+        Data: b,
+    }
+    return blas32.Dot(av, bv)
+}
+```
+
+Weaviateによる実装（asm）
+```{go}
+import (
+    "github.com/semi-technologies/weaviate/adapters/repos/db/vector/hnsw/distancer/asm"
+)
+
+func CalcDotByWeaviateAsm(a, b []float32) float32 {
+    return asm.Dot(a, b)
+}
+```
+
+```{go}
+//| echo: false
+//| output: false
+
+for _, f := range []func(a, b []float32) float32 {
+    CalcDot,
+    CalcDotUnroll2,
+    CalcDotUnroll4,
+    CalcDotUnroll8,
+    CalcDotByGonumBlas,
+    CalcDotByWeaviateAsm,
+} {
+    if f([]float32{1, 2, 3, 4, 5, 6, 7, 8}, []float32{1, 2, 3, 4, 5, 6, 7, 8}) != 204 {
+        panic("error")
+    }
+}
+```
+
+## ベンチマーク
+実行環境
+```{go}
+$lscpu
+```
+
+検証用データ生成
+```{go}
+import (
+    "math/rand"
+)
+
+N := 2048
+veca := make([]float32, N)
+vecb := make([]float32, N)
+for i := 0; i < N; i++ {
+    veca[i] = rand.Float32()
+    vecb[i] = rand.Float32()
+}
+```
+
+ベンチマークコード
+```{go}
+import (
+    "testing"
+    "reflect"
+    "runtime"
+)
+
+runtime.GOMAXPROCS(1)
+
+func bench(f func() float32) func(b *testing.B) {
+    return func(b *testing.B) {
+        for i := 0; i < b.N; i++ {
+            f()
+        }
+    }
+}
+
+type Result struct {
+    Size int
+    Benchmark map[string]testing.BenchmarkResult
+}
+
+results := []Result{}
+for _, size := range []int{32, 256, 2048} {
+    type BenchmarkFunc struct {
+        Name string
+        Func func(a, b []float32) float32
+    }
+
+    curVeca := veca[:size]
+    curVecb := vecb[:size]
+    bs := map[string]testing.BenchmarkResult{}
+    for _, e := range []BenchmarkFunc{
+        {Name: "CalcDot",            Func: CalcDot},
+        {Name: "CalcDotUnroll2",     Func: CalcDotUnroll2},
+        {Name: "CalcDotUnroll4",     Func: CalcDotUnroll4},
+        {Name: "CalcDotUnroll8",     Func: CalcDotUnroll8},
+        {Name: "CalcDotByGonumBlas", Func: CalcDotByGonumBlas},
+        {Name: "CalcDotByWeaviateAsm", Func: CalcDotByWeaviateAsm},
+    } {
+        bs[e.Name] = testing.Benchmark(bench(func() float32 {
+            e.Func(curVeca, curVecb)
+        }))
+    }
+    results = append(results, Result{Size: size, Benchmark: bs})
+}
+```
+
+ベンチマーク結果
+```{go}
+//| code-fold: true
+
+import (
+    "fmt"
+    "sort"
+    "strings"
+)
+
+func calcNsPerOp(b *testing.BenchmarkResult) uint64 {
+    return uint64(b.T) / uint64(b.N)
+}
+
+func makeRow(funcName string, benchmark *testing.BenchmarkResult) string {
+    nsPerOp := calcNsPerOp(benchmark)
+    return fmt.Sprintf("<tr><td>%s</td><td>%d</td><td>%d</td><td>%d</td></tr>", funcName,  benchmark.N, benchmark.T, nsPerOp)
+}
+
+func makeTable(results map[string]testing.BenchmarkResult, size int) string {
+    var rows []string
+    for name, result := range results {
+        rows = append(rows, makeRow(name, &result))
+    }
+    sort.Strings(rows)
+    return fmt.Sprintf(`<table class="dataframe"><caption>size=%d</caption><tr><th>関数名</th><th>回数</th><th>時間[ns]</th><th>1回あたりの時間[ns]</th></tr>%s</table>`, size, strings.Join(rows, "\n"))
+}
+
+tables := []string{}
+for _, r := range results {
+    tables = append(tables, makeTable(r.Benchmark, r.Size))
+}
+display.HTML(strings.Join(tables, "\n"))
+```
+
+
+```{go}
+//| code-fold: true
+
+import (
+    "math"
+    "bytes"
+    "gonum.org/v1/plot"
+    "gonum.org/v1/plot/plotter"
+    "gonum.org/v1/plot/plotutil"
+    "gonum.org/v1/plot/vg"
+	"gonum.org/v1/plot/vg/draw"
+)
+
+func displayPlot(p *plot.Plot) {
+    var buf bytes.Buffer
+    c, err := p.WriterTo(6*vg.Inch, 6*vg.Inch, "png")
+    if err != nil {
+        panic(err)
+    }
+    if _, err := c.WriteTo(&buf); err != nil {
+        panic(err)
+    }
+    Display(display.PNG(buf.Bytes()))
+}
+
+
+p := plot.New()
+p.Title.Text = "Benchmark of dot product"
+p.X.Label.Text = "Function"
+p.Y.Label.Text = "Duration per op[ns]"
+p.X.Tick.Label.Rotation = math.Pi / 2.5
+p.X.Tick.Label.XAlign = draw.XRight
+p.Legend.Top = true
+
+names := []string{}
+for name, _ := range results[0].Benchmark {
+    names = append(names, name)
+}
+sort.Strings(names)
+p.NominalX(names...)
+
+
+for i, r := range results {
+    var values plotter.Values
+    for _, name := range names {
+        b := r.Benchmark[name]
+        values = append(values, float64(calcNsPerOp(&b)))
+    }
+    bar, _ := plotter.NewBarChart(values, vg.Points(20))
+    bar.LineStyle.Width = vg.Length(0)
+    bar.Color = plotutil.Color(i)
+    bar.Offset = vg.Points(float64(i - 1) * 20)
+    p.Add(bar)
+    p.Legend.Add(fmt.Sprintf("size=%d", r.Size), bar)
+}
+
+displayPlot(p)
+```
+
+## まとめ
+すべての測定でWeaviateのアセンブリ実装が最速であることがわかりました。
+
+## 参考 
+::: {#refs}
+:::

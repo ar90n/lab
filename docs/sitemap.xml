@@ -2,134 +2,138 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://lab.ar90n.net/about.html</loc>
-    <lastmod>2022-11-07T08:42:18.786Z</lastmod>
+    <lastmod>2022-11-16T08:16:14.447Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/index.html</loc>
-    <lastmod>2022-11-07T08:42:19.866Z</lastmod>
+    <lastmod>2022-11-16T08:16:15.643Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/projects.html</loc>
-    <lastmod>2022-11-07T08:42:23.998Z</lastmod>
+    <lastmod>2022-11-16T08:16:19.495Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2020-11-15-rust-on-nodebook-with-evcxr-jupyter.html</loc>
-    <lastmod>2022-11-07T08:42:36.622Z</lastmod>
+    <lastmod>2022-11-16T08:16:31.791Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2021-08-21-k3s-cluster-on-rp4.html</loc>
-    <lastmod>2022-11-07T08:42:37.098Z</lastmod>
+    <lastmod>2022-11-16T08:16:32.291Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2021-08-26-make-usb-to-ttlx4.html</loc>
-    <lastmod>2022-11-07T08:42:37.290Z</lastmod>
+    <lastmod>2022-11-16T08:16:32.499Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2022-11-05-develop-octoprint-plugin.html</loc>
-    <lastmod>2022-11-07T08:42:37.614Z</lastmod>
+    <lastmod>2022-11-16T08:16:32.835Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2021-01-06-install-starship.html</loc>
-    <lastmod>2022-11-07T08:42:37.822Z</lastmod>
+    <lastmod>2022-11-16T08:16:33.027Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2022-10-24-simple-voice-changer.html</loc>
-    <lastmod>2022-11-07T08:42:38.490Z</lastmod>
+    <lastmod>2022-11-16T08:16:33.659Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2021-02-01-getting-started-with-glutin.html</loc>
-    <lastmod>2022-11-07T08:42:38.786Z</lastmod>
+    <lastmod>2022-11-16T08:16:33.967Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2020-06-27-purely-binary-heap.html</loc>
-    <lastmod>2022-11-07T08:42:39.030Z</lastmod>
+    <lastmod>2022-11-16T08:16:34.211Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2020-10-17-usb-nic-in-ubuntu-server.html</loc>
-    <lastmod>2022-11-07T08:42:39.250Z</lastmod>
+    <lastmod>2022-11-16T08:16:34.435Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2021-05-26-use-serial-console-in-ubuntu.html</loc>
-    <lastmod>2022-11-07T08:42:39.458Z</lastmod>
+    <lastmod>2022-11-16T08:16:34.643Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lab.ar90n.net/posts/2022-11-16-dot-benchmark-in-go-again.html</loc>
+    <lastmod>2022-11-16T08:16:35.027Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2020-12-13-introduction-to-typenum.html</loc>
-    <lastmod>2022-11-07T08:42:39.666Z</lastmod>
+    <lastmod>2022-11-16T08:16:35.239Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2020-05-25-Ray-k3s-raspi4.html</loc>
-    <lastmod>2022-11-07T08:42:39.970Z</lastmod>
+    <lastmod>2022-11-16T08:16:35.547Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2021-03-30-ray-tracing-in-weekend.html</loc>
-    <lastmod>2022-11-07T08:42:40.194Z</lastmod>
+    <lastmod>2022-11-16T08:16:35.775Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2020-10-21-accessing-file-with-unified-pythonic-api.html</loc>
-    <lastmod>2022-11-07T08:42:40.406Z</lastmod>
+    <lastmod>2022-11-16T08:16:35.999Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2022-02-16-kdtree-and-curse-of-dimensionality.html</loc>
-    <lastmod>2022-11-07T08:42:40.658Z</lastmod>
+    <lastmod>2022-11-16T08:16:36.255Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2021-06-06-accessing-file-wiht-unified-pythonic-api2.html</loc>
-    <lastmod>2022-11-07T08:42:40.878Z</lastmod>
+    <lastmod>2022-11-16T08:16:36.479Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2021-08-01-writing-simple-ping-example.html</loc>
-    <lastmod>2022-11-07T08:42:41.122Z</lastmod>
+    <lastmod>2022-11-16T08:16:36.723Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2021-05-30-gaussian-mixture-model-with-softmax.html</loc>
-    <lastmod>2022-11-07T08:42:41.426Z</lastmod>
+    <lastmod>2022-11-16T08:16:37.043Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2022-01-30-cargo-edit-workaround.html</loc>
-    <lastmod>2022-11-07T08:42:41.646Z</lastmod>
+    <lastmod>2022-11-16T08:16:37.267Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2020-10-12-character-encodings-in-dicom.html</loc>
-    <lastmod>2022-11-07T08:42:41.862Z</lastmod>
+    <lastmod>2022-11-16T08:16:37.475Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2021-09-30-simple-guided-filter-rs.html</loc>
-    <lastmod>2022-11-07T08:42:42.182Z</lastmod>
+    <lastmod>2022-11-16T08:16:37.795Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2022-11-08-dot-benchmark-in-go.html</loc>
-    <lastmod>2022-11-07T08:42:42.542Z</lastmod>
+    <lastmod>2022-11-16T08:16:38.167Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2020-06-27-linear-algebra-in-3d-coordinates.html</loc>
-    <lastmod>2022-11-07T08:42:42.746Z</lastmod>
+    <lastmod>2022-11-16T08:16:38.363Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2020-08-09-automated-update-github-pages.html</loc>
-    <lastmod>2022-11-07T08:42:42.950Z</lastmod>
+    <lastmod>2022-11-16T08:16:38.575Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2020-05-31-poisson-blending-in-5-lines.html</loc>
-    <lastmod>2022-11-07T08:42:43.186Z</lastmod>
+    <lastmod>2022-11-16T08:16:38.815Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2020-11-08-read-umeyama-1991-paper.html</loc>
-    <lastmod>2022-11-07T08:42:43.502Z</lastmod>
+    <lastmod>2022-11-16T08:16:39.139Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2022-01-03-aws-amplify-tips.html</loc>
-    <lastmod>2022-11-07T08:42:43.714Z</lastmod>
+    <lastmod>2022-11-16T08:16:39.351Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2020-10-10-analysis-of-moving-average-filter.html</loc>
-    <lastmod>2022-11-07T08:42:44.058Z</lastmod>
+    <lastmod>2022-11-16T08:16:39.711Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2022-08-12-xg-c100c-in-ubuntu-server.html</loc>
-    <lastmod>2022-11-07T08:42:44.266Z</lastmod>
+    <lastmod>2022-11-16T08:16:39.915Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2022-02-01-mimic-annoy-wiht-go.html</loc>
-    <lastmod>2022-11-07T08:42:44.582Z</lastmod>
+    <lastmod>2022-11-16T08:16:40.231Z</lastmod>
   </url>
 </urlset>

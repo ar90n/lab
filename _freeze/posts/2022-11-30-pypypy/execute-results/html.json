@@ -1,0 +1,11 @@
+{
+  "hash": "5b9feec32f9d6c831384914b1115d0ce",
+  "result": {
+    "markdown": "---\ntitle: ほとんどPythonで作るWebアプリケーション\ndate: '2022-11-30'\ncategories:\n  - Python\n  - Web\nformat:\n  html:\n    code-fold: false\nnocite: |\n  @gogogo\n---\n\n## はじめに\n少し前にGoでWebアプリを作成する[gogogo](https://github.com/koki-develop/gogogo)というプロジェクトに倣って、\nほとんどPythonのみでWebアプリケーションを作成してみました。\n\n## やったこと\n- [pypypy](https://github.com/ar90n/pypypy)というPythonによるWebアプリケーションを作成\n\n## 作ったものについて\nWebsocketでメッセージをやり取りするシンプルなチャットを作成しました。\n\n[demo](https://pypypy-static-files.s3.ap-northeast-1.amazonaws.com/index.html)\n\n![](/assets/img/2022-11-30-pypypy/sc.png)\n\n### フロントエンド\nフロントエンドは[alfort-dom](https://github.com/ar90n/alfort-dom)というElm-likeな自作フレームワークを使用しています。\nCSSは得意では無いため、[MVP.css](https://andybrewer.github.io/mvp/)を使用しています。\n\n### バックエンド\nApigateway + Lambdaという構成です。ほぼほぼ[サンプルのチャットアプリケーション](https://github.com/aws-samples/simple-websockets-chat-app)をそのまま流用しています。\n\n### インフラ\n構成管理にはAWS CDKを使用しています。構成管理の設定は`deploy.py`というファイルに必要なスタックをベタ書きしています。\n\n## 参考 \n::: {#refs}\n:::\n\n",
+    "supporting": [
+      "2022-11-30-pypypy_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}

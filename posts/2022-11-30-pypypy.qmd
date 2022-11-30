@@ -1,0 +1,39 @@
+---
+title: ほとんどPythonで作るWebアプリケーション
+date: 2022-11-30
+categories: [Python, Web]
+format:
+  html:
+    code-fold: false
+jupyter: python3
+nocite: |
+  @gogogo   
+---
+
+## はじめに
+少し前にGoでWebアプリを作成する[gogogo](https://github.com/koki-develop/gogogo)というプロジェクトに倣って、
+ほとんどPythonのみでWebアプリケーションを作成してみました。
+
+## やったこと
+- [pypypy](https://github.com/ar90n/pypypy)というPythonによるWebアプリケーションを作成
+
+## 作ったものについて
+Websocketでメッセージをやり取りするシンプルなチャットを作成しました。
+
+[demo](https://pypypy-static-files.s3.ap-northeast-1.amazonaws.com/index.html)
+
+![](/assets/img/2022-11-30-pypypy/sc.png)
+
+### フロントエンド
+フロントエンドは[alfort-dom](https://github.com/ar90n/alfort-dom)というElm-likeな自作フレームワークを使用しています。
+CSSは得意では無いため、[MVP.css](https://andybrewer.github.io/mvp/)を使用しています。
+
+### バックエンド
+Apigateway + Lambdaという構成です。ほぼほぼ[サンプルのチャットアプリケーション](https://github.com/aws-samples/simple-websockets-chat-app)をそのまま流用しています。
+
+### インフラ
+構成管理にはAWS CDKを使用しています。構成管理の設定は`deploy.py`というファイルに必要なスタックをベタ書きしています。
+
+## 参考 
+::: {#refs}
+:::

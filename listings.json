@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/2022-11-30-pypypy.html",
       "/posts/2022-11-16-dot-benchmark-in-go-again.html",
       "/posts/2022-11-08-dot-benchmark-in-go.html",
       "/posts/2022-11-05-develop-octoprint-plugin.html",

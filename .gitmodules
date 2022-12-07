@@ -1,0 +1,6 @@
+[submodule "sandbox/array_api_practice/array-api"]
+	path = sandbox/array_api_practice/array-api
+	url = git@github.com:data-apis/array-api.git
+[submodule "sandbox/py_opt_book_practice/PyOptBook"]
+	path = sandbox/py_opt_book_practice/PyOptBook
+	url = https://github.com/ohmsha/PyOptBook.git

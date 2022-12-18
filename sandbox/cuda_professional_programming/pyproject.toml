@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "cuda-professional-programming"
+version = "0.1.0"
+description = ""
+authors = ["Masahiro Wada <argon.argon.argon@gmail.com>"]
+readme = "README.md"
+packages = [{include = "cuda_professional_programming"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pycuda = "^2022.2"
+numpy = "^1.23.5"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^22.12.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

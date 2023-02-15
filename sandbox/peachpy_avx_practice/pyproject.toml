@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "peachpy-avx-practice"
+version = "0.1.0"
+description = ""
+authors = ["Masahiro Wada <argon.argon.argon@gmail.com>"]
+readme = "README.md"
+packages = [{include = "peachpy_avx_practice"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+black = "^23.1.0"
+peachpy = {git = "https://github.com/Maratyszcza/PeachPy"}
+numpy = "^1.24.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

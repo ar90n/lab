@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "knn-example"
+version = "0.1.0"
+description = ""
+authors = ["Masahiro Wada <argon.argon.argon@gmail.com>"]
+readme = "README.md"
+packages = [{include = "knn_example"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+networkx = "^3.0"
+numpy = "1.23"
+libpysal = "^4.7.0"
+scikit-learn = "^1.2.1"
+numba = "^0.56.4"
+pynndescent = "^0.5.8"
+
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.21.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

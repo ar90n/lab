@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "langchain-practice"
+version = "0.1.0"
+description = ""
+authors = ["Masahiro Wada <argon.argon.argon@gmail.com>"]
+readme = "README.md"
+packages = [{include = "langchain_practice"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+langchain = "^0.0.146"
+openai = "^0.27.4"
+google-search-results = "^2.4.2"
+
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.22.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

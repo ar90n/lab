@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<!DOCTYPE bulletml SYSTEM "http://www.asahi-net.or.jp/~cs8k-cyu/bulletml/bulletml.dtd">
+
+<bulletml xmlns="http://www.asahi-net.or.jp/~cs8k-cyu/bulletml">
+
+<action label="top">
+<repeat>
+<times>1</times>
+<action>
+ <fire>
+  <direction type="sequence">23</direction>
+  <bulletRef label="straight"/>
+ </fire>
+ <wait>1</wait>
+</action>
+</repeat>
+</action>
+
+<bullet label="straight">
+<action>
+ <wait>20+$rand*50</wait>
+ <changeDirection>
+  <direction type="absolute">180</direction>
+  <term>10</term>
+ </changeDirection>
+</action>
+</bullet>
+
+</bulletml>

@@ -1,0 +1,316 @@
+<?xml version="1.0" ?>
+<!DOCTYPE bulletml SYSTEM "http://www.asahi-net.or.jp/~cs8k-cyu/bulletml/bulletml.dtd">
+<bulletml type="vertical"
+    xmlns="http://www.asahi-net.or.jp/~cs8k-cyu/bulletml">
+
+    <action label="top">
+        <fire>
+            <direction type="absolute">30</direction>
+            <bulletRef label="satellite">
+                <param>1.2</param>
+                <param>-1</param>
+            </bulletRef>
+        </fire>
+        <repeat>
+            <times>2</times>
+            <action>
+                <fire>
+                    <direction type="sequence">120</direction>
+                    <bulletRef label="satellite">
+                        <param>1.2</param>
+                        <param>-1</param>
+                    </bulletRef>
+                </fire>
+            </action>
+        </repeat>
+        <repeat>
+            <times>3</times>
+            <action>
+                <fire>
+                    <direction type="sequence">120</direction>
+                    <bulletRef label="satellite">
+                        <param>2</param>
+                        <param>1</param>
+                    </bulletRef>
+                </fire>
+            </action>
+        </repeat>
+        <repeat>
+            <times>11</times>
+            <action>
+                <wait>180</wait>
+                <actionRef label="large"/>
+            </action>
+        </repeat>
+        <wait>30</wait>
+    </action>
+
+    <bullet label="satellite">
+        <speed>$1</speed>
+        <action>
+            <repeat>
+                <times>3</times>
+                <action>
+                    <changeDirection>
+                        <direction type="relative">$2*60</direction>
+                        <term>15</term>
+                    </changeDirection>
+                    <wait>15</wait>
+                </action>
+            </repeat>
+            <changeSpeed>
+                <speed>0.001</speed>
+                <term>0</term>
+            </changeSpeed>
+            <wait>30</wait>
+            <repeat>
+                <times>5</times>
+                <action>
+                    <fire>
+                        <direction type="relative">$2*90</direction>
+                        <bulletRef label="cannon"/>
+                    </fire>
+                    <wait>15</wait>
+                </action>
+            </repeat>
+            <changeSpeed>
+                <speed>$1/3</speed>
+                <term>0</term>
+            </changeSpeed>
+            <repeat>
+                <times>120</times>
+                <action>
+                    <changeDirection>
+                        <direction type="relative">$2*10</direction>
+                        <term>15</term>
+                    </changeDirection>
+                    <fire>
+                        <direction type="sequence">$2*10.1</direction>
+                        <bulletRef label="cannon"/>
+                    </fire>
+                    <wait>15</wait>
+                </action>
+            </repeat>
+            <vanish/>
+        </action>
+    </bullet>
+
+    <bullet label="cannon">
+        <speed>0.01</speed>
+        <action>
+            <wait>1</wait>
+            <fire>
+                <direction type="relative">0</direction>
+                <bulletRef label="small">
+                    <param>0</param>
+                </bulletRef>
+            </fire>
+            <fire>
+                <direction type="sequence">40</direction>
+                <bulletRef label="small">
+                    <param>-40</param>
+                </bulletRef>
+            </fire>
+            <fire>
+                <direction type="sequence">40</direction>
+                <bulletRef label="small">
+                    <param>-80</param>
+                </bulletRef>
+            </fire>
+            <fire>
+                <direction type="sequence">40</direction>
+                <bulletRef label="small">
+                    <param>-120</param>
+                </bulletRef>
+            </fire>
+            <fire>
+                <direction type="sequence">40</direction>
+                <bulletRef label="small">
+                    <param>-160</param>
+                </bulletRef>
+            </fire>
+            <fire>
+                <direction type="sequence">40</direction>
+                <bulletRef label="small">
+                    <param>-200</param>
+                </bulletRef>
+            </fire>
+            <fire>
+                <direction type="sequence">40</direction>
+                <bulletRef label="small">
+                    <param>-240</param>
+                </bulletRef>
+            </fire>
+            <fire>
+                <direction type="sequence">40</direction>
+                <bulletRef label="small">
+                    <param>-280</param>
+                </bulletRef>
+            </fire>
+            <fire>
+                <direction type="sequence">40</direction>
+                <bulletRef label="small">
+                    <param>-320</param>
+                </bulletRef>
+            </fire>
+            <vanish/>
+        </action>
+    </bullet>
+
+    <bullet label="small">
+        <speed>1.7</speed>
+        <action>
+            <wait>1</wait>
+            <fire>
+                <direction type="relative">$1-30</direction>
+                <speed>0.8</speed>
+                <bullet/>
+            </fire>
+            <fire>
+                <direction type="sequence">60</direction>
+                <speed>0.8</speed>
+                <bullet/>
+            </fire>
+            <vanish/>
+        </action>
+    </bullet>
+
+    <action label="large">
+        <fire>
+            <direction>-10</direction>
+            <bulletRef label="large">
+                <param>10</param>
+            </bulletRef>
+        </fire>
+        <repeat>
+            <times>3</times>
+            <action>
+                <fire>
+                    <direction type="sequence">10</direction>
+                    <bulletRef label="large">
+                        <param>0</param>
+                    </bulletRef>
+                </fire>
+                <fire>
+                    <direction type="sequence">10</direction>
+                    <bulletRef label="large">
+                        <param>-10</param>
+                    </bulletRef>
+                </fire>
+                <fire>
+                    <direction type="sequence">10</direction>
+                    <bulletRef label="large">
+                        <param>-20</param>
+                    </bulletRef>
+                </fire>
+                <fire>
+                    <direction type="sequence">10</direction>
+                    <bulletRef label="large">
+                        <param>-30</param>
+                    </bulletRef>
+                </fire>
+                <fire>
+                    <direction type="sequence">10</direction>
+                    <bulletRef label="large">
+                        <param>-40</param>
+                    </bulletRef>
+                </fire>
+                <fire>
+                    <direction type="sequence">10</direction>
+                    <bulletRef label="large">
+                        <param>-50</param>
+                    </bulletRef>
+                </fire>
+                <fire>
+                    <direction type="sequence">10</direction>
+                    <bulletRef label="large">
+                        <param>-60</param>
+                    </bulletRef>
+                </fire>
+                <fire>
+                    <direction type="sequence">10</direction>
+                    <bulletRef label="large">
+                        <param>-70</param>
+                    </bulletRef>
+                </fire>
+                <fire>
+                    <direction type="sequence">10</direction>
+                    <bulletRef label="large">
+                        <param>-80</param>
+                    </bulletRef>
+                </fire>
+                <fire>
+                    <direction type="sequence">10</direction>
+                    <bulletRef label="large">
+                        <param>-90</param>
+                    </bulletRef>
+                </fire>
+                <fire>
+                    <direction type="sequence">10</direction>
+                    <bulletRef label="large">
+                        <param>-100</param>
+                    </bulletRef>
+                </fire>
+                <fire>
+                    <direction type="sequence">10</direction>
+                    <bulletRef label="large">
+                        <param>-110</param>
+                    </bulletRef>
+                </fire>
+            </action>
+        </repeat>
+    </action>
+
+    <bullet label="large">
+        <speed>12</speed>
+        <action>
+            <wait>1</wait>
+            <fire>
+                <direction type="relative">$1</direction>
+                <speed>0.9</speed>
+                <bulletRef label="ball"/>
+            </fire>
+            <repeat>
+                <times>2</times>
+                <action>
+                    <fire>
+                        <direction type="sequence">120</direction>
+                        <speed>0.9</speed>
+                        <bulletRef label="ball"/>
+                    </fire>
+                </action>
+            </repeat>
+            <repeat>
+                <times>3</times>
+                <action>
+                    <fire>
+                        <direction type="sequence">120</direction>
+                        <speed>1.05</speed>
+                        <bulletRef label="ball"/>
+                    </fire>
+                </action>
+            </repeat>
+            <repeat>
+                <times>3</times>
+                <action>
+                    <fire>
+                        <direction type="sequence">120</direction>
+                        <speed>1.2</speed>
+                        <bulletRef label="ball"/>
+                    </fire>
+                </action>
+            </repeat>
+            <vanish/>
+        </action>
+    </bullet>
+
+    <bullet label="ball">
+        <action>
+            <changeSpeed>
+                <speed type="relative">0</speed>
+                <term>0</term>
+            </changeSpeed>
+        </action>
+    </bullet>
+
+</bulletml>

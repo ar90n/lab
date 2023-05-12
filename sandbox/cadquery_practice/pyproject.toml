@@ -16,6 +16,7 @@ ipython = "^8.12.0"
 ipykernel = "^6.22.0"
 cadquery-massembly = "^1.0.0"
 matplotlib = "^3.7.1"
+cq-warehouse = {git = "https://github.com/gumyr/cq_warehouse.git"}
 
 
 [tool.poetry.group.dev.dependencies]

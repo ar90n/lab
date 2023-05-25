@@ -1,6 +1,6 @@
 # %%
 from build123d import *
-from ocp_vscode import show
+from ocp_vscode import show, show_object
 # %%
 class Hinge(Compound):
     def __init__(
@@ -172,9 +172,12 @@ with BuildPart() as lid_builder:
     )
 lid = lid_builder.part
 # %%
-# download from https://grabcad.com/library/metric-countersunk-flat-head-cap-bolt-screws-m6-and-nut-1/details?folder_id=8118343
 m6_screw = import_step("M6-1x12-countersunk-screw.step")
 m6_joint = RigidJoint("head", m6_screw, Location((0, 0, 0), (0, 0, 0)))
 # %%
-show(hinge_outer)
+box.joints["hinge_attachment"].connect_to(hinge_outer.joints["leaf"])
+hinge_outer.joints["hinge_axis"].connect_to(hinge_inner.joints["hinge_axis"], angle=120)
+hinge_inner.joints["leaf"].connect_to(lid.joints["hinge_attachment"])
+hinge_outer.joints["hole2"].connect_to(m6_joint, position=5 * MM, angle=30)
 # %%
+show(box, lid, hinge_outer, hinge_inner, m6_screw)

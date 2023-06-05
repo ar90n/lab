@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.218">
+<meta name="generator" content="quarto-1.3.361">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -18,9 +18,10 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -47,48 +48,19 @@ pre.numberSource code > span > a:first-child::before
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
     padding: 0 4px; width: 4em;
-    color: #aaaaaa;
   }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
 div.sourceCode
   {   }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { color: #008000; } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { color: #008000; font-weight: bold; } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+/* CSS for citations */
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
 }
-.hanging div.csl-entry {
+.hanging-indent div.csl-entry {
   margin-left:2em;
   text-indent:-2em;
 }
@@ -102,8 +74,7 @@ div.csl-right-inline {
 }
 div.csl-indent {
   margin-left: 2em;
-}
-</style>
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -141,7 +112,8 @@ div.csl-indent {
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 
@@ -181,13 +153,13 @@ cookieconsent.run({
 
 <link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="lab_note - 続・Goによるdot積のベンチマーク">
-<meta property="og:description" content="WeaviateというGo実装の類似ベクトル検索エンジンで使用しているdot積が非常に早そうだったので再度ベンチマークを取ってみました。">
+<meta property="og:description" content="">
 <meta property="og:image" content="https://lab.ar90n.net/_freeze/posts/2022-11-16-dot-benchmark-in-go-again/figure-html/cell-14-output-1.png">
 <meta property="og:site-name" content="lab_note">
 <meta property="og:image:height" content="576">
 <meta property="og:image:width" content="576">
 <meta name="twitter:title" content="lab_note - 続・Goによるdot積のベンチマーク">
-<meta name="twitter:description" content="WeaviateというGo実装の類似ベクトル検索エンジンで使用しているdot積が非常に早そうだったので再度ベンチマークを取ってみました。">
+<meta name="twitter:description" content="">
 <meta name="twitter:image" content="https://lab.ar90n.net/_freeze/posts/2022-11-16-dot-benchmark-in-go-again/figure-html/cell-14-output-1.png">
 <meta name="twitter:site" content="@ar90n">
 <meta name="twitter:image-height" content="576">
@@ -206,31 +178,33 @@ cookieconsent.run({
     <span class="navbar-title">lab_note</span>
     </a>
   </div>
+            <div id="quarto-search" class="" title="Search"></div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../about.html">
+    <a class="nav-link" href="../about.html" rel="" target="">
  <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../projects.html">
+    <a class="nav-link" href="../projects.html" rel="" target="">
  <span class="menu-text">Projects</span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/ar90n"><i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/ar90n" rel="" target=""><i class="bi bi-github" role="img">
 </i> 
  <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://twitter.com/ar90n"><i class="bi bi-twitter" role="img">
+    <a class="nav-link" href="https://twitter.com/ar90n" rel="" target=""><i class="bi bi-twitter" role="img">
 </i> 
  <span class="menu-text"></span></a>
   </li>  
 </ul>
-              <div id="quarto-search" class="" title="Search"></div>
+            <div class="quarto-navbar-tools">
+</div>
           </div> <!-- /navcollapse -->
       </div> <!-- /container-fluid -->
     </nav>
@@ -308,7 +282,7 @@ cookieconsent.run({
 <p>単純なループによる実装</p>
 <div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> CalcDot<span class="op">(</span>a<span class="op">,</span> b <span class="op">[]</span><span class="dt">float32</span><span class="op">)</span> <span class="dt">float32</span> <span class="op">{</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> dot <span class="dt">float32</span> <span class="op">=</span> <span class="dv">0</span><span class="fl">.0</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> dot <span class="dt">float32</span> <span class="op">=</span> <span class="dv">0</span><span class="er">.0</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    size <span class="op">:=</span> <span class="bu">len</span><span class="op">(</span>a<span class="op">)</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="op">:=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> size<span class="op">;</span> i<span class="op">++</span> <span class="op">{</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        dot <span class="op">+=</span> a<span class="op">[</span>i<span class="op">]</span> <span class="op">*</span> b<span class="op">[</span>i<span class="op">]</span></span>
@@ -320,7 +294,7 @@ cookieconsent.run({
 <div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> CalcDotUnroll2<span class="op">(</span>a<span class="op">,</span> b <span class="op">[]</span><span class="dt">float32</span><span class="op">)</span> <span class="dt">float32</span> <span class="op">{</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> N <span class="op">=</span> <span class="dv">2</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> dot <span class="dt">float32</span> <span class="op">=</span> <span class="dv">0</span><span class="fl">.0</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> dot <span class="dt">float32</span> <span class="op">=</span> <span class="dv">0</span><span class="er">.0</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    i <span class="op">:=</span> <span class="dv">0</span></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    size <span class="op">:=</span> <span class="bu">len</span><span class="op">(</span>a<span class="op">)</span></span>
@@ -342,7 +316,7 @@ cookieconsent.run({
 <div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> CalcDotUnroll4<span class="op">(</span>a<span class="op">,</span> b <span class="op">[]</span><span class="dt">float32</span><span class="op">)</span> <span class="dt">float32</span> <span class="op">{</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> N <span class="op">=</span> <span class="dv">4</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> dot <span class="dt">float32</span> <span class="op">=</span> <span class="dv">0</span><span class="fl">.0</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> dot <span class="dt">float32</span> <span class="op">=</span> <span class="dv">0</span><span class="er">.0</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    i <span class="op">:=</span> <span class="dv">0</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    size <span class="op">:=</span> <span class="bu">len</span><span class="op">(</span>a<span class="op">)</span></span>
@@ -366,7 +340,7 @@ cookieconsent.run({
 <div class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> CalcDotUnroll8<span class="op">(</span>a<span class="op">,</span> b <span class="op">[]</span><span class="dt">float32</span><span class="op">)</span> <span class="dt">float32</span> <span class="op">{</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> N <span class="op">=</span> <span class="dv">8</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> dot <span class="dt">float32</span> <span class="op">=</span> <span class="dv">0</span><span class="fl">.0</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> dot <span class="dt">float32</span> <span class="op">=</span> <span class="dv">0</span><span class="er">.0</span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    i <span class="op">:=</span> <span class="dv">0</span></span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    size <span class="op">:=</span> <span class="bu">len</span><span class="op">(</span>a<span class="op">)</span></span>
@@ -565,25 +539,147 @@ Flags:                           fpu vme de pse tsc msr pae mce cx8 apic sep mtr
 <span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>display<span class="op">.</span>HTML<span class="op">(</span>strings<span class="op">.</span>Join<span class="op">(</span>tables<span class="op">,</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span><span class="op">))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display" data-execution_count="12">
-
-<table class="dataframe table table-sm table-striped"><caption>size=32</caption><tbody><tr><th>関数名</th><th>回数</th><th>時間[ns]</th><th>1回あたりの時間[ns]</th></tr><tr><td>CalcDot</td><td>346974</td><td>1179908231</td><td>3400</td></tr>
-<tr><td>CalcDotByGonumBlas</td><td>336958</td><td>1204222744</td><td>3573</td></tr>
-<tr><td>CalcDotByWeaviateAsm</td><td>457072</td><td>1118602599</td><td>2447</td></tr>
-<tr><td>CalcDotUnroll2</td><td>319407</td><td>1289024805</td><td>4035</td></tr>
-<tr><td>CalcDotUnroll4</td><td>353758</td><td>1322124380</td><td>3737</td></tr>
-<tr><td>CalcDotUnroll8</td><td>375663</td><td>1259082336</td><td>3351</td></tr></tbody></table>
-<table class="dataframe table table-sm table-striped"><caption>size=256</caption><tbody><tr><th>関数名</th><th>回数</th><th>時間[ns]</th><th>1回あたりの時間[ns]</th></tr><tr><td>CalcDot</td><td>92368</td><td>1205821911</td><td>13054</td></tr>
-<tr><td>CalcDotByGonumBlas</td><td>341826</td><td>1239509464</td><td>3626</td></tr>
-<tr><td>CalcDotByWeaviateAsm</td><td>458673</td><td>1126861958</td><td>2456</td></tr>
-<tr><td>CalcDotUnroll2</td><td>72632</td><td>1251829756</td><td>17235</td></tr>
-<tr><td>CalcDotUnroll4</td><td>86812</td><td>1227783225</td><td>14143</td></tr>
-<tr><td>CalcDotUnroll8</td><td>93368</td><td>1228300326</td><td>13155</td></tr></tbody></table>
-<table class="dataframe table table-sm table-striped"><caption>size=2048</caption><tbody><tr><th>関数名</th><th>回数</th><th>時間[ns]</th><th>1回あたりの時間[ns]</th></tr><tr><td>CalcDot</td><td>13098</td><td>1214307203</td><td>92709</td></tr>
-<tr><td>CalcDotByGonumBlas</td><td>320077</td><td>1216720203</td><td>3801</td></tr>
-<tr><td>CalcDotByWeaviateAsm</td><td>439030</td><td>1119375941</td><td>2549</td></tr>
-<tr><td>CalcDotUnroll2</td><td>9525</td><td>1176658556</td><td>123533</td></tr>
-<tr><td>CalcDotUnroll4</td><td>12124</td><td>1188543785</td><td>98032</td></tr>
-<tr><td>CalcDotUnroll8</td><td>13207</td><td>1200212236</td><td>90876</td></tr></tbody></table>
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>size=32</caption>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">関数名</td>
+<td data-quarto-table-cell-role="th">回数</td>
+<td data-quarto-table-cell-role="th">時間[ns]</td>
+<td data-quarto-table-cell-role="th">1回あたりの時間[ns]</td>
+</tr>
+<tr class="even">
+<td>CalcDot</td>
+<td>346974</td>
+<td>1179908231</td>
+<td>3400</td>
+</tr>
+<tr class="odd">
+<td>CalcDotByGonumBlas</td>
+<td>336958</td>
+<td>1204222744</td>
+<td>3573</td>
+</tr>
+<tr class="even">
+<td>CalcDotByWeaviateAsm</td>
+<td>457072</td>
+<td>1118602599</td>
+<td>2447</td>
+</tr>
+<tr class="odd">
+<td>CalcDotUnroll2</td>
+<td>319407</td>
+<td>1289024805</td>
+<td>4035</td>
+</tr>
+<tr class="even">
+<td>CalcDotUnroll4</td>
+<td>353758</td>
+<td>1322124380</td>
+<td>3737</td>
+</tr>
+<tr class="odd">
+<td>CalcDotUnroll8</td>
+<td>375663</td>
+<td>1259082336</td>
+<td>3351</td>
+</tr>
+</tbody>
+</table>
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>size=256</caption>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">関数名</td>
+<td data-quarto-table-cell-role="th">回数</td>
+<td data-quarto-table-cell-role="th">時間[ns]</td>
+<td data-quarto-table-cell-role="th">1回あたりの時間[ns]</td>
+</tr>
+<tr class="even">
+<td>CalcDot</td>
+<td>92368</td>
+<td>1205821911</td>
+<td>13054</td>
+</tr>
+<tr class="odd">
+<td>CalcDotByGonumBlas</td>
+<td>341826</td>
+<td>1239509464</td>
+<td>3626</td>
+</tr>
+<tr class="even">
+<td>CalcDotByWeaviateAsm</td>
+<td>458673</td>
+<td>1126861958</td>
+<td>2456</td>
+</tr>
+<tr class="odd">
+<td>CalcDotUnroll2</td>
+<td>72632</td>
+<td>1251829756</td>
+<td>17235</td>
+</tr>
+<tr class="even">
+<td>CalcDotUnroll4</td>
+<td>86812</td>
+<td>1227783225</td>
+<td>14143</td>
+</tr>
+<tr class="odd">
+<td>CalcDotUnroll8</td>
+<td>93368</td>
+<td>1228300326</td>
+<td>13155</td>
+</tr>
+</tbody>
+</table>
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>size=2048</caption>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">関数名</td>
+<td data-quarto-table-cell-role="th">回数</td>
+<td data-quarto-table-cell-role="th">時間[ns]</td>
+<td data-quarto-table-cell-role="th">1回あたりの時間[ns]</td>
+</tr>
+<tr class="even">
+<td>CalcDot</td>
+<td>13098</td>
+<td>1214307203</td>
+<td>92709</td>
+</tr>
+<tr class="odd">
+<td>CalcDotByGonumBlas</td>
+<td>320077</td>
+<td>1216720203</td>
+<td>3801</td>
+</tr>
+<tr class="even">
+<td>CalcDotByWeaviateAsm</td>
+<td>439030</td>
+<td>1119375941</td>
+<td>2549</td>
+</tr>
+<tr class="odd">
+<td>CalcDotUnroll2</td>
+<td>9525</td>
+<td>1176658556</td>
+<td>123533</td>
+</tr>
+<tr class="even">
+<td>CalcDotUnroll4</td>
+<td>12124</td>
+<td>1188543785</td>
+<td>98032</td>
+</tr>
+<tr class="odd">
+<td>CalcDotUnroll8</td>
+<td>13207</td>
+<td>1200212236</td>
+<td>90876</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="cell" data-execution_count="14">
@@ -616,7 +712,7 @@ Flags:                           fpu vme de pse tsc msr pae mce cx8 apic sep mtr
 <span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>p<span class="op">.</span>Title<span class="op">.</span>Text <span class="op">=</span> <span class="st">"Benchmark of dot product"</span></span>
 <span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>p<span class="op">.</span>X<span class="op">.</span>Label<span class="op">.</span>Text <span class="op">=</span> <span class="st">"Function"</span></span>
 <span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>p<span class="op">.</span>Y<span class="op">.</span>Label<span class="op">.</span>Text <span class="op">=</span> <span class="st">"Duration per op[ns]"</span></span>
-<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>p<span class="op">.</span>X<span class="op">.</span>Tick<span class="op">.</span>Label<span class="op">.</span>Rotation <span class="op">=</span> math<span class="op">.</span>Pi <span class="op">/</span> <span class="dv">2</span><span class="fl">.5</span></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>p<span class="op">.</span>X<span class="op">.</span>Tick<span class="op">.</span>Label<span class="op">.</span>Rotation <span class="op">=</span> math<span class="op">.</span>Pi <span class="op">/</span> <span class="fl">2.5</span></span>
 <span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>p<span class="op">.</span>X<span class="op">.</span>Tick<span class="op">.</span>Label<span class="op">.</span>XAlign <span class="op">=</span> draw<span class="op">.</span>XRight</span>
 <span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>p<span class="op">.</span>Legend<span class="op">.</span>Top <span class="op">=</span> <span class="ot">true</span></span>
 <span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a></span>
@@ -655,11 +751,11 @@ Flags:                           fpu vme de pse tsc msr pae mce cx8 apic sep mtr
 </section>
 <section id="参考" class="level2">
 <h2 class="anchored" data-anchor-id="参考">参考</h2>
-<div id="refs" class="references csl-bib-body" role="doc-bibliography">
-<div id="ref-Weaviate" class="csl-entry" role="doc-biblioentry">
+<div id="refs" class="references csl-bib-body" role="list">
+<div id="ref-Weaviate" class="csl-entry" role="listitem">
 <div class="csl-left-margin">[1] </div><div class="csl-right-inline">Weavite. <em>GitHub repository</em>. <a href="https://github.com/semi-technologies/weaviate" class="uri">https://github.com/semi-technologies/weaviate</a>; GitHub.</div>
 </div>
-<div id="ref-tokyo2021go" class="csl-entry" role="doc-biblioentry">
+<div id="ref-tokyo2021go" class="csl-entry" role="listitem">
 <div class="csl-left-margin">[2] </div><div class="csl-right-inline">Tokyo, W.W.G. 2021. <em><a href="https://books.google.co.jp/books?id=nVM5EAAAQBAJ">Go言語を楽しむ5つのレシピ: コタツと蜜柑とゴーファーとわたし</a></em>. インプレスR&amp;D.</div>
 </div>
 </div>
@@ -695,9 +791,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -762,6 +872,92 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {
@@ -804,7 +1000,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
-      <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
   </div>
 </footer>
 

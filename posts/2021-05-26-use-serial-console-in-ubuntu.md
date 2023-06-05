@@ -37,14 +37,14 @@ $ sudo cu -l /dev/ttyUSB0 # <- ttyUSB0の部分は環境によります
 ## シリアルコンソールの有効化
 代用ケーブルを接続したマシンにて，以下のコマンド実行するとシリアルコンソールを有効化することができます．
 
-```
+```bash
 $ sudo systemctl enable serial-getty@ttyUSB0.service  # <- ttyUSB0の部分は環境によります
 $ sudo systemctl start serial-getty@ttyUSB0.service  # <- ttyUSB0の部分は環境によります
 ```
 
 その後，もう一方を接続したマシンにて，`cu`コマンドを用いて接続します．すると，以下の様にログインプロンプトが確認できます．(slimeはホスト名です)
 
-```
+```bash
 $ sudo cu -l /dev/ttyUSB0 # <- ttyUSB0の部分は環境によります
 Password:
 Connected.
@@ -60,7 +60,7 @@ slime login:
 そこで，特定のVendor IDとProduct IDを持つUSB-Serialデバイスが接続された場合のみシリアルコンソールを有効化します．
 Vendor IDとProduct IDは以下のコマンドで確認します．
 
-```
+```bash
 $ udevadm test-builtin usb_id /sys/class/tty/ttyUSB0
 Load module index
 Parsed configuration file /usr/lib/systemd/network/99-default.link
@@ -89,7 +89,7 @@ Unloaded link configuration context.
 
 以上の結果を元に，以下の様にudevの設定を追加します．
 
-```
+```bash
 $ cat /etc/udev/rules.d/65-serial-console.rules
 ACTION=="remove", GOTO="serial_end"
 SUBSYSTEM!="tty", GOTO="serial_end"
@@ -106,7 +106,7 @@ LABEL="serial_end"
 
 * ケーブル挿入前
 
-```
+```bash
 $sudo systemctl status serial-getty@ttyUSB0.service
 ● serial-getty@ttyUSB0.service - Serial Getty on ttyUSB0
      Loaded: loaded (/lib/systemd/system/serial-getty@.service; enabled; vendor preset: enabled)
@@ -122,7 +122,7 @@ May 23 03:26:14 slime systemd[1]: Stopped Serial Getty on ttyUSB0.
 
 * ケーブル挿入後
 
-```
+```bash
 $ sudo systemctl status serial-getty@ttyUSB0.service
 ● serial-getty@ttyUSB0.service - Serial Getty on ttyUSB0
      Loaded: loaded (/lib/systemd/system/serial-getty@.service; enabled; vendor preset: enabled)

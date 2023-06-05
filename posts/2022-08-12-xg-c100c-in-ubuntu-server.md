@@ -31,7 +31,7 @@ ASUSの[サイト](https://www.asus.com/jp/Networking-IoT-Servers/Wired-Networki
 
 ダウンロード完了後、以下のように指示通り作業を行うとドライバを導入します。
 
-```
+```bash
 $ unzip Marvell_Linux_2.5.5.zip
 Archive:  Marvell_Linux_2.5.5.zip
    creating: 05-23-22_Marvell_Linux_2.5.5/
@@ -47,7 +47,7 @@ $ sudo ./dkms.sh install
 追加したNICの名称を確認します。正しい方法がわからないので、`dmesg` からそれっぽいものを持ってきます。
 今回追加したNICは`enp4s0`という名称が付けられているようです。
 
-```
+```bash
 $ sudo dmesg| grep atlantic
 [    2.502420] atlantic 0000:04:00.0: enabling device (0000 -> 0002)
 [    2.540366] atlantic: Detect ATL2FW 1030012
@@ -59,7 +59,7 @@ $ sudo dmesg| grep atlantic
 
 '/etc/netplan/00-installer-config.yaml'を修正して既存のNIC(`eno1`)とブリッジ接続します。
 
-```
+```bash
 $ cat /etc/netplan/00-installer-config.yaml
 # This is the network config written by 'subiquity'
 network:
@@ -77,13 +77,13 @@ network:
 
 MacBook Pro <-> Home Network間の通信を透過的に行うためufwを設定します。
 
-```
+```bash
 $ sudo ufw allow from 10.0.0.0/24
 ```
 
 `/etc/default/ufw ufw.org`も以下のように修正します。
 
-```
+```bash
 $ diff /etc/default/ufw ufw.org
 19c19
 < DEFAULT_FORWARD_POLICY="ACCEPT"

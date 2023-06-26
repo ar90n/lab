@@ -4,3 +4,6 @@
 [submodule "sandbox/py_opt_book_practice/PyOptBook"]
 	path = sandbox/py_opt_book_practice/PyOptBook
 	url = https://github.com/ohmsha/PyOptBook.git
+[submodule "sandbox/zig_blur/zigimg"]
+	path = sandbox/zig_blur/zigimg
+	url = git@github.com:zigimg/zigimg.git

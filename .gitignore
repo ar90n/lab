@@ -13,3 +13,4 @@ _environment.local
 .devcontainer
 /_site/
 /posts/.jupyter_cache
+.jupyter_cache

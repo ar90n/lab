@@ -1,0 +1,37 @@
+---
+title: Zigでレイトレーシングをしてみる
+date: 2023-06-29
+categories: [Zig, コンピュータグラフィックス]
+toc: true
+layout: post
+nocite: |
+  @Shirley2020RTW1, @Shirley2020RTW2
+---
+
+## はじめに
+Rustの場合と同様に、Zigの勉強を兼ねて，[こちら](http://in1weekend.blogspot.com/)を参考にレイトレーシングを写経してみました．
+単純に写経するだけでは面白く無いので、comptimeでレイトレーシング処理を実行することにしました。
+
+<div class="github-card" data-github="ar90n/comptime-ray-tracing" data-width="400" data-height="153" data-theme="default"></div>
+<script src="//cdn.jsdelivr.net/github-cards/latest/widget.js"></script>
+
+## メモ
+
+* 一度にそれなりに綺麗な絵を出そうとするとメモリが足りない
+* 出力画像を複数回に分けてレンダリングすることでメモリ不足を解決
+* comptimeを使用するとかなり自然にコンパイル時計算が可能
+
+## 一括レンダリング
+画像全体を一括でレンダリングした結果です。開発環境（メモリ64GB）では幅128、高さ64、ピクセルあたりのレイの数2というのが限界でした。
+
+![out_128_64](https://raw.githubusercontent.com/ar90n/comptime-ray-tracing/assets/out_128_64.jpg)
+
+## 行単位レンダリング
+画像を１行単位でレンダリングした結果です。指定したn行目を出力するプログラムの出力結果を複数個統合することで最終出力画像を作成します。
+以下の画像は幅300、高さ200、ピクセルあたりのレイの数32でレンダリングしました。
+
+![out_300_200](https://raw.githubusercontent.com/ar90n/comptime-ray-tracing/assets/out_300_200.jpg)
+
+## 参考
+::: {#refs}
+:::

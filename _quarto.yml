@@ -22,6 +22,8 @@ website:
         href: https://github.com/ar90n
       - icon: twitter
         href: https://twitter.com/ar90n
+      - icon: rss
+        href: index.xml
   cookie-consent:
     type: express
     style: headline

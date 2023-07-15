@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.361">
+<meta name="generator" content="quarto-1.4.226">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -103,6 +103,11 @@ div.csl-indent {
   "panel-placement": "end",
   "type": "overlay",
   "limit": 20,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -142,6 +147,8 @@ cookieconsent.run({
   "notice_banner_reject_button_hide":false,
   "preferences_center_close_button_hide":false,
   "website_name":""
+  ,
+"language":"en"
   });
 });
 </script> 
@@ -153,17 +160,13 @@ cookieconsent.run({
 
 <link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="lab_note - evcxr_jupyter - Rust on Notebook">
-<meta property="og:description" content="">
-<meta property="og:image" content="https://lab.ar90n.net/posts/2020-11-15-rust-on-nodebook-with-evcxr-jupyter_files/figure-html/cell-4-output-1.png">
-<meta property="og:site-name" content="lab_note">
-<meta property="og:image:height" content="144">
-<meta property="og:image:width" content="144">
+<meta property="og:description" content="my laboratory">
+<meta property="og:image" content="https://lab.ar90n.net/posts/logo.png">
+<meta property="og:site_name" content="lab_note">
 <meta name="twitter:title" content="lab_note - evcxr_jupyter - Rust on Notebook">
-<meta name="twitter:description" content="">
-<meta name="twitter:image" content="https://lab.ar90n.net/posts/2020-11-15-rust-on-nodebook-with-evcxr-jupyter_files/figure-html/cell-4-output-1.png">
+<meta name="twitter:description" content="my laboratory">
+<meta name="twitter:image" content="https://lab.ar90n.net/posts/logo.png">
 <meta name="twitter:site" content="@ar90n">
-<meta name="twitter:image-height" content="144">
-<meta name="twitter:image-width" content="144">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
@@ -173,7 +176,7 @@ cookieconsent.run({
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">lab_note</span>
     </a>
@@ -208,9 +211,9 @@ cookieconsent.run({
  <span class="menu-text"></span></a>
   </li>  
 </ul>
-            <div class="quarto-navbar-tools">
-</div>
           </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -284,7 +287,7 @@ cookieconsent.run({
 <p>外部Crateの導入はCode Cellに以下の様な記述を追加することで実現します．</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">:</span>dep Crate名 <span class="op">=</span> バージョン</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>初回評価時はコンパイルを行うため少し時間がかかります．以下に，<a href="https://crates.io/crates/base64">base64</a>を導入する例を示します．</p>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="1">
+<div id="cell-5" class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">:</span>dep base64 <span class="op">=</span> <span class="st">"0.10.1"</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">//From Tour of the EvCxR Jupyter Kernel</span></span>
@@ -304,7 +307,7 @@ cookieconsent.run({
 
 EVCXR_END_CONTENT</code></pre>
 <p>具体的には，以下の様に表を出力したり，</p>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="2">
+<div id="cell-7" class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="pp">println!</span>(<span class="st">r#"EVCXR_BEGIN_CONTENT text/html</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;table&gt;</span></span>
@@ -353,7 +356,7 @@ EVCXR_END_CONTENT</code></pre>
 </div>
 </div>
 <p>画像を出力したりすることが可能です</p>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="3">
+<div id="cell-9" class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="pp">println!</span>(<span class="st">r#"EVCXR_BEGIN_CONTENT image/png</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="st">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</span></span>
@@ -364,7 +367,7 @@ EVCXR_END_CONTENT</code></pre>
 </div>
 </div>
 <p>また，<code>fn evcxr_display(&amp;self)</code>となる関数（トレイト？）を任意の型に対して実装することで，その型をNotebookに出力することが可能となります． 以下に，<code>image::RgbImage</code>に対して，<code>fn evcxr_display(&amp;self)</code>を実装した例を示します．</p>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="4">
+<div id="cell-11" class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="op">:</span>dep image <span class="op">=</span> <span class="st">"0.23"</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">//From Tour of the EvCxR Jupyter Kernel</span></span>
@@ -393,10 +396,10 @@ EVCXR_END_CONTENT</code></pre>
 <p><img src="2020-11-15-rust-on-nodebook-with-evcxr-jupyter_files/figure-html/cell-5-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="5">
+<div id="cell-12" class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="op">:</span>dep plotters <span class="op">=</span> <span class="op">{</span> version <span class="op">=</span> <span class="st">"^0.3.4"</span><span class="op">,</span> default_features <span class="op">=</span> <span class="cn">false</span><span class="op">,</span> features <span class="op">=</span> [<span class="st">"evcxr"</span><span class="op">,</span> <span class="st">"all_series"</span><span class="op">,</span> <span class="st">"all_elements"</span>] <span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="6">
+<div id="cell-13" class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">// From Plotters Tutorial with Jupyter</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">// https://plotters-rs.github.io/plotters-doc-data/evcxr-jupyter-integration.html</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -686,7 +689,7 @@ y = x^2
 </div>
 </div>
 </div>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="7">
+<div id="cell-14" class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">// From mandelbrot.rs</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">// https://github.com/38/plotters/blob/master/examples/mandelbrot.rs</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -848,10 +851,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -861,8 +863,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -875,6 +886,60 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    if (id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        for (let i = 0; i < 2; i++) {
+          container.appendChild(note.children[i].cloneNode(true));
+        }
+        return container.innerHTML
+      } else {
+        return note.innerHTML;
+      }
+    } else {
+      return note.innerHTML;
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      try { hash = new URL(url).hash; } catch {}
+      const id = hash.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note !== null) {
+        try {
+          const html = processXRef(id, note);
+          instance.setContent(html);
+        } finally {
+          instance.enable();
+          instance.show();
+        }
+      } else {
+        // See if we can fetch this
+        fetch(url.split('#')[0])
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.getElementById(id);
+          if (note !== null) {
+            const html = processXRef(id, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -918,6 +983,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -1008,12 +1074,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     <div class="nav-footer-left">
       &nbsp;
     </div>   
-    <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+    <div class="nav-footer-center">
+
+<div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
   </div>
 </footer>
+
 
 
 

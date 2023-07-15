@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.361">
+<meta name="generator" content="quarto-1.4.226">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -103,6 +103,11 @@ div.csl-indent {
   "panel-placement": "end",
   "type": "overlay",
   "limit": 20,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -142,6 +147,8 @@ cookieconsent.run({
   "notice_banner_reject_button_hide":false,
   "preferences_center_close_button_hide":false,
   "website_name":""
+  ,
+"language":"en"
   });
 });
 </script> 
@@ -155,12 +162,14 @@ cookieconsent.run({
 
 <link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="lab_note - ソフトマックス関数を用いた混合ガウスモデルの計算">
-<meta property="og:description" content="">
-<meta property="og:site-name" content="lab_note">
+<meta property="og:description" content="my laboratory">
+<meta property="og:image" content="https://lab.ar90n.net/posts/logo.png">
+<meta property="og:site_name" content="lab_note">
 <meta name="twitter:title" content="lab_note - ソフトマックス関数を用いた混合ガウスモデルの計算">
-<meta name="twitter:description" content="">
+<meta name="twitter:description" content="my laboratory">
+<meta name="twitter:image" content="https://lab.ar90n.net/posts/logo.png">
 <meta name="twitter:site" content="@ar90n">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 
 <body class="nav-fixed">
@@ -169,7 +178,7 @@ cookieconsent.run({
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">lab_note</span>
     </a>
@@ -204,9 +213,9 @@ cookieconsent.run({
  <span class="menu-text"></span></a>
   </li>  
 </ul>
-            <div class="quarto-navbar-tools">
-</div>
           </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -397,7 +406,7 @@ w_{l} &amp;= \frac{\exp{\left(\gamma_{l}\right)}}{\sum_{l' = 1}^{m}\exp{\left(\g
 <li>一定回数または収束するまで2.を繰り返す</li>
 </ol>
 <p>実際にパラメータ推定に関するコードを記述する前に，推定を行うデータを作成します． 今回，<span class="math inline">\(\vec{\mu} = \left(3.1, -1.3, 0.5\right)\)</span>, <span class="math inline">\(\vec{\sigma} = \left(0.8, 1.0, 0.5 \right)\)</span>, <span class="math inline">\(\vec{w} = \left(0.25, 0.25, 0.5\right)\)</span>として，2048個の標本をサンプリングすることで検証用のデータを作成しました．</p>
-<div class="cell" data-execution_count="16">
+<div id="cell-5" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">99</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -411,7 +420,7 @@ w_{l} &amp;= \frac{\exp{\left(\gamma_{l}\right)}}{\sum_{l' = 1}^{m}\exp{\left(\g
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>all_data <span class="op">=</span> np.hstack(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>勾配法によるパラメータ推定を行います．<code>train_grad</code> が上述したパラメータ推定の根幹になります． ここでは，<span class="math inline">\(\epsilon = 0.0001\)</span>とし，パラメータの変化量の絶対値和が一定値以下となる場合を収束と判定しています．</p>
-<div class="cell" data-execution_count="19">
+<div id="cell-7" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> phi(xs, mus, sigmas):</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    num <span class="op">=</span> np.exp(<span class="op">-</span><span class="fl">0.5</span> <span class="op">*</span> ((xs <span class="op">-</span> mus[:,np.newaxis]) <span class="op">/</span> sigmas[:,np.newaxis]) <span class="op">**</span> <span class="fl">2.0</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    den <span class="op">=</span> np.sqrt(<span class="dv">2</span> <span class="op">*</span> np.pi) <span class="op">*</span> sigmas[:,np.newaxis]</span>
@@ -476,7 +485,7 @@ w_{l} &amp;= \frac{\exp{\left(\gamma_{l}\right)}}{\sum_{l' = 1}^{m}\exp{\left(\g
 </div>
 <p>最後に推定したパラメータ<code>ws_hat_grad</code>, <code>mus_hat_grad</code>, <code>sigmas_hat_grad</code> を用いた分布と，訓練データとをプロットして比較します． 勾配法による推定は，パラメータの並びについて曖昧さがあります．これは，<span class="math inline">\(\hat{w_{l}}\)</span>と<span class="math inline">\(w_{l}\)</span>とが必ずしも対応するとは限らないことを意味します．（他のパラメータも同様）</p>
 <p>そこで，プロットに先立ち<code>ws_hat_grad</code>, <code>mus_hat_grad</code>, <code>sigmas_hat_grad</code>と<code>ws</code>, <code>mus</code>, <code>sigmas</code>とを比較して，並び順を入れ変えることでこの問題に対応します． この処理は<code>permute</code> にて行われます．</p>
-<div class="cell" data-execution_count="6">
+<div id="cell-9" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> altair <span class="im">as</span> alt</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -697,7 +706,7 @@ n\hat{w}_{l} &amp;= \sum_{i=1}^{n} \hat{\eta}_{i,l} \\
 <li>一定回数または収束するまで2〜3を繰り返す</li>
 </ol>
 <p>EMアルゴリズムによるパラメータ推定を行うコードは以下の通りです．勾配法の時と同様に<code>train_em</code> が上述したパラメータ推定の根幹になります． そして，全パラメータの変化量の絶対値和が一定値以下となる場合を収束と判定しています．また，入力については勾配法で用いたものを再度使用します．</p>
-<div class="cell" data-execution_count="31">
+<div id="cell-12" class="cell" data-execution_count="31">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> opt_w(etas):</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.average(etas, axis<span class="op">=</span><span class="dv">1</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -750,7 +759,7 @@ n\hat{w}_{l} &amp;= \sum_{i=1}^{n} \hat{\eta}_{i,l} \\
 </div>
 </div>
 <p>勾配法と比較して，イテレーション回数が10分の1程度であることが確認できます． 勾配法の時と同様に訓練データと推定したパラメータによる分布とをプロットして確認します．</p>
-<div class="cell" data-execution_count="30">
+<div id="cell-14" class="cell" data-execution_count="30">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>ws_hat_em, mus_hat_em, sigmas_hat_em <span class="op">=</span> permute(ws, mus, sigmas, ws_hat_em, mus_hat_em, sigmas_hat_em)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>plot(data, ws_hat_em, mus_hat_em, sigmas_hat_em)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="30">
@@ -909,10 +918,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -922,8 +930,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -936,6 +953,60 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    if (id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        for (let i = 0; i < 2; i++) {
+          container.appendChild(note.children[i].cloneNode(true));
+        }
+        return container.innerHTML
+      } else {
+        return note.innerHTML;
+      }
+    } else {
+      return note.innerHTML;
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      try { hash = new URL(url).hash; } catch {}
+      const id = hash.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note !== null) {
+        try {
+          const html = processXRef(id, note);
+          instance.setContent(html);
+        } finally {
+          instance.enable();
+          instance.show();
+        }
+      } else {
+        // See if we can fetch this
+        fetch(url.split('#')[0])
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.getElementById(id);
+          if (note !== null) {
+            const html = processXRef(id, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -979,6 +1050,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -1069,12 +1141,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     <div class="nav-footer-left">
       &nbsp;
     </div>   
-    <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+    <div class="nav-footer-center">
+
+<div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
   </div>
 </footer>
+
 
 
 

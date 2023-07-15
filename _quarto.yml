@@ -40,8 +40,11 @@ execute:
 format:
   html:
     theme: flatly
+    highlight-style: nord
     css: styles.css
     toc: true
+    syntax-definitions: 
+    - zig.xml
 
 
 

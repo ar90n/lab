@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.361">
+<meta name="generator" content="quarto-1.4.226">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -103,6 +103,11 @@ div.csl-indent {
   "panel-placement": "end",
   "type": "overlay",
   "limit": 20,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -142,6 +147,8 @@ cookieconsent.run({
   "notice_banner_reject_button_hide":false,
   "preferences_center_close_button_hide":false,
   "website_name":""
+  ,
+"language":"en"
   });
 });
 </script> 
@@ -155,17 +162,13 @@ cookieconsent.run({
 
 <link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="lab_note - KD木と次元の呪い">
-<meta property="og:description" content="">
-<meta property="og:image" content="https://lab.ar90n.net/posts/2022-02-16-kdtree-and-curse-of-dimensionality_files/figure-html/cell-3-output-1.png">
-<meta property="og:site-name" content="lab_note">
-<meta property="og:image:height" content="480">
-<meta property="og:image:width" content="729">
+<meta property="og:description" content="my laboratory">
+<meta property="og:image" content="https://lab.ar90n.net/posts/logo.png">
+<meta property="og:site_name" content="lab_note">
 <meta name="twitter:title" content="lab_note - KD木と次元の呪い">
-<meta name="twitter:description" content="">
-<meta name="twitter:image" content="https://lab.ar90n.net/posts/2022-02-16-kdtree-and-curse-of-dimensionality_files/figure-html/cell-3-output-1.png">
+<meta name="twitter:description" content="my laboratory">
+<meta name="twitter:image" content="https://lab.ar90n.net/posts/logo.png">
 <meta name="twitter:site" content="@ar90n">
-<meta name="twitter:image-height" content="480">
-<meta name="twitter:image-width" content="729">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
@@ -175,7 +178,7 @@ cookieconsent.run({
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">lab_note</span>
     </a>
@@ -210,9 +213,9 @@ cookieconsent.run({
  <span class="menu-text"></span></a>
   </li>  
 </ul>
-            <div class="quarto-navbar-tools">
-</div>
           </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -285,7 +288,7 @@ cookieconsent.run({
 <h2 class="anchored" data-anchor-id="次元の変化に対する近傍探索のパフォーマンス検証">次元の変化に対する近傍探索のパフォーマンス検証</h2>
 <p>データ数Nを32768, データ次元Dを<span class="math inline">\(1 \dots 1024\)</span>まで変化させた時，線形探索およびKD木による最近傍点探索に必要な時間を測定しました． データのサンプルとクエリは，各次元の値が<span class="math inline">\([0.0 \dots 1.0]\)</span>に一様に分布する乱数としました．</p>
 <p>以下に上述の測定を行うコードとその結果を示します．</p>
-<div class="cell" data-execution_count="86">
+<div id="cell-5" class="cell" data-execution_count="86">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> timeit</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.spatial <span class="im">import</span> KDTree</span>
@@ -309,7 +312,7 @@ cookieconsent.run({
 <span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    result.append((flat_scan_time, kd_tree_time))</span>
 <span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> np.array(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="98">
+<div id="cell-6" class="cell" data-execution_count="98">
 <div class="cell-output cell-output-display">
 <p><img src="2022-02-16-kdtree-and-curse-of-dimensionality_files/figure-html/cell-3-output-1.png" class="img-fluid"></p>
 </div>
@@ -346,7 +349,7 @@ V_S\left(d\right) &amp;= \frac{r^{d}\pi^{\frac{d}{2}}}{\frac{d}{2}\Gamma\left(\f
 \end{aligned}
 \]</span></p>
 <p>となります．　また，実際に<span class="math inline">\(\frac{V_S\left(d\right)}{V_C\left(d\right)}\)</span>を計算した結果を以下に示します．この結果より，<span class="math inline">\(\frac{V_S\left(d\right)}{V_C\left(d\right)}\)</span>は高速に<span class="math inline">\(0\)</span>へ収束することが確認できます．</p>
-<div class="cell" data-execution_count="131">
+<div id="cell-9" class="cell" data-execution_count="131">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.special <span class="im">import</span> gamma</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -526,10 +529,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -539,8 +541,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -553,6 +564,60 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    if (id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        for (let i = 0; i < 2; i++) {
+          container.appendChild(note.children[i].cloneNode(true));
+        }
+        return container.innerHTML
+      } else {
+        return note.innerHTML;
+      }
+    } else {
+      return note.innerHTML;
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      try { hash = new URL(url).hash; } catch {}
+      const id = hash.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note !== null) {
+        try {
+          const html = processXRef(id, note);
+          instance.setContent(html);
+        } finally {
+          instance.enable();
+          instance.show();
+        }
+      } else {
+        // See if we can fetch this
+        fetch(url.split('#')[0])
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.getElementById(id);
+          if (note !== null) {
+            const html = processXRef(id, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -596,6 +661,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -686,12 +752,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     <div class="nav-footer-left">
       &nbsp;
     </div>   
-    <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+    <div class="nav-footer-center">
+
+<div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
   </div>
 </footer>
+
 
 
 

@@ -6,7 +6,7 @@ image: https://raw.githubusercontent.com/ar90n/comptime-ray-tracing/assets/out_3
 toc: true
 layout: post
 nocite: |
-  @Shirley2020RTW1, @Shirley2020RTW2
+  @Shirley2020RTW1
 ---
 
 ## はじめに

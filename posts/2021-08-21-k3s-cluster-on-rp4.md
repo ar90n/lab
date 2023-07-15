@@ -1,9 +1,9 @@
 ---
-toc: true
-layout: post
+title: k3sクラスタ on Raspberry Pi 4
 date: 2021-08-21
 categories: [Kubernetes]
-title: k3sクラスタ on Raspberry Pi 4
+toc: true
+layout: post
 ---
 
 ## はじめに

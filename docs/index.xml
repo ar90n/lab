@@ -16,7 +16,7 @@
 <height>144</height>
 <width>144</width>
 </image>
-<generator>quarto-1.3.361</generator>
+<generator>quarto-1.4.226</generator>
 <lastBuildDate>Thu, 29 Jun 2023 00:00:00 GMT</lastBuildDate>
 <item>
   <title>Zigでレイトレーシングをしてみる</title>
@@ -56,9 +56,6 @@
 <div id="refs" class="references csl-bib-body">
 <div id="ref-Shirley2020RTW1" class="csl-entry">
 <div class="csl-left-margin">[1] </div><div class="csl-right-inline">Shirley, P. 2020. <a href="https://raytracing.github.io/books/RayTracingInOneWeekend.html">Ray tracing in one weekend</a>.</div>
-</div>
-<div id="ref-Shirley2020RTW2" class="csl-entry">
-<div class="csl-left-margin">[2] </div><div class="csl-right-inline">Shirley, P. 2020. <a href="https://raytracing.github.io/books/RayTracingTheNextWeek.html">Ray tracing: The next week</a>.</div>
 </div>
 </div>
 
@@ -6024,7 +6021,7 @@ font-style: inherit;">"DROP"</span></span></code></pre></div>
 <h2 class="anchored" data-anchor-id="次元の変化に対する近傍探索のパフォーマンス検証">次元の変化に対する近傍探索のパフォーマンス検証</h2>
 <p>データ数Nを32768, データ次元Dを<img src="https://latex.codecogs.com/png.latex?1%20%5Cdots%201024">まで変化させた時，線形探索およびKD木による最近傍点探索に必要な時間を測定しました． データのサンプルとクエリは，各次元の値が<img src="https://latex.codecogs.com/png.latex?%5B0.0%20%5Cdots%201.0%5D">に一様に分布する乱数としました．</p>
 <p>以下に上述の測定を行うコードとその結果を示します．</p>
-<div class="cell" data-execution_count="86">
+<div id="cell-5" class="cell" data-execution_count="86">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
@@ -6116,7 +6113,7 @@ font-style: inherit;">/</span> n</span>
 background-color: null;
 font-style: inherit;">=</span> np.array(result)</span></code></pre></div>
 </div>
-<div class="cell" data-execution_count="98">
+<div id="cell-6" class="cell" data-execution_count="98">
 <div class="cell-output cell-output-display">
 <p><img src="https://lab.ar90n.net/posts/2022-02-16-kdtree-and-curse-of-dimensionality_files/figure-html/cell-3-output-1.png" class="img-fluid"></p>
 </div>
@@ -6134,7 +6131,7 @@ font-style: inherit;">=</span> np.array(result)</span></code></pre></div>
 <p>となるので，</p>
 <p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Baligned%7D%0A%5Clim_%7Bd%20%5Crightarrow%20%5Cinfty%7D%20%5Cfrac%7BV_S%5Cleft(d%5Cright)%7D%7BV_C%5Cleft(d%5Cright)%7D%20&amp;=%200%0A%5Cend%7Baligned%7D%0A"></p>
 <p>となります．　また，実際に<img src="https://latex.codecogs.com/png.latex?%5Cfrac%7BV_S%5Cleft(d%5Cright)%7D%7BV_C%5Cleft(d%5Cright)%7D">を計算した結果を以下に示します．この結果より，<img src="https://latex.codecogs.com/png.latex?%5Cfrac%7BV_S%5Cleft(d%5Cright)%7D%7BV_C%5Cleft(d%5Cright)%7D">は高速に<img src="https://latex.codecogs.com/png.latex?0">へ収束することが確認できます．</p>
-<div class="cell" data-execution_count="131">
+<div id="cell-9" class="cell" data-execution_count="131">
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> math</span>
@@ -7700,7 +7697,7 @@ font-style: inherit;">...</span></span></code></pre></div></li>
 </ul>
 <p><code>image</code> は画像の読み書き及びデータ表現に，<code>num-traits</code> は画像データ型から計算用のデータ型への変換に，<code>base64</code>はNotebook上への画像出力にそれぞれ用いました．</p>
 <p>まず初めに必要なクレートを導入します．</p>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="2">
+<div id="cell-6" class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb1-1"><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">:</span>dep image </span>
@@ -7742,7 +7739,7 @@ background-color: null;
 font-style: inherit;">;</span></span></code></pre></div>
 </div>
 <p>次にNotebook上への画像出力機能を実装します．詳細は<a href="&quot;https://lab.ar90n.net/rust/jupyter/2020/11/15/rust-on-nodebook-with-evcxr-jupyter.html&quot;">以前の記事</a>を参考にしてください．</p>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="3">
+<div id="cell-8" class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb2-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">extern</span> <span class="kw" style="color: #003B4F;
@@ -7887,7 +7884,7 @@ background-color: null;
 font-style: inherit;">}</span></span></code></pre></div>
 </div>
 <p>次にあると便利な雑多な関数を実装します．ここでは，所望のデータ型を<code>Subpixel</code>とした<code>Pixel</code>型を取得する<code>cast_subpixel</code> と スケールを調整した<img src="https://latex.codecogs.com/png.latex?%5Cepsilon"> を計算する<code>calc_eps</code> を実装します．論文中では画像データを<img src="https://latex.codecogs.com/png.latex?0%20%5Csim%201">に正規化した状態で取り扱っています．今回の実装では，画像データを<img src="https://latex.codecogs.com/png.latex?0%20%5Csim%20255"> の範囲で取り扱うため，<code>calc_eps</code> で<img src="https://latex.codecogs.com/png.latex?%5Cepsilon">の値を適切にスケーリングします．</p>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="4">
+<div id="cell-10" class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb3-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">fn</span> cast_subpixel<span class="op" style="color: #5E5E5E;
@@ -7989,7 +7986,7 @@ font-style: inherit;">}</span></span></code></pre></div>
 <li>転置</li>
 </ol>
 <p>という処理で実現しています．</p>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="5">
+<div id="cell-12" class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb4-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">fn</span> mean2d<span class="op" style="color: #5E5E5E;
@@ -8489,7 +8486,7 @@ background-color: null;
 font-style: inherit;">}</span></span></code></pre></div>
 </div>
 <p>実際にGuidedFilterの処理を行う関数<code>guided_filter</code>です．今回はエッジ保持平滑化フィルタのみを対象としているため，<img src="https://latex.codecogs.com/png.latex?I%20=%20p">（ガイド信号は入力信号と等しい）としています．また，<code>r</code>はウィンドウ領域の半径を，<code>eps</code>は<img src="https://latex.codecogs.com/png.latex?%5Cepsilon">をそれぞれ表します．</p>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="6">
+<div id="cell-14" class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb5-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">fn</span> guided_filter<span class="op" style="color: #5E5E5E;
@@ -8934,7 +8931,7 @@ font-style: inherit;">}</span></span></code></pre></div>
 <section id="実行結果" class="level2">
 <h2 class="anchored" data-anchor-id="実行結果">実行結果</h2>
 <p>入力信号は以下のとおりです．</p>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="7">
+<div id="cell-17" class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb6-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">let</span> img <span class="op" style="color: #5E5E5E;
@@ -8957,7 +8954,7 @@ font-style: inherit;">;</span></span>
 </div>
 <section id="r18-eps0.12" class="level3">
 <h3 class="anchored" data-anchor-id="r18-eps0.12">r=18, eps=0.1^2</h3>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="8">
+<div id="cell-19" class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb7-1">guided_filter(<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&amp;</span>img<span class="op" style="color: #5E5E5E;
@@ -8976,7 +8973,7 @@ font-style: inherit;">0.1</span>)</span></code></pre></div>
 </section>
 <section id="r18-eps0.42" class="level3">
 <h3 class="anchored" data-anchor-id="r18-eps0.42">r=18, eps=0.4^2</h3>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="9">
+<div id="cell-21" class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb8-1">guided_filter(<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&amp;</span>img<span class="op" style="color: #5E5E5E;
@@ -8995,7 +8992,7 @@ font-style: inherit;">0.4</span>)</span></code></pre></div>
 </section>
 <section id="r18-eps0.82" class="level3">
 <h3 class="anchored" data-anchor-id="r18-eps0.82">r=18, eps=0.8^2</h3>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="10">
+<div id="cell-23" class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb9-1">guided_filter(<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&amp;</span>img<span class="op" style="color: #5E5E5E;
@@ -11361,7 +11358,7 @@ font-style: inherit;">true</span></span></code></pre></div>
 <section id="エコー要求とエコー応答に対応するデータ構造" class="level3">
 <h3 class="anchored" data-anchor-id="エコー要求とエコー応答に対応するデータ構造">エコー要求とエコー応答に対応するデータ構造</h3>
 <p>上述のパケットフォーマットにおける<code>Type</code>は，エコー要求では<code>8</code>が，エコー応答では<code>0</code>が設定されます． 従って，以下のように<code>ICMPType</code>として定義することができます．</p>
-<div class="cell" data-scrolled="true" data-execution_count="24">
+<div id="257f54c6" class="cell" data-scrolled="true" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> enum <span class="im" style="color: #00769E;
@@ -11403,7 +11400,7 @@ font-style: inherit;">self</span>.value</span></code></pre></div>
 <li>加算結果の1の補数を最終結果とする．この時，0の表現としては<code>0xffff</code>を用いる．</li>
 </ol>
 <p>以上の手順でチェックサムを計算する関数<code>calc_checksum</code>を以下のように定義します．</p>
-<div class="cell" data-execution_count="25">
+<div id="54741297" class="cell" data-execution_count="25">
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">def</span> calc_checksum(data: <span class="bu" style="color: null;
@@ -11499,7 +11496,7 @@ font-style: inherit;">0xFFFF</span></span></code></pre></div>
 </div>
 <p>以下に示す<code>ICMPEcho</code>がエコー要求とエコー応答を表現するデータ構造となります．<code>checksum</code>がコンストラクタ引数として指定されなかった場合は，<code>calc_checksum</code>にて計算します．</p>
 <p><code>ICMPEcho</code>はネットワークを通して送受信されます．従って，シリアライズを行う<code>to_bytes</code>と，デシリアライズを行う<code>from_bytes</code>を実装しています．</p>
-<div class="cell" data-execution_count="26">
+<div id="876cacd0-eef3-45d1-9484-1d0196ef7bf4" class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> dataclasses <span class="im" style="color: #00769E;
@@ -11683,7 +11680,7 @@ font-style: inherit;">=</span>checksum)</span></code></pre></div>
 <h3 class="anchored" data-anchor-id="rawソケットの作成">Rawソケットの作成</h3>
 <p>TCPやUDPを用いた時と同様，ICMPでもソケットを用いてネットワークプログラミングを行います． しかしながら，ICMPパケットはIPデータグラムのペイロードとするため，IPデータグラムを操作する必要があります．</p>
 <p>IPデータグラムの操作はRawソケットを用いることで実現できます．そこで，ソケットを作成する関数<code>raw_socket</code>を以下のように定義しました． <code>socket.socket</code>の第２引数には<code>socket.SOCK_RAW</code>を第３引数には<code>socket.IPPROTO_ICMP</code>を指定します．これは，RawソケットをICMPから利用することを表していいます．</p>
-<div class="cell" data-execution_count="27">
+<div id="2dd58f2a-18c2-4668-bad0-d8df0b49129a" class="cell" data-execution_count="27">
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> socket</span>
@@ -11717,7 +11714,7 @@ font-style: inherit;">finally</span>:</span>
 <section id="ipデータグラムのパース" class="level3">
 <h3 class="anchored" data-anchor-id="ipデータグラムのパース">IPデータグラムのパース</h3>
 <p>Rawソケットによって受信したデータはIPデータグラムです．従って，これを適切にパースし，エコー応答をペイロードとして取り出す必要があります． 今回，以下のようにIPヘッダを表現する<code>IPHeader</code>と，IPデータグラムをパースする<code>parse_ip_datagram</code>関数を実装しました． <code>parse_ip_datagram</code>関数では，受信したデータの先頭２０バイトから<code>IPHeader</code>インスタンスを作成し，残りのデータをペイロードとします．</p>
-<div class="cell" data-execution_count="28">
+<div id="0de4a3f0-5bc6-4428-bfa2-ea7bad86b6fe" class="cell" data-execution_count="28">
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> typing <span class="im" style="color: #00769E;
@@ -11875,7 +11872,7 @@ font-style: inherit;">return</span> (ip_header, payload)</span></code></pre></di
 <section id="エコー要求の送信とエコー応答の受信" class="level3">
 <h3 class="anchored" data-anchor-id="エコー要求の送信とエコー応答の受信">エコー要求の送信とエコー応答の受信</h3>
 <p>これまで実装してきた関数とデータ構造を用いて，エコー要求を送信しエコー応答を受信する関数<code>ping</code>を実装しました． 以下に示されるように，エコー要求をソケットに書き込み，ソケットから読み取ったエコー応答とIPヘッダを出力します．</p>
-<div class="cell" data-execution_count="29">
+<div id="be20bc6f" class="cell" data-execution_count="29">
 <div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">def</span> print_response(ip_header: IPHeader, echo_reply: ICMPEcho) <span class="op" style="color: #5E5E5E;
@@ -11964,7 +11961,7 @@ font-style: inherit;">=</span> ICMPEcho.from_bytes(payload)</span>
 <section id="実行結果" class="level3">
 <h3 class="anchored" data-anchor-id="実行結果">実行結果</h3>
 <p>実際に<code>8.8.8.8</code>に対して<code>ping</code>を呼び出した結果を以下に示します． エコー要求に対して適切なエコー応答が帰ってきていることが確認できます．</p>
-<div class="cell" data-execution_count="30">
+<div id="f2735fdf" class="cell" data-execution_count="30">
 <div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> time</span>
@@ -12050,7 +12047,7 @@ font-style: inherit;">]</span></span></code></pre></div>
 <section id="クラウドストレージwebからファイルを読み込む" class="level2">
 <h2 class="anchored" data-anchor-id="クラウドストレージwebからファイルを読み込む">クラウドストレージ，Webからファイルを読み込む</h2>
 <p>smart_openによる<a href="https://lab.ar90n.net/cloud/python/aws/gcp/2020/10/21/accessing-file-with-unified-pythonic-api.html#%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89%E3%82%B9%E3%83%88%E3%83%AC%E3%83%BC%E3%82%B8%EF%BC%8CWeb%E3%81%8B%E3%82%89%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%82%92%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%82%80">サンプル</a>をpaaaaathを用いて書き直しました．Pathlikeオブジェクトとして取り扱うことができるので，全体的にシンプルになっていることが確認できると思います．こちらも，事前に適切な認証情報を設定しておく必要があります．</p>
-<div class="cell" data-execution_count="5">
+<div id="876cacd0-eef3-45d1-9484-1d0196ef7bf4" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> paaaaath <span class="im" style="color: #00769E;
@@ -12122,7 +12119,7 @@ font-style: inherit;">'gray'</span>)</span></code></pre></div>
 <section id="クラウドストレージ上のファイルを操作する" class="level2">
 <h2 class="anchored" data-anchor-id="クラウドストレージ上のファイルを操作する">クラウドストレージ上のファイルを操作する</h2>
 <p>paaaaathを用いてクラウドストレージ上のファイルを読み書きする例を以下に示します．</p>
-<div class="cell" data-execution_count="6">
+<div id="2dd58f2a-18c2-4668-bad0-d8df0b49129a" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1">sample_path <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> Path(<span class="st" style="color: #20794D;
@@ -12140,7 +12137,7 @@ background-color: null;
 font-style: inherit;">"paaaaath example"</span></span></code></pre></div>
 </div>
 <p>また，paaaaathはPathlikeオブジェクトを提供します．そのため，単純なファイルの読み書きだけでは無く，より多くの機能を提供することが可能です．以下に，iterdirを用いてクラウドストレージ上のファイル一覧を取得する例を示します．</p>
-<div class="cell" data-execution_count="7">
+<div id="0de4a3f0-5bc6-4428-bfa2-ea7bad86b6fe" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1">paths <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="bu" style="color: null;
@@ -12266,7 +12263,7 @@ font-style: inherit;">0</span>].exists()</span>
 <li>一定回数または収束するまで2.を繰り返す</li>
 </ol>
 <p>実際にパラメータ推定に関するコードを記述する前に，推定を行うデータを作成します． 今回，<img src="https://latex.codecogs.com/png.latex?%5Cvec%7B%5Cmu%7D%20=%20%5Cleft(3.1,%20-1.3,%200.5%5Cright)">, <img src="https://latex.codecogs.com/png.latex?%5Cvec%7B%5Csigma%7D%20=%20%5Cleft(0.8,%201.0,%200.5%20%5Cright)">, <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bw%7D%20=%20%5Cleft(0.25,%200.25,%200.5%5Cright)">として，2048個の標本をサンプリングすることで検証用のデータを作成しました．</p>
-<div class="cell" data-execution_count="16">
+<div id="cell-5" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
@@ -12330,7 +12327,7 @@ background-color: null;
 font-style: inherit;">=</span> np.hstack(data)</span></code></pre></div>
 </div>
 <p>勾配法によるパラメータ推定を行います．<code>train_grad</code> が上述したパラメータ推定の根幹になります． ここでは，<img src="https://latex.codecogs.com/png.latex?%5Cepsilon%20=%200.0001">とし，パラメータの変化量の絶対値和が一定値以下となる場合を収束と判定しています．</p>
-<div class="cell" data-execution_count="19">
+<div id="cell-7" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">def</span> phi(xs, mus, sigmas):</span>
@@ -12655,7 +12652,7 @@ font-style: inherit;">"</span>)</span></code></pre></div>
 </div>
 <p>最後に推定したパラメータ<code>ws_hat_grad</code>, <code>mus_hat_grad</code>, <code>sigmas_hat_grad</code> を用いた分布と，訓練データとをプロットして比較します． 勾配法による推定は，パラメータの並びについて曖昧さがあります．これは，<img src="https://latex.codecogs.com/png.latex?%5Chat%7Bw_%7Bl%7D%7D">と<img src="https://latex.codecogs.com/png.latex?w_%7Bl%7D">とが必ずしも対応するとは限らないことを意味します．（他のパラメータも同様）</p>
 <p>そこで，プロットに先立ち<code>ws_hat_grad</code>, <code>mus_hat_grad</code>, <code>sigmas_hat_grad</code>と<code>ws</code>, <code>mus</code>, <code>sigmas</code>とを比較して，並び順を入れ変えることでこの問題に対応します． この処理は<code>permute</code> にて行われます．</p>
-<div class="cell" data-execution_count="6">
+<div id="cell-9" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> altair <span class="im" style="color: #00769E;
@@ -13002,7 +12999,7 @@ font-style: inherit;">=</span> permute(ws, mus, sigmas, ws_hat_grad, mus_hat_gra
 <li>一定回数または収束するまで2〜3を繰り返す</li>
 </ol>
 <p>EMアルゴリズムによるパラメータ推定を行うコードは以下の通りです．勾配法の時と同様に<code>train_em</code> が上述したパラメータ推定の根幹になります． そして，全パラメータの変化量の絶対値和が一定値以下となる場合を収束と判定しています．また，入力については勾配法で用いたものを再度使用します．</p>
-<div class="cell" data-execution_count="31">
+<div id="cell-12" class="cell" data-execution_count="31">
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">def</span> opt_w(etas):</span>
@@ -13241,7 +13238,7 @@ font-style: inherit;">print</span>(ws_hat_em, mus_hat_em, sigmas_hat_em)</span><
 </div>
 </div>
 <p>勾配法と比較して，イテレーション回数が10分の1程度であることが確認できます． 勾配法の時と同様に訓練データと推定したパラメータによる分布とをプロットして確認します．</p>
-<div class="cell" data-execution_count="30">
+<div id="cell-14" class="cell" data-execution_count="30">
 <div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1">ws_hat_em, mus_hat_em, sigmas_hat_em <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> permute(ws, mus, sigmas, ws_hat_em, mus_hat_em, sigmas_hat_em)</span>
@@ -13883,11 +13880,7 @@ font-style: inherit;">--example</span> window</span></code></pre></div>
 <p>まず，<code>Cargo.toml</code>を見てみます．すると，以下のように<code>build.rs</code>がbuild scriptが設定されていることが確認できます．</p>
 <div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb2-1"><span class="kw" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">[</span><span class="dt" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">package</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">]</span></span>
+font-style: inherit;">[package]</span></span>
 <span id="cb2-2"><span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">name</span> <span class="op" style="color: #5E5E5E;
@@ -13896,7 +13889,7 @@ font-style: inherit;">=</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"glutin_examples"</span></span>
 <span id="cb2-3"></span>
-<span id="cb2-4"><span class="kw" style="color: #003B4F;
+<span id="cb2-4"><span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">...</span></span>
 <span id="cb2-5"></span>
@@ -13908,17 +13901,13 @@ font-style: inherit;">=</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"build.rs"</span></span>
 <span id="cb2-7"></span>
-<span id="cb2-8"><span class="kw" style="color: #003B4F;
+<span id="cb2-8"><span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">...</span></span>
 <span id="cb2-9"></span>
 <span id="cb2-10"><span class="kw" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">[</span><span class="dt" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">build-dependencies</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">]</span></span>
+font-style: inherit;">[build-dependencies]</span></span>
 <span id="cb2-11"><span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">gl_generator</span> <span class="op" style="color: #5E5E5E;

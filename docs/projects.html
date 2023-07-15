@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.361">
+<meta name="generator" content="quarto-1.4.226">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -49,6 +49,11 @@ ul.task-list li input[type="checkbox"] {
   "panel-placement": "end",
   "type": "overlay",
   "limit": 20,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -88,6 +93,8 @@ cookieconsent.run({
   "notice_banner_reject_button_hide":false,
   "preferences_center_close_button_hide":false,
   "website_name":""
+  ,
+"language":"en"
   });
 });
 </script> 
@@ -99,10 +106,16 @@ cookieconsent.run({
 
 <link rel="stylesheet" href="styles.css">
 <meta property="og:title" content="lab_note - Projects">
-<meta property="og:site-name" content="lab_note">
+<meta property="og:image" content="https://lab.ar90n.net/logo.png">
+<meta property="og:site_name" content="lab_note">
+<meta property="og:image:height" content="460">
+<meta property="og:image:width" content="460">
 <meta name="twitter:title" content="lab_note - Projects">
+<meta name="twitter:image" content="https://lab.ar90n.net/logo.png">
 <meta name="twitter:site" content="@ar90n">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:image-height" content="460">
+<meta name="twitter:image-width" content="460">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 
 <body class="nav-fixed">
@@ -111,7 +124,7 @@ cookieconsent.run({
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">lab_note</span>
     </a>
@@ -146,9 +159,9 @@ cookieconsent.run({
  <span class="menu-text"></span></a>
   </li>  
 </ul>
-            <div class="quarto-navbar-tools">
-</div>
           </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -169,7 +182,7 @@ cookieconsent.run({
 
 
 
-<div class="quarto-title-meta">
+<div class="quarto-title-meta column-page">
 
     
   
@@ -179,7 +192,7 @@ cookieconsent.run({
 
 </header>
 
-<div class="cell" data-execution_count="2">
+<div id="8a7bea4f" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display" data-execution_count="2">
 <div><div class="lang-section">
         <h3 style="color: #3572a5" class="anchored">Python</h3>
@@ -244,7 +257,7 @@ cookieconsent.run({
         <p>useful path like object</p>
       </div>
       <div class="footer">
-        <span class="status"><strong>4</strong>Stars</span>
+        <span class="status"><strong>5</strong>Stars</span>
         <span class="status"><strong>0</strong>Forks</span>
       </div>
     </div><div class="github-card repo-card">
@@ -356,7 +369,7 @@ cookieconsent.run({
         <p>array-api based simple volume renderer</p>
       </div>
       <div class="footer">
-        <span class="status"><strong>2</strong>Stars</span>
+        <span class="status"><strong>3</strong>Stars</span>
         <span class="status"><strong>0</strong>Forks</span>
       </div>
     </div></div>
@@ -528,8 +541,8 @@ cookieconsent.run({
         <p>Serverless s3 local plugin.</p>
       </div>
       <div class="footer">
-        <span class="status"><strong>194</strong>Stars</span>
-        <span class="status"><strong>68</strong>Forks</span>
+        <span class="status"><strong>195</strong>Stars</span>
+        <span class="status"><strong>69</strong>Forks</span>
       </div>
     </div></div>
     </div><div class="lang-section">
@@ -790,10 +803,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -803,8 +815,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -817,6 +838,60 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    if (id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        for (let i = 0; i < 2; i++) {
+          container.appendChild(note.children[i].cloneNode(true));
+        }
+        return container.innerHTML
+      } else {
+        return note.innerHTML;
+      }
+    } else {
+      return note.innerHTML;
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      try { hash = new URL(url).hash; } catch {}
+      const id = hash.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note !== null) {
+        try {
+          const html = processXRef(id, note);
+          instance.setContent(html);
+        } finally {
+          instance.enable();
+          instance.show();
+        }
+      } else {
+        // See if we can fetch this
+        fetch(url.split('#')[0])
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.getElementById(id);
+          if (note !== null) {
+            const html = processXRef(id, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -860,6 +935,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -950,12 +1026,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     <div class="nav-footer-left">
       &nbsp;
     </div>   
-    <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+    <div class="nav-footer-center">
+
+<div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
   </div>
 </footer>
+
 
 
 

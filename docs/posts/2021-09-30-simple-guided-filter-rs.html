@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.361">
+<meta name="generator" content="quarto-1.4.226">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -103,6 +103,11 @@ div.csl-indent {
   "panel-placement": "end",
   "type": "overlay",
   "limit": 20,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -142,6 +147,8 @@ cookieconsent.run({
   "notice_banner_reject_button_hide":false,
   "preferences_center_close_button_hide":false,
   "website_name":""
+  ,
+"language":"en"
   });
 });
 </script> 
@@ -152,11 +159,11 @@ cookieconsent.run({
 
 <link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="lab_note - RustによるシンプルなGuidedFilterの実装">
-<meta property="og:description" content="">
+<meta property="og:description" content="my laboratory">
 <meta property="og:image" content="https://lab.ar90n.net/assets/img/2021-09-30-simple-guided-filter-rs/media/output.jpg">
-<meta property="og:site-name" content="lab_note">
+<meta property="og:site_name" content="lab_note">
 <meta name="twitter:title" content="lab_note - RustによるシンプルなGuidedFilterの実装">
-<meta name="twitter:description" content="">
+<meta name="twitter:description" content="my laboratory">
 <meta name="twitter:image" content="https://lab.ar90n.net/assets/img/2021-09-30-simple-guided-filter-rs/media/output.jpg">
 <meta name="twitter:site" content="@ar90n">
 <meta name="twitter:card" content="summary_large_image">
@@ -168,7 +175,7 @@ cookieconsent.run({
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">lab_note</span>
     </a>
@@ -203,9 +210,9 @@ cookieconsent.run({
  <span class="menu-text"></span></a>
   </li>  
 </ul>
-            <div class="quarto-navbar-tools">
-</div>
           </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -342,7 +349,7 @@ q_{i} &amp; = \frac{1}{\left|\omega_{i}\right|} \sum_{k \in \omega_{i}} \left(a_
 </ul>
 <p><code>image</code> は画像の読み書き及びデータ表現に，<code>num-traits</code> は画像データ型から計算用のデータ型への変換に，<code>base64</code>はNotebook上への画像出力にそれぞれ用いました．</p>
 <p>まず初めに必要なクレートを導入します．</p>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="2">
+<div id="cell-6" class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">:</span>dep image </span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="op">:</span>dep num<span class="op">-</span>traits</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="op">:</span>dep base64</span>
@@ -352,7 +359,7 @@ q_{i} &amp; = \frac{1}{\left|\omega_{i}\right|} \sum_{k \in \omega_{i}} \left(a_
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="pp">num_traits::</span>NumCast<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>次にNotebook上への画像出力機能を実装します．詳細は<a href="&quot;https://lab.ar90n.net/rust/jupyter/2020/11/15/rust-on-nodebook-with-evcxr-jupyter.html&quot;">以前の記事</a>を参考にしてください．</p>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="3">
+<div id="cell-8" class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="kw">crate</span> image<span class="op">;</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="kw">crate</span> base64<span class="op">;</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">trait</span> EvcxrResult <span class="op">{</span><span class="kw">fn</span> evcxr_display(<span class="op">&amp;</span><span class="kw">self</span>)<span class="op">;}</span></span>
@@ -367,7 +374,7 @@ q_{i} &amp; = \frac{1}{\left|\omega_{i}\right|} \sum_{k \in \omega_{i}} \left(a_
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>次にあると便利な雑多な関数を実装します．ここでは，所望のデータ型を<code>Subpixel</code>とした<code>Pixel</code>型を取得する<code>cast_subpixel</code> と スケールを調整した<span class="math inline">\(\epsilon\)</span> を計算する<code>calc_eps</code> を実装します．論文中では画像データを<span class="math inline">\(0 \sim 1\)</span>に正規化した状態で取り扱っています．今回の実装では，画像データを<span class="math inline">\(0 \sim 255\)</span> の範囲で取り扱うため，<code>calc_eps</code> で<span class="math inline">\(\epsilon\)</span>の値を適切にスケーリングします．</p>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="4">
+<div id="cell-10" class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> cast_subpixel<span class="op">&lt;</span>S<span class="op">,</span> T<span class="op">&gt;</span>(pixel<span class="op">:</span> <span class="op">&amp;</span>Luma<span class="op">&lt;</span>S<span class="op">&gt;</span>) <span class="op">-&gt;</span> Luma<span class="op">&lt;</span>T<span class="op">&gt;</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">where</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    S<span class="op">:</span> Primitive<span class="op">,</span></span>
@@ -391,7 +398,7 @@ q_{i} &amp; = \frac{1}{\left|\omega_{i}\right|} \sum_{k \in \omega_{i}} \left(a_
 <li>転置</li>
 </ol>
 <p>という処理で実現しています．</p>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="5">
+<div id="cell-12" class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> mean2d<span class="op">&lt;</span>I<span class="op">,</span> S<span class="op">&gt;</span>(image<span class="op">:</span> <span class="op">&amp;</span>I<span class="op">,</span> r<span class="op">:</span> <span class="dt">u32</span>) <span class="op">-&gt;</span> ImageBuffer<span class="op">&lt;</span>Luma<span class="op">&lt;</span><span class="dt">f64</span><span class="op">&gt;,</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">f64</span><span class="op">&gt;&gt;</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">where</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    I<span class="op">:</span> GenericImageView<span class="op">&lt;</span>Pixel <span class="op">=</span> Luma<span class="op">&lt;</span>S<span class="op">&gt;&gt;,</span></span>
@@ -451,7 +458,7 @@ q_{i} &amp; = \frac{1}{\left|\omega_{i}\right|} \sum_{k \in \omega_{i}} \left(a_
 <span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>実際にGuidedFilterの処理を行う関数<code>guided_filter</code>です．今回はエッジ保持平滑化フィルタのみを対象としているため，<span class="math inline">\(I = p\)</span>（ガイド信号は入力信号と等しい）としています．また，<code>r</code>はウィンドウ領域の半径を，<code>eps</code>は<span class="math inline">\(\epsilon\)</span>をそれぞれ表します．</p>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="6">
+<div id="cell-14" class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> guided_filter<span class="op">&lt;</span>I<span class="op">,</span> S<span class="op">&gt;</span>(image<span class="op">:</span> <span class="op">&amp;</span>I<span class="op">,</span> r<span class="op">:</span> <span class="dt">u32</span><span class="op">,</span> eps<span class="op">:</span> <span class="dt">f64</span>) <span class="op">-&gt;</span> ImageBuffer<span class="op">&lt;</span>Luma<span class="op">&lt;</span><span class="dt">u8</span><span class="op">&gt;,</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">u8</span><span class="op">&gt;&gt;</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">where</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    I<span class="op">:</span> GenericImageView<span class="op">&lt;</span>Pixel <span class="op">=</span> Luma<span class="op">&lt;</span>S<span class="op">&gt;&gt;,</span></span>
@@ -506,7 +513,7 @@ q_{i} &amp; = \frac{1}{\left|\omega_{i}\right|} \sum_{k \in \omega_{i}} \left(a_
 <section id="実行結果" class="level2">
 <h2 class="anchored" data-anchor-id="実行結果">実行結果</h2>
 <p>入力信号は以下のとおりです．</p>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="7">
+<div id="cell-17" class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> img <span class="op">=</span> <span class="pp">image::</span>open(<span class="st">"../assets/img/2021-09-30-simple-guided-filter-rs/media/input.jpg"</span>)<span class="op">.</span>unwrap()<span class="op">.</span>to_luma8()<span class="op">;</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>img</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="26">
@@ -515,7 +522,7 @@ q_{i} &amp; = \frac{1}{\left|\omega_{i}\right|} \sum_{k \in \omega_{i}} \left(a_
 </div>
 <section id="r18-eps0.12" class="level3">
 <h3 class="anchored" data-anchor-id="r18-eps0.12">r=18, eps=0.1^2</h3>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="8">
+<div id="cell-19" class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>guided_filter(<span class="op">&amp;</span>img<span class="op">,</span> <span class="dv">18</span><span class="op">,</span> <span class="dv">0.1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="27">
 <p><img src="2021-09-30-simple-guided-filter-rs_files/figure-html/cell-8-output-1.jpeg" class="img-fluid"></p>
@@ -524,7 +531,7 @@ q_{i} &amp; = \frac{1}{\left|\omega_{i}\right|} \sum_{k \in \omega_{i}} \left(a_
 </section>
 <section id="r18-eps0.42" class="level3">
 <h3 class="anchored" data-anchor-id="r18-eps0.42">r=18, eps=0.4^2</h3>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="9">
+<div id="cell-21" class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>guided_filter(<span class="op">&amp;</span>img<span class="op">,</span> <span class="dv">18</span><span class="op">,</span> <span class="dv">0.4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="28">
 <p><img src="2021-09-30-simple-guided-filter-rs_files/figure-html/cell-9-output-1.jpeg" class="img-fluid"></p>
@@ -533,7 +540,7 @@ q_{i} &amp; = \frac{1}{\left|\omega_{i}\right|} \sum_{k \in \omega_{i}} \left(a_
 </section>
 <section id="r18-eps0.82" class="level3">
 <h3 class="anchored" data-anchor-id="r18-eps0.82">r=18, eps=0.8^2</h3>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="10">
+<div id="cell-23" class="cell" data-vscode="{&quot;languageId&quot;:&quot;rust&quot;}" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>guided_filter(<span class="op">&amp;</span>img<span class="op">,</span> <span class="dv">18</span><span class="op">,</span> <span class="dv">0.8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="29">
 <p><img src="2021-09-30-simple-guided-filter-rs_files/figure-html/cell-10-output-1.jpeg" class="img-fluid"></p>
@@ -632,10 +639,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -645,8 +651,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -659,6 +674,60 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    if (id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        for (let i = 0; i < 2; i++) {
+          container.appendChild(note.children[i].cloneNode(true));
+        }
+        return container.innerHTML
+      } else {
+        return note.innerHTML;
+      }
+    } else {
+      return note.innerHTML;
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      try { hash = new URL(url).hash; } catch {}
+      const id = hash.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note !== null) {
+        try {
+          const html = processXRef(id, note);
+          instance.setContent(html);
+        } finally {
+          instance.enable();
+          instance.show();
+        }
+      } else {
+        // See if we can fetch this
+        fetch(url.split('#')[0])
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.getElementById(id);
+          if (note !== null) {
+            const html = processXRef(id, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -702,6 +771,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -792,12 +862,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     <div class="nav-footer-left">
       &nbsp;
     </div>   
-    <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+    <div class="nav-footer-center">
+
+<div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
   </div>
 </footer>
+
 
 
 

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.361">
+<meta name="generator" content="quarto-1.4.226">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -103,6 +103,11 @@ div.csl-indent {
   "panel-placement": "end",
   "type": "overlay",
   "limit": 20,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -142,6 +147,8 @@ cookieconsent.run({
   "notice_banner_reject_button_hide":false,
   "preferences_center_close_button_hide":false,
   "website_name":""
+  ,
+"language":"en"
   });
 });
 </script> 
@@ -150,12 +157,12 @@ cookieconsent.run({
 
 <link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="lab_note - Pythonでpingの実装してみる">
-<meta property="og:description" content="">
-<meta property="og:image" content="https://lab.ar90n.net/assets/img/2021-08-01-writing-simple-ping-example/icmp_spec.svg">
-<meta property="og:site-name" content="lab_note">
+<meta property="og:description" content="my laboratory">
+<meta property="og:image" content="https://lab.ar90n.net/posts/logo.png">
+<meta property="og:site_name" content="lab_note">
 <meta name="twitter:title" content="lab_note - Pythonでpingの実装してみる">
-<meta name="twitter:description" content="">
-<meta name="twitter:image" content="https://lab.ar90n.net/assets/img/2021-08-01-writing-simple-ping-example/icmp_spec.svg">
+<meta name="twitter:description" content="my laboratory">
+<meta name="twitter:image" content="https://lab.ar90n.net/posts/logo.png">
 <meta name="twitter:site" content="@ar90n">
 <meta name="twitter:card" content="summary_large_image">
 </head>
@@ -166,7 +173,7 @@ cookieconsent.run({
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">lab_note</span>
     </a>
@@ -201,9 +208,9 @@ cookieconsent.run({
  <span class="menu-text"></span></a>
   </li>  
 </ul>
-            <div class="quarto-navbar-tools">
-</div>
           </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -289,7 +296,7 @@ cookieconsent.run({
 <section id="エコー要求とエコー応答に対応するデータ構造" class="level3">
 <h3 class="anchored" data-anchor-id="エコー要求とエコー応答に対応するデータ構造">エコー要求とエコー応答に対応するデータ構造</h3>
 <p>上述のパケットフォーマットにおける<code>Type</code>は，エコー要求では<code>8</code>が，エコー応答では<code>0</code>が設定されます． 従って，以下のように<code>ICMPType</code>として定義することができます．</p>
-<div class="cell" data-scrolled="true" data-execution_count="24">
+<div id="257f54c6" class="cell" data-scrolled="true" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> enum <span class="im">import</span> Enum</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ICMPType(Enum):</span>
@@ -307,7 +314,7 @@ cookieconsent.run({
 <li>加算結果の1の補数を最終結果とする．この時，0の表現としては<code>0xffff</code>を用いる．</li>
 </ol>
 <p>以上の手順でチェックサムを計算する関数<code>calc_checksum</code>を以下のように定義します．</p>
-<div class="cell" data-execution_count="25">
+<div id="54741297" class="cell" data-execution_count="25">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calc_checksum(data: <span class="bu">bytes</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(data) <span class="op">%</span> <span class="dv">2</span> <span class="op">==</span> <span class="dv">1</span>:</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        data <span class="op">+=</span> <span class="st">b"</span><span class="ch">\x00</span><span class="st">"</span></span>
@@ -321,7 +328,7 @@ cookieconsent.run({
 </div>
 <p>以下に示す<code>ICMPEcho</code>がエコー要求とエコー応答を表現するデータ構造となります．<code>checksum</code>がコンストラクタ引数として指定されなかった場合は，<code>calc_checksum</code>にて計算します．</p>
 <p><code>ICMPEcho</code>はネットワークを通して送受信されます．従って，シリアライズを行う<code>to_bytes</code>と，デシリアライズを行う<code>from_bytes</code>を実装しています．</p>
-<div class="cell" data-execution_count="26">
+<div id="876cacd0-eef3-45d1-9484-1d0196ef7bf4" class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> Optional</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> struct</span>
@@ -363,7 +370,7 @@ cookieconsent.run({
 <h3 class="anchored" data-anchor-id="rawソケットの作成">Rawソケットの作成</h3>
 <p>TCPやUDPを用いた時と同様，ICMPでもソケットを用いてネットワークプログラミングを行います． しかしながら，ICMPパケットはIPデータグラムのペイロードとするため，IPデータグラムを操作する必要があります．</p>
 <p>IPデータグラムの操作はRawソケットを用いることで実現できます．そこで，ソケットを作成する関数<code>raw_socket</code>を以下のように定義しました． <code>socket.socket</code>の第２引数には<code>socket.SOCK_RAW</code>を第３引数には<code>socket.IPPROTO_ICMP</code>を指定します．これは，RawソケットをICMPから利用することを表していいます．</p>
-<div class="cell" data-execution_count="27">
+<div id="2dd58f2a-18c2-4668-bad0-d8df0b49129a" class="cell" data-execution_count="27">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> socket</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> contextlib <span class="im">import</span> contextmanager</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -379,7 +386,7 @@ cookieconsent.run({
 <section id="ipデータグラムのパース" class="level3">
 <h3 class="anchored" data-anchor-id="ipデータグラムのパース">IPデータグラムのパース</h3>
 <p>Rawソケットによって受信したデータはIPデータグラムです．従って，これを適切にパースし，エコー応答をペイロードとして取り出す必要があります． 今回，以下のようにIPヘッダを表現する<code>IPHeader</code>と，IPデータグラムをパースする<code>parse_ip_datagram</code>関数を実装しました． <code>parse_ip_datagram</code>関数では，受信したデータの先頭２０バイトから<code>IPHeader</code>インスタンスを作成し，残りのデータをペイロードとします．</p>
-<div class="cell" data-execution_count="28">
+<div id="0de4a3f0-5bc6-4428-bfa2-ea7bad86b6fe" class="cell" data-execution_count="28">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> Tuple</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span>(frozen<span class="op">=</span><span class="va">True</span>)</span>
@@ -427,7 +434,7 @@ cookieconsent.run({
 <section id="エコー要求の送信とエコー応答の受信" class="level3">
 <h3 class="anchored" data-anchor-id="エコー要求の送信とエコー応答の受信">エコー要求の送信とエコー応答の受信</h3>
 <p>これまで実装してきた関数とデータ構造を用いて，エコー要求を送信しエコー応答を受信する関数<code>ping</code>を実装しました． 以下に示されるように，エコー要求をソケットに書き込み，ソケットから読み取ったエコー応答とIPヘッダを出力します．</p>
-<div class="cell" data-execution_count="29">
+<div id="be20bc6f" class="cell" data-execution_count="29">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> print_response(ip_header: IPHeader, echo_reply: ICMPEcho) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"ping echo reply from </span><span class="sc">{</span>ip_header<span class="sc">.</span>src<span class="sc">}</span><span class="ss">: icmp_seq=</span><span class="sc">{</span>echo_reply<span class="sc">.</span>seq<span class="sc">}</span><span class="ss"> ttl=</span><span class="sc">{</span>ip_header<span class="sc">.</span>ttl<span class="sc">}</span><span class="ss">"</span></span>
@@ -446,7 +453,7 @@ cookieconsent.run({
 <section id="実行結果" class="level3">
 <h3 class="anchored" data-anchor-id="実行結果">実行結果</h3>
 <p>実際に<code>8.8.8.8</code>に対して<code>ping</code>を呼び出した結果を以下に示します． エコー要求に対して適切なエコー応答が帰ってきていることが確認できます．</p>
-<div class="cell" data-execution_count="30">
+<div id="f2735fdf" class="cell" data-execution_count="30">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>):</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    ping(<span class="st">"8.8.8.8"</span>, i)</span>
@@ -557,10 +564,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -570,8 +576,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -584,6 +599,60 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    if (id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        for (let i = 0; i < 2; i++) {
+          container.appendChild(note.children[i].cloneNode(true));
+        }
+        return container.innerHTML
+      } else {
+        return note.innerHTML;
+      }
+    } else {
+      return note.innerHTML;
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      try { hash = new URL(url).hash; } catch {}
+      const id = hash.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note !== null) {
+        try {
+          const html = processXRef(id, note);
+          instance.setContent(html);
+        } finally {
+          instance.enable();
+          instance.show();
+        }
+      } else {
+        // See if we can fetch this
+        fetch(url.split('#')[0])
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.getElementById(id);
+          if (note !== null) {
+            const html = processXRef(id, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -627,6 +696,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -717,12 +787,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     <div class="nav-footer-left">
       &nbsp;
     </div>   
-    <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+    <div class="nav-footer-center">
+
+<div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
   </div>
 </footer>
+
 
 
 

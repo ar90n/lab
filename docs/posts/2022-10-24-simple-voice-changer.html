@@ -359,7 +359,7 @@ a_{p} \\
 \end{align}\]</span></p>
 <p>なお、上述の行列<span class="math inline">\(\mathbf{R}\)</span>はテプリッツ行列<span class="citation" data-cites="wiki:テプリッツ行列">[<a href="#ref-wiki:テプリッツ行列" role="doc-biblioref">2</a>]</span>と呼ばれる特殊な形式となります。 今回は取り扱いませんが、テプリッツ行列の逆行列はレビンソン・ダービンのアルゴリズムを用いることで高速に計算することが可能です。</p>
 <p>以下に、最小二乗法と自己相関法によるAR係数の推定を行うコードとその実行結果を示します。</p>
-<div class="cell" data-execution_count="2">
+<div id="3faf2218" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy.typing <span class="im">as</span> npt</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> signal</span>
@@ -408,7 +408,7 @@ a_{p} \\
 <h2 class="anchored" data-anchor-id="パルス列と白色雑音によるソースの実装">パルス列と白色雑音によるソースの実装</h2>
 <p>参考文献<span class="citation" data-cites="1130289132726961410">[<a href="#ref-1130289132726961410" role="doc-biblioref">4</a>]</span>によると、音声合成では有声音をパルス列で、無声音を白色雑音で表現すると良いとされているようです。 しかしながら、今回の目的はボイスチェンジャの実装であるため、これらの区別は行わずそれぞれを単一のソースとして扱います。</p>
 <p>以下にパルス列と白色雑音を生成するコードを示します。</p>
-<div class="cell" data-execution_count="3">
+<div id="5de54d58" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> gen_pulse(ns: <span class="bu">int</span>, f: <span class="bu">float</span>) <span class="op">-&gt;</span> npt.NDArray[np.float32]:</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> np.zeros(ns, dtype<span class="op">=</span>np.float32)</span>
@@ -425,7 +425,7 @@ a_{p} \\
 <section id="ボイスチェンジャの実装" class="level2">
 <h2 class="anchored" data-anchor-id="ボイスチェンジャの実装">ボイスチェンジャの実装</h2>
 <p>フィルタとソースの実装が完了したので、それらを組み合わせてボイスチェンジャを実装します。 以下にコードを示します。</p>
-<div class="cell" data-execution_count="4">
+<div id="b5513254" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datasets <span class="im">import</span> load_dataset</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> Literal</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -457,7 +457,7 @@ a_{p} \\
 <ul>
 <li>白色雑音</li>
 </ul>
-<div class="cell" data-execution_count="5">
+<div id="9ab1b216" class="cell" data-execution_count="5">
 <div class="cell-output cell-output-display" data-execution_count="4">
 
                 <audio controls="controls">
@@ -470,7 +470,7 @@ a_{p} \\
 <ul>
 <li>パルス列(<span class="math inline">\(200\mathrm{Hz}\)</span>)</li>
 </ul>
-<div class="cell" data-execution_count="6">
+<div id="5c8ba029" class="cell" data-execution_count="6">
 <div class="cell-output cell-output-display" data-execution_count="5">
 
                 <audio controls="controls">
@@ -483,7 +483,7 @@ a_{p} \\
 <ul>
 <li>パルス列(<span class="math inline">\(300\mathrm{Hz}\)</span>)</li>
 </ul>
-<div class="cell" data-execution_count="7">
+<div id="386c7c66" class="cell" data-execution_count="7">
 <div class="cell-output cell-output-display" data-execution_count="6">
 
                 <audio controls="controls">
@@ -496,7 +496,7 @@ a_{p} \\
 <ul>
 <li>パルス列(<span class="math inline">\(400\mathrm{Hz}\)</span>)</li>
 </ul>
-<div class="cell" data-execution_count="8">
+<div id="9215ce42" class="cell" data-execution_count="8">
 <div class="cell-output cell-output-display" data-execution_count="7">
 
                 <audio controls="controls">

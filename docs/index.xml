@@ -13,11 +13,1181 @@
 <url>https://lab.ar90n.net/logo.png</url>
 <title>lab_note</title>
 <link>https://lab.ar90n.net/index.html</link>
-<height>144</height>
-<width>144</width>
 </image>
 <generator>quarto-1.4.226</generator>
-<lastBuildDate>Thu, 29 Jun 2023 00:00:00 GMT</lastBuildDate>
+<lastBuildDate>Mon, 17 Jul 2023 00:00:00 GMT</lastBuildDate>
+<item>
+  <title>Zigで多態性を表現する</title>
+  <link>https://lab.ar90n.net/posts/2023-07-17-polymorphism-in-zig.html</link>
+  <description><![CDATA[ 
+
+
+
+<section id="unionenumによる方法" class="level2">
+<h2 class="anchored" data-anchor-id="unionenumによる方法"><code>union(enum)</code>による方法</h2>
+<p>実体を表現する構造体を<code>union(enum)</code>でまとめ、関数の呼び出しの際に自身を<code>switch</code>で分岐することで呼び出す関数を判別します。 この際<code>switch</code>の対象に<code>inline else</code>を指定することで記述を簡略化することができます。</p>
+<p>以下に<code>union(enum)</code>による方法のサンプルを示します。</p>
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode zig code-with-copy"><code class="sourceCode zig"><span id="cb1-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> std = <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">@import</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"std"</span>);</span>
+<span id="cb1-2"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> stdout = std.io.getStdOut().writer();</span>
+<span id="cb1-3"></span>
+<span id="cb1-4"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">pub</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> Animal = <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">union</span>(<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">enum</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb1-5">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> Self = <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">@This</span>();</span>
+<span id="cb1-6">    dog: Dog,</span>
+<span id="cb1-7">    cat: Cat,</span>
+<span id="cb1-8"></span>
+<span id="cb1-9">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">pub</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">fn</span> bark(self: Self) []<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">u8</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb1-10">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">switch</span> (self) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb1-11">            <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">inline</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">else</span> =&gt; |n| n.bark(),</span>
+<span id="cb1-12">        <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>;</span>
+<span id="cb1-13">    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span id="cb1-14"><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>;</span>
+<span id="cb1-15"></span>
+<span id="cb1-16"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">pub</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> Dog = <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">struct</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb1-17">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> Self = <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">@This</span>();</span>
+<span id="cb1-18"></span>
+<span id="cb1-19">    buffer: [<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">64</span>]<span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">u8</span>,</span>
+<span id="cb1-20">    len: <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">usize</span>,</span>
+<span id="cb1-21"></span>
+<span id="cb1-22">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">pub</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">fn</span> init(name: []<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">u8</span>) !Animal <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb1-23">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> dog = blk: <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb1-24">            <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">var</span> dog = Self<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb1-25">                .buffer = <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">undefined</span>,</span>
+<span id="cb1-26">                .len = <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>,</span>
+<span id="cb1-27">            <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>;</span>
+<span id="cb1-28"></span>
+<span id="cb1-29">            <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> s = <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">try</span> std.fmt.bufPrint(&amp;dog.buffer, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"{s} - {s}"</span>, .<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span> name, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"wan wan"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>);</span>
+<span id="cb1-30">            dog.len = s.len;</span>
+<span id="cb1-31">            <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">break</span> :blk dog;</span>
+<span id="cb1-32">        <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>;</span>
+<span id="cb1-33"></span>
+<span id="cb1-34">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> .<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span> .dog = dog <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>;</span>
+<span id="cb1-35">    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span id="cb1-36"></span>
+<span id="cb1-37">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">pub</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">fn</span> bark(self: Self) []<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">u8</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb1-38">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> self.buffer[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>..self.len];</span>
+<span id="cb1-39">    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span id="cb1-40"><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>;</span>
+<span id="cb1-41"></span>
+<span id="cb1-42"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">pub</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> Cat = <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">struct</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb1-43">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> Self = <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">@This</span>();</span>
+<span id="cb1-44"></span>
+<span id="cb1-45">    buffer: [<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">64</span>]<span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">u8</span>,</span>
+<span id="cb1-46">    len: <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">usize</span>,</span>
+<span id="cb1-47"></span>
+<span id="cb1-48">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">pub</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">fn</span> init(name: []<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">u8</span>) !Animal <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb1-49">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> cat = blk: <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb1-50">            <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">var</span> cat = Self<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb1-51">                .buffer = <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">undefined</span>,</span>
+<span id="cb1-52">                .len = <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>,</span>
+<span id="cb1-53">            <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>;</span>
+<span id="cb1-54"></span>
+<span id="cb1-55">            <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> s = <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">try</span> std.fmt.bufPrint(&amp;cat.buffer, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"{s} - {s}"</span>, .<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span> name, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"nyan nyan"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>);</span>
+<span id="cb1-56">            cat.len = s.len;</span>
+<span id="cb1-57">            <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">break</span> :blk cat;</span>
+<span id="cb1-58">        <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>;</span>
+<span id="cb1-59"></span>
+<span id="cb1-60">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> .<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span> .cat = cat <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>;</span>
+<span id="cb1-61">    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span id="cb1-62"></span>
+<span id="cb1-63">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">pub</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">fn</span> bark(self: Self) []<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">u8</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb1-64">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> self.buffer[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>..self.len];</span>
+<span id="cb1-65">    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span id="cb1-66"><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>;</span>
+<span id="cb1-67"></span>
+<span id="cb1-68"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">test</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"tagged_union"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb1-69">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> animals = [_]Animal<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb1-70">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">try</span> Dog.init(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"pochi"</span>),</span>
+<span id="cb1-71">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">try</span> Cat.init(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"mike"</span>),</span>
+<span id="cb1-72">    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>;</span>
+<span id="cb1-73"></span>
+<span id="cb1-74">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">try</span> std.testing.expectEqualStrings(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"pochi - wan wan"</span>, animals[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].bark());</span>
+<span id="cb1-75">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">try</span> std.testing.expectEqualStrings(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"mike - nyan nyan"</span>, animals[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].bark());</span>
+<span id="cb1-76"><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span></code></pre></div>
+<ol type="1">
+<li>aaa</li>
+</ol>
+</section>
+<section id="anyopaqueによる方法" class="level2">
+<h2 class="anchored" data-anchor-id="anyopaqueによる方法"><code>*anyopaque</code>による方法</h2>
+<p>抽象を表現する構造体で実体を表現する構造体を型情報を削除し<code>*anyopaque</code>でポインタを保持します。 関数呼び出し時に<code>*anyopaque</code>を実体を表現する型へのポインタにキャストすることで所望の処理を実行します。</p>
+<p>以下に<code>*anyopaque</code>による方法のサンプルを示します。</p>
+<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode zig code-with-copy"><code class="sourceCode zig"><span id="cb2-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> std = <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">@import</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"std"</span>);</span>
+<span id="cb2-2"></span>
+<span id="cb2-3"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> Animal = <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">struct</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb2-4">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> Self = <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">@This</span>();</span>
+<span id="cb2-5">    ptr: *<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> anyopaque,</span>
+<span id="cb2-6">    barkFn: *<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">fn</span> (self: *<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> anyopaque) []<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">u8</span>,</span>
+<span id="cb2-7"></span>
+<span id="cb2-8">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">pub</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">fn</span> bark(self: Self) []<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">u8</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb2-9">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> self.barkFn(self.ptr);</span>
+<span id="cb2-10">    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span id="cb2-11"><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>;</span>
+<span id="cb2-12"></span>
+<span id="cb2-13"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">pub</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> Dog = <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">struct</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb2-14">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> Self = <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">@This</span>();</span>
+<span id="cb2-15"></span>
+<span id="cb2-16">    buffer: [<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">64</span>]<span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">u8</span>,</span>
+<span id="cb2-17">    len: <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">usize</span>,</span>
+<span id="cb2-18"></span>
+<span id="cb2-19">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">pub</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">fn</span> init(name: []<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">u8</span>) !Dog <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb2-20">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> dog = blk: <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb2-21">            <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">var</span> dog = Self<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb2-22">                .buffer = <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">undefined</span>,</span>
+<span id="cb2-23">                .len = <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>,</span>
+<span id="cb2-24">            <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>;</span>
+<span id="cb2-25"></span>
+<span id="cb2-26">            <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> s = <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">try</span> std.fmt.bufPrint(&amp;dog.buffer, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"{s} - {s}"</span>, .<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span> name, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"wan wan"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>);</span>
+<span id="cb2-27">            dog.len = s.len;</span>
+<span id="cb2-28">            <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">break</span> :blk dog;</span>
+<span id="cb2-29">        <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>;</span>
+<span id="cb2-30"></span>
+<span id="cb2-31">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> dog;</span>
+<span id="cb2-32">    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span id="cb2-33"></span>
+<span id="cb2-34">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">pub</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">fn</span> interface(self: *<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> Self) Animal <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb2-35">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> .<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb2-36">            .ptr = self,</span>
+<span id="cb2-37">            .barkFn = Dog.bark,</span>
+<span id="cb2-38">        <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>;</span>
+<span id="cb2-39">    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span id="cb2-40"></span>
+<span id="cb2-41">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">pub</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">fn</span> bark(ctx: *<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> anyopaque) []<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">u8</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb2-42">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> self: *<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> Self = <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">@ptrCast</span>(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">@alignCast</span>(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">@constCast</span>(ctx)));</span>
+<span id="cb2-43">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> self.buffer[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>..self.len];</span>
+<span id="cb2-44">    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span id="cb2-45"><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>;</span>
+<span id="cb2-46"></span>
+<span id="cb2-47"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">pub</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> Cat = <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">struct</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb2-48">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> Self = <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">@This</span>();</span>
+<span id="cb2-49"></span>
+<span id="cb2-50">    buffer: [<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">64</span>]<span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">u8</span>,</span>
+<span id="cb2-51">    len: <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">usize</span>,</span>
+<span id="cb2-52"></span>
+<span id="cb2-53">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">pub</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">fn</span> init(name: []<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">u8</span>) !Cat <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb2-54">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> cat = blk: <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb2-55">            <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">var</span> cat = Self<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span> .buffer = <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">undefined</span>, .len = <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>;</span>
+<span id="cb2-56"></span>
+<span id="cb2-57">            <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> s = <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">try</span> std.fmt.bufPrint(&amp;cat.buffer, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"{s} - {s}"</span>, .<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span> name, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"nyan nyan"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>);</span>
+<span id="cb2-58">            cat.len = s.len;</span>
+<span id="cb2-59">            <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">break</span> :blk cat;</span>
+<span id="cb2-60">        <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>;</span>
+<span id="cb2-61"></span>
+<span id="cb2-62">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> cat;</span>
+<span id="cb2-63">    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span id="cb2-64"></span>
+<span id="cb2-65">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">pub</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">fn</span> interface(self: *<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> Self) Animal <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb2-66">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> .<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb2-67">            .ptr = self,</span>
+<span id="cb2-68">            .barkFn = Cat.bark,</span>
+<span id="cb2-69">        <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>;</span>
+<span id="cb2-70">    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span id="cb2-71"></span>
+<span id="cb2-72">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">pub</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">fn</span> bark(ctx: *<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> anyopaque) []<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">u8</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb2-73">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> self: *Self = <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">@ptrCast</span>(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">@alignCast</span>(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">@constCast</span>(ctx)));</span>
+<span id="cb2-74">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> self.buffer[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>..self.len];</span>
+<span id="cb2-75">    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span id="cb2-76"><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>;</span>
+<span id="cb2-77"></span>
+<span id="cb2-78"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">test</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"fat_ptr"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb2-79">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> dog = <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">try</span> Dog.init(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"pochi"</span>);</span>
+<span id="cb2-80">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> cat = <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">try</span> Cat.init(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"tama"</span>);</span>
+<span id="cb2-81">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> animals = [_]Animal<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb2-82">        dog.interface(),</span>
+<span id="cb2-83">        cat.interface(),</span>
+<span id="cb2-84">    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>;</span>
+<span id="cb2-85"></span>
+<span id="cb2-86">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">try</span> std.testing.expectEqualStrings(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"pochi - wan wan"</span>, animals[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].bark());</span>
+<span id="cb2-87">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">try</span> std.testing.expectEqualStrings(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"tama - nyan nyan"</span>, animals[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].bark());</span>
+<span id="cb2-88"><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span></code></pre></div>
+</section>
+<section id="fieldparentptrによる方法" class="level2">
+<h2 class="anchored" data-anchor-id="fieldparentptrによる方法"><code>@fieldParentPtr</code>による方法</h2>
+<p>この方法では、実体を表現する構造体のフィールドに抽象を表現する構造体を保持します。 そして、その抽象を表現する構造体へのポインタに対して操作することで多態性を実現します。</p>
+<p><code>@fieldParentPtr</code>は指定された要素を含む構造体へのポインタを返します。 今回のケースでは、抽象を表現する構造体のポインタから実体を表現する構造体を取得することができます。 この処理を関数呼び出し時に行うことにより、実体を表現する構造体に対して所望の処理を実行することができます。</p>
+<p>以前は本手法による実装は主流でしたが、LLVMによるパフォーマンス上の懸念が発生するため、上述の<code>*anyopaque</code>による方法が主流のようです。</p>
+<p>以下に<code>*anyopaque</code>による方法のサンプルを示します。</p>
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode zig code-with-copy"><code class="sourceCode zig"><span id="cb3-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> std = <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">@import</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"std"</span>);</span>
+<span id="cb3-2"></span>
+<span id="cb3-3"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> Animal = <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">struct</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb3-4">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> Self = <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">@This</span>();</span>
+<span id="cb3-5"></span>
+<span id="cb3-6">    barkFn: <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">fn</span> (self: *<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">@This</span>()) []<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">u8</span>,</span>
+<span id="cb3-7"></span>
+<span id="cb3-8">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">pub</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">fn</span> init(<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">comptime</span> barkFn: <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">fn</span> (self: *<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">@This</span>()) []<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">u8</span>) Animal <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb3-9">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> .<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span> .barkFn = barkFn <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>;</span>
+<span id="cb3-10">    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span id="cb3-11"></span>
+<span id="cb3-12">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">pub</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">fn</span> bark(<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">comptime</span> self: *<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> Self) []<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">u8</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb3-13">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> self.barkFn(self);</span>
+<span id="cb3-14">    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span id="cb3-15"><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>;</span>
+<span id="cb3-16"></span>
+<span id="cb3-17"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">pub</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> Dog = <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">struct</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb3-18">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> Self = <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">@This</span>();</span>
+<span id="cb3-19"></span>
+<span id="cb3-20">    animal: Animal,</span>
+<span id="cb3-21">    buffer: [<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">64</span>]<span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">u8</span>,</span>
+<span id="cb3-22">    len: <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">usize</span>,</span>
+<span id="cb3-23"></span>
+<span id="cb3-24">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">pub</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">fn</span> init(<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">comptime</span> name: []<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">u8</span>) !Dog <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb3-25">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> dog = blk: <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb3-26">            <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">var</span> dog = Self<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb3-27">                .animal = Animal.init(Dog.bark),</span>
+<span id="cb3-28">                .buffer = <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">undefined</span>,</span>
+<span id="cb3-29">                .len = <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>,</span>
+<span id="cb3-30">            <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>;</span>
+<span id="cb3-31"></span>
+<span id="cb3-32">            <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> s = <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">try</span> std.fmt.bufPrint(&amp;dog.buffer, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"{s} - {s}"</span>, .<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span> name, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"wan wan"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>);</span>
+<span id="cb3-33">            dog.len = s.len;</span>
+<span id="cb3-34">            <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">break</span> :blk dog;</span>
+<span id="cb3-35">        <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>;</span>
+<span id="cb3-36"></span>
+<span id="cb3-37">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> dog;</span>
+<span id="cb3-38">    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span id="cb3-39"></span>
+<span id="cb3-40">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">pub</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">fn</span> interface(<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">comptime</span> self: *<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> Self) *<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> Animal <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb3-41">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> &amp;self.animal;</span>
+<span id="cb3-42">    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span id="cb3-43"></span>
+<span id="cb3-44">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">pub</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">fn</span> bark(<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">comptime</span> animal: *<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> Animal) []<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">u8</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb3-45">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> self = <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">@fieldParentPtr</span>(Self, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"animal"</span>, animal);</span>
+<span id="cb3-46">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> self.buffer[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>..self.len];</span>
+<span id="cb3-47">    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span id="cb3-48"><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>;</span>
+<span id="cb3-49"></span>
+<span id="cb3-50"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">pub</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> Cat = <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">struct</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb3-51">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> Self = <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">@This</span>();</span>
+<span id="cb3-52"></span>
+<span id="cb3-53">    animal: Animal,</span>
+<span id="cb3-54">    buffer: [<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">64</span>]<span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">u8</span>,</span>
+<span id="cb3-55">    len: <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">usize</span>,</span>
+<span id="cb3-56"></span>
+<span id="cb3-57">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">pub</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">fn</span> init(<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">comptime</span> name: []<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">u8</span>) !Cat <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb3-58">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> cat = blk: <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb3-59">            <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">var</span> cat = Self<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb3-60">                .animal = Animal.init(Cat.bark),</span>
+<span id="cb3-61">                .buffer = <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">undefined</span>,</span>
+<span id="cb3-62">                .len = <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>,</span>
+<span id="cb3-63">            <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>;</span>
+<span id="cb3-64"></span>
+<span id="cb3-65">            <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> s = <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">try</span> std.fmt.bufPrint(&amp;cat.buffer, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"{s} - {s}"</span>, .<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span> name, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"nyan nyan"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>);</span>
+<span id="cb3-66">            cat.len = s.len;</span>
+<span id="cb3-67">            <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">break</span> :blk cat;</span>
+<span id="cb3-68">        <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>;</span>
+<span id="cb3-69"></span>
+<span id="cb3-70">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> cat;</span>
+<span id="cb3-71">    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span id="cb3-72"></span>
+<span id="cb3-73">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">pub</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">fn</span> interface(<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">comptime</span> self: *<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> Self) *<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> Animal <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb3-74">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> &amp;self.animal;</span>
+<span id="cb3-75">    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span id="cb3-76"></span>
+<span id="cb3-77">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">pub</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">fn</span> bark(<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">comptime</span> animal: *<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> Animal) []<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">u8</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb3-78">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> self = <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">@fieldParentPtr</span>(Self, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"animal"</span>, animal);</span>
+<span id="cb3-79">        <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> self.buffer[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>..self.len];</span>
+<span id="cb3-80">    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span>
+<span id="cb3-81"><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>;</span>
+<span id="cb3-82"></span>
+<span id="cb3-83"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">test</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"field_parent_ptr"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb3-84">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> dog = <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">try</span> Dog.init(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"pochi"</span>);</span>
+<span id="cb3-85">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> cat = <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">try</span> Cat.init(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"tama"</span>);</span>
+<span id="cb3-86">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> animals = [_]*<span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">const</span> Animal<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb3-87">        dog.interface(),</span>
+<span id="cb3-88">        cat.interface(),</span>
+<span id="cb3-89">    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span>;</span>
+<span id="cb3-90"></span>
+<span id="cb3-91">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">try</span> std.testing.expectEqualStrings(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"pochi - wan wan"</span>, animals[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].bark());</span>
+<span id="cb3-92">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">try</span> std.testing.expectEqualStrings(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"tama - nyan nyan"</span>, animals[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].bark());</span>
+<span id="cb3-93"><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span></code></pre></div>
+
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body">
+<div id="ref-allocgate_is_comming_in_zig_0.9" class="csl-entry">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">Allocgate is coming in zig 0.9, and you will have to change your code. <a href="https://pithlessly.github.io/allocgate.html" class="uri">https://pithlessly.github.io/allocgate.html</a>.</div>
+</div>
+</div></section></div> ]]></description>
+  <category>Zig</category>
+  <guid>https://lab.ar90n.net/posts/2023-07-17-polymorphism-in-zig.html</guid>
+  <pubDate>Mon, 17 Jul 2023 00:00:00 GMT</pubDate>
+  <media:content url="https://lab.ar90n.net/assets/img/common/zig-mark.svg" medium="image" type="image/svg+xml"/>
+</item>
 <item>
   <title>Zigでレイトレーシングをしてみる</title>
   <link>https://lab.ar90n.net/posts/2023-06-29-comptime-ray-tracing-in-weekend.html</link>
@@ -150,7 +1320,7 @@
 <section id="対象コード" class="level2">
 <h2 class="anchored" data-anchor-id="対象コード">対象コード</h2>
 <p>単純なループによる実装</p>
-<div class="cell" data-execution_count="3">
+<div id="d1cc3125" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb1-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">func</span> CalcDot<span class="op" style="color: #5E5E5E;
@@ -229,7 +1399,7 @@ background-color: null;
 font-style: inherit;">}</span></span></code></pre></div>
 </div>
 <p>ループアンロールによる実装（N=2）</p>
-<div class="cell" data-execution_count="4">
+<div id="4a1fe5bf" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb2-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">func</span> CalcDotUnroll2<span class="op" style="color: #5E5E5E;
@@ -387,7 +1557,7 @@ background-color: null;
 font-style: inherit;">}</span></span></code></pre></div>
 </div>
 <p>ループアンロールによる実装（N=4）</p>
-<div class="cell" data-execution_count="5">
+<div id="e542d3e3" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb3-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">func</span> CalcDotUnroll4<span class="op" style="color: #5E5E5E;
@@ -591,7 +1761,7 @@ background-color: null;
 font-style: inherit;">}</span></span></code></pre></div>
 </div>
 <p>ループアンロールによる実装（N=8）</p>
-<div class="cell" data-execution_count="6">
+<div id="d2d35b02" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb4-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">func</span> CalcDotUnroll8<span class="op" style="color: #5E5E5E;
@@ -887,7 +2057,7 @@ background-color: null;
 font-style: inherit;">}</span></span></code></pre></div>
 </div>
 <p>Gonumによる実装（blas）</p>
-<div class="cell" data-execution_count="7">
+<div id="27bb81f6" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb5-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">import</span> <span class="op" style="color: #5E5E5E;
@@ -996,7 +2166,7 @@ background-color: null;
 font-style: inherit;">}</span></span></code></pre></div>
 </div>
 <p>Weaviateによる実装（asm）</p>
-<div class="cell" data-execution_count="8">
+<div id="de3ce235" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb6-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">import</span> <span class="op" style="color: #5E5E5E;
@@ -1045,7 +2215,7 @@ font-style: inherit;">}</span></span></code></pre></div>
 <section id="ベンチマーク" class="level2">
 <h2 class="anchored" data-anchor-id="ベンチマーク">ベンチマーク</h2>
 <p>実行環境</p>
-<div class="cell" data-execution_count="10">
+<div id="39a611a2" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb7-1">$lscpu</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Architecture:                    x86_64
@@ -1089,7 +2259,7 @@ Flags:                           fpu vme de pse tsc msr pae mce cx8 apic sep mtr
 </div>
 </div>
 <p>検証用データ生成</p>
-<div class="cell" data-execution_count="11">
+<div id="3db48532" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb9-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">import</span> <span class="op" style="color: #5E5E5E;
@@ -1177,7 +2347,7 @@ background-color: null;
 font-style: inherit;">}</span></span></code></pre></div>
 </div>
 <p>ベンチマークコード</p>
-<div class="cell" data-execution_count="12">
+<div id="d2e423b1" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb10-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">import</span> <span class="op" style="color: #5E5E5E;
@@ -1555,7 +2725,7 @@ background-color: null;
 font-style: inherit;">}</span></span></code></pre></div>
 </div>
 <p>ベンチマーク結果</p>
-<div class="cell" data-execution_count="13">
+<div id="d82ead74" class="cell" data-execution_count="13">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb11-1"><span class="kw" style="color: #003B4F;
@@ -1976,7 +3146,7 @@ font-style: inherit;">))</span></span></code></pre></div>
 </table>
 </div>
 </div>
-<div class="cell" data-execution_count="14">
+<div id="79eda677" class="cell" data-execution_count="14">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb12-1"><span class="kw" style="color: #003B4F;
@@ -2469,7 +3639,7 @@ font-style: inherit;">)</span></span></code></pre></div>
 <section id="対象コード" class="level2">
 <h2 class="anchored" data-anchor-id="対象コード">対象コード</h2>
 <p>単純なループによる実装</p>
-<div class="cell" data-execution_count="3">
+<div id="6338b3e2" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb1-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">func</span> CalcDot<span class="op" style="color: #5E5E5E;
@@ -2539,7 +3709,7 @@ background-color: null;
 font-style: inherit;">}</span></span></code></pre></div>
 </div>
 <p>ループアンロールによる実装（N=2）</p>
-<div class="cell" data-execution_count="4">
+<div id="02520a23" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb2-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">func</span> CalcDotUnroll2<span class="op" style="color: #5E5E5E;
@@ -2685,7 +3855,7 @@ background-color: null;
 font-style: inherit;">}</span></span></code></pre></div>
 </div>
 <p>ループアンロールによる実装（N=4）</p>
-<div class="cell" data-execution_count="5">
+<div id="fa0eb501" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb3-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">func</span> CalcDotUnroll4<span class="op" style="color: #5E5E5E;
@@ -2877,7 +4047,7 @@ background-color: null;
 font-style: inherit;">}</span></span></code></pre></div>
 </div>
 <p>ループアンロールによる実装（N=8）</p>
-<div class="cell" data-execution_count="6">
+<div id="e791d3de" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb4-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">func</span> CalcDotUnroll8<span class="op" style="color: #5E5E5E;
@@ -3161,7 +4331,7 @@ background-color: null;
 font-style: inherit;">}</span></span></code></pre></div>
 </div>
 <p>Gonumによる実装</p>
-<div class="cell" data-execution_count="7">
+<div id="4c59512f" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb5-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">import</span> <span class="op" style="color: #5E5E5E;
@@ -3237,7 +4407,7 @@ background-color: null;
 font-style: inherit;">}</span></span></code></pre></div>
 </div>
 <p>Gonumによる実装（blas）</p>
-<div class="cell" data-execution_count="8">
+<div id="c7166048" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb6-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">import</span> <span class="op" style="color: #5E5E5E;
@@ -3344,7 +4514,7 @@ font-style: inherit;">}</span></span></code></pre></div>
 <section id="ベンチマーク" class="level2">
 <h2 class="anchored" data-anchor-id="ベンチマーク">ベンチマーク</h2>
 <p>実行環境</p>
-<div class="cell" data-execution_count="10">
+<div id="9d9514ed" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb7-1">$lscpu</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Architecture:                    x86_64
@@ -3388,7 +4558,7 @@ Flags:                           fpu vme de pse tsc msr pae mce cx8 apic sep mtr
 </div>
 </div>
 <p>検証用データ生成</p>
-<div class="cell" data-execution_count="11">
+<div id="5c7ab4e4" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb9-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">import</span> <span class="op" style="color: #5E5E5E;
@@ -3476,7 +4646,7 @@ background-color: null;
 font-style: inherit;">}</span></span></code></pre></div>
 </div>
 <p>ベンチマークコード</p>
-<div class="cell" data-execution_count="12">
+<div id="a4eb5d13" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb10-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">import</span> <span class="op" style="color: #5E5E5E;
@@ -3842,7 +5012,7 @@ background-color: null;
 font-style: inherit;">}</span></span></code></pre></div>
 </div>
 <p>ベンチマーク結果</p>
-<div class="cell" data-execution_count="13">
+<div id="5a3c93f6" class="cell" data-execution_count="13">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb11-1"><span class="kw" style="color: #003B4F;
@@ -4263,7 +5433,7 @@ font-style: inherit;">))</span></span></code></pre></div>
 </table>
 </div>
 </div>
-<div class="cell" data-execution_count="14">
+<div id="994869bc" class="cell" data-execution_count="14">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb12-1"><span class="kw" style="color: #003B4F;
@@ -5227,7 +6397,7 @@ font-style: inherit;">;</span></span></code></pre></div>
 <p><img src="https://latex.codecogs.com/png.latex?%5Cbegin%7Balign%7D%0A%5Cmathbf%7Br%7D&amp;=%0A%5Cbegin%7Bpmatrix%7D%0Ar%5Cleft(1%5Cright)%20%5C%5C%0Ar%5Cleft(2%5Cright)%20%5C%5C%0A%5Cvdots%20%5C%5C%0Ar%5Cleft(p%5Cright)%20%5C%5C%0A%5Cend%7Bpmatrix%7D%20%5C%5C%0A&amp;=%20%5Cbegin%7Bpmatrix%7D%0Ar%5Cleft(0%5Cright)%20&amp;%20r%5Cleft(1%5Cright)%20&amp;%20%5Ccdots%20&amp;%20y%5Cleft(p%20-%201%5Cright)%20%5C%5C%0Ar%5Cleft(1%5Cright)%20&amp;%20r%5Cleft(0%5Cright)%20&amp;%20%5Ccdots%20&amp;%20y%5Cleft(p%20-%202%5Cright)%20%5C%5C%0A%5Cvdots%20&amp;%20%5Cvdots%20&amp;%20%5Cddots%20&amp;%20%5Cvdots%20%5C%5C%0Ay%5Cleft(p%20-%201%5Cright)%20&amp;%20r%5Cleft(p%20-%202%5Cright)%20&amp;%20%5Ccdots%20&amp;%20y%5Cleft(0%5Cright)%20%5C%5C%0A%5Cend%7Bpmatrix%7D%0A%5Cbegin%7Bpmatrix%7D%0Aa_%7B1%7D%20%5C%5C%0A%5Cvdots%20%5C%5C%0Aa_%7Bp%7D%20%5C%5C%0A%5Cend%7Bpmatrix%7D%5C%5C%0A&amp;=%20%5Cmathbf%7BR%7D%20%5Cmathbf%7Ba%7D%20%5C%5C%0A%5Cmathbf%7Ba%7D%20&amp;=%20%5Cmathbf%7BR%7D%5E%7B-1%7D%5Cmathbf%7Br%7D%0A%5Cend%7Balign%7D"></p>
 <p>なお、上述の行列<img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BR%7D">はテプリッツ行列<span class="citation" data-cites="wiki:テプリッツ行列">[2]</span>と呼ばれる特殊な形式となります。 今回は取り扱いませんが、テプリッツ行列の逆行列はレビンソン・ダービンのアルゴリズムを用いることで高速に計算することが可能です。</p>
 <p>以下に、最小二乗法と自己相関法によるAR係数の推定を行うコードとその実行結果を示します。</p>
-<div class="cell" data-execution_count="2">
+<div id="3faf2218" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
@@ -5488,7 +6658,7 @@ font-style: inherit;">'gain [dB]'</span>)</span>
 <h2 class="anchored" data-anchor-id="パルス列と白色雑音によるソースの実装">パルス列と白色雑音によるソースの実装</h2>
 <p>参考文献<span class="citation" data-cites="1130289132726961410">[4]</span>によると、音声合成では有声音をパルス列で、無声音を白色雑音で表現すると良いとされているようです。 しかしながら、今回の目的はボイスチェンジャの実装であるため、これらの区別は行わずそれぞれを単一のソースとして扱います。</p>
 <p>以下にパルス列と白色雑音を生成するコードを示します。</p>
-<div class="cell" data-execution_count="3">
+<div id="5de54d58" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">def</span> gen_pulse(ns: <span class="bu" style="color: null;
@@ -5561,7 +6731,7 @@ font-style: inherit;">1</span>, ns)</span></code></pre></div>
 <section id="ボイスチェンジャの実装" class="level2">
 <h2 class="anchored" data-anchor-id="ボイスチェンジャの実装">ボイスチェンジャの実装</h2>
 <p>フィルタとソースの実装が完了したので、それらを組み合わせてボイスチェンジャを実装します。 以下にコードを示します。</p>
-<div class="cell" data-execution_count="4">
+<div id="b5513254" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> datasets <span class="im" style="color: #00769E;
@@ -5727,7 +6897,7 @@ font-style: inherit;">return</span> np.concatenate(ret[:, :chunk_size])</span></
 <ul>
 <li>白色雑音</li>
 </ul>
-<div class="cell" data-execution_count="5">
+<div id="9ab1b216" class="cell" data-execution_count="5">
 <div class="cell-output cell-output-display" data-execution_count="4">
 
                 <audio controls="controls">
@@ -5740,7 +6910,7 @@ font-style: inherit;">return</span> np.concatenate(ret[:, :chunk_size])</span></
 <ul>
 <li>パルス列(<img src="https://latex.codecogs.com/png.latex?200%5Cmathrm%7BHz%7D">)</li>
 </ul>
-<div class="cell" data-execution_count="6">
+<div id="5c8ba029" class="cell" data-execution_count="6">
 <div class="cell-output cell-output-display" data-execution_count="5">
 
                 <audio controls="controls">
@@ -5753,7 +6923,7 @@ font-style: inherit;">return</span> np.concatenate(ret[:, :chunk_size])</span></
 <ul>
 <li>パルス列(<img src="https://latex.codecogs.com/png.latex?300%5Cmathrm%7BHz%7D">)</li>
 </ul>
-<div class="cell" data-execution_count="7">
+<div id="386c7c66" class="cell" data-execution_count="7">
 <div class="cell-output cell-output-display" data-execution_count="6">
 
                 <audio controls="controls">
@@ -5766,7 +6936,7 @@ font-style: inherit;">return</span> np.concatenate(ret[:, :chunk_size])</span></
 <ul>
 <li>パルス列(<img src="https://latex.codecogs.com/png.latex?400%5Cmathrm%7BHz%7D">)</li>
 </ul>
-<div class="cell" data-execution_count="8">
+<div id="9215ce42" class="cell" data-execution_count="8">
 <div class="cell-output cell-output-display" data-execution_count="7">
 
                 <audio controls="controls">
@@ -13833,1458 +15003,6 @@ font-style: inherit;">]</span>: Started Serial Getty on ttyUSB0.</span></code></
   <category>コンピュータグラフィックス</category>
   <guid>https://lab.ar90n.net/posts/2021-03-30-ray-tracing-in-weekend.html</guid>
   <pubDate>Tue, 30 Mar 2021 00:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>glutinに入門してみる</title>
-  <link>https://lab.ar90n.net/posts/2021-02-01-getting-started-with-glutin.html</link>
-  <description><![CDATA[ 
-
-
-
-<section id="はじめに" class="level2">
-<h2 class="anchored" data-anchor-id="はじめに">はじめに</h2>
-<p><a href="https://github.com/rust-windowing/glutin">glutin</a> に入門した記録です． Objファイルをロードして，スタンフォードバニーを表示するサンプルプログラムを作成します．</p>
-</section>
-<section id="glutinとは" class="level2">
-<h2 class="anchored" data-anchor-id="glutinとは">glutinとは</h2>
-<p>Rustで記述されたOpenGLのラッパーライブラリです． OpenGLのラッパーライブラリには抽象度が高いものから低いものまで様々あります． 本ライブラリは，それらの中でも抽象度が低い，低レベルな機能を提供することを目的としたライブラリです． したがって，OpenGL相当の非常にプリミティブな機能しか提供されていません．</p>
-<p>glutinの実装の興味深い点に，ユーザが指定したAPIのバインディングをビルド時に動的に生成する点が挙げられます． この機能の利用方法については， サンプルプログラムの動作を通じて後述します．</p>
-</section>
-<section id="サンプルプログラムの解析" class="level2">
-<h2 class="anchored" data-anchor-id="サンプルプログラムの解析">サンプルプログラムの解析</h2>
-<section id="サンプルプログラムの実行" class="level3">
-<h3 class="anchored" data-anchor-id="サンプルプログラムの実行">サンプルプログラムの実行</h3>
-<p><a href="https://github.com/rust-windowing/glutin#try-it">リポジトリページ</a>にある手順に従ってサンプルプログラムを実行します．</p>
-<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">$</span> git clone https://github.com/rust-windowing/glutin</span>
-<span id="cb1-2"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">$</span> cd glutin</span>
-<span id="cb1-3"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">$</span> cargo run <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">--example</span> window</span></code></pre></div>
-<p>すると，以下のようなウィンドウが表示されます．</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://lab.ar90n.net/assets/img/2021-02-01-getting-started-with-glutin/media/sample.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">sample</figcaption>
-</figure>
-</div>
-</section>
-<section id="gl_bindings.rsの生成" class="level3">
-<h3 class="anchored" data-anchor-id="gl_bindings.rsの生成"><code>gl_bindings.rs</code>の生成</h3>
-<p>それでは，このサンプルプログラムの詳細をみていきます．</p>
-<p>まず，<code>Cargo.toml</code>を見てみます．すると，以下のように<code>build.rs</code>がbuild scriptが設定されていることが確認できます．</p>
-<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb2-1"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">[package]</span></span>
-<span id="cb2-2"><span class="dt" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">name</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"glutin_examples"</span></span>
-<span id="cb2-3"></span>
-<span id="cb2-4"><span class="dt" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">...</span></span>
-<span id="cb2-5"></span>
-<span id="cb2-6"><span class="dt" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">build</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"build.rs"</span></span>
-<span id="cb2-7"></span>
-<span id="cb2-8"><span class="dt" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">...</span></span>
-<span id="cb2-9"></span>
-<span id="cb2-10"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">[build-dependencies]</span></span>
-<span id="cb2-11"><span class="dt" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">gl_generator</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"0.14"</span></span></code></pre></div>
-<p><code>build.rs</code>を確認すると，１２行目から１４行目において，GLES 2.0のバインディングを生成していることが確認できます． この処理は，<a href="https://github.com/brendanzab/gl-rs/tree/master/gl_generator">gl_generator</a>を用いて実現されています．</p>
-<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb3-1"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">use</span> <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">gl_generator::</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span>Api<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">,</span> Fallbacks<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">,</span> Profile<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">,</span> Registry<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">};</span></span>
-<span id="cb3-2"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">use</span> <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">std::</span>env<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb3-3"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">use</span> <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">std::fs::</span>File<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb3-4"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">use</span> <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">std::path::</span><span class="dt" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">PathBuf</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb3-5"></span>
-<span id="cb3-6"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">fn</span> main() <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span></span>
-<span id="cb3-7">    <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">let</span> dest <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="dt" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">PathBuf</span><span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">::</span>from(<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&amp;</span><span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">env::</span>var(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"OUT_DIR"</span>)<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">.</span>unwrap())<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb3-8"></span>
-<span id="cb3-9">    <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">println!</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"cargo:rerun-if-changed=build.rs"</span>)<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb3-10"></span>
-<span id="cb3-11">    <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">let</span> <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">mut</span> file <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">File::</span>create(<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&amp;</span>dest<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">.</span>join(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"gl_bindings.rs"</span>))<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">.</span>unwrap()<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb3-12">    <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">Registry::</span>new(<span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">Api::</span>Gles2<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">,</span> (<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">,</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>)<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">,</span> <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">Profile::</span>Core<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">,</span> <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">Fallbacks::</span>All<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">,</span> [])</span>
-<span id="cb3-13">        <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">.</span>write_bindings(<span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">gl_generator::</span>StructGenerator<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">,</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&amp;</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">mut</span> file)</span>
-<span id="cb3-14">        <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">.</span>unwrap()<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb3-15"><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">}</span></span></code></pre></div>
-<p>次に，実際にどのようあファイルが生成されているかを確認します． 環境変数<code>OUT_DIR</code>は<code>cargo</code>によって設定されてしまうため，任意の値を設定することができません． そこで，以下のように環境変数名を変更します．</p>
-<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">$</span> git diff</span>
-<span id="cb4-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">diff</span> <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">--git</span> a/glutin_examples/build.rs b/glutin_examples/build.rs</span>
-<span id="cb4-3"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">index</span> 77f6fa5..4ff7c4e 100644</span>
-<span id="cb4-4"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">---</span> a/glutin_examples/build.rs</span>
-<span id="cb4-5"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">+++</span> b/glutin_examples/build.rs</span>
-<span id="cb4-6"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">@@</span> <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">-4,7</span> +4,7 @@ use std::fs::File<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb4-7"> <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">use</span> std::path::PathBuf<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb4-8"></span>
-<span id="cb4-9"> <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">fn</span> main<span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">(</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span> <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">{</span></span>
-<span id="cb4-10"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">-</span>    let dest = PathBuf::from<span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">(</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&amp;</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">env::var</span><span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">(</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"OUT_DIR"</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">.unwrap()</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">);</span></span>
-<span id="cb4-11"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">+</span>    let dest = PathBuf::from<span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">(</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&amp;</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">env::var</span><span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">(</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"TMP_OUT_DIR"</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">.unwrap()</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">);</span></span>
-<span id="cb4-12"></span>
-<span id="cb4-13">     <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">println!</span><span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">(</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"cargo:rerun-if-changed=build.rs"</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">);</span></span></code></pre></div>
-<p>そして，ビルドすると<code>gl_bindings.rs</code>というファイルが作成されていることが確認できます． ファイルの内容を確認すると，<code>GLES 2.0</code>に利用されるデータ構造のバインディングか確認できます．</p>
-<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">$</span> TMP_OUT_DIR=<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">`</span><span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">pwd</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">`</span> cargo build <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">--example</span> window</span>
-<span id="cb5-2"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">$</span> ls gl_bindings.rs</span>
-<span id="cb5-3"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">gl_bindings.rs</span></span>
-<span id="cb5-4"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">$</span> head <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">-n</span> 32 gl_bindings.rs</span>
-<span id="cb5-5"></span>
-<span id="cb5-6">        <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">mod</span> __gl_imports {</span>
-<span id="cb5-7">            <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">pub</span> use std::mem<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb5-8">            <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">pub</span> use std::marker::Send<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb5-9">            <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">pub</span> use std::os::raw<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb5-10">        <span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">}</span></span>
-<span id="cb5-11"></span>
-<span id="cb5-12"></span>
-<span id="cb5-13">        <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">pub</span> mod types {</span>
-<span id="cb5-14">            <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#![allow(non_camel_case_types, non_snake_case, dead_code, missing_copy_implementations)]</span></span>
-<span id="cb5-15"></span>
-<span id="cb5-16"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">//</span> Common types from OpenGL 1.1</span>
-<span id="cb5-17"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">pub</span> type GLenum = super::__gl_imports::raw::c_uint<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb5-18"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">pub</span> type GLboolean = super::__gl_imports::raw::c_uchar<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb5-19"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">pub</span> type GLbitfield = super::__gl_imports::raw::c_uint<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb5-20"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">pub</span> type GLvoid = super::__gl_imports::raw::c_void<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb5-21"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">pub</span> type GLbyte = super::__gl_imports::raw::c_char<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb5-22"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">pub</span> type GLshort = super::__gl_imports::raw::c_short<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb5-23"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">pub</span> type GLint = super::__gl_imports::raw::c_int<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb5-24"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">pub</span> type GLclampx = super::__gl_imports::raw::c_int<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb5-25"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">pub</span> type GLubyte = super::__gl_imports::raw::c_uchar<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb5-26"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">pub</span> type GLushort = super::__gl_imports::raw::c_ushort<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb5-27"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">pub</span> type GLuint = super::__gl_imports::raw::c_uint<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb5-28"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">pub</span> type GLsizei = super::__gl_imports::raw::c_int<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb5-29"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">pub</span> type GLfloat = super::__gl_imports::raw::c_float<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb5-30"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">pub</span> type GLclampf = super::__gl_imports::raw::c_float<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb5-31"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">pub</span> type GLdouble = super::__gl_imports::raw::c_double<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb5-32"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">pub</span> type GLclampd = super::__gl_imports::raw::c_double<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb5-33"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">pub</span> type GLeglImageOES = <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">*</span>const super::__gl_imports::raw::c_void<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb5-34"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">pub</span> type GLchar = super::__gl_imports::raw::c_char<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb5-35"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">pub</span> type GLcharARB = super::__gl_imports::raw::c_char<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span></code></pre></div>
-<p>次に，ターゲットのAPIを<code>Api::Gl</code>に変更して<code>'gl_bindings.rs</code>を生成してみます. すると，先ほど生成した<code>gl_bindings.rs</code>とは内容が異なることが確認できます． このように，ターゲットや機能に合わせて，バックエンドを静的に切り替えて使用することが可能です．</p>
-<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">$</span> mv gl_bindings.rs gl_bindings_gles2.rs</span>
-<span id="cb6-2"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">$</span> git diff</span>
-<span id="cb6-3"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">diff</span> <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">--git</span> a/glutin_examples/build.rs b/glutin_examples/build.rs</span>
-<span id="cb6-4"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">index</span> 77f6fa5..7e149bd 100644</span>
-<span id="cb6-5"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">---</span> a/glutin_examples/build.rs</span>
-<span id="cb6-6"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">+++</span> b/glutin_examples/build.rs</span>
-<span id="cb6-7"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">@@</span> <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">-4,12</span> +4,12 @@ use std::fs::File<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb6-8"> <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">use</span> std::path::PathBuf<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb6-9"></span>
-<span id="cb6-10"> <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">fn</span> main<span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">(</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span> <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">{</span></span>
-<span id="cb6-11"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">-</span>    let dest = PathBuf::from<span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">(</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&amp;</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">env::var</span><span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">(</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"OUT_DIR"</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">.unwrap()</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">);</span></span>
-<span id="cb6-12"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">+</span>    let dest = PathBuf::from<span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">(</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&amp;</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">env::var</span><span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">(</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"TMP_OUT_DIR"</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">.unwrap()</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">);</span></span>
-<span id="cb6-13"></span>
-<span id="cb6-14">     <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">println!</span><span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">(</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"cargo:rerun-if-changed=build.rs"</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">);</span></span>
-<span id="cb6-15"></span>
-<span id="cb6-16">     <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">let</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">mut</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">file</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">File</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">::</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">create</span><span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">(</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&amp;</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">dest.join</span><span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">(</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"gl_bindings.rs"</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">))</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">.unwrap()</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb6-17"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">-</span>    Registry::new<span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">Api::Gles2,</span> <span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">3,</span> 3<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">,</span> Profile::Core, Fallbacks::All, []<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span id="cb6-18"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">+</span>    Registry::new<span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">Api::Gl,</span> <span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">3,</span> 3<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">,</span> Profile::Core, Fallbacks::All, []<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span id="cb6-19">         <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">.write_bindings</span><span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">gl_generator::StructGenerator,</span> <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&amp;</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">mut</span> file<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span id="cb6-20">         <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">.unwrap()</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb6-21"> <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">}</span></span>
-<span id="cb6-22"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">$</span> TMP_OUT_DIR=<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">`</span><span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">pwd</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">`</span> cargo build <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">--example</span> window</span>
-<span id="cb6-23"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">$</span> diff gl_bindings.rs gl_bindings_gles2.rs <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">|</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">head</span> <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">-n</span> 32</span>
-<span id="cb6-24"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">121a122</span></span>
-<span id="cb6-25"><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;</span> #[allow<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">dead_code,</span> non_upper_case_globals<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">]</span> pub const ACTIVE_ATOMIC_COUNTER_BUFFERS: types::GLenum = 0x92D9<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb6-26"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">123a125,126</span></span>
-<span id="cb6-27"><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;</span> #[allow<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">dead_code,</span> non_upper_case_globals<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">]</span> pub const ACTIVE_PROGRAM: types::GLenum = 0x8259<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb6-28"><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;</span> #[allow<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">dead_code,</span> non_upper_case_globals<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">]</span> pub const ACTIVE_RESOURCES: types::GLenum = 0x92F5<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb6-29"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">128a132</span></span>
-<span id="cb6-30"><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;</span> #[allow<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">dead_code,</span> non_upper_case_globals<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">]</span> pub const ACTIVE_VARIABLES: types::GLenum = 0x9305<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb6-31"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">129a134,136</span></span>
-<span id="cb6-32"><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;</span> #[allow<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">dead_code,</span> non_upper_case_globals<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">]</span> pub const ALIASED_POINT_SIZE_RANGE: types::GLenum = 0x846D<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb6-33"><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;</span> #[allow<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">dead_code,</span> non_upper_case_globals<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">]</span> pub const ALL_BARRIER_BITS: types::GLenum = 0xFFFFFFFF<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb6-34"><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;</span> #[allow<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">dead_code,</span> non_upper_case_globals<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">]</span> pub const ALL_SHADER_BITS: types::GLenum = 0xFFFFFFFF<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb6-35"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">130a138</span></span>
-<span id="cb6-36"><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;</span> #[allow<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">dead_code,</span> non_upper_case_globals<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">]</span> pub const ALPHA_BITS: types::GLenum = 0x0D55<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb6-37"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">133,135d140</span></span>
-<span id="cb6-38"><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;</span> #[allow<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">dead_code,</span> non_upper_case_globals<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">]</span> pub const AND: types::GLenum = 0x1501<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb6-39"><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;</span> #[allow<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">dead_code,</span> non_upper_case_globals<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">]</span> pub const AND_INVERTED: types::GLenum = 0x1504<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb6-40"><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;</span> #[allow<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">dead_code,</span> non_upper_case_globals<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">]</span> pub const AND_REVERSE: types::GLenum = 0x1502<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb6-41"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">136a142</span></span>
-<span id="cb6-42"><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;</span> #[allow<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">dead_code,</span> non_upper_case_globals<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">]</span> pub const ANY_SAMPLES_PASSED_CONSERVATIVE: types::GLenum = 0x8D6A<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb6-43"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">138a145,152</span></span>
-<span id="cb6-44"><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;</span> #[allow<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">dead_code,</span> non_upper_case_globals<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">]</span> pub const ARRAY_SIZE: types::GLenum = 0x92FB<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb6-45"><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;</span> #[allow<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">dead_code,</span> non_upper_case_globals<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">]</span> pub const ARRAY_STRIDE: types::GLenum = 0x92FE<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb6-46"><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;</span> #[allow<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">dead_code,</span> non_upper_case_globals<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">]</span> pub const ATOMIC_COUNTER_BARRIER_BIT: types::GLenum = 0x00001000<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb6-47"><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;</span> #[allow<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">dead_code,</span> non_upper_case_globals<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">]</span> pub const ATOMIC_COUNTER_BUFFER: types::GLenum = 0x92C0<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb6-48"><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;</span> #[allow<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">dead_code,</span> non_upper_case_globals<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">]</span> pub const ATOMIC_COUNTER_BUFFER_BINDING: types::GLenum = 0x92C1<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb6-49"><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;</span> #[allow<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">dead_code,</span> non_upper_case_globals<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">]</span> pub const ATOMIC_COUNTER_BUFFER_INDEX: types::GLenum = 0x9301<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb6-50"><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;</span> #[allow<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">dead_code,</span> non_upper_case_globals<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">]</span> pub const ATOMIC_COUNTER_BUFFER_SIZE: types::GLenum = 0x92C3<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb6-51"><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;</span> #[allow<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">dead_code,</span> non_upper_case_globals<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">]</span> pub const ATOMIC_COUNTER_BUFFER_START: types::GLenum = 0x92C2<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb6-52"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">141,146d154</span></span>
-<span id="cb6-53"><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;</span> #[allow<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">dead_code,</span> non_upper_case_globals<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">]</span> pub const BACK_LEFT: types::GLenum = 0x0402<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb6-54"><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;</span> #[allow<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">dead_code,</span> non_upper_case_globals<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">]</span> pub const BACK_RIGHT: types::GLenum = 0x0403<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb6-55"><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;</span> #[allow<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">dead_code,</span> non_upper_case_globals<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">)</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">]</span> pub const BGR: types::GLenum = 0x80E0<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">;</span></span></code></pre></div>
-</section>
-<section id="ウィンドウの表示とポリゴンの描画" class="level3">
-<h3 class="anchored" data-anchor-id="ウィンドウの表示とポリゴンの描画">ウィンドウの表示とポリゴンの描画</h3>
-<p>先ほど実行したサンプルプログラムに対応するコードは<a href="https://github.com/rust-windowing/glutin/blob/master/glutin_examples/examples/window.rs">こちら</a>になります． それでは，こちらの内容を先頭から紹介していきます．</p>
-<p>まずは，<code>support</code>モジュールと利用する<code>glutin</code>のモジュールのインポートです． <code>support</code>モジュールは，ポリゴンの生成と描画，頂点シェーダ，フラグメントシェーダなど，サンプルプログラムに表示された三角形を描画するための処理が含まれています．</p>
-<div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb7-1"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">mod</span> support<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb7-2"></span>
-<span id="cb7-3"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">use</span> <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">glutin::event::</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span>Event<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">,</span> WindowEvent<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">};</span></span>
-<span id="cb7-4"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">use</span> <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">glutin::event_loop::</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span>ControlFlow<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">,</span> EventLoop<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">};</span></span>
-<span id="cb7-5"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">use</span> <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">glutin::window::</span>WindowBuilder<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb7-6"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">use</span> <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">glutin::</span>ContextBuilder<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">;</span></span></code></pre></div>
-<p>次にmain関数です．main関数では，まず初めにイベントループ，ウィンドウ，このウインドウと紐づいたGLコンテキストを作成します． コード中の<code>windowed_context</code>とは，ウインドウとこのウィンドウに紐づいたGLコンテキストとを表現する構造体になります．</p>
-<div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb8-1"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">fn</span> main() <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span></span>
-<span id="cb8-2">    <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">let</span> el <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">EventLoop::</span>new()<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb8-3">    <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">let</span> wb <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">WindowBuilder::</span>new()<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">.</span>with_title(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"A fantastic window!"</span>)<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb8-4"></span>
-<span id="cb8-5">    <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">let</span> windowed_context <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">ContextBuilder::</span>new()<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">.</span>build_windowed(wb<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">,</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&amp;</span>el)<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">.</span>unwrap()<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb8-6"></span>
-<span id="cb8-7">    <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">let</span> windowed_context <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">unsafe</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span> windowed_context<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">.</span>make_current()<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">.</span>unwrap() <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">};</span></span>
-<span id="cb8-8"></span>
-<span id="cb8-9">    <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">println!</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Pixel format of the window's GL context: {:?}"</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">,</span> windowed_context<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">.</span>get_pixel_format())<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb8-10"></span>
-<span id="cb8-11">    <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">...</span></span>
-<span id="cb8-12"></span>
-<span id="cb8-13"><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">}</span></span></code></pre></div>
-<p>次にコンテキストの取得を行います．この処理は，<code>support::load</code>によって実現します． <code>support::load</code>では，以下のような処理が実行されます．</p>
-<ul>
-<li>頂点シェーダとフラグメントシェーダのコンパイル</li>
-<li>シェーダプログラムの作成</li>
-<li>三角形のポリゴンを表す頂点バッファオブジェクトと頂点配列オブジェクトの作成</li>
-<li>上記各種リソースのGLコンテキストへの割り当て</li>
-</ul>
-<p>このコンテキストは上述のGLコンテキストを内部に持ち，各種描画処理を移譲します．</p>
-<div class="sourceCode" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb9-1">    <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">let</span> gl <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">support::</span>load(<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&amp;</span>windowed_context<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">.</span>context())<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">;</span></span></code></pre></div>
-<p>最後にイベントハンドラです．このイベントハンドラは先ほど作成したイベントループ渡され，何かイベントが発生するたびに呼び出されます． 従って，イベントハンドラでは，発生したイベントの識別とそのイベントに対応する振る舞いを記述する必要があります． 各イベントに対する振る舞いについては，コード中にコメントとして追記しました．</p>
-<div class="sourceCode" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb10-1">    el<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">.</span>run(<span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">move</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|</span>event<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">,</span> _<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">,</span> control_flow<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span></span>
-<span id="cb10-2">        <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">println!</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"{:?}"</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">,</span> event)<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb10-3">        <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span>control_flow <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">ControlFlow::</span>Wait<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb10-4"></span>
-<span id="cb10-5">        <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">match</span> event <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span></span>
-<span id="cb10-6">            <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">Event::</span>LoopDestroyed <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=&gt;</span> <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">return</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">,</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">// イベントループか破棄されたのでインベントハンドラから抜ける</span></span>
-<span id="cb10-7">            <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">Event::</span>WindowEvent <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span> event<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">,</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">..</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">}</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=&gt;</span> <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">match</span> event <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span></span>
-<span id="cb10-8">                <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">WindowEvent::</span>Resized(physical_size) <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=&gt;</span> windowed_context<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">.</span>resize(physical_size)<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">,</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">// ウインドウをリサイズ</span></span>
-<span id="cb10-9">                <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">WindowEvent::</span>CloseRequested <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=&gt;</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span>control_flow <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">ControlFlow::</span>Exit<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">,</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">// ウインドウを閉じる</span></span>
-<span id="cb10-10">                _ <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=&gt;</span> ()<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">,</span></span>
-<span id="cb10-11">            <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">},</span></span>
-<span id="cb10-12">            <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">Event::</span>RedrawRequested(_) <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=&gt;</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span> </span>
-<span id="cb10-13">                gl<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">.</span>draw_frame([<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1.0</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">,</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.5</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">,</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.7</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">,</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1.0</span>])<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">;</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">// ポリゴンの描画．</span></span>
-<span id="cb10-14">                windowed_context<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">.</span>swap_buffers()<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">.</span>unwrap()<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">;</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">// オフスクリーンに描画した結果を表示する</span></span>
-<span id="cb10-15">            <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">}</span></span>
-<span id="cb10-16">            _ <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=&gt;</span> ()<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">,</span></span>
-<span id="cb10-17">        <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">}</span></span>
-<span id="cb10-18">    <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">}</span>)<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">;</span></span></code></pre></div>
-</section>
-</section>
-<section id="スタンフォードバニーを表示する" class="level2">
-<h2 class="anchored" data-anchor-id="スタンフォードバニーを表示する">スタンフォードバニーを表示する</h2>
-<p>Objファイルを読み取り，スタンフォードバニーを描画する<a href="https://github.com/ar90n/lab/tree/master/sandbox/rust-opengl-obj-loader">サンプルプログラム</a>を作成しました． このサンプルを実行すると，以下のような画面が表示されます．</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://lab.ar90n.net/assets/img/2021-02-01-getting-started-with-glutin/media/bunny.gif" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">sample</figcaption>
-</figure>
-</div>
-<p>全体の構成は，glutinのサンプルプログラムを大きく変更はありません， 従って，比較的容易に読み取ることが可能かと思います． しかしながら，幾つか新しい試みを行っているため，それらについて紹介します．</p>
-<section id="gl_bindings.rsのソースツリーへの取り込み" class="level3">
-<h3 class="anchored" data-anchor-id="gl_bindings.rsのソースツリーへの取り込み">gl_bindings.rsのソースツリーへの取り込み</h3>
-<p>前述した通り，<code>gl_bindings.rs</code>はビルド時に動的に生成されます．従って，これらが提供する型を編集時に取得することはできません． そのため，このままではコード補完や静的解析を行うことができません． Rustによる開発では，これらのツールは非常に重要であるため，このままでは非常に辛い開発が強いられます．</p>
-<p>そこで，<code>gl_buildings.rs</code>をソースツリーに取り込んでしまうことにしました． 具体的には，以下のように<code>gl_bindings.rs</code>の保存先を変更します．</p>
-<div class="sourceCode" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb11-1"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">fn</span> main() <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span></span>
-<span id="cb11-2">    <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">let</span> <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">mut</span> dest <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="dt" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">PathBuf</span><span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">::</span>from(<span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">env!</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"CARGO_MANIFEST_DIR"</span>))<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb11-3">    dest<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">.</span>push(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"src"</span>)<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb11-4"></span>
-<span id="cb11-5">    <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">println!</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"cargo:rerun-if-changed=build.rs"</span>)<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb11-6"></span>
-<span id="cb11-7">    <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">let</span> <span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">mut</span> file <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">File::</span>create(<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&amp;</span>dest<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">.</span>join(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"gl_bindings.rs"</span>))<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">.</span>unwrap()<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb11-8">    <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">Registry::</span>new(<span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">Api::</span>Gl<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">,</span> (<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">,</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>)<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">,</span> <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">Profile::</span>Core<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">,</span> <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">Fallbacks::</span>All<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">,</span> [])</span>
-<span id="cb11-9">        <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">.</span>write_bindings(<span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">gl_generator::</span>StructGenerator<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">,</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&amp;</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">mut</span> file)</span>
-<span id="cb11-10">        <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">.</span>unwrap()<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">;</span></span>
-<span id="cb11-11"><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">}</span></span></code></pre></div>
-<p>この変更により，初回のビルド以降は以下のように<code>gl_bindings.rs</code>がソースツリー内に存在します． 従って，コード補完や静的解析が適切に動作します．</p>
-<div class="sourceCode" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">$</span> ls ./src</span>
-<span id="cb12-2"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">context.rs</span>      gl_bindings.rs  main.rs         obj.rs          shader.rs</span></code></pre></div>
-<p>注意点としては，<code>gl_bindings.rs</code>は動的に生成されるものなのでリポジトリに含んではいけないことです． 従って，以下のように<code>.gitignore</code>に追加します．</p>
-<div class="sourceCode" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">$</span> cat .gitignore</span>
-<span id="cb13-2"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">src/gl_bindings.rs</span></span>
-<span id="cb13-3"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">target</span></span></code></pre></div>
-</section>
-<section id="objファイルについて" class="level3">
-<h3 class="anchored" data-anchor-id="objファイルについて">Objファイルについて</h3>
-<p>Objファイルと呼ばれるファイルフォーマットには様々なものがあります． ここで使用するのは，3Dモデルを表現するために用いられるObjファイルです． また，Objファイルは頂点，面，法線など様々なデータを格納することができます． ここでは，以下のように頂点とそれらによって構成される面のみを対象とします．</p>
-<pre><code>v &lt;頂点番号1&gt; &lt;X座標1&gt; &lt;Y座標1&gt; &lt;Z座標1&gt;
-v &lt;頂点番号2&gt; &lt;X座標2&gt; &lt;Y座標2&gt; &lt;Z座標2&gt;
-
-...
-
-f &lt;面番号1&gt; &lt;頂点番号i&gt; &lt;頂点番号j&gt; &lt;頂点番号k&gt;
-
-...
-</code></pre>
-</section>
-</section>
-<section id="参考" class="level2">
-<h2 class="anchored" data-anchor-id="参考">参考</h2>
-<div id="refs" class="references csl-bib-body">
-<div id="ref-glutin" class="csl-entry">
-<div class="csl-left-margin">[1] </div><div class="csl-right-inline">Glutin. <a href="https://docs.rs/glutin/0.26.0/glutin/" class="uri">https://docs.rs/glutin/0.26.0/glutin/</a>.</div>
-</div>
-</div>
-
-
-</section>
-
- ]]></description>
-  <category>Rust</category>
-  <category>glutin</category>
-  <category>OpenGL</category>
-  <category>コンピュータグラフィックス</category>
-  <guid>https://lab.ar90n.net/posts/2021-02-01-getting-started-with-glutin.html</guid>
-  <pubDate>Mon, 01 Feb 2021 00:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>

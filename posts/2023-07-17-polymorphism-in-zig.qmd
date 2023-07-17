@@ -1,0 +1,305 @@
+---
+title: Zigで多態性を表現する
+date: 2023-07-17
+categories: [Zig]
+image: /assets/img/common/zig-mark.svg
+format:
+  html:
+    code-fold: true
+toc: true
+layout: post
+code-annotations: below
+nocite: |
+  @allocgate_is_comming_in_zig_0.9
+---
+
+## `union(enum)`による方法
+実体を表現する構造体を`union(enum)`でまとめ、関数の呼び出しの際に自身を`switch`で分岐することで呼び出す関数を判別します。
+この際`switch`の対象に`inline else`を指定することで記述を簡略化することができます。
+
+以下に`union(enum)`による方法のサンプルを示します。
+
+```zig
+const std = @import("std");
+const stdout = std.io.getStdOut().writer();
+
+pub const Animal = union(enum) {
+    const Self = @This();
+    dog: Dog,
+    cat: Cat,
+
+    pub fn bark(self: Self) []const u8 {
+        return switch (self) {
+            inline else => |n| n.bark(),
+        };
+    }
+};
+
+pub const Dog = struct {
+    const Self = @This();
+
+    buffer: [64]u8,
+    len: usize,
+
+    pub fn init(name: []const u8) !Animal {
+        const dog = blk: {
+            var dog = Self{
+                .buffer = undefined,
+                .len = 0,
+            };
+
+            const s = try std.fmt.bufPrint(&dog.buffer, "{s} - {s}", .{ name, "wan wan" });
+            dog.len = s.len;
+            break :blk dog;
+        };
+
+        return .{ .dog = dog };
+    }
+
+    pub fn bark(self: Self) []const u8 {
+        return self.buffer[0..self.len];
+    }
+};
+
+pub const Cat = struct {
+    const Self = @This();
+
+    buffer: [64]u8,
+    len: usize,
+
+    pub fn init(name: []const u8) !Animal {
+        const cat = blk: {
+            var cat = Self{
+                .buffer = undefined,
+                .len = 0,
+            };
+
+            const s = try std.fmt.bufPrint(&cat.buffer, "{s} - {s}", .{ name, "nyan nyan" });
+            cat.len = s.len;
+            break :blk cat;
+        };
+
+        return .{ .cat = cat };
+    }
+
+    pub fn bark(self: Self) []const u8 {
+        return self.buffer[0..self.len];
+    }
+};
+
+test "tagged_union" {
+    const animals = [_]Animal{
+        try Dog.init("pochi"),
+        try Cat.init("mike"),
+    };
+
+    try std.testing.expectEqualStrings("pochi - wan wan", animals[0].bark());
+    try std.testing.expectEqualStrings("mike - nyan nyan", animals[1].bark());
+}
+```
+1. aaa
+
+## `*anyopaque`による方法
+抽象を表現する構造体で実体を表現する構造体を型情報を削除し`*anyopaque`でポインタを保持します。
+関数呼び出し時に`*anyopaque`を実体を表現する型へのポインタにキャストすることで所望の処理を実行します。
+
+以下に`*anyopaque`による方法のサンプルを示します。
+
+```zig
+const std = @import("std");
+
+const Animal = struct {
+    const Self = @This();
+    ptr: *const anyopaque,
+    barkFn: *const fn (self: *const anyopaque) []const u8,
+
+    pub fn bark(self: Self) []const u8 {
+        return self.barkFn(self.ptr);
+    }
+};
+
+pub const Dog = struct {
+    const Self = @This();
+
+    buffer: [64]u8,
+    len: usize,
+
+    pub fn init(name: []const u8) !Dog {
+        const dog = blk: {
+            var dog = Self{
+                .buffer = undefined,
+                .len = 0,
+            };
+
+            const s = try std.fmt.bufPrint(&dog.buffer, "{s} - {s}", .{ name, "wan wan" });
+            dog.len = s.len;
+            break :blk dog;
+        };
+
+        return dog;
+    }
+
+    pub fn interface(self: *const Self) Animal {
+        return .{
+            .ptr = self,
+            .barkFn = Dog.bark,
+        };
+    }
+
+    pub fn bark(ctx: *const anyopaque) []const u8 {
+        const self: *const Self = @ptrCast(@alignCast(@constCast(ctx)));
+        return self.buffer[0..self.len];
+    }
+};
+
+pub const Cat = struct {
+    const Self = @This();
+
+    buffer: [64]u8,
+    len: usize,
+
+    pub fn init(name: []const u8) !Cat {
+        const cat = blk: {
+            var cat = Self{ .buffer = undefined, .len = 0 };
+
+            const s = try std.fmt.bufPrint(&cat.buffer, "{s} - {s}", .{ name, "nyan nyan" });
+            cat.len = s.len;
+            break :blk cat;
+        };
+
+        return cat;
+    }
+
+    pub fn interface(self: *const Self) Animal {
+        return .{
+            .ptr = self,
+            .barkFn = Cat.bark,
+        };
+    }
+
+    pub fn bark(ctx: *const anyopaque) []const u8 {
+        const self: *Self = @ptrCast(@alignCast(@constCast(ctx)));
+        return self.buffer[0..self.len];
+    }
+};
+
+test "fat_ptr" {
+    const dog = try Dog.init("pochi");
+    const cat = try Cat.init("tama");
+    const animals = [_]Animal{
+        dog.interface(),
+        cat.interface(),
+    };
+
+    try std.testing.expectEqualStrings("pochi - wan wan", animals[0].bark());
+    try std.testing.expectEqualStrings("tama - nyan nyan", animals[1].bark());
+}
+```
+
+## `@fieldParentPtr`による方法
+この方法では、実体を表現する構造体のフィールドに抽象を表現する構造体を保持します。
+そして、その抽象を表現する構造体へのポインタに対して操作することで多態性を実現します。
+
+`@fieldParentPtr`は指定された要素を含む構造体へのポインタを返します。
+今回のケースでは、抽象を表現する構造体のポインタから実体を表現する構造体を取得することができます。
+この処理を関数呼び出し時に行うことにより、実体を表現する構造体に対して所望の処理を実行することができます。
+
+以前は本手法による実装は主流でしたが、LLVMによるパフォーマンス上の懸念が発生するため、上述の`*anyopaque`による方法が主流のようです。
+
+以下に`*anyopaque`による方法のサンプルを示します。
+```zig
+const std = @import("std");
+
+const Animal = struct {
+    const Self = @This();
+
+    barkFn: fn (self: *const @This()) []const u8,
+
+    pub fn init(comptime barkFn: fn (self: *const @This()) []const u8) Animal {
+        return .{ .barkFn = barkFn };
+    }
+
+    pub fn bark(comptime self: *const Self) []const u8 {
+        return self.barkFn(self);
+    }
+};
+
+pub const Dog = struct {
+    const Self = @This();
+
+    animal: Animal,
+    buffer: [64]u8,
+    len: usize,
+
+    pub fn init(comptime name: []const u8) !Dog {
+        const dog = blk: {
+            var dog = Self{
+                .animal = Animal.init(Dog.bark),
+                .buffer = undefined,
+                .len = 0,
+            };
+
+            const s = try std.fmt.bufPrint(&dog.buffer, "{s} - {s}", .{ name, "wan wan" });
+            dog.len = s.len;
+            break :blk dog;
+        };
+
+        return dog;
+    }
+
+    pub fn interface(comptime self: *const Self) *const Animal {
+        return &self.animal;
+    }
+
+    pub fn bark(comptime animal: *const Animal) []const u8 {
+        const self = @fieldParentPtr(Self, "animal", animal);
+        return self.buffer[0..self.len];
+    }
+};
+
+pub const Cat = struct {
+    const Self = @This();
+
+    animal: Animal,
+    buffer: [64]u8,
+    len: usize,
+
+    pub fn init(comptime name: []const u8) !Cat {
+        const cat = blk: {
+            var cat = Self{
+                .animal = Animal.init(Cat.bark),
+                .buffer = undefined,
+                .len = 0,
+            };
+
+            const s = try std.fmt.bufPrint(&cat.buffer, "{s} - {s}", .{ name, "nyan nyan" });
+            cat.len = s.len;
+            break :blk cat;
+        };
+
+        return cat;
+    }
+
+    pub fn interface(comptime self: *const Self) *const Animal {
+        return &self.animal;
+    }
+
+    pub fn bark(comptime animal: *const Animal) []const u8 {
+        const self = @fieldParentPtr(Self, "animal", animal);
+        return self.buffer[0..self.len];
+    }
+};
+
+test "field_parent_ptr" {
+    const dog = try Dog.init("pochi");
+    const cat = try Cat.init("tama");
+    const animals = [_]*const Animal{
+        dog.interface(),
+        cat.interface(),
+    };
+
+    try std.testing.expectEqualStrings("pochi - wan wan", animals[0].bark());
+    try std.testing.expectEqualStrings("tama - nyan nyan", animals[1].bark());
+}
+```
+

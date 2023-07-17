@@ -283,7 +283,7 @@ cookieconsent.run({
 <section id="対象コード" class="level2">
 <h2 class="anchored" data-anchor-id="対象コード">対象コード</h2>
 <p>単純なループによる実装</p>
-<div class="cell" data-execution_count="3">
+<div id="6338b3e2" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> CalcDot<span class="op">(</span>a<span class="op">,</span> b <span class="op">[]</span><span class="dt">float64</span><span class="op">,</span> size <span class="dt">int</span><span class="op">)</span> <span class="dt">float64</span> <span class="op">{</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    dot <span class="op">:=</span> <span class="dv">0</span><span class="er">.0</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="op">:=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> size<span class="op">;</span> i<span class="op">++</span> <span class="op">{</span></span>
@@ -293,7 +293,7 @@ cookieconsent.run({
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>ループアンロールによる実装（N=2）</p>
-<div class="cell" data-execution_count="4">
+<div id="02520a23" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> CalcDotUnroll2<span class="op">(</span>a<span class="op">,</span> b <span class="op">[]</span><span class="dt">float64</span><span class="op">,</span> size <span class="dt">int</span><span class="op">)</span> <span class="dt">float64</span> <span class="op">{</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> N <span class="op">=</span> <span class="dv">2</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    dot <span class="op">:=</span> <span class="dv">0</span><span class="er">.0</span></span>
@@ -313,7 +313,7 @@ cookieconsent.run({
 <span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>ループアンロールによる実装（N=4）</p>
-<div class="cell" data-execution_count="5">
+<div id="fa0eb501" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> CalcDotUnroll4<span class="op">(</span>a<span class="op">,</span> b <span class="op">[]</span><span class="dt">float64</span><span class="op">,</span> size <span class="dt">int</span><span class="op">)</span> <span class="dt">float64</span> <span class="op">{</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> N <span class="op">=</span> <span class="dv">4</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    dot <span class="op">:=</span> <span class="dv">0</span><span class="er">.0</span></span>
@@ -335,7 +335,7 @@ cookieconsent.run({
 <span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>ループアンロールによる実装（N=8）</p>
-<div class="cell" data-execution_count="6">
+<div id="e791d3de" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> CalcDotUnroll8<span class="op">(</span>a<span class="op">,</span> b <span class="op">[]</span><span class="dt">float64</span><span class="op">,</span> size <span class="dt">int</span><span class="op">)</span> <span class="dt">float64</span> <span class="op">{</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> N <span class="op">=</span> <span class="dv">8</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    dot <span class="op">:=</span> <span class="dv">0</span><span class="er">.0</span></span>
@@ -361,7 +361,7 @@ cookieconsent.run({
 <span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Gonumによる実装</p>
-<div class="cell" data-execution_count="7">
+<div id="4c59512f" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="op">(</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"gonum.org/v1/gonum/mat"</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
@@ -373,7 +373,7 @@ cookieconsent.run({
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Gonumによる実装（blas）</p>
-<div class="cell" data-execution_count="8">
+<div id="c7166048" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="op">(</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"gonum.org/v1/gonum/blas/blas64"</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
@@ -396,7 +396,7 @@ cookieconsent.run({
 <section id="ベンチマーク" class="level2">
 <h2 class="anchored" data-anchor-id="ベンチマーク">ベンチマーク</h2>
 <p>実行環境</p>
-<div class="cell" data-execution_count="10">
+<div id="9d9514ed" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>$lscpu</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Architecture:                    x86_64
@@ -440,7 +440,7 @@ Flags:                           fpu vme de pse tsc msr pae mce cx8 apic sep mtr
 </div>
 </div>
 <p>検証用データ生成</p>
-<div class="cell" data-execution_count="11">
+<div id="5c7ab4e4" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="op">(</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"math/rand"</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
@@ -454,7 +454,7 @@ Flags:                           fpu vme de pse tsc msr pae mce cx8 apic sep mtr
 <span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>ベンチマークコード</p>
-<div class="cell" data-execution_count="12">
+<div id="a4eb5d13" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="op">(</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"testing"</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"reflect"</span></span>
@@ -496,7 +496,7 @@ Flags:                           fpu vme de pse tsc msr pae mce cx8 apic sep mtr
 <span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>ベンチマーク結果</p>
-<div class="cell" data-execution_count="13">
+<div id="5a3c93f6" class="cell" data-execution_count="13">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="op">(</span></span>
@@ -673,7 +673,7 @@ Flags:                           fpu vme de pse tsc msr pae mce cx8 apic sep mtr
 </table>
 </div>
 </div>
-<div class="cell" data-execution_count="14">
+<div id="994869bc" class="cell" data-execution_count="14">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="op">(</span></span>

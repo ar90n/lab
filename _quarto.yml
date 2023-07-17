@@ -45,6 +45,7 @@ format:
     toc: true
     syntax-definitions: 
     - zig.xml
+    code-annotations: below
 
 
 

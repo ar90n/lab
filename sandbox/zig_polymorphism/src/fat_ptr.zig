@@ -2,29 +2,23 @@ const std = @import("std");
 
 const Animal = struct {
     const Self = @This();
+    ptr: *const anyopaque,
+    barkFn: *const fn (self: *const anyopaque) []const u8,
 
-    barkFn: fn (self: *const @This()) []const u8,
-
-    pub fn init(comptime barkFn: fn (self: *const @This()) []const u8) Animal {
-        return .{ .barkFn = barkFn };
-    }
-
-    pub fn bark(comptime self: *const Self) []const u8 {
-        return self.barkFn(self);
+    pub fn bark(self: Self) []const u8 {
+        return self.barkFn(self.ptr);
     }
 };
 
 pub const Dog = struct {
     const Self = @This();
 
-    animal: Animal,
     buffer: [64]u8,
     len: usize,
 
-    pub fn init(comptime name: []const u8) !Dog {
+    pub fn init(name: []const u8) !Dog {
         const dog = blk: {
             var dog = Self{
-                .animal = Animal.init(Dog.bark),
                 .buffer = undefined,
                 .len = 0,
             };
@@ -37,12 +31,15 @@ pub const Dog = struct {
         return dog;
     }
 
-    pub fn interface(comptime self: *const Self) *const Animal {
-        return &self.animal;
+    pub fn interface(self: *const Self) Animal {
+        return .{
+            .ptr = self,
+            .barkFn = Dog.bark,
+        };
     }
 
-    pub fn bark(comptime animal: *const Animal) []const u8 {
-        const self = @fieldParentPtr(Self, "animal", animal);
+    pub fn bark(ctx: *const anyopaque) []const u8 {
+        const self: *const Self = @ptrCast(@alignCast(@constCast(ctx)));
         return self.buffer[0..self.len];
     }
 };
@@ -50,17 +47,12 @@ pub const Dog = struct {
 pub const Cat = struct {
     const Self = @This();
 
-    animal: Animal,
     buffer: [64]u8,
     len: usize,
 
-    pub fn init(comptime name: []const u8) !Cat {
+    pub fn init(name: []const u8) !Cat {
         const cat = blk: {
-            var cat = Self{
-                .animal = Animal.init(Cat.bark),
-                .buffer = undefined,
-                .len = 0,
-            };
+            var cat = Self{ .buffer = undefined, .len = 0 };
 
             const s = try std.fmt.bufPrint(&cat.buffer, "{s} - {s}", .{ name, "nyan nyan" });
             cat.len = s.len;
@@ -70,20 +62,23 @@ pub const Cat = struct {
         return cat;
     }
 
-    pub fn interface(comptime self: *const Self) *const Animal {
-        return &self.animal;
+    pub fn interface(self: *const Self) Animal {
+        return .{
+            .ptr = self,
+            .barkFn = Cat.bark,
+        };
     }
 
-    pub fn bark(comptime animal: *const Animal) []const u8 {
-        const self = @fieldParentPtr(Self, "animal", animal);
+    pub fn bark(ctx: *const anyopaque) []const u8 {
+        const self: *Self = @ptrCast(@alignCast(@constCast(ctx)));
         return self.buffer[0..self.len];
     }
 };
 
-test "field_parent_ptr" {
+test "fat_ptr" {
     const dog = try Dog.init("pochi");
     const cat = try Cat.init("tama");
-    const animals = [_]*const Animal{
+    const animals = [_]Animal{
         dog.interface(),
         cat.interface(),
     };

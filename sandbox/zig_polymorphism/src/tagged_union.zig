@@ -5,13 +5,10 @@ pub const Animal = union(enum) {
     const Self = @This();
     dog: Dog,
     cat: Cat,
-    lion: Lion,
 
-    pub fn bark(self: Self) *const []const u8 {
+    pub fn bark(self: Self) []const u8 {
         return switch (self) {
-            .dog => |n| n.bark(),
-            .cat => |n| n.bark(),
-            .lion => |n| n.bark(),
+            inline else => |n| n.bark(),
         };
     }
 };
@@ -19,54 +16,61 @@ pub const Animal = union(enum) {
 pub const Dog = struct {
     const Self = @This();
 
-    const Msg: []const u8 = "wan wan";
+    buffer: [64]u8,
+    len: usize,
 
-    pub fn init() Animal {
-        return .{ .dog = .{} };
+    pub fn init(name: []const u8) !Animal {
+        const dog = blk: {
+            var dog = Self{
+                .buffer = undefined,
+                .len = 0,
+            };
+
+            const s = try std.fmt.bufPrint(&dog.buffer, "{s} - {s}", .{ name, "wan wan" });
+            dog.len = s.len;
+            break :blk dog;
+        };
+
+        return .{ .dog = dog };
     }
 
-    pub fn bark(self: Self) *const []const u8 {
-        _ = self;
-        return &Msg;
+    pub fn bark(self: Self) []const u8 {
+        return self.buffer[0..self.len];
     }
 };
 
 pub const Cat = struct {
     const Self = @This();
-    const Msg: []const u8 = "nyan nyan";
 
-    pub fn init() Animal {
-        return .{ .cat = .{} };
+    buffer: [64]u8,
+    len: usize,
+
+    pub fn init(name: []const u8) !Animal {
+        const cat = blk: {
+            var cat = Self{
+                .buffer = undefined,
+                .len = 0,
+            };
+
+            const s = try std.fmt.bufPrint(&cat.buffer, "{s} - {s}", .{ name, "nyan nyan" });
+            cat.len = s.len;
+            break :blk cat;
+        };
+
+        return .{ .cat = cat };
     }
 
-    pub fn bark(self: Self) *const []const u8 {
-        _ = self;
-        return &Msg;
-    }
-};
-
-pub const Lion = struct {
-    const Self = @This();
-    const Msg: []const u8 = "gao gao";
-
-    pub fn init() Animal {
-        return .{ .lion = .{} };
-    }
-
-    pub fn bark(self: Self) *const []const u8 {
-        _ = self;
-        return &Msg;
+    pub fn bark(self: Self) []const u8 {
+        return self.buffer[0..self.len];
     }
 };
 
-test "union" {
+test "tagged_union" {
     const animals = [_]Animal{
-        Dog.init(),
-        Cat.init(),
-        Lion.init(),
+        try Dog.init("pochi"),
+        try Cat.init("mike"),
     };
 
-    try std.testing.expectEqualStrings(animals[0].bark().*, "wan wan"[0..]);
-    try std.testing.expectEqualStrings(animals[1].bark().*, "nyan nyan"[0..]);
-    try std.testing.expectEqualStrings(animals[2].bark().*, "gao gao"[0..]);
+    try std.testing.expectEqualStrings("pochi - wan wan", animals[0].bark());
+    try std.testing.expectEqualStrings("mike - nyan nyan", animals[1].bark());
 }

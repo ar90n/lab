@@ -21,63 +21,47 @@
     <lastmod>2023-01-06T11:03:29.630Z</lastmod>
   </url>
   <url>
-    <loc>https://lab.ar90n.net/posts/2020-10-12-character-encodings-in-dicom.html</loc>
-    <lastmod>2022-10-24T11:08:32.794Z</lastmod>
+    <loc>https://lab.ar90n.net/posts/2023-07-05-polymorphism-in-zig.html</loc>
+    <lastmod>2023-07-17T08:39:23.040Z</lastmod>
   </url>
   <url>
-    <loc>https://lab.ar90n.net/posts/2021-05-30-gaussian-mixture-model-with-softmax.html</loc>
-    <lastmod>2022-10-24T11:10:23.463Z</lastmod>
+    <loc>https://lab.ar90n.net/posts/2022-01-30-cargo-edit-workaround.html</loc>
+    <lastmod>2022-10-24T11:10:58.555Z</lastmod>
   </url>
   <url>
-    <loc>https://lab.ar90n.net/posts/2021-06-06-accessing-file-wiht-unified-pythonic-api2.html</loc>
-    <lastmod>2022-10-24T11:10:28.919Z</lastmod>
+    <loc>https://lab.ar90n.net/posts/2021-08-01-writing-simple-ping-example.html</loc>
+    <lastmod>2022-10-24T11:10:34.131Z</lastmod>
   </url>
   <url>
-    <loc>https://lab.ar90n.net/posts/2020-10-21-accessing-file-with-unified-pythonic-api.html</loc>
-    <lastmod>2022-10-24T11:08:42.970Z</lastmod>
+    <loc>https://lab.ar90n.net/posts/2022-02-16-kdtree-and-curse-of-dimensionality.html</loc>
+    <lastmod>2022-10-24T11:11:09.795Z</lastmod>
   </url>
   <url>
-    <loc>https://lab.ar90n.net/posts/2023-06-29-comptime-ray-tracing-in-weekend.html</loc>
-    <lastmod>2023-06-30T00:59:39.622Z</lastmod>
+    <loc>https://lab.ar90n.net/posts/2021-03-30-ray-tracing-in-weekend.html</loc>
+    <lastmod>2022-10-24T11:10:12.279Z</lastmod>
   </url>
   <url>
-    <loc>https://lab.ar90n.net/posts/2020-12-13-introduction-to-typenum.html</loc>
-    <lastmod>2022-10-24T11:09:56.514Z</lastmod>
+    <loc>https://lab.ar90n.net/posts/2020-05-25-Ray-k3s-raspi4.html</loc>
+    <lastmod>2023-06-04T23:32:40.925Z</lastmod>
   </url>
   <url>
-    <loc>https://lab.ar90n.net/posts/2021-05-26-use-serial-console-in-ubuntu.html</loc>
-    <lastmod>2023-06-05T01:54:07.927Z</lastmod>
-  </url>
-  <url>
-    <loc>https://lab.ar90n.net/posts/2020-06-27-purely-binary-heap.html</loc>
-    <lastmod>2022-10-24T11:08:18.325Z</lastmod>
-  </url>
-  <url>
-    <loc>https://lab.ar90n.net/posts/2022-10-24-simple-voice-changer.html</loc>
+    <loc>https://lab.ar90n.net/posts/2022-11-16-dot-benchmark-in-go-again.html</loc>
     <lastmod>2023-01-06T11:03:29.630Z</lastmod>
   </url>
   <url>
-    <loc>https://lab.ar90n.net/posts/2022-11-30-pypypy.html</loc>
-    <lastmod>2023-01-06T11:03:29.630Z</lastmod>
+    <loc>https://lab.ar90n.net/posts/2020-10-17-usb-nic-in-ubuntu-server.html</loc>
+    <lastmod>2022-10-24T11:08:36.758Z</lastmod>
   </url>
   <url>
-    <loc>https://lab.ar90n.net/posts/2021-08-26-make-usb-to-ttlx4.html</loc>
-    <lastmod>2022-10-24T11:10:44.495Z</lastmod>
+    <loc>https://lab.ar90n.net/posts/2021-02-01-getting-started-with-glutin.html</loc>
+    <lastmod>2022-10-24T11:10:07.827Z</lastmod>
   </url>
   <url>
-    <loc>https://lab.ar90n.net/posts/2020-11-15-rust-on-nodebook-with-evcxr-jupyter.html</loc>
-    <lastmod>2023-06-05T01:36:12.198Z</lastmod>
+    <loc>https://lab.ar90n.net/posts/2021-01-06-install-starship.html</loc>
+    <lastmod>2022-10-24T11:10:02.062Z</lastmod>
   </url>
   <url>
-    <loc>https://lab.ar90n.net/index.html</loc>
-    <lastmod>2023-06-30T00:25:35.803Z</lastmod>
-  </url>
-  <url>
-    <loc>https://lab.ar90n.net/about.html</loc>
-    <lastmod>2023-01-06T11:03:29.566Z</lastmod>
-  </url>
-  <url>
-    <loc>https://lab.ar90n.net/projects.html</loc>
+    <loc>https://lab.ar90n.net/posts/2022-11-05-develop-octoprint-plugin.html</loc>
     <lastmod>2023-01-06T11:03:29.630Z</lastmod>
   </url>
   <url>
@@ -85,44 +69,64 @@
     <lastmod>2023-06-30T01:00:23.658Z</lastmod>
   </url>
   <url>
-    <loc>https://lab.ar90n.net/posts/2022-11-05-develop-octoprint-plugin.html</loc>
+    <loc>https://lab.ar90n.net/projects.html</loc>
     <lastmod>2023-01-06T11:03:29.630Z</lastmod>
   </url>
   <url>
-    <loc>https://lab.ar90n.net/posts/2021-01-06-install-starship.html</loc>
-    <lastmod>2022-10-24T11:10:02.062Z</lastmod>
+    <loc>https://lab.ar90n.net/about.html</loc>
+    <lastmod>2023-01-06T11:03:29.566Z</lastmod>
   </url>
   <url>
-    <loc>https://lab.ar90n.net/posts/2021-02-01-getting-started-with-glutin.html</loc>
-    <lastmod>2022-10-24T11:10:07.827Z</lastmod>
+    <loc>https://lab.ar90n.net/index.html</loc>
+    <lastmod>2023-06-30T00:25:35.803Z</lastmod>
   </url>
   <url>
-    <loc>https://lab.ar90n.net/posts/2020-10-17-usb-nic-in-ubuntu-server.html</loc>
-    <lastmod>2022-10-24T11:08:36.758Z</lastmod>
+    <loc>https://lab.ar90n.net/posts/2020-11-15-rust-on-nodebook-with-evcxr-jupyter.html</loc>
+    <lastmod>2023-06-05T01:36:12.198Z</lastmod>
   </url>
   <url>
-    <loc>https://lab.ar90n.net/posts/2022-11-16-dot-benchmark-in-go-again.html</loc>
+    <loc>https://lab.ar90n.net/posts/2021-08-26-make-usb-to-ttlx4.html</loc>
+    <lastmod>2022-10-24T11:10:44.495Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lab.ar90n.net/posts/2022-11-30-pypypy.html</loc>
     <lastmod>2023-01-06T11:03:29.630Z</lastmod>
   </url>
   <url>
-    <loc>https://lab.ar90n.net/posts/2020-05-25-Ray-k3s-raspi4.html</loc>
-    <lastmod>2023-06-04T23:32:40.925Z</lastmod>
+    <loc>https://lab.ar90n.net/posts/2022-10-24-simple-voice-changer.html</loc>
+    <lastmod>2023-01-06T11:03:29.630Z</lastmod>
   </url>
   <url>
-    <loc>https://lab.ar90n.net/posts/2021-03-30-ray-tracing-in-weekend.html</loc>
-    <lastmod>2022-10-24T11:10:12.279Z</lastmod>
+    <loc>https://lab.ar90n.net/posts/2020-06-27-purely-binary-heap.html</loc>
+    <lastmod>2022-10-24T11:08:18.325Z</lastmod>
   </url>
   <url>
-    <loc>https://lab.ar90n.net/posts/2022-02-16-kdtree-and-curse-of-dimensionality.html</loc>
-    <lastmod>2022-10-24T11:11:09.795Z</lastmod>
+    <loc>https://lab.ar90n.net/posts/2021-05-26-use-serial-console-in-ubuntu.html</loc>
+    <lastmod>2023-06-05T01:54:07.927Z</lastmod>
   </url>
   <url>
-    <loc>https://lab.ar90n.net/posts/2021-08-01-writing-simple-ping-example.html</loc>
-    <lastmod>2022-10-24T11:10:34.131Z</lastmod>
+    <loc>https://lab.ar90n.net/posts/2020-12-13-introduction-to-typenum.html</loc>
+    <lastmod>2022-10-24T11:09:56.514Z</lastmod>
   </url>
   <url>
-    <loc>https://lab.ar90n.net/posts/2022-01-30-cargo-edit-workaround.html</loc>
-    <lastmod>2022-10-24T11:10:58.555Z</lastmod>
+    <loc>https://lab.ar90n.net/posts/2023-06-29-comptime-ray-tracing-in-weekend.html</loc>
+    <lastmod>2023-06-30T00:59:39.622Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lab.ar90n.net/posts/2020-10-21-accessing-file-with-unified-pythonic-api.html</loc>
+    <lastmod>2022-10-24T11:08:42.970Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lab.ar90n.net/posts/2021-06-06-accessing-file-wiht-unified-pythonic-api2.html</loc>
+    <lastmod>2022-10-24T11:10:28.919Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lab.ar90n.net/posts/2021-05-30-gaussian-mixture-model-with-softmax.html</loc>
+    <lastmod>2022-10-24T11:10:23.463Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lab.ar90n.net/posts/2020-10-12-character-encodings-in-dicom.html</loc>
+    <lastmod>2022-10-24T11:08:32.794Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2021-09-30-simple-guided-filter-rs.html</loc>
@@ -143,5 +147,9 @@
   <url>
     <loc>https://lab.ar90n.net/posts/2022-08-12-xg-c100c-in-ubuntu-server.html</loc>
     <lastmod>2023-06-05T01:52:02.666Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lab.ar90n.net/posts/2023-07-17-polymorphism-in-zig.html</loc>
+    <lastmod>2023-07-17T08:39:23.040Z</lastmod>
   </url>
 </urlset>

@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/2023-07-17-polymorphism-in-zig.html",
       "/posts/2023-06-29-comptime-ray-tracing-in-weekend.html",
       "/posts/2022-11-30-pypypy.html",
       "/posts/2022-11-16-dot-benchmark-in-go-again.html",

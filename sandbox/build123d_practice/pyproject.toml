@@ -12,6 +12,7 @@ build123d = {git = "https://github.com/gumyr/build123d.git", rev = "dev"}
 ipython = "^8.13.2"
 ipykernel = "^6.23.1"
 ocp-vscode = "1.0.0"
+matplotlib = "^3.7.2"
 
 
 [tool.poetry.group.dev.dependencies]

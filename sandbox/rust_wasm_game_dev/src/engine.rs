@@ -7,7 +7,6 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use std::rc::Rc;
 use std::sync::Mutex;
-use web_sys::KeyboardEvent;
 
 use futures::channel::oneshot::channel;
 use wasm_bindgen::closure::Closure;
@@ -98,6 +97,12 @@ impl GameLoop {
         );
         Ok(())
     }
+}
+
+#[derive(Clone, Copy)]
+pub struct Point {
+    pub x: i16,
+    pub y: i16,
 }
 
 pub struct Rect {

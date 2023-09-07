@@ -37,12 +37,13 @@ wasm-bindgen-futures = "0.4.28"
 serde = {version ="1.0.131", features = ["derive"]}
 anyhow = "1.0.51"
 async-trait = "0.1.52"
+js-sys = "0.3.55"
 
 # The `web-sys` crate allows you to interact with the various browser APIs,
 # like the DOM.
 [dependencies.web-sys]
 version = "0.3.33"
-features = ["console", "Window", "Document", "HtmlCanvasElement", "Response", "HtmlImageElement", "CanvasRenderingContext2d", "Element", "Performance", "KeyboardEvent"]
+features = ["console", "Window", "Document", "HtmlCanvasElement", "Response", "HtmlImageElement", "CanvasRenderingContext2d", "Element", "Performance", "KeyboardEvent", "AudioContext", "AudioBuffer", "AudioBufferSourceNode", "AudioDestinationNode"]
 
 # These crates are used for running unit tests.
 [dev-dependencies]

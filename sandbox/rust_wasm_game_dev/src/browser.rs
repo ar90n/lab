@@ -1,22 +1,17 @@
 use anyhow::anyhow;
 use anyhow::Result;
+use js_sys::ArrayBuffer;
 use std::any;
 use std::future::Future;
 use web_sys::HtmlImageElement;
 
-use wasm_bindgen::closure::WasmClosureFnOnce;
 use wasm_bindgen::closure::WasmClosure;
+use wasm_bindgen::closure::WasmClosureFnOnce;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::JsFuture;
 use web_sys::CanvasRenderingContext2d;
 use web_sys::Response;
-use web_sys::{Document, HtmlCanvasElement, Window};
-
-macro_rules! log {
-    ( $( $t:tt )* ) => {
-        web_sys::console::log_1($format!( $( $t )* ).into());
-    }
-}
+use web_sys::{Document, Element, HtmlCanvasElement, Window};
 
 pub type LoopClosure = Closure<dyn FnMut(f64)>;
 
@@ -59,11 +54,15 @@ pub async fn fetch_with_str(resource: &str) -> Result<JsValue> {
         .map_err(|err| anyhow!("error fetching {:#?}", err))
 }
 
-pub async fn fetch_json(json_path: &str) -> Result<JsValue> {
-    let resp_value = fetch_with_str(json_path).await?;
-    let resp: Response = resp_value
+pub async fn fetch_response(resource: &str) -> Result<Response> {
+    fetch_with_str(resource)
+        .await?
         .dyn_into()
-        .map_err(|element| anyhow!("Error converting {:#?} to Response", element))?;
+        .map_err(|element| anyhow!("Error converting {:#?} to Response", element))
+}
+
+pub async fn fetch_json(json_path: &str) -> Result<JsValue> {
+    let resp = fetch_response(json_path).await?;
 
     wasm_bindgen_futures::JsFuture::from(
         resp.json()
@@ -71,6 +70,19 @@ pub async fn fetch_json(json_path: &str) -> Result<JsValue> {
     )
     .await
     .map_err(|err| anyhow!("error fetching JSON {:#?}", err))
+}
+
+pub async fn fetch_array_buffer(json_path: &str) -> Result<ArrayBuffer> {
+    let array_buffer = fetch_response(json_path)
+        .await?
+        .array_buffer()
+        .map_err(|err| anyhow!("Error loading array buffer {:#?}", err))?;
+
+    JsFuture::from(array_buffer)
+        .await
+        .map_err(|element| anyhow!("Error converting {:#?} to furure", element))?
+        .dyn_into()
+        .map_err(|element| anyhow!("Error converting {:#?} to ArrayBuffer", element))
 }
 
 pub fn new_image() -> Result<HtmlImageElement> {
@@ -103,4 +115,29 @@ pub fn now() -> Result<f64> {
         .performance()
         .ok_or_else(|| anyhow!("Performance object not found"))?
         .now())
+}
+
+pub fn draw_ui(html: &str) -> Result<()> {
+    find_ui()?
+        .insert_adjacent_html("afterbegin", html)
+        .map_err(|err| anyhow!("Could not insert html {:#?}", err))
+}
+
+pub fn hide_ui() -> Result<()> {
+    let ui = find_ui()?;
+
+    if let Some(child) = ui.first_child() {
+        ui.remove_child(&child)
+            .map(|_remove_child| ())
+            .map_err(|err| anyhow!("Failed to remove child {:#?}", err))
+    } else {
+        Ok(())
+    }
+}
+
+fn find_ui() -> Result<Element> {
+    document().and_then(|doc| {
+        doc.get_element_by_id("ui")
+            .ok_or_else(|| anyhow!("UI element not found"))
+    })
 }

@@ -2,7 +2,7 @@ const std = @import("std");
 
 const Animal = struct {
     const Self = @This();
-    ptr: *const anyopaque,
+    ptr: *anyopaque,
     barkFn: *const fn (self: *const anyopaque) []const u8,
 
     pub fn bark(self: Self) []const u8 {
@@ -31,7 +31,7 @@ pub const Dog = struct {
         return dog;
     }
 
-    pub fn interface(self: *const Self) Animal {
+    pub fn interface(self: *Self) Animal {
         return .{
             .ptr = self,
             .barkFn = Dog.bark,
@@ -62,7 +62,7 @@ pub const Cat = struct {
         return cat;
     }
 
-    pub fn interface(self: *const Self) Animal {
+    pub fn interface(self: *Self) Animal {
         return .{
             .ptr = self,
             .barkFn = Cat.bark,
@@ -76,9 +76,9 @@ pub const Cat = struct {
 };
 
 test "fat_ptr" {
-    const dog = try Dog.init("pochi");
-    const cat = try Cat.init("tama");
-    const animals = [_]Animal{
+    var dog = try Dog.init("pochi");
+    var cat = try Cat.init("tama");
+    var animals = [_]Animal{
         dog.interface(),
         cat.interface(),
     };

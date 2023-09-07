@@ -1,6 +1,6 @@
 use engine::GameLoop;
 use futures::io::ReadVectored;
-use game::WalkTheDog;
+use game::WalkTheDogGame;
 use rand::*;
 use serde::Deserialize;
 use std::collections::HashMap;
@@ -13,6 +13,8 @@ use web_sys::console;
 mod browser;
 mod engine;
 mod game;
+mod segments;
+mod sound;
 
 // When the `wee_alloc` feature is enabled, this uses `wee_alloc` as the global
 // allocator.
@@ -31,7 +33,7 @@ pub fn main_js() -> Result<(), JsValue> {
     console_error_panic_hook::set_once();
 
     browser::spawn_local(async move {
-        let game = WalkTheDog::new();
+        let game = WalkTheDogGame::new();
 
         GameLoop::start(game)
             .await 

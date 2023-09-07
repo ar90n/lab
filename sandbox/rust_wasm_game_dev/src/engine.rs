@@ -1,3 +1,4 @@
+use crate::sound;
 use anyhow::anyhow;
 use anyhow::Result;
 use async_trait::async_trait;
@@ -13,7 +14,10 @@ use wasm_bindgen::closure::Closure;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::CanvasRenderingContext2d;
-use web_sys::HtmlImageElement;
+use web_sys::{HtmlImageElement, HtmlElement};
+use web_sys::{AudioBuffer, AudioBufferSourceNode, AudioContext, AudioDestinationNode, AudioNode};
+
+use serde::Deserialize;
 
 use crate::browser;
 
@@ -99,17 +103,136 @@ impl GameLoop {
     }
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Default)]
 pub struct Point {
     pub x: i16,
     pub y: i16,
 }
 
+pub struct Image {
+    element: HtmlImageElement,
+    bounding_box: Rect,
+}
+
+impl Image {
+    pub fn new(element: HtmlImageElement, position: Point) -> Self {
+        let bounding_box = Rect::new(position, element.width() as i16, element.height() as i16);
+        Self {
+            element,
+            bounding_box,
+        }
+    }
+
+    pub fn bounding_box(&self) -> &Rect {
+        &self.bounding_box
+    }
+
+    pub fn set_x(&mut self, x: i16) {
+        self.bounding_box.set_x(x);
+    }
+
+    pub fn right(&self) -> i16 {
+        self.bounding_box.right()
+    }
+
+    pub fn move_horizontally(&mut self, distance: i16) {
+        self.set_x(self.bounding_box.x() + distance)
+    }
+
+    pub fn draw(&self, renderer: &Renderer) {
+        renderer.draw_entire_image(&self.element, &self.bounding_box.position);
+        renderer.draw_rect(self.bounding_box());
+    }
+}
+
+#[derive(Default)]
 pub struct Rect {
-    pub x: f32,
-    pub y: f32,
-    pub width: f32,
-    pub height: f32,
+    pub position: Point,
+    pub width: i16,
+    pub height: i16,
+}
+
+impl Rect {
+    pub const fn new(position: Point, width: i16, height: i16) -> Self {
+        Rect {
+            position,
+            width,
+            height,
+        }
+    }
+
+    pub const fn new_from_x_y(x: i16, y: i16, width: i16, height: i16) -> Self {
+        Rect::new(Point { x, y }, width, height)
+    }
+
+    pub fn intersects(&self, rect: &Rect) -> bool {
+        (self.x() < (rect.x() + rect.width))
+            && (rect.x() < (self.x() + self.width))
+            && (self.y() < (rect.y() + rect.height))
+            && (rect.y() < (self.y() + self.height))
+    }
+
+    pub fn x(&self) -> i16 {
+        self.position.x
+    }
+
+    pub fn y(&self) -> i16 {
+        self.position.y
+    }
+
+    pub fn set_x(&mut self, x: i16) {
+        self.position.x = x
+    }
+    pub fn set_y(&mut self, y: i16) {
+        self.position.y = y
+    }
+
+    pub fn right(&self) -> i16 {
+        self.position.x + self.width
+    }
+
+    pub fn bottom(&self) -> i16 {
+        self.position.y + self.height
+    }
+}
+
+#[derive(Deserialize, Clone)]
+pub struct SheetRect {
+    pub x: i16,
+    pub y: i16,
+    pub w: i16,
+    pub h: i16,
+}
+
+#[derive(Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct Cell {
+    pub frame: SheetRect,
+    pub sprite_source_size: SheetRect,
+}
+
+#[derive(Deserialize, Clone)]
+pub struct Sheet {
+    pub frames: HashMap<String, Cell>,
+}
+
+pub struct SpriteSheet {
+    sheet: Sheet,
+    image: HtmlImageElement,
+}
+
+impl SpriteSheet {
+    pub fn new(sheet: Sheet, image: HtmlImageElement) -> Self {
+        Self { sheet, image }
+    }
+
+    pub fn cell(&self, name: &str) -> Option<&Cell> {
+        self.sheet.frames.get(name)
+    }
+
+    pub fn draw(&self, renderer: &Renderer, source: &Rect, destination: &Rect) {
+        renderer.draw_image(&self.image, source, destination)
+    }
 }
 
 pub struct Renderer {
@@ -119,8 +242,8 @@ pub struct Renderer {
 impl Renderer {
     pub fn clear(&self, rect: &Rect) {
         self.context.clear_rect(
-            rect.x.into(),
-            rect.y.into(),
+            rect.x().into(),
+            rect.y().into(),
             rect.width.into(),
             rect.height.into(),
         )
@@ -130,17 +253,42 @@ impl Renderer {
         self.context
             .draw_image_with_html_image_element_and_sw_and_sh_and_dx_and_dy_and_dw_and_dh(
                 &image,
-                frame.x.into(),
-                frame.y.into(),
+                frame.x().into(),
+                frame.y().into(),
                 frame.width.into(),
                 frame.height.into(),
-                destination.x.into(),
-                destination.y.into(),
+                destination.x().into(),
+                destination.y().into(),
                 destination.width.into(),
                 destination.height.into(),
             )
             .expect("Drawing is throwing exceptions! Unrecoverable error.");
     }
+
+    pub fn draw_entire_image(&self, image: &HtmlImageElement, position: &Point) {
+        self.context
+            .draw_image_with_html_image_element(image, position.x.into(), position.y.into())
+            .expect("Drawing is throwing exceptions! Unrecoverable error.");
+    }
+
+    pub fn draw_rect(&self, rect: &Rect) {
+        self.context.stroke_rect(
+            rect.position.x.into(),
+            rect.position.y.into(),
+            rect.width.into(),
+            rect.height.into(),
+        );
+    }
+}
+
+pub fn add_click_handler(elem: HtmlElement) -> UnboundedReceiver<()> {
+    let (mut click_sender, click_receiver) = unbounded();
+    let on_click = browser::closure_wrap(Box::new(move || {
+        click_sender.start_send(());
+    }) as Box<dyn FnMut()>);
+    elem.set_onclick(Some(on_click.as_ref().unchecked_ref()));
+    on_click.forget();
+    click_receiver
 }
 
 enum KeyPress {
@@ -212,4 +360,36 @@ fn process_input(state: &mut KeyState, keyevent_receiver: &mut UnboundedReceiver
             },
         }
     }
+}
+
+#[derive(Clone)]
+pub struct Audio{
+    context: AudioContext
+}
+
+impl Audio{
+    pub fn new() -> Result<Self> {
+        Ok(Audio{
+            context: sound::create_audio_context()?,
+        })
+    }
+
+    pub async fn load_sound(&self, filename: &str) -> Result<Sound> {
+        let array_buffer = browser::fetch_array_buffer(filename).await?;
+        let audio_buffer = sound::decode_audio_data(&self.context, &array_buffer).await?;
+        Ok(Sound { buffer: audio_buffer })
+    }
+
+    pub fn play_sound(&self, sound: &Sound) -> Result<()> {
+        sound::play_sound(&self.context, &sound.buffer, sound::LOOPING::NO)
+    }
+
+    pub fn play_looping_sound(&self, sound: &Sound) -> Result<()> {
+        sound::play_sound(&self.context, &sound.buffer, sound::LOOPING::YES)
+    }
+}
+
+#[derive(Clone)]
+pub struct Sound{
+    buffer: AudioBuffer
 }

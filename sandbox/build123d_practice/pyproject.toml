@@ -13,6 +13,8 @@ ipython = "^8.13.2"
 ipykernel = "^6.23.1"
 ocp-vscode = "1.0.0"
 matplotlib = "^3.7.2"
+cq-warehouse = {git = "https://github.com/gumyr/cq_warehouse"}
+cq-gears = {git = "https://github.com/meadiode/cq_gears"}
 
 
 [tool.poetry.group.dev.dependencies]

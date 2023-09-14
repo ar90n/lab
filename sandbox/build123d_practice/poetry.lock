@@ -141,6 +141,31 @@ files = [
 ]
 
 [[package]]
+name = "cadquery"
+version = "2.3.1"
+description = "CadQuery is a parametric  scripting language for creating and traversing CAD models"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "cadquery-2.3.1-py3-none-any.whl", hash = "sha256:2bdd3cc37639c5a9485d394d081334769c2b9e2fee6a42c0ca53e64fd9ff6a8d"},
+    {file = "cadquery-2.3.1.tar.gz", hash = "sha256:eb28dfe8e003fc0663391d1d8f51bf5dab091facdded46cfb3d919676eefcd36"},
+]
+
+[package.dependencies]
+cadquery-ocp = ">=7.7.0a0,<7.8"
+casadi = "*"
+ezdxf = "*"
+multimethod = ">=1.7,<2.0"
+nlopt = "*"
+nptyping = "2.0.1"
+path = "*"
+typish = "*"
+
+[package.extras]
+dev = ["black (==19.10b0)", "click (==8.0.4)", "docutils", "ipython", "pytest"]
+ipython = ["ipython"]
+
+[[package]]
 name = "cadquery-ocp"
 version = "7.7.0"
 description = "OCP+VTK wheel with shared library dependencies bundled."
@@ -160,6 +185,61 @@ files = [
     {file = "cadquery_ocp-7.7.0-cp39-cp39-manylinux_2_31_x86_64.whl", hash = "sha256:01c81b233ada506950af3dada63b9e694786ff6442fbecffcffe20719a500d8d"},
     {file = "cadquery_ocp-7.7.0-cp39-cp39-win_amd64.whl", hash = "sha256:623d5828e91eea27b8dd28b04cadf97d2e5e5c1958b00497f3f9218368a93b5d"},
 ]
+
+[[package]]
+name = "casadi"
+version = "3.6.3"
+description = "CasADi -- framework for algorithmic differentiation and numeric optimization"
+optional = false
+python-versions = "*"
+files = [
+    {file = "casadi-3.6.3-cp27-none-macosx_10_13_x86_64.macosx_10_13_intel.whl", hash = "sha256:884c07617fbbedbd047900d6f2ab86e933064efc517b973fa4139fc60543e498"},
+    {file = "casadi-3.6.3-cp27-none-manylinux1_i686.whl", hash = "sha256:6f9c1fadfb1eb729f8906f01cd2b45f542846a386fb63d59eb1872451dda8de3"},
+    {file = "casadi-3.6.3-cp27-none-manylinux2010_x86_64.whl", hash = "sha256:041639615a866a7244e88905c40c15ef8f84bdedf0b4f92f72e4c5b56f8fe2dc"},
+    {file = "casadi-3.6.3-cp27-none-win_amd64.whl", hash = "sha256:418d345e47cbc957a49e28c7765a7f6e37f5eb73ab969e6c6cfcd204189c559c"},
+    {file = "casadi-3.6.3-cp310-none-macosx_10_13_x86_64.macosx_10_13_intel.whl", hash = "sha256:9c8d360ee80dd65c0c7625e3dccfabdd6e78629a754fb28f6fd77e3d4893dc80"},
+    {file = "casadi-3.6.3-cp310-none-macosx_11_0_arm64.whl", hash = "sha256:a74cf436d42adf69d5ea16ba13d95f40585e148e856d00553f96740704fe2a03"},
+    {file = "casadi-3.6.3-cp310-none-manylinux2014_aarch64.whl", hash = "sha256:1995029b4f11d492cb5277645534bdd377340eaabe51dba3c6d9ed3a25f83f4c"},
+    {file = "casadi-3.6.3-cp310-none-manylinux2014_i686.whl", hash = "sha256:501ac40357dae0d224499f1b41b7d409703137ac7c8c1bcbb26444cff9d00de3"},
+    {file = "casadi-3.6.3-cp310-none-manylinux2014_x86_64.whl", hash = "sha256:d86511c92f09fa464937098bb47b5cdfd07952a0a2b236938b9370537e4532d6"},
+    {file = "casadi-3.6.3-cp310-none-win_amd64.whl", hash = "sha256:4d41d07a9a4c1cd9aa55a43ffe8921721dc5937b124075e903b4c0948e5dcb9b"},
+    {file = "casadi-3.6.3-cp311-none-macosx_10_13_x86_64.macosx_10_13_intel.whl", hash = "sha256:9a2aab9799e8a597b737c8ebbde6fce9cad6177d51fef8f73310d429e4b76cb4"},
+    {file = "casadi-3.6.3-cp311-none-macosx_11_0_arm64.whl", hash = "sha256:55cff88af39c486895d5d6ec3c1862050dbd51ca879df81be1b1c86cb97e9115"},
+    {file = "casadi-3.6.3-cp311-none-manylinux2014_aarch64.whl", hash = "sha256:387e4832a6b98ecf71d7c6ceb129ca7bfe120dd6705162aecee70df13bd8cb62"},
+    {file = "casadi-3.6.3-cp311-none-manylinux2014_i686.whl", hash = "sha256:8357cfae956d1c4d2c8e765e93fcfad537f83e8278d2bd7c9d4f66213fdc6f4e"},
+    {file = "casadi-3.6.3-cp311-none-manylinux2014_x86_64.whl", hash = "sha256:de87a486a4578f609bb93327004ee0a4598723cff5c0118828e1de31f01ea65b"},
+    {file = "casadi-3.6.3-cp311-none-win_amd64.whl", hash = "sha256:d5b5d49b3749aa075678206645b106fea104485285441f771ba5ef347d4bc394"},
+    {file = "casadi-3.6.3-cp35-none-macosx_10_13_x86_64.macosx_10_13_intel.whl", hash = "sha256:9ba455b1afc4b70249810098458951bd37cb346350ed00e913ec93ddb3f15251"},
+    {file = "casadi-3.6.3-cp35-none-manylinux1_i686.whl", hash = "sha256:397b3754a0560e9c4ebb3ce9220bfe5194f6ef63dca6caa6695b7e43a170895b"},
+    {file = "casadi-3.6.3-cp35-none-manylinux2010_x86_64.whl", hash = "sha256:406423816ef79ba82e579bd999ba9aaa16ffcb071261d8ff32e3c404ee1e816b"},
+    {file = "casadi-3.6.3-cp35-none-win_amd64.whl", hash = "sha256:62fcabf79dfc1f3b7cf06eca1408556bc74a59a9de9dde4b779eff20ac243006"},
+    {file = "casadi-3.6.3-cp36-none-macosx_10_13_x86_64.macosx_10_13_intel.whl", hash = "sha256:7972b476b20557592fd1193140e6d1067a91b98cbc96767b3ec2f68e500c5342"},
+    {file = "casadi-3.6.3-cp36-none-manylinux2014_aarch64.whl", hash = "sha256:692c284d838d11052c08fc8b38357858607f701ea6495bf9e22a0f2033811325"},
+    {file = "casadi-3.6.3-cp36-none-manylinux2014_i686.whl", hash = "sha256:e5bb5ae64de87568c5c3895ca649b209283e2ad61ddeaef1685c7e856e4044e0"},
+    {file = "casadi-3.6.3-cp36-none-manylinux2014_x86_64.whl", hash = "sha256:6b15e0bf452f7b3dface72e7d75ef2fe8566574abec51313540a6a251243e099"},
+    {file = "casadi-3.6.3-cp36-none-win_amd64.whl", hash = "sha256:b7148bc8b107b1bae4f66fe5b815edb69aca69de8ead2ee25e1b059781654550"},
+    {file = "casadi-3.6.3-cp37-none-macosx_10_13_x86_64.macosx_10_13_intel.whl", hash = "sha256:3a184a4930a046ee788923a129032372f043027df7a2e08d25fd1fe72d1da8bd"},
+    {file = "casadi-3.6.3-cp37-none-manylinux2014_aarch64.whl", hash = "sha256:44ceea824512a594b286fff7646470d7ac58e363bcb40ce23a6ec0577e6af3f9"},
+    {file = "casadi-3.6.3-cp37-none-manylinux2014_i686.whl", hash = "sha256:ce42fb3df4e795bbb2178c4f9929bd8d0d359890ae1225c64a0c2795374fda25"},
+    {file = "casadi-3.6.3-cp37-none-manylinux2014_x86_64.whl", hash = "sha256:39a73fa7383862abae27ebe4158d23d588286b22d74505af8569f4b91acc51d7"},
+    {file = "casadi-3.6.3-cp37-none-win_amd64.whl", hash = "sha256:bede02743ac570b6289e8496563aa326dd4fdecc8c3e4f817b909cf6bc1b42cc"},
+    {file = "casadi-3.6.3-cp38-none-macosx_10_13_x86_64.macosx_10_13_intel.whl", hash = "sha256:7e80e8eee3bb174f941d592dbc440f57c76c5d81bad59f3a361dbf47e6175a43"},
+    {file = "casadi-3.6.3-cp38-none-macosx_11_0_arm64.whl", hash = "sha256:c0bcd64e8bb0db6e6dcc24d1ee10ef7f2305ed2e9d2786c1dcae43e7fcd05943"},
+    {file = "casadi-3.6.3-cp38-none-manylinux2014_aarch64.whl", hash = "sha256:012970fec19a88326e010b8e8ef4d569e32246dabb8cad86c485263e3961f3b1"},
+    {file = "casadi-3.6.3-cp38-none-manylinux2014_i686.whl", hash = "sha256:4c718672247d12b437f5b8b2f62eae5c6541bd9125f233ae4977fbf3b2ff2de7"},
+    {file = "casadi-3.6.3-cp38-none-manylinux2014_x86_64.whl", hash = "sha256:3a3685525a278f5b450b8be9ab14bb367f2d0fc97f8400021ba406f63fab7795"},
+    {file = "casadi-3.6.3-cp38-none-win_amd64.whl", hash = "sha256:0e6f2ae61abb3969ccf9503e2ee576a4f5b437ba40a082e26660a5d9513c839c"},
+    {file = "casadi-3.6.3-cp39-none-macosx_10_13_x86_64.macosx_10_13_intel.whl", hash = "sha256:7093cb7182db81b6184148121d61a68876ff9be55fb73c456927a344ff5983a2"},
+    {file = "casadi-3.6.3-cp39-none-macosx_11_0_arm64.whl", hash = "sha256:0a5383b295a499312657eb5c99a0e8f22e8bb06da774663bae69b322ec34dd6d"},
+    {file = "casadi-3.6.3-cp39-none-manylinux2014_aarch64.whl", hash = "sha256:6632b30197aa0d491afb7f6d30980636342eaf8a88fe7680c5eb3a37d4013c01"},
+    {file = "casadi-3.6.3-cp39-none-manylinux2014_i686.whl", hash = "sha256:5990366a5266dda537d45c6df583001a1519b86db00e1725e2d17304500e511d"},
+    {file = "casadi-3.6.3-cp39-none-manylinux2014_x86_64.whl", hash = "sha256:5177b2592f4c147fec882fad92b7282262979bdf8ad5a337f6531464eee19226"},
+    {file = "casadi-3.6.3-cp39-none-win_amd64.whl", hash = "sha256:d5b917443733123c634dbde7e5f971ffb87994af01c0d0d528f6d10ac78d97f7"},
+    {file = "casadi-3.6.3.tar.gz", hash = "sha256:2a953bd001327c9ae79018a1efa455852c8a4b4f47f5bdda5f0a07ec820d1880"},
+]
+
+[package.dependencies]
+numpy = "*"
 
 [[package]]
 name = "certifi"
@@ -433,6 +513,40 @@ docs = ["furo", "sphinx-copybutton"]
 mypy = ["contourpy[bokeh,docs]", "docutils-stubs", "mypy (==1.2.0)", "types-Pillow"]
 test = ["Pillow", "contourpy[test-no-images]", "matplotlib"]
 test-no-images = ["pytest", "pytest-cov", "wurlitzer"]
+
+[[package]]
+name = "cq_gears"
+version = "0.62"
+description = ""
+optional = false
+python-versions = "*"
+files = []
+develop = false
+
+[package.dependencies]
+cadquery = "*"
+numpy = "*"
+
+[package.source]
+type = "git"
+url = "https://github.com/meadiode/cq_gears"
+reference = "HEAD"
+resolved_reference = "107bc27617f0f56c879691d8efc10a924e604ca7"
+
+[[package]]
+name = "cq-warehouse"
+version = "0.8.0"
+description = "A cadquery parametric part collection"
+optional = false
+python-versions = ">=3.9"
+files = []
+develop = false
+
+[package.source]
+type = "git"
+url = "https://github.com/gumyr/cq_warehouse"
+reference = "HEAD"
+resolved_reference = "bff2e251fcfd9f19b86eebc93223d615dad58286"
 
 [[package]]
 name = "cycler"
@@ -911,6 +1025,17 @@ files = [
 traitlets = "*"
 
 [[package]]
+name = "multimethod"
+version = "1.9.1"
+description = "Multiple argument dispatching."
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "multimethod-1.9.1-py3-none-any.whl", hash = "sha256:52f8f1f2b9d5a4c7adfdcc114dbeeebe3245a4420801e8807e26522a79fb6bc2"},
+    {file = "multimethod-1.9.1.tar.gz", hash = "sha256:1589bf52ca294667fd15527ea830127c763f5bfc38562e3642591ffd0fd9d56f"},
+]
+
+[[package]]
 name = "mypy-extensions"
 version = "1.0.0"
 description = "Type system extensions for programs checked with the mypy type checker."
@@ -931,6 +1056,51 @@ files = [
     {file = "nest_asyncio-1.5.6-py3-none-any.whl", hash = "sha256:b9a953fb40dceaa587d109609098db21900182b16440652454a146cffb06e8b8"},
     {file = "nest_asyncio-1.5.6.tar.gz", hash = "sha256:d267cc1ff794403f7df692964d1d2a3fa9418ffea2a3f6859a439ff482fef290"},
 ]
+
+[[package]]
+name = "nlopt"
+version = "2.7.1"
+description = "Library for nonlinear optimization, wrapping many algorithms for global and local, constrained or unconstrained, optimization"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "nlopt-2.7.1-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:42b7883704e1285ff40d930699eb7fc7e1341229da33666b4163459cfdf89fb1"},
+    {file = "nlopt-2.7.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6ba0862162248442fbf1f04b20a321c11ff40ff4442a12aaaafcdaff9abb0ab7"},
+    {file = "nlopt-2.7.1-cp310-cp310-win_amd64.whl", hash = "sha256:426c18548d733640449d707c82eb57c09a5f01d4b064f87312808d194d227f24"},
+    {file = "nlopt-2.7.1-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:7a12fe3cbfb36a6a18f84a1ac23ed3dda323860235381b3d2d182d8b771783ef"},
+    {file = "nlopt-2.7.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:3e1653de0060a42d6709423e6160888893bb688f4ff79aa0f1def4701ea25dd8"},
+    {file = "nlopt-2.7.1-cp311-cp311-win_amd64.whl", hash = "sha256:88ec7cf491da150d497ecc61889bc7adb0af0ad05a67e925a4f5ac88e20f1b9c"},
+    {file = "nlopt-2.7.1-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:79791a2179d1cf708622eaeea76c88acbadc6af0d2f198df21a74473838686c3"},
+    {file = "nlopt-2.7.1-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:aad38bab99348f6c3bbf0d5f339b3fd77465b27ef44c330f4ba512a40b87b373"},
+    {file = "nlopt-2.7.1-cp37-cp37m-win_amd64.whl", hash = "sha256:479a415f522051f6d728a3279c013aab96a6eaf3c323a89582dcb07eb636f15f"},
+    {file = "nlopt-2.7.1-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:d99f1d6217bc3ead6fa6fe84a923577003f9a5f760cd354a3f8dcd1e11d626ce"},
+    {file = "nlopt-2.7.1-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:33f9370bd37788b4ac792cf161835f1e4e9bbad8bfb5a76f75a295ae38dcd8d0"},
+    {file = "nlopt-2.7.1-cp38-cp38-win_amd64.whl", hash = "sha256:8e7b65cf3a751e822b02f28b65d0c548052523fa6333619af3f24fec60a6b6bd"},
+    {file = "nlopt-2.7.1-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:087ff54de5ec0375fd18f843b36e9a8590c0f1e194bb45d3119ba844aeb836dd"},
+    {file = "nlopt-2.7.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b4a05448f0ffebbab7a6a822297430e018c848652280e6efa13484e210291d5c"},
+    {file = "nlopt-2.7.1-cp39-cp39-win_amd64.whl", hash = "sha256:757c41210f3ab6173e5c508c79c7833e33cf90a068d098b1e13d277432120b81"},
+]
+
+[package.dependencies]
+numpy = ">=1.14"
+
+[[package]]
+name = "nptyping"
+version = "2.0.1"
+description = "Type hints for NumPy."
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "nptyping-2.0.1-py3-none-any.whl", hash = "sha256:0fc5c4d76c65e12a77e750b9e2701dab6468d00926c8c4f383867bd70598a532"},
+]
+
+[package.dependencies]
+numpy = ">=1.20.0"
+
+[package.extras]
+build = ["codecov (>=2.1.0)", "invoke (>=1.6.0)", "pip-tools (>=6.5.0)"]
+dev = ["autoflake", "beartype (<0.10.0)", "beartype (>=0.10.0)", "black", "codecov (>=2.1.0)", "coverage", "invoke (>=1.6.0)", "isort", "mypy", "pip-tools (>=6.5.0)", "pylint", "setuptools", "typeguard", "wheel"]
+qa = ["autoflake", "beartype (<0.10.0)", "beartype (>=0.10.0)", "black", "coverage", "isort", "mypy", "pylint", "setuptools", "typeguard", "wheel"]
 
 [[package]]
 name = "numpy"
@@ -1159,6 +1329,21 @@ files = [
 [package.extras]
 qa = ["flake8 (==3.8.3)", "mypy (==0.782)"]
 testing = ["docopt", "pytest (<6.0.0)"]
+
+[[package]]
+name = "path"
+version = "16.7.1"
+description = "A module wrapper for os.path"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "path-16.7.1-py3-none-any.whl", hash = "sha256:57f6ac8209c2b8fd3c515cf013e3b288af43460dddacf1d0249839aabcc14517"},
+    {file = "path-16.7.1.tar.gz", hash = "sha256:2b477f5887033f3cbea1cfd8553ee6a6a498eb2540a19f4aa082822aadcea30a"},
+]
+
+[package.extras]
+docs = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-lint"]
+testing = ["appdirs", "packaging", "pygments", "pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-mypy (>=0.9.1)", "pytest-ruff", "pywin32"]
 
 [[package]]
 name = "pathspec"
@@ -1684,6 +1869,19 @@ files = [
 ]
 
 [[package]]
+name = "typish"
+version = "1.9.3"
+description = "Functionality for types"
+optional = false
+python-versions = "*"
+files = [
+    {file = "typish-1.9.3-py3-none-any.whl", hash = "sha256:03cfee5e6eb856dbf90244e18f4e4c41044c8790d5779f4e775f63f982e2f896"},
+]
+
+[package.extras]
+test = ["codecov", "coverage", "mypy", "nptyping (>=1.3.0)", "numpy", "pycodestyle", "pylint", "pytest"]
+
+[[package]]
 name = "urllib3"
 version = "2.0.2"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
@@ -1729,4 +1927,4 @@ tests = ["pytest", "pytest-cov"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "f655977b3c5a5daae4fbc367247b2fde0022ba69a43b4fe1d766da0d633b2252"
+content-hash = "b52200c72ae0ed21b5b6aa8753215f2caa04c01664b7eeb4702fb8987d5129d4"

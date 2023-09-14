@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "sticker-cast"
+version = "0.1.0"
+description = ""
+authors = ["Masahiro Wada <argon.argon.argon@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.10.*"
+build123d = {git = "https://github.com/gumyr/build123d"}
+ipykernel = "^6.25.2"
+scikit-image = "^0.21.0"
+matplotlib = "^3.7.3"
+scipy = "^1.11.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

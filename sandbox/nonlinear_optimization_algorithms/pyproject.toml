@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "nonlinear-optimization-algorithms"
+version = "0.1.0"
+description = ""
+authors = ["Masahiro Wada <argon.argon.argon@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+sympy = "^1.12"
+numpy = "^1.25.2"
+matplotlib = "^3.7.3"
+ipykernel = "^6.25.2"
+black = "^23.9.1"
+seaborn = "^0.12.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

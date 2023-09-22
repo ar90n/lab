@@ -1,0 +1,19 @@
+{
+ "code_filename": "main.py",
+ "judge": {
+  "diff": 1e-06,
+  "error_type": "relative",
+  "judge_type": "decimal"
+ },
+ "lang": "python",
+ "problem": {
+  "alphabet": "C11",
+  "contest": {
+   "contest_id": "tessoku-book"
+  },
+  "problem_id": "tessoku_book_fi"
+ },
+ "sample_in_pattern": "in_*.txt",
+ "sample_out_pattern": "out_*.txt",
+ "timeout_ms": 3000
+}

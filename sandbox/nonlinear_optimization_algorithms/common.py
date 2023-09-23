@@ -7,6 +7,10 @@ def gradient(f, x):
     return Matrix([f]).jacobian(x).T
 
 
+def hessian(f, x):
+    return gradient(gradient(f, x), x)
+
+
 def plot_result(f, xs, grid_size: int = 128):
     grid_size = 128
     X, Y = np.meshgrid(np.linspace(-1, 5, grid_size), np.linspace(-1, 5, grid_size))
@@ -32,7 +36,7 @@ def plot_result(f, xs, grid_size: int = 128):
     ax.set_xlabel("x1", fontsize=14)
     ax.set_ylabel("x2", fontsize=14)
 
-    L = 4
+    L = 5
     for i, (pt, last_pt) in enumerate(zip(xs[:L], [0, *xs[: L - 1]])):
         ax.scatter(*pt, color="red", s=20, edgecolors="black", zorder=100)
 

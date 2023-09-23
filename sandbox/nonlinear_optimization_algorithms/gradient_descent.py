@@ -135,12 +135,13 @@ def backtrack_line_search(
 
 
 # %%
-x = MatrixSymbol("x", 2, 1)
-f_sym = (x[0] - 2) ** 4 + (x[0] - 2 * x[1]) ** 2
-f = lambdify([x], f_sym)
-
 # %%
 if __name__ == "__main__":
+    x = MatrixSymbol("x", 2, 1)
+    f_sym = (x[0] - 2) ** 4 + (x[0] - 2 * x[1]) ** 2
+    f = lambdify([x], f_sym)
+
+    # %%
     secant_method_results = secant_method(
         f_sym,
         initial_point=np.array([[0, 3]]).T,
@@ -148,9 +149,8 @@ if __name__ == "__main__":
         tau_1=0.3,
         tau_2=0.5,
     )
-
-    # %%
     plot_result(f, secant_method_results)
+
     # %%
     backtrack_line_search_results = backtrack_line_search(
         f_sym,
@@ -158,6 +158,5 @@ if __name__ == "__main__":
         initial_alpha=0.0625,
         beta=0.9999,
     )
-    # %%
     plot_result(f, backtrack_line_search_results)
 # %%

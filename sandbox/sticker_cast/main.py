@@ -7,11 +7,11 @@ import skimage
 import matplotlib.pyplot as plt
 
 # %%
-stricker_image_path = Path.cwd() / "IMG_8839.jpg" # dia
+#stricker_image_path = Path.cwd() / "IMG_8839.jpg" # dia
 #stricker_image_path = Path.cwd() / "IMG_8846.jpg" # club
 #stricker_image_path = Path.cwd() / "IMG_8849.jpg" # flower
 #stricker_image_path = Path.cwd() / "IMG_8850.jpg" # spade
-#stricker_image_path = Path.cwd() / "IMG_8851.jpg" # heart
+stricker_image_path = Path.cwd() / "IMG_8851.jpg" # heart
 # %%
 stricker_image = skimage.io.imread(stricker_image_path)
 # %%
@@ -42,10 +42,10 @@ anker_points = np.array(
         #[2916, 2836],
         #[2884, 118],
         # IMG_8839.jpg
-        [392, 1004],
-        [360, 3788],
-        [2732, 3748],
-        [2648, 1000],
+        #[392, 1004],
+        #[360, 3788],
+        #[2732, 3748],
+        #[2648, 1000],
         # IMG_8846.jpg
         #[432, 762],
         #[483, 3423],
@@ -61,11 +61,11 @@ anker_points = np.array(
         #[387, 3354],
         #[2790, 3267],
         #[2613, 480],
-        ## IMG_8849.jpg
-        #[300, 669],
-        #[255, 3660],
-        #[2775, 3585],
-        #[2691, 684],
+        ## IMG_8851.jpg
+        [300, 669],
+        [255, 3660],
+        [2775, 3585],
+        [2691, 684],
     ]
 )
 # %%
@@ -94,9 +94,9 @@ mask = np.fliplr(mask)
 # %%
 plt.imshow(mask)
 # %%
-margin_mm = 3.5
-wall_mm = 1.0
-base_wall_mm = 3.0
+margin_mm = 4.5
+wall_mm = 1.5
+base_wall_mm = 4.0
 margin_pix = int(margin_mm / mm_per_pix)
 wall_pix = int(wall_mm / mm_per_pix)
 base_wall_pix = int(base_wall_mm / mm_per_pix)
@@ -209,5 +209,5 @@ with BuildPart() as part:
 # %%
 part.part
 # %%
-part.part.export_stl("dia.stl")
+part.part.export_stl("heart.stl")
 # %%

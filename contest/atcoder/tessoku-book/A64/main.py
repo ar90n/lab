@@ -1,8 +1,34 @@
 #!/usr/bin/env python3
 import sys
+import heapq
 
 
 def solve(N: int, M: int, A: "List[int]", B: "List[int]", C: "List[int]"):
+    g = {1: {}}
+    for a, b, c in zip(A, B, C):
+        g.setdefault(a, {})[b] = c
+        g.setdefault(b, {})[a] = c
+
+    dists = [10 ** 12] * (N + 1)
+    dists[1] = 0
+
+    q = [(c, b) for b, c in g[1].items()]
+    while 0 < len(q):
+        c, b = heapq.heappop(q)
+        if dists[b] <= c:
+            continue
+        dists[b] = c
+
+        for nb, nc in g[b].items():
+            heapq.heappush(q, (c + nc, nb))
+    dists = dists[1:]
+
+    for d in dists:
+        if d == 10 ** 12:
+            print(-1)
+        else:
+            print(d)
+
     return
 
 

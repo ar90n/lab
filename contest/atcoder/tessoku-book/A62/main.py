@@ -3,6 +3,26 @@ import sys
 
 
 def solve(N: int, M: int, A: "List[int]", B: "List[int]"):
+    g = {i : [] for i in range(N + 1)}
+    for a, b in zip(A, B):
+        g[a].append(b)
+        g[b].append(a)
+
+    visited = [False] * (N + 1)
+    def dfs(x):
+        if visited[x]:
+            return
+        visited[x] = True
+        for nx in g[x]:
+            dfs(nx)
+
+    sys.setrecursionlimit(10 ** 9)
+    dfs(1)
+    if all(visited[1:]):
+        print("The graph is connected.")
+    else:
+        print("The graph is not connected.")
+
     return
 
 

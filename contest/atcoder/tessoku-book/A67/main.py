@@ -1,8 +1,41 @@
 #!/usr/bin/env python3
 import sys
+import heapq
 
 
 def solve(N: int, M: int, A: "List[int]", B: "List[int]", C: "List[int]"):
+    edges = sorted(list(zip(A, B, C)), key=lambda a: a[2])
+
+    nodes = [i for i in range(N + 1)]
+    s = [1 for _ in range(N + 1)]
+
+    def root(x):
+        while x != nodes[x]:
+            x = nodes[x]
+        return x
+    
+    def unite(x, y):
+        x = root(x)
+        y = root(y)
+        if x == y:
+            return
+        
+        if s[x] < s[y]:
+            nodes[x] = y
+            s[y] += s[x]
+        else:
+            nodes[y] = x
+            s[x] += s[y]
+
+    total = 0
+    for a, b, c in edges:
+        ra = root(a)
+        rb = root(b)
+
+        if ra != rb:
+            unite(ra, rb)
+            total += c
+    print(total)
     return
 
 

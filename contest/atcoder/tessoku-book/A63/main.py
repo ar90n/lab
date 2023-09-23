@@ -1,8 +1,25 @@
 #!/usr/bin/env python3
 import sys
+from collections import deque
 
 
 def solve(N: int, M: int, A: "List[int]", B: "List[int]"):
+    g = {i: [] for i in range(N + 1)}
+    for a, b in zip(A, B):
+        g[a].append(b)
+        g[b].append(a)
+
+    visited = [-1] * (N + 1)
+    q = deque([(1, 0)])
+    while 0 < len(q):
+        p, i = q.popleft()
+        if 0 <= visited[p]:
+            continue
+        visited[p] = i
+        for np in g[p]:
+            q.append((np, i + 1))
+    for v in visited[1:]:
+        print(v)
     return
 
 

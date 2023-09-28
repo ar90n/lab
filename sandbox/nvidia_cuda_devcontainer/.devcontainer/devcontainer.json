@@ -1,0 +1,24 @@
+{
+    "name": "python3",
+    "image": "mcr.microsoft.com/devcontainers/python:3.10",
+    "features": {
+            "ghcr.io/devcontainers/features/nvidia-cuda:1": {
+                "installCudnnDev": true,
+                "installToolkit": true,
+                "cudaVersion": "12.2",
+                "cudnnVersion": "8.9.5.29"
+            }
+    },
+    "runArgs": [
+        "--gpus",
+        "all"
+    ],
+    "hostRequirements": {
+        "gpu": "optional"
+    },
+    "remoteEnv": {
+        "PATH": "${containerEnv:PATH}:/usr/local/cuda/bin"
+    },
+    "remoteUser": "root"
+}
+

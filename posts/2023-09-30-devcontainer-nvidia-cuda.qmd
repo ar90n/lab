@@ -2,7 +2,7 @@
 title: devcontainersでCUDA環境を整える
 date: 2023-09-30
 categories: [開発環境]
-image: /assets/img/common/devcontainers.svg
+image: /assets/img/common/devcontainers.png
 format:
   html:
     code-fold: true

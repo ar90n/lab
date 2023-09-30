@@ -1043,7 +1043,7 @@ font-style: inherit;">+---------------------------------------------------------
   <category>開発環境</category>
   <guid>https://lab.ar90n.net/posts/2023-09-30-devcontainer-nvidia-cuda.html</guid>
   <pubDate>Sat, 30 Sep 2023 00:00:00 GMT</pubDate>
-  <media:content url="https://lab.ar90n.net/assets/img/common/devcontainers.svg" medium="image" type="image/svg+xml"/>
+  <media:content url="https://lab.ar90n.net/assets/img/common/devcontainers.png" medium="image" type="image/png" height="144" width="144"/>
 </item>
 <item>
   <title>Zigで多態性を表現する</title>

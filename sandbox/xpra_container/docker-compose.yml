@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  xpra:
+    build:
+      context: .
+      args:
+        DEFAULT_DISPLAY_NUMBER: 20000
+        DEFAULT_PORT: 20000
+    restart: always
+    container_name: xpra
+    ports:
+    - "20000:20000"

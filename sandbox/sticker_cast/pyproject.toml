@@ -12,6 +12,8 @@ ipykernel = "^6.25.2"
 scikit-image = "^0.21.0"
 matplotlib = "^3.7.3"
 scipy = "^1.11.2"
+jupyter-cadquery = "3.5.2"
+cadquery-massembly = "1.0.0"
 
 
 [build-system]

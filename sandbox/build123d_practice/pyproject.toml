@@ -8,17 +8,18 @@ packages = [{include = "build123d_practice"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-build123d = {git = "https://github.com/gumyr/build123d.git", rev = "dev"}
+build123d = {git = "https://github.com/gumyr/build123d"}
 ipython = "^8.13.2"
 ipykernel = "^6.23.1"
-ocp-vscode = "1.0.0"
+ocp-vscode = "1.2.2"
 matplotlib = "^3.7.2"
-cq-warehouse = {git = "https://github.com/gumyr/cq_warehouse"}
-cq-gears = {git = "https://github.com/meadiode/cq_gears"}
+jupyter-cadquery = "^3.5.2"
+cadquery-massembly = "1.0.0"
 
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.3.0"
+pyright = "^1.1.332"
 
 [build-system]
 requires = ["poetry-core"]

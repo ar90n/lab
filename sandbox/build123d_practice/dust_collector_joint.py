@@ -3,16 +3,16 @@ import math
 from build123d import *
 from ocp_vscode import show
 # %%
-outer_width = 1.8
-inner_width = 1.2
+outer_width = 2.8
+inner_width = 0.2
 width = outer_width + inner_width
-base_inner_diameter = 57.0 - 2.0 * inner_width
+base_inner_diameter = 52.0 - 2.0 * inner_width
 base_outer_diameter = base_inner_diameter + 2 * width
-collector_inner_diameter = 37.0 - 2.0 * inner_width
+collector_inner_diameter = 38.0 - 2.0 * inner_width
 collector_outer_diameter = collector_inner_diameter + 2 * width
 
 # %%
-base_height = 35.0
+base_height = 30.0
 mid_height = ((base_inner_diameter - collector_inner_diameter) / 2.0) /  math.tan(math.radians(45.0))
 
 # %%
@@ -38,3 +38,4 @@ with BuildPart() as p:
 show(p)
 # %%
 p.part.export_stl("dust_collector_joint.stl")
+# %%

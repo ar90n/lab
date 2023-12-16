@@ -315,22 +315,23 @@ show(hleg_l + hleg_r + apron_lu + apron_lb + apron_ru + apron_rb)
 
 
 # %%
-
-mark = Sphere(100)
-RigidJoint(label="mark", to_part=mark, joint_location=Location(mark.location))
-hleg_l.joints["to_appron_rb"].connect_to(mark.joints["mark"])
-show(hleg_l + hleg_r + mark)
-
+part = hleg_l + hleg_r + apron_lu + apron_lb + apron_ru + apron_rb
+view_port_origin=(-100, -50, 30)
+visible, hidden = part.project_to_viewport(view_port_origin)
+max_dimension = max(*Compound(children=visible + hidden).bounding_box().size)
+exporter = ExportSVG(scale=100 / max_dimension)
+exporter.add_layer("Visible")
+exporter.add_layer("Hidden", line_color=(99, 99, 99), line_type=LineType.ISO_DOT)
+exporter.add_shape(visible, layer="Visible")
+exporter.add_shape(hidden, layer="Hidden")
+exporter.write("part_projection.svg")
 # %%
-#leg_r.faces().sort_by(Axis.Y).first.edges().sort_by(Axis.X).first.center()
-leg_r.faces().sort_by(Axis.Y).first.orientation
+exporter = ExportSVG(unit=Unit.MM, line_weight=0.5)
+exporter.add_layer("Layer 1", fill_color=(255, 0, 0), line_color=(0, 0, 255))
+exporter.add_shape(part, layer="Layer 1")
+exporter.write("output.svg")
 # %%
-hleg_r.faces().sort_by(Axis.Y).first.edges().sort_by(Axis.X).first.vertices()
-# %%
-hleg_r.faces().sort_by(Axis.Y).first.edges().sort_by(Axis.X).first.center()
-# %%
-hleg_r.faces().sort_by(Axis.Y).first.edges().sort_by(Axis.X).first.vertices().sort_by(Axis.Z).first.center()
-
-# %%
-hleg_l.faces().sort_by(Axis.Z).last.center_location
-# %%
+exporter = ExportDXF(unit=Unit.MM, line_weight=0.5)
+exporter.add_layer("Layer 1", color=ColorIndex.RED, line_type=LineType.DASHED)
+exporter.add_shape(part, layer="Layer 1")
+exporter.write("output.dxf")

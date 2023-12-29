@@ -17,6 +17,7 @@ jupyter-cadquery = "^3.5.2"
 cadquery-massembly = "1.0.0"
 ocpsvg = {git = "https://github.com/snoyer/ocpsvg"}
 trianglesolver = "^1.2"
+bd-warehouse = {git = "https://github.com/gumyr/bd_warehouse"}
 
 
 [tool.poetry.group.dev.dependencies]

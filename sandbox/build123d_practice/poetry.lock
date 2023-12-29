@@ -154,6 +154,25 @@ files = [
 dev = ["freezegun (>=1.0,<2.0)", "pytest (>=6.0)", "pytest-cov"]
 
 [[package]]
+name = "bd-warehouse"
+version = "0.1.dev47+g061f329"
+description = "A python CAD programming library"
+optional = false
+python-versions = ">=3.9"
+files = []
+develop = false
+
+[package.dependencies]
+build123d = "*"
+typing_extensions = ">=4.4.0,<5"
+
+[package.source]
+type = "git"
+url = "https://github.com/gumyr/bd_warehouse"
+reference = "HEAD"
+resolved_reference = "061f3298eb3aeff619781cca9af82d3dd92f33d6"
+
+[[package]]
 name = "beautifulsoup4"
 version = "4.12.2"
 description = "Screen-scraping library"
@@ -3107,4 +3126,4 @@ notebook = ">=4.4.1"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "aea752021840ee69374b4b7c15430fc557824c82188c868c1768dfdb0e004579"
+content-hash = "4abf7bceadb494230e5ed6eca0361630bb1a0804b3e2a0a4b370e29f519d5c03"

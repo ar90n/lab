@@ -1,0 +1,14 @@
+version: "3.9"
+
+x-template: &template
+  network_mode: "host"
+  environment:
+    ROS_DOMAIN_ID: ${ROS_DOMAIN_ID}
+
+services:
+  bridge:
+    <<: *template
+    build: .
+  studio:
+    <<: *template
+    image: ghcr.io/foxglove/studio 

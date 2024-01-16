@@ -37,6 +37,9 @@
     }                            \
   } while (0)
 
+
+UART Serial2(4, 5); // Create a UART object called Serial2 using the #4 (TX) and #5 (RX) pins.
+
 namespace
 {
   constexpr int PWM_PIN = 7;
@@ -153,15 +156,18 @@ void setup()
   analogWrite(PWM_PIN, 100);
 
   // Configure serial transport
-  Serial.begin(115200);
   Serial1.begin(115200, SERIAL_8N1);
-  set_microros_serial_transports(Serial);
+  Serial2.begin(115200, SERIAL_8N1);
+  set_microros_serial_transports(Serial2);
   delay(2000);
 
   allocator = rcl_get_default_allocator();
 
   // create init_options
-  RCCHECK(rclc_support_init(&support, 0, NULL, &allocator));
+  auto init_options = rcl_get_zero_initialized_init_options();
+  RCCHECK(rcl_init_options_init(&init_options, allocator));
+  RCCHECK(rcl_init_options_set_domain_id(&init_options, 104));
+  RCCHECK(rclc_support_init_with_options(&support, 0, NULL, &init_options, &allocator));
 
   // create node
   RCCHECK(rclc_node_init_default(&node, "pico_micro_ros_practice_node", "", &support));

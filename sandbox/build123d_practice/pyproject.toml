@@ -11,7 +11,7 @@ python = "^3.10"
 build123d = {git = "https://github.com/gumyr/build123d"}
 ipython = "^8.13.2"
 ipykernel = "^6.23.1"
-ocp-vscode = "2.0.13"
+ocp-vscode = "2.1.1"
 matplotlib = "^3.7.2"
 jupyter-cadquery = "^3.5.2"
 cadquery-massembly = "1.0.0"

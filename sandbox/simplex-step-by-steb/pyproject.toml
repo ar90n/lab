@@ -1,0 +1,50 @@
+[tool.poetry]
+name = "simple-step-by-step"
+version = "0.0.0"
+description = "step by step simplex method"
+authors = ["Masahiro Wada <argon.argon.argon@gmail.com>"]
+readme = "README.md"
+keywords = ["simplex"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+sympy = "^1.12"
+pytest = "^8.0.2"
+
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.3.1"
+pre-commit = "^3.6.2"
+poethepoet = "^0.25.0"
+pyright = "^1.1.353"
+ipykernel = "^6.29.3"
+
+[build-system]
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
+build-backend = "poetry_dynamic_versioning.backend"
+
+[tool.pyright]
+include = ["alfort", "examples"]
+stubPath ="stubs"
+typeCheckingMode = "strict"
+reportMissingImports = true
+reportMissingTypeStubs = false
+pythonVersion = "3.11"
+pythonPlatform = "Linux"
+
+[tool.pytest.ini_options]
+addopts = "--strict --durations=0 --color=yes"
+testpaths = [
+    "tests"
+]
+
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+style = "semver"
+
+[tool.poe.tasks]
+test = "pytest"
+check = "pre-commit run -a"
+install-plugins = "poetry self add poethepoet[poetry_plugin]"
+install-pre-commit = "pre-commit install"

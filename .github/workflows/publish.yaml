@@ -20,7 +20,7 @@ jobs:
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
         with:
-          version: 1.2.218
+          version: 1.4.554
 
       - name: Render and Publish
         uses: quarto-dev/quarto-actions/publish@v2

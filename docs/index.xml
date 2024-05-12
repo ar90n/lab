@@ -6,22 +6,23 @@
       version="2.0">
 <channel>
 <title>lab_note</title>
-<link>https://lab.ar90n.net/index.html</link>
+<link>https://lab.ar90n.net/</link>
 <atom:link href="https://lab.ar90n.net/index.xml" rel="self" type="application/rss+xml"/>
 <description>my laboratory</description>
 <image>
 <url>https://lab.ar90n.net/logo.png</url>
 <title>lab_note</title>
-<link>https://lab.ar90n.net/index.html</link>
+<link>https://lab.ar90n.net/</link>
 <height>144</height>
 <width>144</width>
 </image>
-<generator>quarto-1.4.226</generator>
+<generator>quarto-1.4.554</generator>
 <lastBuildDate>Sat, 30 Sep 2023 00:00:00 GMT</lastBuildDate>
 <item>
   <title>devcontainersでCUDA環境を整える</title>
   <link>https://lab.ar90n.net/posts/2023-09-30-devcontainer-nvidia-cuda.html</link>
   <description><![CDATA[ 
+
 
 
 
@@ -1049,6 +1050,7 @@ font-style: inherit;">+---------------------------------------------------------
   <title>Zigで多態性を表現する</title>
   <link>https://lab.ar90n.net/posts/2023-07-17-polymorphism-in-zig.html</link>
   <description><![CDATA[ 
+
 
 
 
@@ -2207,7 +2209,7 @@ font-style: inherit;">}</span></span></code></pre></div>
 
 </section>
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body">
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body" data-entry-spacing="0">
 <div id="ref-allocgate_is_comming_in_zig_0.9" class="csl-entry">
 <div class="csl-left-margin">[1] </div><div class="csl-right-inline">Allocgate is coming in zig 0.9, and you will have to change your code. <a href="https://pithlessly.github.io/allocgate.html" class="uri">https://pithlessly.github.io/allocgate.html</a>.</div>
 </div>
@@ -2221,6 +2223,7 @@ font-style: inherit;">}</span></span></code></pre></div>
   <title>Zigでレイトレーシングをしてみる</title>
   <link>https://lab.ar90n.net/posts/2023-06-29-comptime-ray-tracing-in-weekend.html</link>
   <description><![CDATA[ 
+
 
 
 
@@ -2243,16 +2246,16 @@ font-style: inherit;">}</span></span></code></pre></div>
 <section id="一括レンダリング" class="level2">
 <h2 class="anchored" data-anchor-id="一括レンダリング">一括レンダリング</h2>
 <p>画像全体を一括でレンダリングした結果です。開発環境（メモリ64GB）では幅128、高さ64、ピクセルあたりのレイの数2というのが限界でした。</p>
-<p><img src="https://lab.ar90n.net/posts/https:/raw.githubusercontent.com/ar90n/comptime-ray-tracing/assets/out_128_64.jpg" class="img-fluid"></p>
+<p><img src="https://raw.githubusercontent.com/ar90n/comptime-ray-tracing/assets/out_128_64.jpg" class="img-fluid"></p>
 </section>
 <section id="行単位レンダリング" class="level2">
 <h2 class="anchored" data-anchor-id="行単位レンダリング">行単位レンダリング</h2>
 <p>画像を１行単位でレンダリングした結果です。指定したn行目を出力するプログラムの出力結果を複数個統合することで最終出力画像を作成します。 以下の画像は幅300、高さ200、ピクセルあたりのレイの数32でレンダリングしました。</p>
-<p><img src="https://lab.ar90n.net/posts/https:/raw.githubusercontent.com/ar90n/comptime-ray-tracing/assets/out_300_200.jpg" class="img-fluid"></p>
+<p><img src="https://raw.githubusercontent.com/ar90n/comptime-ray-tracing/assets/out_300_200.jpg" class="img-fluid"></p>
 </section>
 <section id="参考" class="level2">
 <h2 class="anchored" data-anchor-id="参考">参考</h2>
-<div id="refs" class="references csl-bib-body">
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0">
 <div id="ref-Shirley2020RTW1" class="csl-entry">
 <div class="csl-left-margin">[1] </div><div class="csl-right-inline">Shirley, P. 2020. <a href="https://raytracing.github.io/books/RayTracingInOneWeekend.html">Ray tracing in one weekend</a>.</div>
 </div>
@@ -2272,6 +2275,7 @@ font-style: inherit;">}</span></span></code></pre></div>
   <title>ほとんどPythonで作るWebアプリケーション</title>
   <link>https://lab.ar90n.net/posts/2022-11-30-pypypy.html</link>
   <description><![CDATA[ 
+
 
 
 
@@ -2305,7 +2309,7 @@ font-style: inherit;">}</span></span></code></pre></div>
 </section>
 <section id="参考" class="level2">
 <h2 class="anchored" data-anchor-id="参考">参考</h2>
-<div id="refs" class="references csl-bib-body">
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0">
 <div id="ref-gogogo" class="csl-entry">
 <div class="csl-left-margin">[1] </div><div class="csl-right-inline">Gogogo. <em>GitHub repository</em>. <a href="https://github.com/koki-develop/gogogo" class="uri">https://github.com/koki-develop/gogogo</a>; GitHub.</div>
 </div>
@@ -2324,6 +2328,7 @@ font-style: inherit;">}</span></span></code></pre></div>
   <title>続・Goによるdot積のベンチマーク</title>
   <link>https://lab.ar90n.net/posts/2022-11-16-dot-benchmark-in-go-again.html</link>
   <description><![CDATA[ 
+
 
 
 
@@ -2373,11 +2378,9 @@ font-style: inherit;">var</span> dot <span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">float32</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">0</span><span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">.0</span></span>
+font-style: inherit;">0.0</span></span>
 <span id="cb1-3">    size <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">:=</span> <span class="bu" style="color: null;
@@ -2459,11 +2462,9 @@ font-style: inherit;">var</span> dot <span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">float32</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">0</span><span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">.0</span></span>
+font-style: inherit;">0.0</span></span>
 <span id="cb2-4"></span>
 <span id="cb2-5">    i <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -2617,11 +2618,9 @@ font-style: inherit;">var</span> dot <span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">float32</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">0</span><span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">.0</span></span>
+font-style: inherit;">0.0</span></span>
 <span id="cb3-4"></span>
 <span id="cb3-5">    i <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -2821,11 +2820,9 @@ font-style: inherit;">var</span> dot <span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">float32</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">0</span><span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">.0</span></span>
+font-style: inherit;">0.0</span></span>
 <span id="cb4-4"></span>
 <span id="cb4-5">    i <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -3755,7 +3752,7 @@ font-style: inherit;">}</span></span></code></pre></div>
 </div>
 <p>ベンチマーク結果</p>
 <div id="d82ead74" class="cell" data-execution_count="13">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb11-1"><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -4032,6 +4029,7 @@ background-color: null;
 font-style: inherit;">))</span></span></code></pre></div>
 </details>
 <div class="cell-output cell-output-display" data-execution_count="12">
+<div>
 <table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true">
 <caption>size=32</caption>
 <tbody>
@@ -4175,8 +4173,9 @@ font-style: inherit;">))</span></span></code></pre></div>
 </table>
 </div>
 </div>
+</div>
 <div id="79eda677" class="cell" data-execution_count="14">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb12-1"><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -4618,7 +4617,11 @@ background-color: null;
 font-style: inherit;">)</span></span></code></pre></div>
 </details>
 <div class="cell-output cell-output-display">
-<p><img src="https://lab.ar90n.net/posts/2022-11-16-dot-benchmark-in-go-again_files/figure-html/cell-14-output-1.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="https://lab.ar90n.net/posts/2022-11-16-dot-benchmark-in-go-again_files/figure-html/cell-14-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -4628,7 +4631,7 @@ font-style: inherit;">)</span></span></code></pre></div>
 </section>
 <section id="参考" class="level2">
 <h2 class="anchored" data-anchor-id="参考">参考</h2>
-<div id="refs" class="references csl-bib-body">
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0">
 <div id="ref-Weaviate" class="csl-entry">
 <div class="csl-left-margin">[1] </div><div class="csl-right-inline">Weavite. <em>GitHub repository</em>. <a href="https://github.com/semi-technologies/weaviate" class="uri">https://github.com/semi-technologies/weaviate</a>; GitHub.</div>
 </div>
@@ -4651,6 +4654,7 @@ font-style: inherit;">)</span></span></code></pre></div>
   <title>Goによるdot積のベンチマーク</title>
   <link>https://lab.ar90n.net/posts/2022-11-08-dot-benchmark-in-go.html</link>
   <description><![CDATA[ 
+
 
 
 
@@ -4692,11 +4696,9 @@ background-color: null;
 font-style: inherit;">{</span></span>
 <span id="cb1-2">    dot <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">:=</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">:=</span> <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">0</span><span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">.0</span></span>
+font-style: inherit;">0.0</span></span>
 <span id="cb1-3">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">for</span> i <span class="op" style="color: #5E5E5E;
@@ -4769,11 +4771,9 @@ background-color: null;
 font-style: inherit;">2</span></span>
 <span id="cb2-3">    dot <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">:=</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">:=</span> <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">0</span><span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">.0</span></span>
+font-style: inherit;">0.0</span></span>
 <span id="cb2-4"></span>
 <span id="cb2-5">    i <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -4915,11 +4915,9 @@ background-color: null;
 font-style: inherit;">4</span></span>
 <span id="cb3-3">    dot <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">:=</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">:=</span> <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">0</span><span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">.0</span></span>
+font-style: inherit;">0.0</span></span>
 <span id="cb3-4"></span>
 <span id="cb3-5">    i <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -5107,11 +5105,9 @@ background-color: null;
 font-style: inherit;">8</span></span>
 <span id="cb4-3">    dot <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">:=</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">:=</span> <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">0</span><span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">.0</span></span>
+font-style: inherit;">0.0</span></span>
 <span id="cb4-4"></span>
 <span id="cb4-5">    i <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -6042,7 +6038,7 @@ font-style: inherit;">}</span></span></code></pre></div>
 </div>
 <p>ベンチマーク結果</p>
 <div id="5a3c93f6" class="cell" data-execution_count="13">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb11-1"><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -6319,6 +6315,7 @@ background-color: null;
 font-style: inherit;">))</span></span></code></pre></div>
 </details>
 <div class="cell-output cell-output-display" data-execution_count="51">
+<div>
 <table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true">
 <caption>size=32</caption>
 <tbody>
@@ -6462,8 +6459,9 @@ font-style: inherit;">))</span></span></code></pre></div>
 </table>
 </div>
 </div>
+</div>
 <div id="994869bc" class="cell" data-execution_count="14">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb12-1"><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -6905,7 +6903,11 @@ background-color: null;
 font-style: inherit;">)</span></span></code></pre></div>
 </details>
 <div class="cell-output cell-output-display">
-<p><img src="https://lab.ar90n.net/posts/2022-11-08-dot-benchmark-in-go_files/figure-html/cell-14-output-1.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="https://lab.ar90n.net/posts/2022-11-08-dot-benchmark-in-go_files/figure-html/cell-14-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -6915,7 +6917,7 @@ font-style: inherit;">)</span></span></code></pre></div>
 </section>
 <section id="参考" class="level2">
 <h2 class="anchored" data-anchor-id="参考">参考</h2>
-<div id="refs" class="references csl-bib-body">
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0">
 <div id="ref-tokyo2021go" class="csl-entry">
 <div class="csl-left-margin">[1] </div><div class="csl-right-inline">Tokyo, W.W.G. 2021. <em><a href="https://books.google.co.jp/books?id=nVM5EAAAQBAJ">Go言語を楽しむ5つのレシピ: コタツと蜜柑とゴーファーとわたし</a></em>. インプレスR&amp;D.</div>
 </div>
@@ -6938,6 +6940,7 @@ font-style: inherit;">)</span></span></code></pre></div>
 
 
 
+
 <section id="はじめに" class="level2">
 <h2 class="anchored" data-anchor-id="はじめに">はじめに</h2>
 <p>OctoPrintからSwitchBot PlugのOn/Offを制御する<a href="https://github.com/ar90n/OctoPrint-SwitchBot-Plug">プラグイン</a>を作ってみました。 今回、このプラグインの作成を通してハマった点のメモを残しておきます。</p>
@@ -6951,11 +6954,7 @@ font-style: inherit;">)</span></span></code></pre></div>
 <section id="作ったものについて" class="level2">
 <h2 class="anchored" data-anchor-id="作ったものについて">作ったものについて</h2>
 <p>常時3Dプリンタを起動しているのは無駄なので、電源の管理にSwitchBot Plugを使ってみました。スマホからSwitchBot Plugを操作することはできるのですが、折角なのでOctoPrintから操作したいと思いプラグインを作成しました。</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="https://github.com/ar90n/OctoPrint-SwitchBot-Plug"><img src="https://lab.ar90n.net/posts/https:/gh-card.dev/repos/ar90n/OctoPrint-SwitchBot-Plug.svg" class="img-fluid figure-img"></a></p>
-</figure>
-</div>
+<p><a href="https://github.com/ar90n/OctoPrint-SwitchBot-Plug"><img src="https://gh-card.dev/repos/ar90n/OctoPrint-SwitchBot-Plug.svg" class="img-fluid"></a></p>
 <p>このプラグインを導入すると、以下の様にSwitchBot PlugのOn/Offを制御するボタンがサイドバーに出現します。</p>
 <p><img src="https://lab.ar90n.net/assets/img/2022-11-05-develop-octoprint-plugin/sidebar.png" class="img-fluid"></p>
 <p>仕組みとしては、シンプルにフロントエンドのボタン押下に応じてSwitchBot APIを叩くだけです。SwitchBot APIはサーバー側から呼び出しています。後から振り返ってみると、フロントエンド側から直接SwitchBot APIを叩いても良かったかなと思っています。</p>
@@ -7372,7 +7371,7 @@ font-style: inherit;">;</span></span></code></pre></div>
 </section>
 <section id="参考" class="level2">
 <h2 class="anchored" data-anchor-id="参考">参考</h2>
-<div id="refs" class="references csl-bib-body">
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0">
 <div id="ref-octoprint" class="csl-entry">
 <div class="csl-left-margin">[1] </div><div class="csl-right-inline">Häußge, G. 2022. OctoPrint. <a href="https://docs.octoprint.org/en/master/" class="uri">https://docs.octoprint.org/en/master/</a>.</div>
 </div>
@@ -7392,6 +7391,7 @@ font-style: inherit;">;</span></span></code></pre></div>
   <title>ARモデルによるシンプルなボイスチェンジャ</title>
   <link>https://lab.ar90n.net/posts/2022-10-24-simple-voice-changer.html</link>
   <description><![CDATA[ 
+
 
 
 
@@ -7679,7 +7679,11 @@ font-style: inherit;">'gain [dB]'</span>)</span>
 <span id="cb1-38">ax.legend()</span>
 <span id="cb1-39">plt.show()</span></code></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="https://lab.ar90n.net/posts/2022-10-24-simple-voice-changer_files/figure-html/cell-2-output-1.png" width="596" height="429"></p>
+<div>
+<figure class="figure">
+<p><img src="https://lab.ar90n.net/posts/2022-10-24-simple-voice-changer_files/figure-html/cell-2-output-1.png" width="596" height="429" class="figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -7978,7 +7982,7 @@ font-style: inherit;">return</span> np.concatenate(ret[:, :chunk_size])</span></
 </section>
 <section id="参考" class="level2">
 <h2 class="anchored" data-anchor-id="参考">参考</h2>
-<div id="refs" class="references csl-bib-body">
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0">
 <div id="ref-1130000796657917952" class="csl-entry">
 <div class="csl-left-margin">[1] </div><div class="csl-right-inline">Lim, J.S. et al. 1992. <em><a href="https://cir.nii.ac.jp/crid/1130000796657917952">現代ディジタル信号処理理論とその応用</a></em>. 丸善.</div>
 </div>
@@ -8007,6 +8011,7 @@ font-style: inherit;">return</span> np.concatenate(ret[:, :chunk_size])</span></
   <title>XG-C100Cを追加してオンボードNICとブリッジ接続する</title>
   <link>https://lab.ar90n.net/posts/2022-08-12-xg-c100c-in-ubuntu-server.html</link>
   <description><![CDATA[ 
+
 
 
 
@@ -8200,6 +8205,7 @@ font-style: inherit;">"DROP"</span></span></code></pre></div>
 
 
 
+
 <section id="はじめに" class="level2">
 <h2 class="anchored" data-anchor-id="はじめに">はじめに</h2>
 <p>取り扱うデータが高次元になると次元の呪いと呼ばれる問題が生じることが広く知られています． この次元の呪いが示す問題は, 使用される文脈に応じて様々であると思います． ここでは，KD木<span class="citation" data-cites="wiki:Kd木">[2]</span>を用いた近傍探索における問題について考察します．</p>
@@ -8314,7 +8320,11 @@ font-style: inherit;">=</span> np.array(result)</span></code></pre></div>
 </div>
 <div id="cell-6" class="cell" data-execution_count="98">
 <div class="cell-output cell-output-display">
-<p><img src="https://lab.ar90n.net/posts/2022-02-16-kdtree-and-curse-of-dimensionality_files/figure-html/cell-3-output-1.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="https://lab.ar90n.net/posts/2022-02-16-kdtree-and-curse-of-dimensionality_files/figure-html/cell-3-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>上図からデータの次元が高くなるにつれて，線形探索とKD木による探索との探索時間の差が小さくなっていることが確認できます． このことから，高次元データに対してはKD木が上手く機能していないことがわかります．</p>
@@ -8395,6 +8405,7 @@ background-color: null;
 font-style: inherit;">"d"</span>)</span></code></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="131">
 <div>
+<div>
 
 
 <table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
@@ -8451,6 +8462,7 @@ font-style: inherit;">"d"</span>)</span></code></pre></div>
 </div>
 </div>
 </div>
+</div>
 <p>次に，KD木において探索領域が1辺の長さが<img src="https://latex.codecogs.com/png.latex?2r_d">の超立方体に区切られ，クエリがその中心に位置する場合を考えます． ここで，データは探索領域中に一様に分布するものとします．すると，クエリを中心とした半径<img src="https://latex.codecogs.com/png.latex?r_d">の超球内にデータが存在する確率は$ <img src="https://latex.codecogs.com/png.latex?%E3%81%A8%E3%81%AA%E3%82%8A%E3%81%BE%E3%81%99%EF%BC%8E%E3%81%93%E3%81%AE%E5%80%A4%E3%81%AF%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E6%AC%A1%E5%85%83%E3%81%8C%E9%AB%98%E3%81%8F%E3%81%AA%E3%82%8B%E3%81%BB%E3%81%A9%E5%B0%8F%E3%81%95%E3%81%8F%E3%81%AA%E3%82%8A%E3%81%BE%E3%81%99%EF%BC%8E%E3%81%97%E3%81%9F%E3%81%8C%E3%81%A3%E3%81%A6%E3%80%81%E9%AB%98%E6%AC%A1%E5%85%83%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AB%E3%81%8A%E3%81%84%E3%81%A6%E3%81%AF%EF%BC%8C%E3%82%AF%E3%82%A8%E3%83%AA%E3%82%92%E4%B8%AD%E5%BF%83%E3%81%A8%E3%81%97%E3%81%9F%E5%8D%8A%E5%BE%84">r_d$の超球内にはほとんどデータが存在せず，大多数は超立方体の角に存在すると考えられます．</p>
 <p>また，上述の結果について超立方体の対角線に着目すると非常に面白い性質を確認できます．ここで，d次元における１辺の長さが<img src="https://latex.codecogs.com/png.latex?r">である超立方体の対角線の長さ<img src="https://latex.codecogs.com/png.latex?d_%7Bd%7D%5Cleft(r%5Cright)">を考えます．この<img src="https://latex.codecogs.com/png.latex?d_%7Bd%7D%5Cleft(r%5Cright)">は以下の様に求めることができます．</p>
 <p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Baligned%7D%0Ad_%7Bd%7D%5Cleft(r%5Cright)%20&amp;=%20%5Csqrt%7B%5Csum%5E%7Bd%7Dr%5E%7B2%7D%7D%5C%5C%0A&amp;=%20%5Csqrt%7Bd%7Dr%0A%5Cend%7Baligned%7D%0A"></p>
@@ -8458,7 +8470,7 @@ font-style: inherit;">"d"</span>)</span></code></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://lab.ar90n.net/assets/img/2022-02-16-kdtree-and-curse-of-dimensionality/relationship_sphere_and_cube.png" title="2次元， ４次元，$d$次元における超球と超立方体との関係．(d/2)^(1/2)は誤りです．正しくはd^(1/2)/2" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">class</figcaption>
+<figcaption>class</figcaption>
 </figure>
 </div>
 <p>上図は左から，2次元，4次元，<img src="https://latex.codecogs.com/png.latex?d">次元における超立方体と超球との関係のイメージです．<img src="https://latex.codecogs.com/png.latex?d_%7B2%7D%5Cleft(1%5Cright)%20=%20%5Csqrt%7B2%7D">であることから，超立方体が超球に内包されています．また<img src="https://latex.codecogs.com/png.latex?d_%7B4%7D%5Cleft(1%5Cright)%20=%202">であることから，超立方体が超球に内接しています．同様に<img src="https://latex.codecogs.com/png.latex?d_%7Bd%7D%5Cleft(1%5Cright)=%5Csqrt%7Bd%7D">であることから，超立方体の角が超球の外へ飛び出しています．</p>
@@ -8467,7 +8479,7 @@ font-style: inherit;">"d"</span>)</span></code></pre></div>
 </section>
 <section id="参考文献" class="level2">
 <h2 class="anchored" data-anchor-id="参考文献">参考文献</h2>
-<div id="refs" class="references csl-bib-body">
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0">
 <div id="ref-15-496/15-859X" class="csl-entry">
 <div class="csl-left-margin">[1] </div><div class="csl-right-inline">Guruswami, V. and Kannanb, R. 2012. Computer science theory for the information age, spring 2012. <a href="https://www.cs.cmu.edu/~venkatg/teaching/CStheory-infoage/" class="uri">https://www.cs.cmu.edu/~venkatg/teaching/CStheory-infoage/</a>.</div>
 </div>
@@ -8490,6 +8502,7 @@ font-style: inherit;">"d"</span>)</span></code></pre></div>
   <title>Goで類似ベクトルを検索する</title>
   <link>https://lab.ar90n.net/posts/2022-02-01-mimic-annoy-wiht-go.html</link>
   <description><![CDATA[ 
+
 
 
 
@@ -8674,7 +8687,7 @@ font-style: inherit;">}</span></span></code></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://lab.ar90n.net/assets/img/2022-02-01-mimic-annoy-wiht-go/cutplane.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">cutplane</figcaption>
+<figcaption>cutplane</figcaption>
 </figure>
 </div>
 <p>その結果，子ノードの優先度は当該ノードが存在する側を正とした符号付き距離となります．</p>
@@ -8687,7 +8700,7 @@ font-style: inherit;">}</span></span></code></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://lab.ar90n.net/assets/img/2022-02-01-mimic-annoy-wiht-go/class.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">class</figcaption>
+<figcaption>class</figcaption>
 </figure>
 </div>
 <p>上図の各要素の詳細は詳細は以下のとおりです．</p>
@@ -9253,7 +9266,7 @@ font-style: inherit;">&gt;</span></span></code></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://lab.ar90n.net/assets/img/2022-02-01-mimic-annoy-wiht-go/fashion-mnist-784-euclidean.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">result</figcaption>
+<figcaption>result</figcaption>
 </figure>
 </div>
 <ul>
@@ -9264,7 +9277,7 @@ font-style: inherit;">&gt;</span></span></code></pre></div>
 </section>
 <section id="参考" class="level2">
 <h2 class="anchored" data-anchor-id="参考">参考</h2>
-<div id="refs" class="references csl-bib-body">
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0">
 <div id="ref-ann-benchmarks" class="csl-entry">
 <div class="csl-left-margin">[1] </div><div class="csl-right-inline">Ann-benchmarks. <em>GitHub repository</em>. <a href="https://github.com/erikbern/ann-benchmarks" class="uri">https://github.com/erikbern/ann-benchmarks</a>; GitHub.</div>
 </div>
@@ -9291,6 +9304,7 @@ font-style: inherit;">&gt;</span></span></code></pre></div>
   <title>cargo-editが上手く動かない時の回避策</title>
   <link>https://lab.ar90n.net/posts/2022-01-30-cargo-edit-workaround.html</link>
   <description><![CDATA[ 
+
 
 
 
@@ -9668,6 +9682,7 @@ font-style: inherit;">Adding</span> anyhow v1.0.53 to dependenciesa</span></code
 
 
 
+
 <section id="はじめに" class="level2">
 <h2 class="anchored" data-anchor-id="はじめに">はじめに</h2>
 <p>AWS Amplifyを使ってみて個人的にハマったことのメモです．</p>
@@ -9853,6 +9868,7 @@ font-style: inherit;">...</span></span></code></pre></div></li>
   <title>RustによるシンプルなGuidedFilterの実装</title>
   <link>https://lab.ar90n.net/posts/2021-09-30-simple-guided-filter-rs.html</link>
   <description><![CDATA[ 
+
 
 
 
@@ -11148,7 +11164,11 @@ background-color: null;
 font-style: inherit;">;</span></span>
 <span id="cb6-2">img</span></code></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="26">
-<p><img src="https://lab.ar90n.net/posts/2021-09-30-simple-guided-filter-rs_files/figure-html/cell-7-output-1.jpeg" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="https://lab.ar90n.net/posts/2021-09-30-simple-guided-filter-rs_files/figure-html/cell-7-output-1.jpeg" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 <section id="r18-eps0.12" class="level3">
@@ -11166,7 +11186,11 @@ font-style: inherit;">,</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.1</span>)</span></code></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="27">
-<p><img src="https://lab.ar90n.net/posts/2021-09-30-simple-guided-filter-rs_files/figure-html/cell-8-output-1.jpeg" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="https://lab.ar90n.net/posts/2021-09-30-simple-guided-filter-rs_files/figure-html/cell-8-output-1.jpeg" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -11185,7 +11209,11 @@ font-style: inherit;">,</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.4</span>)</span></code></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="28">
-<p><img src="https://lab.ar90n.net/posts/2021-09-30-simple-guided-filter-rs_files/figure-html/cell-9-output-1.jpeg" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="https://lab.ar90n.net/posts/2021-09-30-simple-guided-filter-rs_files/figure-html/cell-9-output-1.jpeg" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -11204,14 +11232,18 @@ font-style: inherit;">,</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.8</span>)</span></code></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="29">
-<p><img src="https://lab.ar90n.net/posts/2021-09-30-simple-guided-filter-rs_files/figure-html/cell-10-output-1.jpeg" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="https://lab.ar90n.net/posts/2021-09-30-simple-guided-filter-rs_files/figure-html/cell-10-output-1.jpeg" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
 </section>
 <section id="参考" class="level2">
 <h2 class="anchored" data-anchor-id="参考">参考</h2>
-<div id="refs" class="references csl-bib-body">
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0">
 <div id="ref-he2012guided" class="csl-entry">
 <div class="csl-left-margin">[1] </div><div class="csl-right-inline">He, K. et al. 2012. Guided image filtering. <em>IEEE transactions on pattern analysis and machine intelligence</em>. 35, 6 (2012), 1397–1409.</div>
 </div>
@@ -11231,6 +11263,7 @@ font-style: inherit;">0.8</span>)</span></code></pre></div>
   <title>USB to TTLx4ケーブルの作成</title>
   <link>https://lab.ar90n.net/posts/2021-08-26-make-usb-to-ttlx4.html</link>
   <description><![CDATA[ 
+
 
 
 
@@ -11291,6 +11324,7 @@ Bus 020 Device 010: ID 1a86:7523 1a86 USB2.0-Serial</code></pre>
   <title>k3sクラスタ on Raspberry Pi 4</title>
   <link>https://lab.ar90n.net/posts/2021-08-21-k3s-cluster-on-rp4.html</link>
   <description><![CDATA[ 
+
 
 
 
@@ -13529,6 +13563,7 @@ font-style: inherit;">true</span></span></code></pre></div>
 
 
 
+
 <section id="はじめに" class="level2">
 <h2 class="anchored" data-anchor-id="はじめに">はじめに</h2>
 <p>ネットワークの疎通確認を行う際など，pingコマンドにお世話になっている方は多いと思います．私も勿論その一人です． ですが，実際pingは何をしているのか？という点は前々理解していませんでした．そこで，pythonにてpingのサブセット（エコー要求とエコー応答のみ）を実装してみました．</p>
@@ -13547,7 +13582,7 @@ font-style: inherit;">true</span></span></code></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://lab.ar90n.net/assets/img/2021-08-01-writing-simple-ping-example/icmp_spec.svg" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">icmp spec</figcaption>
+<figcaption>icmp spec</figcaption>
 </figure>
 </div>
 <p>なお，これらのメッセージはIPデータグラムのペイロードとして送受信されます．</p>
@@ -14196,7 +14231,7 @@ ping echo reply from 8.8.8.8: icmp_seq=9 ttl=37</code></pre>
 </section>
 <section id="参考" class="level2">
 <h2 class="anchored" data-anchor-id="参考">参考</h2>
-<div id="refs" class="references csl-bib-body">
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0">
 <div id="ref-BA69355787" class="csl-entry">
 <div class="csl-left-margin">[1] </div><div class="csl-right-inline">村山公保. 2004. <em><a href="https://ci.nii.ac.jp/ncid/BA69355787">基礎からわかるTCP/IPネットワーク実験プログラミング</a></em>. オーム社.</div>
 </div>
@@ -14215,6 +14250,7 @@ ping echo reply from 8.8.8.8: icmp_seq=9 ttl=37</code></pre>
   <title>paaaaathによる統一的なファイルアクセス</title>
   <link>https://lab.ar90n.net/posts/2021-06-06-accessing-file-wiht-unified-pythonic-api2.html</link>
   <description><![CDATA[ 
+
 
 
 
@@ -14305,13 +14341,25 @@ font-style: inherit;">=</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'gray'</span>)</span></code></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="https://lab.ar90n.net/posts/2021-06-06-accessing-file-wiht-unified-pythonic-api2_files/figure-html/cell-4-output-1.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="https://lab.ar90n.net/posts/2021-06-06-accessing-file-wiht-unified-pythonic-api2_files/figure-html/cell-4-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="https://lab.ar90n.net/posts/2021-06-06-accessing-file-wiht-unified-pythonic-api2_files/figure-html/cell-4-output-2.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="https://lab.ar90n.net/posts/2021-06-06-accessing-file-wiht-unified-pythonic-api2_files/figure-html/cell-4-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="https://lab.ar90n.net/posts/2021-06-06-accessing-file-wiht-unified-pythonic-api2_files/figure-html/cell-4-output-3.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="https://lab.ar90n.net/posts/2021-06-06-accessing-file-wiht-unified-pythonic-api2_files/figure-html/cell-4-output-3.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -14385,7 +14433,7 @@ font-style: inherit;">0</span>].exists()</span>
 </section>
 <section id="参考" class="level2">
 <h2 class="anchored" data-anchor-id="参考">参考</h2>
-<div id="refs" class="references csl-bib-body">
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0">
 <div id="ref-smartopen" class="csl-entry">
 <div class="csl-left-margin">[1] </div><div class="csl-right-inline">Smartopen. <em>GitHub repository</em>. <a href="https://github.com/RaRe-Technologies/smart_open" class="uri">https://github.com/RaRe-Technologies/smart_open</a>; GitHub.</div>
 </div>
@@ -14406,6 +14454,7 @@ font-style: inherit;">0</span>].exists()</span>
   <title>ソフトマックス関数を用いた混合ガウスモデルの計算</title>
   <link>https://lab.ar90n.net/posts/2021-05-30-gaussian-mixture-model-with-softmax.html</link>
   <description><![CDATA[ 
+
 
 
 
@@ -15509,7 +15558,7 @@ font-style: inherit;">=</span> permute(ws, mus, sigmas, ws_hat_em, mus_hat_em, s
 </section>
 <section id="参考文献" class="level2">
 <h2 class="anchored" data-anchor-id="参考文献">参考文献</h2>
-<div id="refs" class="references csl-bib-body">
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0">
 <div id="ref-BA9149967X" class="csl-entry">
 <div class="csl-left-margin">[1] </div><div class="csl-right-inline">杉山将. 2009. <em><a href="https://ci.nii.ac.jp/ncid/BA9149967X">統計的機械学習 : 生成モデルに基づくパターン認識</a></em>. オーム社.</div>
 </div>
@@ -15529,6 +15578,7 @@ font-style: inherit;">=</span> permute(ws, mus, sigmas, ws_hat_em, mus_hat_em, s
   <title>Ubuntu 20.04をシリアルコンソール経由で操作する</title>
   <link>https://lab.ar90n.net/posts/2021-05-26-use-serial-console-in-ubuntu.html</link>
   <description><![CDATA[ 
+
 
 
 

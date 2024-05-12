@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.226">
+<meta name="generator" content="quarto-1.4.554">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -50,12 +50,13 @@ ul.task-list li input[type="checkbox"] {
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
   "keyboard-shortcut": [
     "f",
     "/",
     "s"
   ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -64,6 +65,7 @@ ul.task-list li input[type="checkbox"] {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -141,13 +143,40 @@ cookieconsent.run({
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
 <link rel="stylesheet" href="styles.css">
-<link rel="alternate" type="application/rss+xml" title="lab_note" href="index.xml" data-external="1"><meta property="og:title" content="">
+<link rel="alternate" type="application/rss+xml" title="lab_note" href="index.xml" data-external="1"><meta property="og:title" content="lab_note">
 <meta property="og:image" content="https://lab.ar90n.net/logo.png">
 <meta property="og:site_name" content="lab_note">
 <meta property="og:image:height" content="460">
 <meta property="og:image:width" content="460">
-<meta name="twitter:title" content="">
+<meta name="twitter:title" content="lab_note">
 <meta name="twitter:image" content="https://lab.ar90n.net/logo.png">
 <meta name="twitter:site" content="@ar90n">
 <meta name="twitter:image-height" content="460">
@@ -158,8 +187,8 @@ cookieconsent.run({
 <body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
@@ -173,27 +202,27 @@ cookieconsent.run({
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./about.html" rel="" target="">
- <span class="menu-text">About</span></a>
+    <a class="nav-link" href="./about.html"> 
+<span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./projects.html" rel="" target="">
- <span class="menu-text">Projects</span></a>
+    <a class="nav-link" href="./projects.html"> 
+<span class="menu-text">Projects</span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/ar90n" rel="" target=""><i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/ar90n"> <i class="bi bi-github" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://twitter.com/ar90n" rel="" target=""><i class="bi bi-twitter" role="img">
+    <a class="nav-link" href="https://twitter.com/ar90n"> <i class="bi bi-twitter" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="./index.xml" rel="" target=""><i class="bi bi-rss" role="img">
+    <a class="nav-link" href="./index.xml"> <i class="bi bi-rss" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -218,85 +247,82 @@ cookieconsent.run({
 
 
 
+
 <div class="quarto-listing quarto-listing-container-default" id="listing-listing">
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="開発環境" data-listing-date-sort="1696032000000" data-listing-file-modified-sort="1696090255841" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="12">
+<div class="quarto-post image-right" data-index="0" data-categories="開発環境" data-listing-date-sort="1696032000000" data-listing-file-modified-sort="1696090364814" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="12" data-listing-word-count-sort="2311">
 <div class="thumbnail">
-<p><a href="./posts/2023-09-30-devcontainer-nvidia-cuda.html"> <img src="./assets/img/common/devcontainers.png" class="thumbnail-image"> </a></p>
+<p><a href="./posts/2023-09-30-devcontainer-nvidia-cuda.html" class="no-external"></a></p><a href="./posts/2023-09-30-devcontainer-nvidia-cuda.html" class="no-external">
+<p><img src="./assets/img/common/devcontainers.png" class="thumbnail-image"></p>
+</a><p><a href="./posts/2023-09-30-devcontainer-nvidia-cuda.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2023-09-30-devcontainer-nvidia-cuda.html">
 <h3 class="no-anchor listing-title">
-devcontainersでCUDA環境を整える
+<a href="./posts/2023-09-30-devcontainer-nvidia-cuda.html" class="no-external">devcontainersでCUDA環境を整える</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2023-09-30-devcontainer-nvidia-cuda.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('開発環境'); return false;">
 開発環境
 </div>
 </div>
-<a href="./posts/2023-09-30-devcontainer-nvidia-cuda.html">
 <div class="listing-description">
-devcontainersのFeaturesを使用していい感じにCUDA開発環境を整えることができたので、そのメモです。
+<a href="./posts/2023-09-30-devcontainer-nvidia-cuda.html" class="no-external">devcontainersのFeaturesを使用していい感じにCUDA開発環境を整えることができたので、そのメモです。</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2023-09-30-devcontainer-nvidia-cuda.html">
+<a href="./posts/2023-09-30-devcontainer-nvidia-cuda.html" class="no-external">
 <div class="listing-date">
 Sep 30, 2023
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="1" data-categories="Zig" data-listing-date-sort="1689552000000" data-listing-file-modified-sort="1689583517132" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="10">
+<div class="quarto-post image-right" data-index="1" data-categories="Zig" data-listing-date-sort="1689552000000" data-listing-file-modified-sort="1689583517132" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="10" data-listing-word-count-sort="1851">
 <div class="thumbnail">
-<p><a href="./posts/2023-07-17-polymorphism-in-zig.html"> <img src="./assets/img/common/zig-mark.svg" class="thumbnail-image"> </a></p>
+<p><a href="./posts/2023-07-17-polymorphism-in-zig.html" class="no-external"></a></p><a href="./posts/2023-07-17-polymorphism-in-zig.html" class="no-external">
+<p><img src="./assets/img/common/zig-mark.svg" class="thumbnail-image"></p>
+</a><p><a href="./posts/2023-07-17-polymorphism-in-zig.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2023-07-17-polymorphism-in-zig.html">
 <h3 class="no-anchor listing-title">
-Zigで多態性を表現する
+<a href="./posts/2023-07-17-polymorphism-in-zig.html" class="no-external">Zigで多態性を表現する</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2023-07-17-polymorphism-in-zig.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Zig'); return false;">
 Zig
 </div>
 </div>
-<a href="./posts/2023-07-17-polymorphism-in-zig.html">
 <div class="listing-description">
-実体を表現する構造体を<code>union(enum)</code>でまとめ、関数の呼び出しの際に自身を<code>switch</code>で分岐することで呼び出す関数を判別します。 この際<code>switch</code>の対象に<code>inline else</code>を指定することで記述を簡略化することができます。
+<a href="./posts/2023-07-17-polymorphism-in-zig.html" class="no-external">実体を表現する構造体を<code>union(enum)</code>でまとめ、関数の呼び出しの際に自身を<code>switch</code>で分岐することで呼び出す関数を判別します。 この際<code>switch</code>の対象に<code>inline else</code>を指定することで記述を簡略化することができます。</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2023-07-17-polymorphism-in-zig.html">
+<a href="./posts/2023-07-17-polymorphism-in-zig.html" class="no-external">
 <div class="listing-date">
 Jul 17, 2023
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="2" data-categories="Zig,コンピュータグラフィックス" data-listing-date-sort="1687996800000" data-listing-file-modified-sort="1688086779622" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="quarto-post image-right" data-index="2" data-categories="Zig,コンピュータグラフィックス" data-listing-date-sort="1687996800000" data-listing-file-modified-sort="1713867752494" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="15">
 <div class="thumbnail">
-<p><a href="./posts/2023-06-29-comptime-ray-tracing-in-weekend.html"> <img src="https://raw.githubusercontent.com/ar90n/comptime-ray-tracing/assets/out_300_200.jpg" class="thumbnail-image"> </a></p>
+<p><a href="./posts/2023-06-29-comptime-ray-tracing-in-weekend.html" class="no-external"></a></p><a href="./posts/2023-06-29-comptime-ray-tracing-in-weekend.html" class="no-external">
+<p><img src="https://raw.githubusercontent.com/ar90n/comptime-ray-tracing/assets/out_300_200.jpg" class="thumbnail-image"></p>
+</a><p><a href="./posts/2023-06-29-comptime-ray-tracing-in-weekend.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2023-06-29-comptime-ray-tracing-in-weekend.html">
 <h3 class="no-anchor listing-title">
-Zigでレイトレーシングをしてみる
+<a href="./posts/2023-06-29-comptime-ray-tracing-in-weekend.html" class="no-external">Zigでレイトレーシングをしてみる</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2023-06-29-comptime-ray-tracing-in-weekend.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Zig'); return false;">
 Zig
@@ -305,33 +331,31 @@ Zig
 コンピュータグラフィックス
 </div>
 </div>
-<a href="./posts/2023-06-29-comptime-ray-tracing-in-weekend.html">
 <div class="listing-description">
-Rustの場合と同様に、Zigの勉強を兼ねて，こちらを参考にレイトレーシングを写経してみました． 単純に写経するだけでは面白く無いので、comptimeでレイトレーシング処理を実行することにしました。
+<a href="./posts/2023-06-29-comptime-ray-tracing-in-weekend.html" class="no-external">Rustの場合と同様に、Zigの勉強を兼ねて，こちらを参考にレイトレーシングを写経してみました． 単純に写経するだけでは面白く無いので、comptimeでレイトレーシング処理を実行することにしました。</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2023-06-29-comptime-ray-tracing-in-weekend.html">
+<a href="./posts/2023-06-29-comptime-ray-tracing-in-weekend.html" class="no-external">
 <div class="listing-date">
 Jun 29, 2023
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="3" data-categories="Python,Web" data-listing-date-sort="1669766400000" data-listing-file-modified-sort="1673003009630" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="quarto-post image-right" data-index="3" data-categories="Python,Web" data-listing-date-sort="1669766400000" data-listing-file-modified-sort="1673003009630" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="13">
 <div class="thumbnail">
-<p><a href="./posts/2022-11-30-pypypy.html"> <p class="card-img-top"><img src="assets/img/2022-11-30-pypypy/sc.png"  class="thumbnail-image card-img"/></p> </a></p>
+<p><a href="./posts/2022-11-30-pypypy.html" class="no-external"></a></p><a href="./posts/2022-11-30-pypypy.html" class="no-external">
+<p class="card-img-top"><img src="assets/img/2022-11-30-pypypy/sc.png"  class="thumbnail-image card-img"/></p>
+</a><p><a href="./posts/2022-11-30-pypypy.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2022-11-30-pypypy.html">
 <h3 class="no-anchor listing-title">
-ほとんどPythonで作るWebアプリケーション
+<a href="./posts/2022-11-30-pypypy.html" class="no-external">ほとんどPythonで作るWebアプリケーション</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2022-11-30-pypypy.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Python'); return false;">
 Python
@@ -340,33 +364,31 @@ Python
 Web
 </div>
 </div>
-<a href="./posts/2022-11-30-pypypy.html">
 <div class="listing-description">
-少し前にGoでWebアプリを作成するgogogoというプロジェクトに倣って、 ほとんどPythonのみでWebアプリケーションを作成してみました。
+<a href="./posts/2022-11-30-pypypy.html" class="no-external">少し前にGoでWebアプリを作成するgogogoというプロジェクトに倣って、 ほとんどPythonのみでWebアプリケーションを作成してみました。</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2022-11-30-pypypy.html">
+<a href="./posts/2022-11-30-pypypy.html" class="no-external">
 <div class="listing-date">
 Nov 30, 2022
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="4" data-categories="Go,線形代数" data-listing-date-sort="1668556800000" data-listing-file-modified-sort="1673003009630" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6">
+<div class="quarto-post image-right" data-index="4" data-categories="Go,線形代数" data-listing-date-sort="1668556800000" data-listing-file-modified-sort="1713867879283" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1177">
 <div class="thumbnail">
-<p><a href="./posts/2022-11-16-dot-benchmark-in-go-again.html"> <img src="./_freeze/posts/2022-11-16-dot-benchmark-in-go-again/figure-html/cell-14-output-1.png" class="thumbnail-image"> </a></p>
+<p><a href="./posts/2022-11-16-dot-benchmark-in-go-again.html" class="no-external"></a></p><a href="./posts/2022-11-16-dot-benchmark-in-go-again.html" class="no-external">
+<p><img src="./_freeze/posts/2022-11-16-dot-benchmark-in-go-again/figure-html/cell-14-output-1.png" class="thumbnail-image"></p>
+</a><p><a href="./posts/2022-11-16-dot-benchmark-in-go-again.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2022-11-16-dot-benchmark-in-go-again.html">
 <h3 class="no-anchor listing-title">
-続・Goによるdot積のベンチマーク
+<a href="./posts/2022-11-16-dot-benchmark-in-go-again.html" class="no-external">続・Goによるdot積のベンチマーク</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2022-11-16-dot-benchmark-in-go-again.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Go'); return false;">
 Go
@@ -375,33 +397,31 @@ Go
 線形代数
 </div>
 </div>
-<a href="./posts/2022-11-16-dot-benchmark-in-go-again.html">
 <div class="listing-description">
-WeaviateというGo実装の類似ベクトル検索エンジンで使用しているdot積が非常に早そうだったので再度ベンチマークを取ってみました。
+<a href="./posts/2022-11-16-dot-benchmark-in-go-again.html" class="no-external">WeaviateというGo実装の類似ベクトル検索エンジンで使用しているdot積が非常に早そうだったので再度ベンチマークを取ってみました。</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2022-11-16-dot-benchmark-in-go-again.html">
+<a href="./posts/2022-11-16-dot-benchmark-in-go-again.html" class="no-external">
 <div class="listing-date">
 Nov 16, 2022
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="5" data-categories="Go,線形代数" data-listing-date-sort="1667865600000" data-listing-file-modified-sort="1673003009630" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6">
+<div class="quarto-post image-right" data-index="5" data-categories="Go,線形代数" data-listing-date-sort="1667865600000" data-listing-file-modified-sort="1673003009630" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1108">
 <div class="thumbnail">
-<p><a href="./posts/2022-11-08-dot-benchmark-in-go.html"> <img src="./_freeze/posts/2022-11-08-dot-benchmark-in-go/figure-html/cell-14-output-1.png" class="thumbnail-image"> </a></p>
+<p><a href="./posts/2022-11-08-dot-benchmark-in-go.html" class="no-external"></a></p><a href="./posts/2022-11-08-dot-benchmark-in-go.html" class="no-external">
+<p><img src="./_freeze/posts/2022-11-08-dot-benchmark-in-go/figure-html/cell-14-output-1.png" class="thumbnail-image"></p>
+</a><p><a href="./posts/2022-11-08-dot-benchmark-in-go.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2022-11-08-dot-benchmark-in-go.html">
 <h3 class="no-anchor listing-title">
-Goによるdot積のベンチマーク
+<a href="./posts/2022-11-08-dot-benchmark-in-go.html" class="no-external">Goによるdot積のベンチマーク</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2022-11-08-dot-benchmark-in-go.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Go'); return false;">
 Go
@@ -410,33 +430,31 @@ Go
 線形代数
 </div>
 </div>
-<a href="./posts/2022-11-08-dot-benchmark-in-go.html">
 <div class="listing-description">
-Goにて類似ベクトル検索を実装したところ、dot積の速度がパフォーマンスの律速となりました。 そこで、Goにてドット積のベンチマークを行い、各種実装方法の速度を比較してみました。
+<a href="./posts/2022-11-08-dot-benchmark-in-go.html" class="no-external">Goにて類似ベクトル検索を実装したところ、dot積の速度がパフォーマンスの律速となりました。 そこで、Goにてドット積のベンチマークを行い、各種実装方法の速度を比較してみました。</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2022-11-08-dot-benchmark-in-go.html">
+<a href="./posts/2022-11-08-dot-benchmark-in-go.html" class="no-external">
 <div class="listing-date">
 Nov 8, 2022
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="6" data-categories="Python,3Dプリンタ" data-listing-date-sort="1667606400000" data-listing-file-modified-sort="1673003009630" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2">
+<div class="quarto-post image-right" data-index="6" data-categories="Python,3Dプリンタ" data-listing-date-sort="1667606400000" data-listing-file-modified-sort="1673003009630" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="352">
 <div class="thumbnail">
-<p><a href="./posts/2022-11-05-develop-octoprint-plugin.html"> <img src="./assets/img/2022-11-05-develop-octoprint-plugin/sidebar.png" class="thumbnail-image"> </a></p>
+<p><a href="./posts/2022-11-05-develop-octoprint-plugin.html" class="no-external"></a></p><a href="./posts/2022-11-05-develop-octoprint-plugin.html" class="no-external">
+<p><img src="./assets/img/2022-11-05-develop-octoprint-plugin/sidebar.png" class="thumbnail-image"></p>
+</a><p><a href="./posts/2022-11-05-develop-octoprint-plugin.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2022-11-05-develop-octoprint-plugin.html">
 <h3 class="no-anchor listing-title">
-OctoPrintのプラグインを作ってみる
+<a href="./posts/2022-11-05-develop-octoprint-plugin.html" class="no-external">OctoPrintのプラグインを作ってみる</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2022-11-05-develop-octoprint-plugin.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Python'); return false;">
 Python
@@ -445,33 +463,31 @@ Python
 3Dプリンタ
 </div>
 </div>
-<a href="./posts/2022-11-05-develop-octoprint-plugin.html">
 <div class="listing-description">
-OctoPrintからSwitchBot PlugのOn/Offを制御するプラグインを作ってみました。 今回、このプラグインの作成を通してハマった点のメモを残しておきます。
+<a href="./posts/2022-11-05-develop-octoprint-plugin.html" class="no-external">OctoPrintからSwitchBot PlugのOn/Offを制御するプラグインを作ってみました。 今回、このプラグインの作成を通してハマった点のメモを残しておきます。</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2022-11-05-develop-octoprint-plugin.html">
+<a href="./posts/2022-11-05-develop-octoprint-plugin.html" class="no-external">
 <div class="listing-date">
 Nov 5, 2022
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="7" data-categories="Python,信号処理" data-listing-date-sort="1666569600000" data-listing-file-modified-sort="1673003009630" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4">
+<div class="quarto-post image-right" data-index="7" data-categories="Python,信号処理" data-listing-date-sort="1666569600000" data-listing-file-modified-sort="1673003009630" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="638">
 <div class="thumbnail">
-<p><a href="./posts/2022-10-24-simple-voice-changer.html"> <img src="./_freeze/posts/2022-10-24-simple-voice-changer/figure-html/cell-2-output-1.png" class="thumbnail-image"> </a></p>
+<p><a href="./posts/2022-10-24-simple-voice-changer.html" class="no-external"></a></p><a href="./posts/2022-10-24-simple-voice-changer.html" class="no-external">
+<p><img src="./_freeze/posts/2022-10-24-simple-voice-changer/figure-html/cell-2-output-1.png" class="thumbnail-image"></p>
+</a><p><a href="./posts/2022-10-24-simple-voice-changer.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2022-10-24-simple-voice-changer.html">
 <h3 class="no-anchor listing-title">
-ARモデルによるシンプルなボイスチェンジャ
+<a href="./posts/2022-10-24-simple-voice-changer.html" class="no-external">ARモデルによるシンプルなボイスチェンジャ</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2022-10-24-simple-voice-changer.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Python'); return false;">
 Python
@@ -480,65 +496,61 @@ Python
 信号処理
 </div>
 </div>
-<a href="./posts/2022-10-24-simple-voice-changer.html">
 <div class="listing-description">
-音声の生成過程をソースとフィルタによってモデル化する手法として、ソースフィルタモデル<span class="citation" data-cites="1130289132726961410">[4]</span>が知られています。 今回、このフィルタをARモデルを用いて実装し、ソースフィルタモデルによるシンプルなボイスチェンジャを作成しました。
+<a href="./posts/2022-10-24-simple-voice-changer.html" class="no-external">音声の生成過程をソースとフィルタによってモデル化する手法として、ソースフィルタモデル<span class="citation" data-cites="1130289132726961410">[4]</span>が知られています。 今回、このフィルタをARモデルを用いて実装し、ソースフィルタモデルによるシンプルなボイスチェンジャを作成しました。</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2022-10-24-simple-voice-changer.html">
+<a href="./posts/2022-10-24-simple-voice-changer.html" class="no-external">
 <div class="listing-date">
 Oct 24, 2022
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="8" data-categories="Ubuntu" data-listing-date-sort="1660262400000" data-listing-file-modified-sort="1685929922666" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3">
+<div class="quarto-post image-right" data-index="8" data-categories="Ubuntu" data-listing-date-sort="1660262400000" data-listing-file-modified-sort="1685929922666" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="550">
 <div class="thumbnail">
-<p><a href="./posts/2022-08-12-xg-c100c-in-ubuntu-server.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
+<p><a href="./posts/2022-08-12-xg-c100c-in-ubuntu-server.html" class="no-external"></a></p><a href="./posts/2022-08-12-xg-c100c-in-ubuntu-server.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./posts/2022-08-12-xg-c100c-in-ubuntu-server.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2022-08-12-xg-c100c-in-ubuntu-server.html">
 <h3 class="no-anchor listing-title">
-XG-C100Cを追加してオンボードNICとブリッジ接続する
+<a href="./posts/2022-08-12-xg-c100c-in-ubuntu-server.html" class="no-external">XG-C100Cを追加してオンボードNICとブリッジ接続する</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2022-08-12-xg-c100c-in-ubuntu-server.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Ubuntu'); return false;">
 Ubuntu
 </div>
 </div>
-<a href="./posts/2022-08-12-xg-c100c-in-ubuntu-server.html">
 <div class="listing-description">
-Ubuntu 22.04で運用している開発用マシンにXG-C100Cを追加した記録です。 最終的に以下のような環境を構築します。
+<a href="./posts/2022-08-12-xg-c100c-in-ubuntu-server.html" class="no-external">Ubuntu 22.04で運用している開発用マシンにXG-C100Cを追加した記録です。 最終的に以下のような環境を構築します。</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2022-08-12-xg-c100c-in-ubuntu-server.html">
+<a href="./posts/2022-08-12-xg-c100c-in-ubuntu-server.html" class="no-external">
 <div class="listing-date">
 Aug 12, 2022
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="9" data-categories="機械学習,数学,Python" data-listing-date-sort="1644969600000" data-listing-file-modified-sort="1666609869795" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="quarto-post image-right" data-index="9" data-categories="機械学習,数学,Python" data-listing-date-sort="1644969600000" data-listing-file-modified-sort="1666609869795" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="44">
 <div class="thumbnail">
-<p><a href="./posts/2022-02-16-kdtree-and-curse-of-dimensionality.html"> <p class="card-img-top"><img src="posts/2022-02-16-kdtree-and-curse-of-dimensionality_files/figure-html/cell-3-output-1.png"  class="thumbnail-image card-img"/></p> </a></p>
+<p><a href="./posts/2022-02-16-kdtree-and-curse-of-dimensionality.html" class="no-external"></a></p><a href="./posts/2022-02-16-kdtree-and-curse-of-dimensionality.html" class="no-external">
+<p class="card-img-top"><img src="posts/2022-02-16-kdtree-and-curse-of-dimensionality_files/figure-html/cell-3-output-1.png"  class="thumbnail-image card-img"/></p>
+</a><p><a href="./posts/2022-02-16-kdtree-and-curse-of-dimensionality.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2022-02-16-kdtree-and-curse-of-dimensionality.html">
 <h3 class="no-anchor listing-title">
-KD木と次元の呪い
+<a href="./posts/2022-02-16-kdtree-and-curse-of-dimensionality.html" class="no-external">KD木と次元の呪い</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2022-02-16-kdtree-and-curse-of-dimensionality.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('機械学習'); return false;">
 機械学習
@@ -550,33 +562,31 @@ KD木と次元の呪い
 Python
 </div>
 </div>
-<a href="./posts/2022-02-16-kdtree-and-curse-of-dimensionality.html">
 <div class="listing-description">
-取り扱うデータが高次元になると次元の呪いと呼ばれる問題が生じることが広く知られています． この次元の呪いが示す問題は, 使用される文脈に応じて様々であると思います． ここでは，KD木<span class="citation" data-cites="wiki:Kd木">[2]</span>を用いた近傍探索における問題について考察します．
+<a href="./posts/2022-02-16-kdtree-and-curse-of-dimensionality.html" class="no-external">取り扱うデータが高次元になると次元の呪いと呼ばれる問題が生じることが広く知られています． この次元の呪いが示す問題は, 使用される文脈に応じて様々であると思います． ここでは，KD木<span class="citation" data-cites="wiki:Kd木">[2]</span>を用いた近傍探索における問題について考察します．</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2022-02-16-kdtree-and-curse-of-dimensionality.html">
+<a href="./posts/2022-02-16-kdtree-and-curse-of-dimensionality.html" class="no-external">
 <div class="listing-date">
 Feb 16, 2022
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="10" data-categories="Go,アルゴリズム,機械学習,類似ベクトル検索" data-listing-date-sort="1643673600000" data-listing-file-modified-sort="1666609864003" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5">
+<div class="quarto-post image-right" data-index="10" data-categories="Go,アルゴリズム,機械学習,類似ベクトル検索" data-listing-date-sort="1643673600000" data-listing-file-modified-sort="1666609864003" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="951">
 <div class="thumbnail">
-<p><a href="./posts/2022-02-01-mimic-annoy-wiht-go.html"> <p class="card-img-top"><img src="assets/img/2022-02-01-mimic-annoy-wiht-go/cutplane.png"  class="thumbnail-image card-img"/></p> </a></p>
+<p><a href="./posts/2022-02-01-mimic-annoy-wiht-go.html" class="no-external"></a></p><a href="./posts/2022-02-01-mimic-annoy-wiht-go.html" class="no-external">
+<p class="card-img-top"><img src="assets/img/2022-02-01-mimic-annoy-wiht-go/cutplane.png"  class="thumbnail-image card-img"/></p>
+</a><p><a href="./posts/2022-02-01-mimic-annoy-wiht-go.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2022-02-01-mimic-annoy-wiht-go.html">
 <h3 class="no-anchor listing-title">
-Goで類似ベクトルを検索する
+<a href="./posts/2022-02-01-mimic-annoy-wiht-go.html" class="no-external">Goで類似ベクトルを検索する</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2022-02-01-mimic-annoy-wiht-go.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Go'); return false;">
 Go
@@ -591,65 +601,61 @@ Go
 類似ベクトル検索
 </div>
 </div>
-<a href="./posts/2022-02-01-mimic-annoy-wiht-go.html">
 <div class="listing-description">
-類似ベクトル検索を実現する代表的な実装にAnnoyがあります． 今回，Goの修練としてAnnoyの一部機能をGoで再実装しました．
+<a href="./posts/2022-02-01-mimic-annoy-wiht-go.html" class="no-external">類似ベクトル検索を実現する代表的な実装にAnnoyがあります． 今回，Goの修練としてAnnoyの一部機能をGoで再実装しました．</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2022-02-01-mimic-annoy-wiht-go.html">
+<a href="./posts/2022-02-01-mimic-annoy-wiht-go.html" class="no-external">
 <div class="listing-date">
 Feb 1, 2022
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="11" data-categories="Rust" data-listing-date-sort="1643500800000" data-listing-file-modified-sort="1666609858555" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2">
+<div class="quarto-post image-right" data-index="11" data-categories="Rust" data-listing-date-sort="1643500800000" data-listing-file-modified-sort="1666609858555" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="299">
 <div class="thumbnail">
-<p><a href="./posts/2022-01-30-cargo-edit-workaround.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
+<p><a href="./posts/2022-01-30-cargo-edit-workaround.html" class="no-external"></a></p><a href="./posts/2022-01-30-cargo-edit-workaround.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./posts/2022-01-30-cargo-edit-workaround.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2022-01-30-cargo-edit-workaround.html">
 <h3 class="no-anchor listing-title">
-cargo-editが上手く動かない時の回避策
+<a href="./posts/2022-01-30-cargo-edit-workaround.html" class="no-external">cargo-editが上手く動かない時の回避策</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2022-01-30-cargo-edit-workaround.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Rust'); return false;">
 Rust
 </div>
 </div>
-<a href="./posts/2022-01-30-cargo-edit-workaround.html">
 <div class="listing-description">
-cargo-edit v0.8.0が上手く動かなかったので，その対処法についてのメモです．
+<a href="./posts/2022-01-30-cargo-edit-workaround.html" class="no-external">cargo-edit v0.8.0が上手く動かなかったので，その対処法についてのメモです．</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2022-01-30-cargo-edit-workaround.html">
+<a href="./posts/2022-01-30-cargo-edit-workaround.html" class="no-external">
 <div class="listing-date">
 Jan 30, 2022
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="12" data-categories="AWS,Web,クラウド,Amplify" data-listing-date-sort="1641168000000" data-listing-file-modified-sort="1666609853867" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2">
+<div class="quarto-post image-right" data-index="12" data-categories="AWS,Web,クラウド,Amplify" data-listing-date-sort="1641168000000" data-listing-file-modified-sort="1666609853867" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="230">
 <div class="thumbnail">
-<p><a href="./posts/2022-01-03-aws-amplify-tips.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
+<p><a href="./posts/2022-01-03-aws-amplify-tips.html" class="no-external"></a></p><a href="./posts/2022-01-03-aws-amplify-tips.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./posts/2022-01-03-aws-amplify-tips.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2022-01-03-aws-amplify-tips.html">
 <h3 class="no-anchor listing-title">
-AWS Amplifyのメモ
+<a href="./posts/2022-01-03-aws-amplify-tips.html" class="no-external">AWS Amplifyのメモ</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2022-01-03-aws-amplify-tips.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('AWS'); return false;">
 AWS
@@ -664,33 +670,31 @@ Web
 Amplify
 </div>
 </div>
-<a href="./posts/2022-01-03-aws-amplify-tips.html">
 <div class="listing-description">
-AWS Amplifyを使ってみて個人的にハマったことのメモです．
+<a href="./posts/2022-01-03-aws-amplify-tips.html" class="no-external">AWS Amplifyを使ってみて個人的にハマったことのメモです．</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2022-01-03-aws-amplify-tips.html">
+<a href="./posts/2022-01-03-aws-amplify-tips.html" class="no-external">
 <div class="listing-date">
 Jan 3, 2022
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="13" data-categories="Rust,画像処理" data-listing-date-sort="1632960000000" data-listing-file-modified-sort="1685929848865" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2">
+<div class="quarto-post image-right" data-index="13" data-categories="Rust,画像処理" data-listing-date-sort="1632960000000" data-listing-file-modified-sort="1685929848865" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="336">
 <div class="thumbnail">
-<p><a href="./posts/2021-09-30-simple-guided-filter-rs.html"> <img src="./assets/img/2021-09-30-simple-guided-filter-rs/media/output.jpg" class="thumbnail-image"> </a></p>
+<p><a href="./posts/2021-09-30-simple-guided-filter-rs.html" class="no-external"></a></p><a href="./posts/2021-09-30-simple-guided-filter-rs.html" class="no-external">
+<p><img src="./assets/img/2021-09-30-simple-guided-filter-rs/media/output.jpg" class="thumbnail-image"></p>
+</a><p><a href="./posts/2021-09-30-simple-guided-filter-rs.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2021-09-30-simple-guided-filter-rs.html">
 <h3 class="no-anchor listing-title">
-RustによるシンプルなGuidedFilterの実装
+<a href="./posts/2021-09-30-simple-guided-filter-rs.html" class="no-external">RustによるシンプルなGuidedFilterの実装</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2021-09-30-simple-guided-filter-rs.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Rust'); return false;">
 Rust
@@ -699,97 +703,91 @@ Rust
 画像処理
 </div>
 </div>
-<a href="./posts/2021-09-30-simple-guided-filter-rs.html">
 <div class="listing-description">
-高速なエッジ保持平滑化フィルタとしてGuidedFilter<span class="citation" data-cites="he2012guided">[1]</span>が広く知られています．この記事では輝度信号に限定したシンプルな実装を紹介します．なお，実装にはRustとimageクレートを用いました．
+<a href="./posts/2021-09-30-simple-guided-filter-rs.html" class="no-external">高速なエッジ保持平滑化フィルタとしてGuidedFilter<span class="citation" data-cites="he2012guided">[1]</span>が広く知られています．この記事では輝度信号に限定したシンプルな実装を紹介します．なお，実装にはRustとimageクレートを用いました．</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2021-09-30-simple-guided-filter-rs.html">
+<a href="./posts/2021-09-30-simple-guided-filter-rs.html" class="no-external">
 <div class="listing-date">
 Sep 30, 2021
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="14" data-categories="ハードウェア" data-listing-date-sort="1629936000000" data-listing-file-modified-sort="1666609844495" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="quarto-post image-right" data-index="14" data-categories="ハードウェア" data-listing-date-sort="1629936000000" data-listing-file-modified-sort="1666609844495" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="58">
 <div class="thumbnail">
-<p><a href="./posts/2021-08-26-make-usb-to-ttlx4.html"> <p class="card-img-top"><img src="assets/img/2021-08-28-make-usb-to-ttlx4/media/Schematic_USB_to_TTL4_2021-08-25.png"  class="thumbnail-image card-img"/></p> </a></p>
+<p><a href="./posts/2021-08-26-make-usb-to-ttlx4.html" class="no-external"></a></p><a href="./posts/2021-08-26-make-usb-to-ttlx4.html" class="no-external">
+<p class="card-img-top"><img src="assets/img/2021-08-28-make-usb-to-ttlx4/media/Schematic_USB_to_TTL4_2021-08-25.png"  class="thumbnail-image card-img"/></p>
+</a><p><a href="./posts/2021-08-26-make-usb-to-ttlx4.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2021-08-26-make-usb-to-ttlx4.html">
 <h3 class="no-anchor listing-title">
-USB to TTLx4ケーブルの作成
+<a href="./posts/2021-08-26-make-usb-to-ttlx4.html" class="no-external">USB to TTLx4ケーブルの作成</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2021-08-26-make-usb-to-ttlx4.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('ハードウェア'); return false;">
 ハードウェア
 </div>
 </div>
-<a href="./posts/2021-08-26-make-usb-to-ttlx4.html">
 <div class="listing-description">
-USBハブとUSBシリアルコンバータとを組み合わせることで，USB(1ch) to TTL(4ch) の変換ケーブルを作成しました．
+<a href="./posts/2021-08-26-make-usb-to-ttlx4.html" class="no-external">USBハブとUSBシリアルコンバータとを組み合わせることで，USB(1ch) to TTL(4ch) の変換ケーブルを作成しました．</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2021-08-26-make-usb-to-ttlx4.html">
+<a href="./posts/2021-08-26-make-usb-to-ttlx4.html" class="no-external">
 <div class="listing-date">
 Aug 26, 2021
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="15" data-categories="Kubernetes" data-listing-date-sort="1629504000000" data-listing-file-modified-sort="1688086823658" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8">
+<div class="quarto-post image-right" data-index="15" data-categories="Kubernetes" data-listing-date-sort="1629504000000" data-listing-file-modified-sort="1688086823658" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1595">
 <div class="thumbnail">
-<p><a href="./posts/2021-08-21-k3s-cluster-on-rp4.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
+<p><a href="./posts/2021-08-21-k3s-cluster-on-rp4.html" class="no-external"></a></p><a href="./posts/2021-08-21-k3s-cluster-on-rp4.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./posts/2021-08-21-k3s-cluster-on-rp4.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2021-08-21-k3s-cluster-on-rp4.html">
 <h3 class="no-anchor listing-title">
-k3sクラスタ on Raspberry Pi 4
+<a href="./posts/2021-08-21-k3s-cluster-on-rp4.html" class="no-external">k3sクラスタ on Raspberry Pi 4</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2021-08-21-k3s-cluster-on-rp4.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Kubernetes'); return false;">
 Kubernetes
 </div>
 </div>
-<a href="./posts/2021-08-21-k3s-cluster-on-rp4.html">
 <div class="listing-description">
-Raspberry Pi 4+k3sで構築したクラスタに関するメモです．
+<a href="./posts/2021-08-21-k3s-cluster-on-rp4.html" class="no-external">Raspberry Pi 4+k3sで構築したクラスタに関するメモです．</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2021-08-21-k3s-cluster-on-rp4.html">
+<a href="./posts/2021-08-21-k3s-cluster-on-rp4.html" class="no-external">
 <div class="listing-date">
 Aug 21, 2021
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="16" data-categories="Python,ネットワーク" data-listing-date-sort="1627776000000" data-listing-file-modified-sort="1666609834131" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="quarto-post image-right" data-index="16" data-categories="Python,ネットワーク" data-listing-date-sort="1627776000000" data-listing-file-modified-sort="1666609834131" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="21">
 <div class="thumbnail">
-<p><a href="./posts/2021-08-01-writing-simple-ping-example.html"> <p class="card-img-top"><img src="assets/img/2021-08-01-writing-simple-ping-example/icmp_spec.svg"  class="thumbnail-image card-img"/></p> </a></p>
+<p><a href="./posts/2021-08-01-writing-simple-ping-example.html" class="no-external"></a></p><a href="./posts/2021-08-01-writing-simple-ping-example.html" class="no-external">
+<p class="card-img-top"><img src="assets/img/2021-08-01-writing-simple-ping-example/icmp_spec.svg"  class="thumbnail-image card-img"/></p>
+</a><p><a href="./posts/2021-08-01-writing-simple-ping-example.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2021-08-01-writing-simple-ping-example.html">
 <h3 class="no-anchor listing-title">
-Pythonでpingの実装してみる
+<a href="./posts/2021-08-01-writing-simple-ping-example.html" class="no-external">Pythonでpingの実装してみる</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2021-08-01-writing-simple-ping-example.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Python'); return false;">
 Python
@@ -798,33 +796,31 @@ Python
 ネットワーク
 </div>
 </div>
-<a href="./posts/2021-08-01-writing-simple-ping-example.html">
 <div class="listing-description">
-ネットワークの疎通確認を行う際など，pingコマンドにお世話になっている方は多いと思います．私も勿論その一人です． ですが，実際pingは何をしているのか？という点は前々理解していませんでした．そこで，pythonにてpingのサブセット（エコー要求とエコー応答のみ）を実装してみました．
+<a href="./posts/2021-08-01-writing-simple-ping-example.html" class="no-external">ネットワークの疎通確認を行う際など，pingコマンドにお世話になっている方は多いと思います．私も勿論その一人です． ですが，実際pingは何をしているのか？という点は前々理解していませんでした．そこで，pythonにてpingのサブセット（エコー要求とエコー応答のみ）を実装してみました．</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2021-08-01-writing-simple-ping-example.html">
+<a href="./posts/2021-08-01-writing-simple-ping-example.html" class="no-external">
 <div class="listing-date">
 Aug 1, 2021
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="17" data-categories="クラウド,Python,AWS,GCP" data-listing-date-sort="1622937600000" data-listing-file-modified-sort="1666609828919" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="quarto-post image-right" data-index="17" data-categories="クラウド,Python,AWS,GCP" data-listing-date-sort="1622937600000" data-listing-file-modified-sort="1666609828919" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="19">
 <div class="thumbnail">
-<p><a href="./posts/2021-06-06-accessing-file-wiht-unified-pythonic-api2.html"> <p class="card-img-top"><img src="posts/2021-06-06-accessing-file-wiht-unified-pythonic-api2_files/figure-html/cell-4-output-1.png"  class="thumbnail-image card-img"/></p> </a></p>
+<p><a href="./posts/2021-06-06-accessing-file-wiht-unified-pythonic-api2.html" class="no-external"></a></p><a href="./posts/2021-06-06-accessing-file-wiht-unified-pythonic-api2.html" class="no-external">
+<p class="card-img-top"><img src="posts/2021-06-06-accessing-file-wiht-unified-pythonic-api2_files/figure-html/cell-4-output-1.png"  class="thumbnail-image card-img"/></p>
+</a><p><a href="./posts/2021-06-06-accessing-file-wiht-unified-pythonic-api2.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2021-06-06-accessing-file-wiht-unified-pythonic-api2.html">
 <h3 class="no-anchor listing-title">
-paaaaathによる統一的なファイルアクセス
+<a href="./posts/2021-06-06-accessing-file-wiht-unified-pythonic-api2.html" class="no-external">paaaaathによる統一的なファイルアクセス</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2021-06-06-accessing-file-wiht-unified-pythonic-api2.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('クラウド'); return false;">
 クラウド
@@ -839,33 +835,31 @@ AWS
 GCP
 </div>
 </div>
-<a href="./posts/2021-06-06-accessing-file-wiht-unified-pythonic-api2.html">
 <div class="listing-description">
-以前の記事で，smart_openによって統一的にファイルアクセスが可能であることを紹介しました． しかしながら，<code>//</code>を適切に扱うことができないため，URLを扱うには問題がありました． そこで，この問題を解決しsmart_openをラップしたpaaaaathを作成しました．
+<a href="./posts/2021-06-06-accessing-file-wiht-unified-pythonic-api2.html" class="no-external">以前の記事で，smart_openによって統一的にファイルアクセスが可能であることを紹介しました． しかしながら，<code>//</code>を適切に扱うことができないため，URLを扱うには問題がありました． そこで，この問題を解決しsmart_openをラップしたpaaaaathを作成しました．</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2021-06-06-accessing-file-wiht-unified-pythonic-api2.html">
+<a href="./posts/2021-06-06-accessing-file-wiht-unified-pythonic-api2.html" class="no-external">
 <div class="listing-date">
 Jun 6, 2021
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="18" data-categories="機械学習,信号処理,Python" data-listing-date-sort="1622332800000" data-listing-file-modified-sort="1666609823463" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5">
+<div class="quarto-post image-right" data-index="18" data-categories="機械学習,信号処理,Python" data-listing-date-sort="1622332800000" data-listing-file-modified-sort="1666609823463" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="850">
 <div class="thumbnail">
-<p><a href="./posts/2021-05-30-gaussian-mixture-model-with-softmax.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
+<p><a href="./posts/2021-05-30-gaussian-mixture-model-with-softmax.html" class="no-external"></a></p><a href="./posts/2021-05-30-gaussian-mixture-model-with-softmax.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./posts/2021-05-30-gaussian-mixture-model-with-softmax.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2021-05-30-gaussian-mixture-model-with-softmax.html">
 <h3 class="no-anchor listing-title">
-ソフトマックス関数を用いた混合ガウスモデルの計算
+<a href="./posts/2021-05-30-gaussian-mixture-model-with-softmax.html" class="no-external">ソフトマックス関数を用いた混合ガウスモデルの計算</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2021-05-30-gaussian-mixture-model-with-softmax.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('機械学習'); return false;">
 機械学習
@@ -877,65 +871,61 @@ Jun 6, 2021
 Python
 </div>
 </div>
-<a href="./posts/2021-05-30-gaussian-mixture-model-with-softmax.html">
 <div class="listing-description">
-多峰性のある分布表現する方法として，ガウス分布の線形結合を用いる混合ガウスモデルが広く知られています． しかしがなら，観測したサンプルから混合ガウスモデルのパラメータを解析的の求めることはできません． そのため，EMアルゴリズム等を用いて数値計算的にパラメータを推定します．
+<a href="./posts/2021-05-30-gaussian-mixture-model-with-softmax.html" class="no-external">多峰性のある分布表現する方法として，ガウス分布の線形結合を用いる混合ガウスモデルが広く知られています． しかしがなら，観測したサンプルから混合ガウスモデルのパラメータを解析的の求めることはできません． そのため，EMアルゴリズム等を用いて数値計算的にパラメータを推定します．</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2021-05-30-gaussian-mixture-model-with-softmax.html">
+<a href="./posts/2021-05-30-gaussian-mixture-model-with-softmax.html" class="no-external">
 <div class="listing-date">
 May 30, 2021
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="19" data-categories="Ubuntu" data-listing-date-sort="1621987200000" data-listing-file-modified-sort="1685930047927" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2">
+<div class="quarto-post image-right" data-index="19" data-categories="Ubuntu" data-listing-date-sort="1621987200000" data-listing-file-modified-sort="1685930047927" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="329">
 <div class="thumbnail">
-<p><a href="./posts/2021-05-26-use-serial-console-in-ubuntu.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
+<p><a href="./posts/2021-05-26-use-serial-console-in-ubuntu.html" class="no-external"></a></p><a href="./posts/2021-05-26-use-serial-console-in-ubuntu.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./posts/2021-05-26-use-serial-console-in-ubuntu.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2021-05-26-use-serial-console-in-ubuntu.html">
 <h3 class="no-anchor listing-title">
-Ubuntu 20.04をシリアルコンソール経由で操作する
+<a href="./posts/2021-05-26-use-serial-console-in-ubuntu.html" class="no-external">Ubuntu 20.04をシリアルコンソール経由で操作する</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2021-05-26-use-serial-console-in-ubuntu.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Ubuntu'); return false;">
 Ubuntu
 </div>
 </div>
-<a href="./posts/2021-05-26-use-serial-console-in-ubuntu.html">
 <div class="listing-description">
-普段SSHで管理しているサーバーが，ネットワーク関連のトラブルに見舞われると，いつも通りにログインできず色々と大変です． そこで，Ubuntu 20.04をシリアルコンソール経由で操作する環境を構築します．
+<a href="./posts/2021-05-26-use-serial-console-in-ubuntu.html" class="no-external">普段SSHで管理しているサーバーが，ネットワーク関連のトラブルに見舞われると，いつも通りにログインできず色々と大変です． そこで，Ubuntu 20.04をシリアルコンソール経由で操作する環境を構築します．</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2021-05-26-use-serial-console-in-ubuntu.html">
+<a href="./posts/2021-05-26-use-serial-console-in-ubuntu.html" class="no-external">
 <div class="listing-date">
 May 26, 2021
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="20" data-categories="Rust,コンピュータグラフィックス" data-listing-date-sort="1617062400000" data-listing-file-modified-sort="1666609812279" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="quarto-post image-right" data-index="20" data-categories="Rust,コンピュータグラフィックス" data-listing-date-sort="1617062400000" data-listing-file-modified-sort="1666609812279" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="16">
 <div class="thumbnail">
-<p><a href="./posts/2021-03-30-ray-tracing-in-weekend.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
+<p><a href="./posts/2021-03-30-ray-tracing-in-weekend.html" class="no-external"></a></p><a href="./posts/2021-03-30-ray-tracing-in-weekend.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./posts/2021-03-30-ray-tracing-in-weekend.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2021-03-30-ray-tracing-in-weekend.html">
 <h3 class="no-anchor listing-title">
-Rustでレイトレーシングをしてみる
+<a href="./posts/2021-03-30-ray-tracing-in-weekend.html" class="no-external">Rustでレイトレーシングをしてみる</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2021-03-30-ray-tracing-in-weekend.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Rust'); return false;">
 Rust
@@ -944,33 +934,31 @@ Rust
 コンピュータグラフィックス
 </div>
 </div>
-<a href="./posts/2021-03-30-ray-tracing-in-weekend.html">
 <div class="listing-description">
-Rustの勉強を兼ねて，こちらを参考にレイトレーシングを写経してみました．
+<a href="./posts/2021-03-30-ray-tracing-in-weekend.html" class="no-external">Rustの勉強を兼ねて，こちらを参考にレイトレーシングを写経してみました．</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2021-03-30-ray-tracing-in-weekend.html">
+<a href="./posts/2021-03-30-ray-tracing-in-weekend.html" class="no-external">
 <div class="listing-date">
 Mar 30, 2021
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="21" data-categories="Rust,glutin,OpenGL,コンピュータグラフィックス" data-listing-date-sort="1612137600000" data-listing-file-modified-sort="1666609807827" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5">
+<div class="quarto-post image-right" data-index="21" data-categories="Rust,glutin,OpenGL,コンピュータグラフィックス" data-listing-date-sort="1612137600000" data-listing-file-modified-sort="1666609807827" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="994">
 <div class="thumbnail">
-<p><a href="./posts/2021-02-01-getting-started-with-glutin.html"> <p class="card-img-top"><img src="assets/img/2021-02-01-getting-started-with-glutin/media/sample.png"  class="thumbnail-image card-img"/></p> </a></p>
+<p><a href="./posts/2021-02-01-getting-started-with-glutin.html" class="no-external"></a></p><a href="./posts/2021-02-01-getting-started-with-glutin.html" class="no-external">
+<p class="card-img-top"><img src="assets/img/2021-02-01-getting-started-with-glutin/media/sample.png"  class="thumbnail-image card-img"/></p>
+</a><p><a href="./posts/2021-02-01-getting-started-with-glutin.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2021-02-01-getting-started-with-glutin.html">
 <h3 class="no-anchor listing-title">
-glutinに入門してみる
+<a href="./posts/2021-02-01-getting-started-with-glutin.html" class="no-external">glutinに入門してみる</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2021-02-01-getting-started-with-glutin.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Rust'); return false;">
 Rust
@@ -985,97 +973,91 @@ OpenGL
 コンピュータグラフィックス
 </div>
 </div>
-<a href="./posts/2021-02-01-getting-started-with-glutin.html">
 <div class="listing-description">
-glutin に入門した記録です． Objファイルをロードして，スタンフォードバニーを表示するサンプルプログラムを作成します．
+<a href="./posts/2021-02-01-getting-started-with-glutin.html" class="no-external">glutin に入門した記録です． Objファイルをロードして，スタンフォードバニーを表示するサンプルプログラムを作成します．</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2021-02-01-getting-started-with-glutin.html">
+<a href="./posts/2021-02-01-getting-started-with-glutin.html" class="no-external">
 <div class="listing-date">
 Feb 1, 2021
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="22" data-categories="開発環境" data-listing-date-sort="1609891200000" data-listing-file-modified-sort="1666609802062" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="quarto-post image-right" data-index="22" data-categories="開発環境" data-listing-date-sort="1609891200000" data-listing-file-modified-sort="1666609802062" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="5">
 <div class="thumbnail">
-<p><a href="./posts/2021-01-06-install-starship.html"> <p class="card-img-top"><img src="assets/img/2021-01-06-install-starship/media/sc.png"  class="thumbnail-image card-img"/></p> </a></p>
+<p><a href="./posts/2021-01-06-install-starship.html" class="no-external"></a></p><a href="./posts/2021-01-06-install-starship.html" class="no-external">
+<p class="card-img-top"><img src="assets/img/2021-01-06-install-starship/media/sc.png"  class="thumbnail-image card-img"/></p>
+</a><p><a href="./posts/2021-01-06-install-starship.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2021-01-06-install-starship.html">
 <h3 class="no-anchor listing-title">
-starshipの導入
+<a href="./posts/2021-01-06-install-starship.html" class="no-external">starshipの導入</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2021-01-06-install-starship.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('開発環境'); return false;">
 開発環境
 </div>
 </div>
-<a href="./posts/2021-01-06-install-starship.html">
 <div class="listing-description">
-startshipを使用するためには，事前にNerdFontを導入する必要があります． そこで，今回はCicaを使用しました． 導入はリリースページから配布されているアーカイブをダウンロードしttfファイルをダブルクリックで完了です．
+<a href="./posts/2021-01-06-install-starship.html" class="no-external">startshipを使用するためには，事前にNerdFontを導入する必要があります． そこで，今回はCicaを使用しました． 導入はリリースページから配布されているアーカイブをダウンロードしttfファイルをダブルクリックで完了です．</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2021-01-06-install-starship.html">
+<a href="./posts/2021-01-06-install-starship.html" class="no-external">
 <div class="listing-date">
 Jan 6, 2021
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="23" data-categories="Rust" data-listing-date-sort="1607817600000" data-listing-file-modified-sort="1666609796514" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="quarto-post image-right" data-index="23" data-categories="Rust" data-listing-date-sort="1607817600000" data-listing-file-modified-sort="1666609796514" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="19">
 <div class="thumbnail">
-<p><a href="./posts/2020-12-13-introduction-to-typenum.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
+<p><a href="./posts/2020-12-13-introduction-to-typenum.html" class="no-external"></a></p><a href="./posts/2020-12-13-introduction-to-typenum.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./posts/2020-12-13-introduction-to-typenum.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2020-12-13-introduction-to-typenum.html">
 <h3 class="no-anchor listing-title">
-型レベル整数ライブラリtypenumの紹介
+<a href="./posts/2020-12-13-introduction-to-typenum.html" class="no-external">型レベル整数ライブラリtypenumの紹介</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2020-12-13-introduction-to-typenum.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Rust'); return false;">
 Rust
 </div>
 </div>
-<a href="./posts/2020-12-13-introduction-to-typenum.html">
 <div class="listing-description">
-型レベル整数とは，型によって整数を表現する方法です．この型とは整数を表す<code>i32</code>や文字列を表す<code>String</code>と同様のものです．すなわち，１を表す型や，2を表す型を定義し，それらによって整数を型レベルで表現します．
+<a href="./posts/2020-12-13-introduction-to-typenum.html" class="no-external">型レベル整数とは，型によって整数を表現する方法です．この型とは整数を表す<code>i32</code>や文字列を表す<code>String</code>と同様のものです．すなわち，１を表す型や，2を表す型を定義し，それらによって整数を型レベルで表現します．</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2020-12-13-introduction-to-typenum.html">
+<a href="./posts/2020-12-13-introduction-to-typenum.html" class="no-external">
 <div class="listing-date">
 Dec 13, 2020
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="24" data-categories="Rust,Jupyter" data-listing-date-sort="1605398400000" data-listing-file-modified-sort="1685928972198" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="quarto-post image-right" data-index="24" data-categories="Rust,Jupyter" data-listing-date-sort="1605398400000" data-listing-file-modified-sort="1685928972198" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="26">
 <div class="thumbnail">
-<p><a href="./posts/2020-11-15-rust-on-nodebook-with-evcxr-jupyter.html"> <p class="card-img-top"><img src="posts/2020-11-15-rust-on-nodebook-with-evcxr-jupyter_files/figure-html/cell-4-output-1.png"  class="thumbnail-image card-img"/></p> </a></p>
+<p><a href="./posts/2020-11-15-rust-on-nodebook-with-evcxr-jupyter.html" class="no-external"></a></p><a href="./posts/2020-11-15-rust-on-nodebook-with-evcxr-jupyter.html" class="no-external">
+<p class="card-img-top"><img src="posts/2020-11-15-rust-on-nodebook-with-evcxr-jupyter_files/figure-html/cell-4-output-1.png"  class="thumbnail-image card-img"/></p>
+</a><p><a href="./posts/2020-11-15-rust-on-nodebook-with-evcxr-jupyter.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2020-11-15-rust-on-nodebook-with-evcxr-jupyter.html">
 <h3 class="no-anchor listing-title">
-evcxr_jupyter - Rust on Notebook
+<a href="./posts/2020-11-15-rust-on-nodebook-with-evcxr-jupyter.html" class="no-external">evcxr_jupyter - Rust on Notebook</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2020-11-15-rust-on-nodebook-with-evcxr-jupyter.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Rust'); return false;">
 Rust
@@ -1084,33 +1066,31 @@ Rust
 Jupyter
 </div>
 </div>
-<a href="./posts/2020-11-15-rust-on-nodebook-with-evcxr-jupyter.html">
 <div class="listing-description">
-Jupyter Notebookはカーネルを切り替えることにより，様々な言語で開発することができます．ここでは，Rustのカーネル実装であるevcxr_jupyterを用いて，NotebookによるRust開発に挑戦してみます．
+<a href="./posts/2020-11-15-rust-on-nodebook-with-evcxr-jupyter.html" class="no-external">Jupyter Notebookはカーネルを切り替えることにより，様々な言語で開発することができます．ここでは，Rustのカーネル実装であるevcxr_jupyterを用いて，NotebookによるRust開発に挑戦してみます．</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2020-11-15-rust-on-nodebook-with-evcxr-jupyter.html">
+<a href="./posts/2020-11-15-rust-on-nodebook-with-evcxr-jupyter.html" class="no-external">
 <div class="listing-date">
 Nov 15, 2020
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="25" data-categories="画像処理,線形代数" data-listing-date-sort="1604793600000" data-listing-file-modified-sort="1666609735002" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="20">
+<div class="quarto-post image-right" data-index="25" data-categories="画像処理,線形代数" data-listing-date-sort="1604793600000" data-listing-file-modified-sort="1666609735002" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="20" data-listing-word-count-sort="3835">
 <div class="thumbnail">
-<p><a href="./posts/2020-11-08-read-umeyama-1991-paper.html"> <p class="card-img-top"><img data-src="posts/2020-11-08-read-umeyama-1991-paper_files/figure-html/cell-2-output-1.png"  class="thumbnail-image card-img"/></p> </a></p>
+<p><a href="./posts/2020-11-08-read-umeyama-1991-paper.html" class="no-external"></a></p><a href="./posts/2020-11-08-read-umeyama-1991-paper.html" class="no-external">
+<p class="card-img-top"><img data-src="posts/2020-11-08-read-umeyama-1991-paper_files/figure-html/cell-2-output-1.png"  class="thumbnail-image card-img"/></p>
+</a><p><a href="./posts/2020-11-08-read-umeyama-1991-paper.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2020-11-08-read-umeyama-1991-paper.html">
 <h3 class="no-anchor listing-title">
-Least-Squares Estimation of Transformation Parameters Between Two Point Patterns の読解
+<a href="./posts/2020-11-08-read-umeyama-1991-paper.html" class="no-external">Least-Squares Estimation of Transformation Parameters Between Two Point Patterns の読解</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2020-11-08-read-umeyama-1991-paper.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('画像処理'); return false;">
 画像処理
@@ -1119,33 +1099,31 @@ Least-Squares Estimation of Transformation Parameters Between Two Point Patterns
 線形代数
 </div>
 </div>
-<a href="./posts/2020-11-08-read-umeyama-1991-paper.html">
 <div class="listing-description">
-拡大と回転と並進とによって実現する幾何学変換に相似変換があります．これは，画像間の位置合わせ等に用いられます． 具体的には，互いに対応する点<span class="math inline">\({x_{i}}\)</span>と<span class="math inline">\(y_{i}\left(i = 1, 2, \dots n \right)\)</span>が与えられた時，それらの間に存在する相似変換を推定するといったものです．
+<a href="./posts/2020-11-08-read-umeyama-1991-paper.html" class="no-external">拡大と回転と並進とによって実現する幾何学変換に相似変換があります．これは，画像間の位置合わせ等に用いられます． 具体的には，互いに対応する点<span class="math inline">\({x_{i}}\)</span>と<span class="math inline">\(y_{i}\left(i = 1, 2, \dots n \right)\)</span>が与えられた時，それらの間に存在する相似変換を推定するといったものです．</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2020-11-08-read-umeyama-1991-paper.html">
+<a href="./posts/2020-11-08-read-umeyama-1991-paper.html" class="no-external">
 <div class="listing-date">
 Nov 8, 2020
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="26" data-categories="クラウド,Python,AWS,GCP" data-listing-date-sort="1603238400000" data-listing-file-modified-sort="1666609722970" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="quarto-post image-right" data-index="26" data-categories="クラウド,Python,AWS,GCP" data-listing-date-sort="1603238400000" data-listing-file-modified-sort="1666609722970" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="27">
 <div class="thumbnail">
-<p><a href="./posts/2020-10-21-accessing-file-with-unified-pythonic-api.html"> <p class="card-img-top"><img data-src="posts/2020-10-21-accessing-file-with-unified-pythonic-api_files/figure-html/cell-3-output-1.png"  class="thumbnail-image card-img"/></p> </a></p>
+<p><a href="./posts/2020-10-21-accessing-file-with-unified-pythonic-api.html" class="no-external"></a></p><a href="./posts/2020-10-21-accessing-file-with-unified-pythonic-api.html" class="no-external">
+<p class="card-img-top"><img data-src="posts/2020-10-21-accessing-file-with-unified-pythonic-api_files/figure-html/cell-3-output-1.png"  class="thumbnail-image card-img"/></p>
+</a><p><a href="./posts/2020-10-21-accessing-file-with-unified-pythonic-api.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2020-10-21-accessing-file-with-unified-pythonic-api.html">
 <h3 class="no-anchor listing-title">
-smart_openによる統一的なファイルアクセス
+<a href="./posts/2020-10-21-accessing-file-with-unified-pythonic-api.html" class="no-external">smart_openによる統一的なファイルアクセス</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2020-10-21-accessing-file-with-unified-pythonic-api.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('クラウド'); return false;">
 クラウド
@@ -1160,97 +1138,91 @@ AWS
 GCP
 </div>
 </div>
-<a href="./posts/2020-10-21-accessing-file-with-unified-pythonic-api.html">
 <div class="listing-description">
-ファイルの格納先(ファイルシステム，S3，GCS等)毎にIO処理を記述すると，プログラムが複雑になりがちです．ここでは，それらを統一的に取り扱うことができるsmart_openについて述べます．
+<a href="./posts/2020-10-21-accessing-file-with-unified-pythonic-api.html" class="no-external">ファイルの格納先(ファイルシステム，S3，GCS等)毎にIO処理を記述すると，プログラムが複雑になりがちです．ここでは，それらを統一的に取り扱うことができるsmart_openについて述べます．</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2020-10-21-accessing-file-with-unified-pythonic-api.html">
+<a href="./posts/2020-10-21-accessing-file-with-unified-pythonic-api.html" class="no-external">
 <div class="listing-date">
 Oct 21, 2020
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="27" data-categories="Ubuntu" data-listing-date-sort="1602892800000" data-listing-file-modified-sort="1666609716758" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3">
+<div class="quarto-post image-right" data-index="27" data-categories="Ubuntu" data-listing-date-sort="1602892800000" data-listing-file-modified-sort="1666609716758" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="442">
 <div class="thumbnail">
-<p><a href="./posts/2020-10-17-usb-nic-in-ubuntu-server.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
+<p><a href="./posts/2020-10-17-usb-nic-in-ubuntu-server.html" class="no-external"></a></p><a href="./posts/2020-10-17-usb-nic-in-ubuntu-server.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./posts/2020-10-17-usb-nic-in-ubuntu-server.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2020-10-17-usb-nic-in-ubuntu-server.html">
 <h3 class="no-anchor listing-title">
-Ubuntu 20.04 LTS Server でUSB-NICを使う
+<a href="./posts/2020-10-17-usb-nic-in-ubuntu-server.html" class="no-external">Ubuntu 20.04 LTS Server でUSB-NICを使う</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2020-10-17-usb-nic-in-ubuntu-server.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Ubuntu'); return false;">
 Ubuntu
 </div>
 </div>
-<a href="./posts/2020-10-17-usb-nic-in-ubuntu-server.html">
 <div class="listing-description">
-このUSB-NICをUbuntu 20.04から使用するために行った作業記録です．
+<a href="./posts/2020-10-17-usb-nic-in-ubuntu-server.html" class="no-external">このUSB-NICをUbuntu 20.04から使用するために行った作業記録です．</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2020-10-17-usb-nic-in-ubuntu-server.html">
+<a href="./posts/2020-10-17-usb-nic-in-ubuntu-server.html" class="no-external">
 <div class="listing-date">
 Oct 17, 2020
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="28" data-categories="DICOM" data-listing-date-sort="1602460800000" data-listing-file-modified-sort="1666609712794" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="quarto-post image-right" data-index="28" data-categories="DICOM" data-listing-date-sort="1602460800000" data-listing-file-modified-sort="1666609712794" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="189">
 <div class="thumbnail">
-<p><a href="./posts/2020-10-12-character-encodings-in-dicom.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
+<p><a href="./posts/2020-10-12-character-encodings-in-dicom.html" class="no-external"></a></p><a href="./posts/2020-10-12-character-encodings-in-dicom.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./posts/2020-10-12-character-encodings-in-dicom.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2020-10-12-character-encodings-in-dicom.html">
 <h3 class="no-anchor listing-title">
-DICOMにおける文字コードの取り扱い
+<a href="./posts/2020-10-12-character-encodings-in-dicom.html" class="no-external">DICOMにおける文字コードの取り扱い</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2020-10-12-character-encodings-in-dicom.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('DICOM'); return false;">
 DICOM
 </div>
 </div>
-<a href="./posts/2020-10-12-character-encodings-in-dicom.html">
 <div class="listing-description">
-DICOMを取り扱うライブラリの多くは海外製であるため，日本語の取り扱いが得意で無いことが多いです. そこで，DICOMにおいて日本語を正しく扱うために色々と調べたのでまとめます．
+<a href="./posts/2020-10-12-character-encodings-in-dicom.html" class="no-external">DICOMを取り扱うライブラリの多くは海外製であるため，日本語の取り扱いが得意で無いことが多いです. そこで，DICOMにおいて日本語を正しく扱うために色々と調べたのでまとめます．</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2020-10-12-character-encodings-in-dicom.html">
+<a href="./posts/2020-10-12-character-encodings-in-dicom.html" class="no-external">
 <div class="listing-date">
 Oct 12, 2020
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="29" data-categories="信号処理,Jupyter" data-listing-date-sort="1602288000000" data-listing-file-modified-sort="1666609708478" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3">
+<div class="quarto-post image-right" data-index="29" data-categories="信号処理,Jupyter" data-listing-date-sort="1602288000000" data-listing-file-modified-sort="1666609708478" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="419">
 <div class="thumbnail">
-<p><a href="./posts/2020-10-10-analysis-of-moving-average-filter.html"> <img data-src="./assets/img/2020-10-10-analysis-of-moving-average-filter/freq.png" class="thumbnail-image"> </a></p>
+<p><a href="./posts/2020-10-10-analysis-of-moving-average-filter.html" class="no-external"></a></p><a href="./posts/2020-10-10-analysis-of-moving-average-filter.html" class="no-external">
+<p><img data-src="./assets/img/2020-10-10-analysis-of-moving-average-filter/freq.png" class="thumbnail-image"></p>
+</a><p><a href="./posts/2020-10-10-analysis-of-moving-average-filter.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2020-10-10-analysis-of-moving-average-filter.html">
 <h3 class="no-anchor listing-title">
-移動平均フィルタの零点と周波数特性
+<a href="./posts/2020-10-10-analysis-of-moving-average-filter.html" class="no-external">移動平均フィルタの零点と周波数特性</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2020-10-10-analysis-of-moving-average-filter.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('信号処理'); return false;">
 信号処理
@@ -1259,33 +1231,31 @@ Oct 12, 2020
 Jupyter
 </div>
 </div>
-<a href="./posts/2020-10-10-analysis-of-moving-average-filter.html">
 <div class="listing-description">
-最も単純なローパスフィルタとして，移動平均フィルタが広く知られています． しかしながら，その詳細な性質を確認する機会はあまり無いのではと思います． そこで，移動平均フィルタの伝達関数，複素平面における零点の分布，周波数特性を示します． そして，ローパスフィルタとしての特性を再確認します．
+<a href="./posts/2020-10-10-analysis-of-moving-average-filter.html" class="no-external">最も単純なローパスフィルタとして，移動平均フィルタが広く知られています． しかしながら，その詳細な性質を確認する機会はあまり無いのではと思います． そこで，移動平均フィルタの伝達関数，複素平面における零点の分布，周波数特性を示します． そして，ローパスフィルタとしての特性を再確認します．</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2020-10-10-analysis-of-moving-average-filter.html">
+<a href="./posts/2020-10-10-analysis-of-moving-average-filter.html" class="no-external">
 <div class="listing-date">
 Oct 10, 2020
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="30" data-categories="Elm,Web" data-listing-date-sort="1596931200000" data-listing-file-modified-sort="1666609701777" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="quarto-post image-right" data-index="30" data-categories="Elm,Web" data-listing-date-sort="1596931200000" data-listing-file-modified-sort="1666609701777" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="81">
 <div class="thumbnail">
-<p><a href="./posts/2020-08-09-automated-update-github-pages.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
+<p><a href="./posts/2020-08-09-automated-update-github-pages.html" class="no-external"></a></p><a href="./posts/2020-08-09-automated-update-github-pages.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./posts/2020-08-09-automated-update-github-pages.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2020-08-09-automated-update-github-pages.html">
 <h3 class="no-anchor listing-title">
-GitHub ActionsでWebサイトを自動更新する
+<a href="./posts/2020-08-09-automated-update-github-pages.html" class="no-external">GitHub ActionsでWebサイトを自動更新する</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2020-08-09-automated-update-github-pages.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Elm'); return false;">
 Elm
@@ -1294,65 +1264,61 @@ Elm
 Web
 </div>
 </div>
-<a href="./posts/2020-08-09-automated-update-github-pages.html">
 <div class="listing-description">
-GitHubPages + GitHub Actions でコンテンツを自動的に更新するWebサイトをつくってみました．GitHub Trending に登場したリポジトリに付与されていた topics を一覧表示するサイトです．言語ごとの用途がざっくりとした感じでみることができます．
+<a href="./posts/2020-08-09-automated-update-github-pages.html" class="no-external">GitHubPages + GitHub Actions でコンテンツを自動的に更新するWebサイトをつくってみました．GitHub Trending に登場したリポジトリに付与されていた topics を一覧表示するサイトです．言語ごとの用途がざっくりとした感じでみることができます．</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2020-08-09-automated-update-github-pages.html">
+<a href="./posts/2020-08-09-automated-update-github-pages.html" class="no-external">
 <div class="listing-date">
 Aug 9, 2020
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="31" data-categories="アルゴリズム" data-listing-date-sort="1593216000000" data-listing-file-modified-sort="1666609698325" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4">
+<div class="quarto-post image-right" data-index="31" data-categories="アルゴリズム" data-listing-date-sort="1593216000000" data-listing-file-modified-sort="1666609698325" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="621">
 <div class="thumbnail">
-<p><a href="./posts/2020-06-27-purely-binary-heap.html"> <p class="card-img-top"><img data-src="assets/img/2020-06-27-purely-binary-heap/media/image.png"  class="thumbnail-image card-img"/></p> </a></p>
+<p><a href="./posts/2020-06-27-purely-binary-heap.html" class="no-external"></a></p><a href="./posts/2020-06-27-purely-binary-heap.html" class="no-external">
+<p class="card-img-top"><img data-src="assets/img/2020-06-27-purely-binary-heap/media/image.png"  class="thumbnail-image card-img"/></p>
+</a><p><a href="./posts/2020-06-27-purely-binary-heap.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2020-06-27-purely-binary-heap.html">
 <h3 class="no-anchor listing-title">
-純粋なバイナリヒープ
+<a href="./posts/2020-06-27-purely-binary-heap.html" class="no-external">純粋なバイナリヒープ</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2020-06-27-purely-binary-heap.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('アルゴリズム'); return false;">
 アルゴリズム
 </div>
 </div>
-<a href="./posts/2020-06-27-purely-binary-heap.html">
 <div class="listing-description">
-純粋なヒープを実装する場合，Braun Treeなど色々と適したデータ構造があるらしいですね． でも、あまり詳しくないので今回は馴染みの深いバイナリヒープを実装する方法について調べてみました．
+<a href="./posts/2020-06-27-purely-binary-heap.html" class="no-external">純粋なヒープを実装する場合，Braun Treeなど色々と適したデータ構造があるらしいですね． でも、あまり詳しくないので今回は馴染みの深いバイナリヒープを実装する方法について調べてみました．</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2020-06-27-purely-binary-heap.html">
+<a href="./posts/2020-06-27-purely-binary-heap.html" class="no-external">
 <div class="listing-date">
 Jun 27, 2020
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="32" data-categories="数学,線形代数" data-listing-date-sort="1593216000000" data-listing-file-modified-sort="1666609692613" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2">
+<div class="quarto-post image-right" data-index="32" data-categories="数学,線形代数" data-listing-date-sort="1593216000000" data-listing-file-modified-sort="1666609692613" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="288">
 <div class="thumbnail">
-<p><a href="./posts/2020-06-27-linear-algebra-in-3d-coordinates.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
+<p><a href="./posts/2020-06-27-linear-algebra-in-3d-coordinates.html" class="no-external"></a></p><a href="./posts/2020-06-27-linear-algebra-in-3d-coordinates.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./posts/2020-06-27-linear-algebra-in-3d-coordinates.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2020-06-27-linear-algebra-in-3d-coordinates.html">
 <h3 class="no-anchor listing-title">
-三次元空間における行列演算の復習
+<a href="./posts/2020-06-27-linear-algebra-in-3d-coordinates.html" class="no-external">三次元空間における行列演算の復習</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2020-06-27-linear-algebra-in-3d-coordinates.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('数学'); return false;">
 数学
@@ -1361,33 +1327,31 @@ Jun 27, 2020
 線形代数
 </div>
 </div>
-<a href="./posts/2020-06-27-linear-algebra-in-3d-coordinates.html">
 <div class="listing-description">
-ぱっと思いつかなかったのでメモ．
+<a href="./posts/2020-06-27-linear-algebra-in-3d-coordinates.html" class="no-external">ぱっと思いつかなかったのでメモ．</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2020-06-27-linear-algebra-in-3d-coordinates.html">
+<a href="./posts/2020-06-27-linear-algebra-in-3d-coordinates.html" class="no-external">
 <div class="listing-date">
 Jun 27, 2020
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="33" data-categories="画像処理,Python" data-listing-date-sort="1590883200000" data-listing-file-modified-sort="1666609689649" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="quarto-post image-right" data-index="33" data-categories="画像処理,Python" data-listing-date-sort="1590883200000" data-listing-file-modified-sort="1666609689649" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="129">
 <div class="thumbnail">
-<p><a href="./posts/2020-05-31-poisson-blending-in-5-lines.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
+<p><a href="./posts/2020-05-31-poisson-blending-in-5-lines.html" class="no-external"></a></p><a href="./posts/2020-05-31-poisson-blending-in-5-lines.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./posts/2020-05-31-poisson-blending-in-5-lines.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2020-05-31-poisson-blending-in-5-lines.html">
 <h3 class="no-anchor listing-title">
-5行で書くポアソンブレンディング
+<a href="./posts/2020-05-31-poisson-blending-in-5-lines.html" class="no-external">5行で書くポアソンブレンディング</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2020-05-31-poisson-blending-in-5-lines.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('画像処理'); return false;">
 画像処理
@@ -1396,33 +1360,31 @@ Jun 27, 2020
 Python
 </div>
 </div>
-<a href="./posts/2020-05-31-poisson-blending-in-5-lines.html">
 <div class="listing-description">
-画像の滑らかな合成アルゴリズムにポアソンブレンディング(Poisson Image Editting)があります．これは，ポアソン方程式を解くことで元の勾配を保ちながら，境界部分が連続となる合成画像を推定するというものです．…
+<a href="./posts/2020-05-31-poisson-blending-in-5-lines.html" class="no-external">画像の滑らかな合成アルゴリズムにポアソンブレンディング(Poisson Image Editting)があります．これは，ポアソン方程式を解くことで元の勾配を保ちながら，境界部分が連続となる合成画像を推定するというものです．…</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2020-05-31-poisson-blending-in-5-lines.html">
+<a href="./posts/2020-05-31-poisson-blending-in-5-lines.html" class="no-external">
 <div class="listing-date">
 May 31, 2020
 </div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="34" data-categories="Kubernetes,Ray,Python,分散システム" data-listing-date-sort="1590364800000" data-listing-file-modified-sort="1685921560925" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="10">
+<div class="quarto-post image-right" data-index="34" data-categories="Kubernetes,Ray,Python,分散システム" data-listing-date-sort="1590364800000" data-listing-file-modified-sort="1685921560925" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="10" data-listing-word-count-sort="1974">
 <div class="thumbnail">
-<p><a href="./posts/2020-05-25-Ray-k3s-raspi4.html"> <p class="card-img-top"><img data-src="assets/img/2020-05-25-Ray-k3s-raspi4/media/image.png"  class="thumbnail-image card-img"/></p> </a></p>
+<p><a href="./posts/2020-05-25-Ray-k3s-raspi4.html" class="no-external"></a></p><a href="./posts/2020-05-25-Ray-k3s-raspi4.html" class="no-external">
+<p class="card-img-top"><img data-src="assets/img/2020-05-25-Ray-k3s-raspi4/media/image.png"  class="thumbnail-image card-img"/></p>
+</a><p><a href="./posts/2020-05-25-Ray-k3s-raspi4.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2020-05-25-Ray-k3s-raspi4.html">
 <h3 class="no-anchor listing-title">
-Raspberry Pi 4 + k3s + Rayで分散処理を試す
+<a href="./posts/2020-05-25-Ray-k3s-raspi4.html" class="no-external">Raspberry Pi 4 + k3s + Rayで分散処理を試す</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2020-05-25-Ray-k3s-raspi4.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Kubernetes'); return false;">
 Kubernetes
@@ -1437,14 +1399,12 @@ Python
 分散システム
 </div>
 </div>
-<a href="./posts/2020-05-25-Ray-k3s-raspi4.html">
 <div class="listing-description">
-Raspberry Pi 4+k3s+rayでクラスタを作成して，分散処理の実験を行います．Raspberry Pi 4 には事前にUbuntu 20.04を導入しておきます．
+<a href="./posts/2020-05-25-Ray-k3s-raspi4.html" class="no-external">Raspberry Pi 4+k3s+rayでクラスタを作成して，分散処理の実験を行います．Raspberry Pi 4 には事前にUbuntu 20.04を導入しておきます．</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2020-05-25-Ray-k3s-raspi4.html">
+<a href="./posts/2020-05-25-Ray-k3s-raspi4.html" class="no-external">
 <div class="listing-date">
 May 25, 2020
 </div>
@@ -1538,6 +1498,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/lab\.ar90n\.net");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
@@ -1572,24 +1550,64 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
   const xrefs = window.document.querySelectorAll('a.quarto-xref');
   const processXRef = (id, note) => {
-    if (id.startsWith('sec-')) {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
       // Special case sections, only their first couple elements
       const container = document.createElement("div");
       if (note.children && note.children.length > 2) {
-        for (let i = 0; i < 2; i++) {
-          container.appendChild(note.children[i].cloneNode(true));
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
         }
         return container.innerHTML
       } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
         return note.innerHTML;
       }
     } else {
-      return note.innerHTML;
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
     }
   }
   for (var i=0; i<xrefs.length; i++) {
@@ -1598,27 +1616,56 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       instance.disable();
       let url = xref.getAttribute('href');
       let hash = undefined; 
-      try { hash = new URL(url).hash; } catch {}
-      const id = hash.replace(/^#\/?/, "");
-      const note = window.document.getElementById(id);
-      if (note !== null) {
-        try {
-          const html = processXRef(id, note);
-          instance.setContent(html);
-        } finally {
-          instance.enable();
-          instance.show();
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
         }
       } else {
-        // See if we can fetch this
-        fetch(url.split('#')[0])
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
         .then(res => res.text())
         .then(html => {
           const parser = new DOMParser();
           const htmlDoc = parser.parseFromString(html, "text/html");
-          const note = htmlDoc.getElementById(id);
+          const note = htmlDoc.querySelector('main.content');
           if (note !== null) {
-            const html = processXRef(id, note);
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
             instance.setContent(html);
           } 
         }).finally(() => {
@@ -1696,6 +1743,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {

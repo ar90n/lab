@@ -47,5 +47,5 @@ format:
     - zig.xml
     code-annotations: below
 
-
-
+resources:
+  - CNAME

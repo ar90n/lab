@@ -9,22 +9,26 @@ packages = [{include = "lab_note"}]
 [tool.poetry.dependencies]
 python = "^3.11"
 jupyter = "^1.0.0"
-numpy = "^1.23.3"
-matplotlib = "^3.6.1"
-pandas = "^1.5.0"
-nbdev = "^2.3.7"
-jupyter-cache = "^0.5.0"
-scipy = "^1.9.2"
-datasets = "^2.6.1"
-soundfile = "^0.11.0"
+numpy = "^1.26.4"
+matplotlib = "^3.8.4"
+pandas = "^2.2.2"
+nbdev = "^2.3.20"
+jupyter-cache = "^1.0.0"
+scipy = "^1.13.0"
+datasets = "^2.19.1"
+soundfile = "^0.12.1"
 ffmpeg = "^1.4"
-pyarrow = "^12.0.1"
-jupytext = "^1.14.7"
-
+pyarrow = "^16.0.0"
+jupytext = "^1.16.2"
+scikit-image = "^0.23.2"
+scikit-learn = "^1.4.2"
+torch = {version = "^2.3.0+cu121", source = "torch_cu121"}
+torchvision = {version = "^0.18.0+cu121", source = "torch_cu121"}
+torchaudio = {version = "^2.3.0+cu121", source = "torch_cu121"}
 
 [[tool.poetry.source]]
-name = "torch_cu118"
-url = "https://download.pytorch.org/whl/cu118"
+name = "torch_cu121"
+url = "https://download.pytorch.org/whl/cu121"
 priority = "explicit"
 
 [build-system]

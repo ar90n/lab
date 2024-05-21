@@ -44,9 +44,9 @@ namespace
 {
   constexpr int PWM_PIN = 7;
   constexpr int RPM = 300;
+  constexpr int ROS_DOMAIN_ID = 104;
 
-  float distances[2][360];
-  static uint32_t distances_gen[360];
+  float distances[360];
   uint32_t distances_index = 0;
   uint32_t last_timestamp_us = 0;
   static int sec = 0;
@@ -98,8 +98,7 @@ namespace
       int const lidarAngle = packet.angle_quad;
       for (int i = 0; i < 4; i++)
       {
-        auto const gen = distances_gen[4 * lidarAngle + i]++;
-        distances[gen % 2][4 * lidarAngle + i] = (packet.distances[i] / 1000.0); // Distance to object in meters
+        distances[4 * lidarAngle + i] = (packet.distances[i] / 1000.0); // Distance to object in meters
       }
       duration = (packet.timestamp_us - last_timestamp_us) / 1000000.0;
       last_timestamp_us = packet.timestamp_us;
@@ -132,10 +131,8 @@ namespace
 
     for (int i = 0; i < 360; i++)
     {
-      msg.ranges.data[i] = distances[distances_index][i];
-      distances[distances_index][i] = 0.0;
+      msg.ranges.data[i] = distances[i];
     }
-    distances_index = (distances_index + 1) % 2;
     RCSOFTCHECK(rcl_publish(&publisher, &msg, NULL));
   }
 }
@@ -166,7 +163,9 @@ void setup()
   // create init_options
   auto init_options = rcl_get_zero_initialized_init_options();
   RCCHECK(rcl_init_options_init(&init_options, allocator));
-  RCCHECK(rcl_init_options_set_domain_id(&init_options, 104));
+  if(0 < ROS_DOMAIN_ID) {
+    RCCHECK(rcl_init_options_set_domain_id(&init_options, static_cast<size_t>(ROS_DOMAIN_ID)));
+  }
   RCCHECK(rclc_support_init_with_options(&support, 0, NULL, &init_options, &allocator));
 
   // create node

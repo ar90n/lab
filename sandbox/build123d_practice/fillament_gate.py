@@ -80,3 +80,21 @@ show(inside_part)
 inside_part.export_stl("fillament_gate_inside_part.stl")
 
 # %%
+mount_margin = 1.5
+mount_depth = 1.0
+with BuildPart() as mount:
+    f = outside_part.faces().sort_by(Axis.Z).first
+    with BuildSketch(Plane.XY.offset(-mount_margin)):
+        Rectangle(base_width + 2.0 * mount_margin, base_height + 2.0 * mount_margin, align=[Align.CENTER, Align.CENTER])
+    extrude(amount=mount_depth + mount_margin)
+    fillet(mount.edges().filter_by(Axis.Z), radius=3.0)
+    with BuildSketch(Plane.XY):
+        add(make_face(outside_part.faces().sort_by(Axis.Z).first.edges()))
+    extrude(amount=-mount_margin, mode=Mode.SUBTRACT)
+    with BuildSketch(Plane.XY):
+        add(make_face(outside_part.faces().sort_by(Axis.Z).first.edges()))
+        add(outside_part.faces().sort_by(Axis.Z).first, mode=Mode.SUBTRACT)
+    extrude(amount=mount_depth, mode=Mode.SUBTRACT)
+show(mount)
+# %%
+mount.part.export_stl("fillament_gate_mount.stl")

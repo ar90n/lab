@@ -9,10 +9,10 @@ packages = [{include = "build123d_practice"}]
 [tool.poetry.dependencies]
 python = "^3.10"
 build123d = {git = "https://github.com/gumyr/build123d"}
-ipython = "^8.13.2"
-ipykernel = "^6.23.1"
-ocp-vscode = "2.1.1"
-matplotlib = "^3.7.2"
+ipython = "^8.24.0"
+ipykernel = "^6.29.4"
+ocp-vscode = "2.3.3"
+matplotlib = "^3.9.0"
 jupyter-cadquery = "^3.5.2"
 cadquery-massembly = "1.0.0"
 ocpsvg = {git = "https://github.com/snoyer/ocpsvg"}
@@ -21,8 +21,8 @@ bd-warehouse = {git = "https://github.com/gumyr/bd_warehouse"}
 
 
 [tool.poetry.group.dev.dependencies]
-black = "^23.3.0"
-pyright = "^1.1.332"
+black = "^24.4.2"
+pyright = "^1.1.363"
 
 [build-system]
 requires = ["poetry-core"]

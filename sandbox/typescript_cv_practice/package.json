@@ -1,0 +1,15 @@
+{
+  "name": "typescript_cv_practice",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "jimp": "^0.22.12",
+    "tslab": "^1.0.22"
+  }
+}

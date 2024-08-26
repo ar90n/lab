@@ -1,0 +1,6 @@
+iadd $lm0v $ln0v $lr0v
+iadd $lm8v $ln8v $lr8v
+iadd $lm16v $ln16v $lr16v
+iadd $lm24v $ln24v $lr24v
+ipassa $llr0v $llm32v
+ipassa $llr16v $llm48v

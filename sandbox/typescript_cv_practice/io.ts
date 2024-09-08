@@ -1,22 +1,25 @@
-// ---
-// jupyter:
-//   jupytext:
-//     text_representation:
-//       extension: .ts
-//       format_name: percent
-//       format_version: '1.3'
-//       jupytext_version: 1.16.4
-//   kernelspec:
-//     display_name: TypeScript
-//     language: typescript
-//     name: tslab
-// ---
+import { display } from "tslab"
+import Jimp from "jimp"
 
-// %%
-import {imshow, imload} from './util';
+import { Image } from "./image"
 
-// %%
-const img = await imload("meerkat.jpg");
+const imshow = async (img: Image) => {
+    const i = new Jimp({ width: img.width, height: img.height, data: Buffer.from(img.data) })
+    display.png((await i.getBufferAsync(i.getMIME())))
+}
+const imread = async (path: string): Promise<Image> => {
+    const image = await Jimp.read(path)
+    const buf = new Uint8Array(image.bitmap.data)
+    return { width: image.bitmap.width, height: image.bitmap.height, data: buf }
+}
 
-// %%
-await imshow(img);
+const imwrite = async (path: string, img: Image) => {
+    const i = new Jimp({ width: img.width, height: img.height, data: Buffer.from(img.data) })
+    await i.writeAsync(path)
+}
+
+export {
+    imshow,
+    imread,
+    imwrite
+}

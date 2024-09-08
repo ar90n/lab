@@ -7,3 +7,6 @@
 [submodule "sandbox/zig_blur/zigimg"]
 	path = sandbox/zig_blur/zigimg
 	url = git@github.com:zigimg/zigimg.git
+[submodule "sandbox/typescript_cv_practice/external/cad-image"]
+	path = sandbox/typescript_cv_practice/external/cad-image
+	url = git@github.com:pangjunbiao/cad-image.git

@@ -69,7 +69,6 @@ const drawLine = (line: Line, color: Color): Command => {
             const src = { x: Math.floor(vs[0].x), y: Math.floor(vs[0].y) }
             const dst = { x: Math.floor(vs[1].x), y: Math.floor(vs[1].y) }
             const line_segment = { src, dst}
-            //console.log(line_segment)
             scanLineSegment(line_segment, (pt: Point) => {
                 const idx = pt.y * buf.width * 4 + pt.x * 4
                 buf.data[idx] = color.r

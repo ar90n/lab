@@ -66,7 +66,10 @@ const drawLine = (line: Line, color: Color): Command => {
         apply: (buf: Image): Image => {
             const { width, height } = buf
             const vs = lines_from_rect({ origin: { x: 0, y: 0 }, width, height }).map(l => intersection(l, line)).filter(p => p.x >= 0 && p.x <= buf.width && p.y >= 0 && p.y <= buf.height)
-            const line_segment = { src: vs[0], dst: vs[1] }
+            const src = { x: Math.floor(vs[0].x), y: Math.floor(vs[0].y) }
+            const dst = { x: Math.floor(vs[1].x), y: Math.floor(vs[1].y) }
+            const line_segment = { src, dst}
+            //console.log(line_segment)
             scanLineSegment(line_segment, (pt: Point) => {
                 const idx = pt.y * buf.width * 4 + pt.x * 4
                 buf.data[idx] = color.r

@@ -1,0 +1,70 @@
+# X00'
+# X01'
+gmwrite $lm[0,4,16,20] $lx0
+gmwrite $lm[32,36,48,52] $lx4
+gmwrite $lm[8,12,24,28] $ly0
+gmwrite $lm[40,44,56,60] $ly4
+gmread $lx0 $nowrite
+gbfn $mreadf $ls0v; gmread $lx4 $nowrite
+gbfn $mreadf $ls8v; gmread $ly0 $nowrite
+gbfn $mreadf $lr0v; gmread $ly4 $nowrite
+gbfn $mreadf $lr8v; gmwrite $lm[2,6,18,22] $lx0
+
+# X10'
+# X11'
+# gmwrite $lm[2,6,18,22] $lx0
+gmwrite $lm[34,38,50,54] $lx4
+gmwrite $lm[10,14,26,30] $ly0
+gmwrite $lm[42,46,58,62] $ly4
+gmread $lx0 $nowrite; gbfn $lm[0,4,16,20] $lr32v
+gbfn $mreadf $ls16v; gmread $lx4 $nowrite
+gbfn $mreadf $ls24v; gmread $ly0 $nowrite
+gbfn $mreadf $lr16v; gmread $ly4 $nowrite
+gbfn $mreadf $lr24v
+
+# X00
+# X10
+# gbfn $lm[0,4,16,20] $nowrite
+# gmwrite $aluf $lx0; gbfn $lm[32,36,48,52] $nowrite
+gmwrite $lr32v $lx0; gbfn $lm[32,36,48,52] $nowrite
+gmwrite $aluf $lx4; gbfn $lm[2,6,18,22] $nowrite
+gmwrite $aluf $ly0; gbfn $lm[34,38,50,54] $nowrite
+gmwrite $aluf $ly4; gbfn $lm[8,12,24,28] $lr32v
+
+# X00 * X00' + X10 * X01'
+gmmul $lx $ls0v $nowrite
+gmfma $ly $lr0v $mauf $ln[0,4,16,20]
+gmmul $lx $ls8v $nowrite
+gmfma $ly $lr8v $mauf $ln[32,36,48,52]
+
+# X00 * X10' + X10 * X11'
+gmmul $lx $ls16v $nowrite
+gmfma $ly $lr16v $mauf $ln[8,12,24,28]
+gmmul $lx $ls24v $nowrite
+gmfma $ly $lr24v $mauf $ln[40,44,56,60]
+
+## X01
+## X11
+#gbfn $lm[8,12,24,28] $nowrite
+#gmwrite $aluf $lx0; gbfn $lm[40,44,56,60] $nowrite
+gmwrite $lr32v $lx0; gbfn $lm[40,44,56,60] $nowrite
+gmwrite $aluf $lx4; gbfn $lm[10,14,26,30] $nowrite
+gmwrite $aluf $ly0; gbfn $lm[42,46,58,62] $nowrite
+gmwrite $aluf $ly4
+
+# X01 * X00' + X11 * X01'
+gmmul $lx $ls0v $nowrite
+gmfma $ly $lr0v $mauf $ln[2,6,18,22]
+gmmul $lx $ls8v $nowrite
+gmfma $ly $lr8v $mauf $ln[34,38,50,54]
+
+# X00 * X10' + X10 * X11'
+gmmul $lx $ls16v $nowrite
+gmfma $ly $lr16v $mauf $ln[10,14,26,30]
+gmmul $lx $ls24v $nowrite
+gmfma $ly $lr24v $mauf $ln[42,46,58,62]
+
+#d getbf $ls0n0c0b0m0 8
+#d getbf $lr0n0c0b0m0 8 
+#d getbf $lx0n0c0b0m0 8 
+#d getbf $ly0n0c0b0m0 8 

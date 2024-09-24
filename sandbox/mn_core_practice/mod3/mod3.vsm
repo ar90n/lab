@@ -1,0 +1,113 @@
+imm i"4" $lr0v
+imm i"0xf" $lr24v
+imm i"2" $lr8v
+imm i"3" $lr16v
+
+ilsr $lm0v $lr0v $ls0v
+iand $lm0v $lr24v $nowrite
+iadd $aluf $ls0v $ls0v
+
+ilsr $aluf $lr8v $ls8v
+iand $ls0v $lr16v $nowrite
+iadd $aluf $ls8v $ls8v
+
+ilsr $aluf $lr8v $ls16v
+iand $ls8v $lr16v $nowrite
+iadd $aluf $ls16v $ls16v
+
+ilsr $aluf $lr8v $ls24v
+iand $ls16v $lr16v $nowrite
+iadd $aluf $ls24v $ls24v
+
+isub $lr8v $aluf $omr1 ; noforward
+nop
+nop
+ipassa $aluf $ln0v/$imr1
+
+
+ilsr $lm8v $lr0v $ls0v
+iand $lm8v $lr24v $nowrite
+iadd $aluf $ls0v $ls0v
+
+ilsr $aluf $lr8v $ls8v
+iand $ls0v $lr16v $nowrite
+iadd $aluf $ls8v $ls8v
+
+ilsr $aluf $lr8v $ls16v
+iand $ls8v $lr16v $nowrite
+iadd $aluf $ls16v $ls16v
+
+ilsr $aluf $lr8v $ls24v
+iand $ls16v $lr16v $nowrite
+iadd $aluf $ls24v $ls24v
+
+isub $lr8v $aluf $omr1 ; noforward
+nop
+nop
+ipassa $aluf $ln8v/$imr1
+
+
+ilsr $lm16v $lr0v $ls0v
+iand $lm16v $lr24v $nowrite
+iadd $aluf $ls0v $ls0v
+
+ilsr $aluf $lr8v $ls8v
+iand $ls0v $lr16v $nowrite
+iadd $aluf $ls8v $ls8v
+
+ilsr $aluf $lr8v $ls16v
+iand $ls8v $lr16v $nowrite
+iadd $aluf $ls16v $ls16v
+
+ilsr $aluf $lr8v $ls24v
+iand $ls16v $lr16v $nowrite
+iadd $aluf $ls24v $ls24v
+
+isub $lr8v $aluf $omr1 ; noforward
+nop
+nop
+ipassa $aluf $ln16v/$imr1
+
+
+
+
+ilsr $lm24v $lr0v $ls0v
+iand $lm24v $lr24v $nowrite
+iadd $aluf $ls0v $ls0v
+
+ilsr $aluf $lr8v $ls8v
+iand $ls0v $lr16v $nowrite
+iadd $aluf $ls8v $ls8v
+
+ilsr $aluf $lr8v $ls16v
+iand $ls8v $lr16v $nowrite
+iadd $aluf $ls16v $ls16v
+
+ilsr $aluf $lr8v $ls24v
+iand $ls16v $lr16v $nowrite
+iadd $aluf $ls24v $ls24v
+
+isub $lr8v $aluf $omr1 ; noforward
+nop
+nop
+ipassa $aluf $ln24v/$imr1
+
+
+
+#ilsr $aluf $lr8v $nowrite
+#iadd $aluf $ls0v $nowrite
+#iand $aluf $lr16v $ls8v
+
+#
+#llsr $lm8v $lr0v $nowrite
+#ladd $aluf $lm8v $ls0v
+#llsr $aluf $lr8v $nowrite
+#ladd $aluf $ls0v $nowrite
+#land $aluf $lr16v $ln8v
+
+d getd $lr0n0c0b0m0p0 12
+d getd $lm0n0c0b0m0p0 4
+d getd $ln0n0c0b0m0p0 4
+d getd $ls0n0c0b0m0p0 4
+d getd $ls8n0c0b0m0p0 4
+d getd $ls16n0c0b0m0p0 4

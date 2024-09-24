@@ -1,0 +1,19 @@
+imm f"64.0" $lr0
+imm f"8.0" $nowrite
+nop
+fvfma $lm0v $aluf $lr0 $ln0v; noforward
+fvfma $lm8v $aluf $lr0 $ln8v; noforward
+fvfma $lm16v $aluf $lr0 $ln16v; noforward
+fvfma $lm24v $aluf $lr0 $ln24v; noforward
+fvfma $lm32v $aluf $lr0 $ln32v; noforward
+fvfma $lm40v $aluf $lr0 $ln40v; noforward
+fvfma $lm48v $aluf $lr0 $ln48v; noforward
+fvfma $lm56v $aluf $lr0 $ln56v; noforward
+fvfma $lm64v $aluf $lr0 $ln64v; noforward
+fvfma $lm72v $aluf $lr0 $ln72v; noforward
+fvfma $lm80v $aluf $lr0 $ln80v; noforward
+fvfma $lm88v $aluf $lr0 $ln88v; noforward
+fvfma $lm96v $aluf $lr0 $ln96v; noforward
+fvfma $lm104v $aluf $lr0 $ln104v; noforward
+fvfma $lm112v $aluf $lr0 $ln112v; noforward
+fvfma $lm120v $aluf $lr0 $ln120v; noforward

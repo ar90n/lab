@@ -1,0 +1,20 @@
+# ======= In(0): ((16_MAB:1, 4_PE:1, 16:1, 2_W:1))@LM0 / UInt =======
+d set $lm0m0p0 1 000000680000007F # values=[104, 127] / UInt @[0],[1]
+d set $lm2m0p0 1 00000061000000C7 # values=[97, 199] / UInt @[2],[3]
+d set $lm4m0p0 1 0000005F000000F8 # values=[95, 248] / UInt @[4],[5]
+d set $lm6m0p0 1 0000002700000007 # values=[39, 7] / UInt @[6],[7]
+d set $lm8m0p0 1 0000001200000096 # values=[18, 150] / UInt @[8],[9]
+d set $lm10m0p0 1 000000500000003C # values=[80, 60] / UInt @[10],[11]
+d set $lm12m0p0 1 0000006700000098 # values=[103, 152] / UInt @[12],[13]
+d set $lm14m0p0 1 0000007C000000D9 # values=[124, 217] / UInt @[14],[15]
+
+# ======= YOUR VSM WILL BE INSERTED HERE =======
+# ======= Out(0): ((16_MAB:1, 4_PE:1, 16:1, 2_W:1))@LM1 / UInt =======
+d getd $ln0n0c0b0m0p0 1 # expect=[2, 1] / UInt @[0],[1]
+d getd $ln2n0c0b0m0p0 1 # expect=[1, 1] / UInt @[2],[3]
+d getd $ln4n0c0b0m0p0 1 # expect=[2, 2] / UInt @[4],[5]
+d getd $ln6n0c0b0m0p0 1 # expect=[0, 1] / UInt @[6],[7]
+d getd $ln8n0c0b0m0p0 1 # expect=[0, 0] / UInt @[8],[9]
+d getd $ln10n0c0b0m0p0 1 # expect=[2, 0] / UInt @[10],[11]
+d getd $ln12n0c0b0m0p0 1 # expect=[1, 2] / UInt @[12],[13]
+d getd $ln14n0c0b0m0p0 1 # expect=[1, 1] / UInt @[14],[15]

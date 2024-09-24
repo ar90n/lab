@@ -1,0 +1,9 @@
+imm i"3" $r1v2
+llsl $lm0v $aluf $nowrite
+lsub $aluf $lm0v $ln0v
+llsl $lm8v $lr0 $nowrite
+lsub $aluf $lm8v $ln8v
+llsl $lm16v $lr0 $nowrite
+lsub $aluf $lm16v $ln16v
+llsl $lm24v $lr0 $nowrite
+lsub $aluf $lm24v $ln24v

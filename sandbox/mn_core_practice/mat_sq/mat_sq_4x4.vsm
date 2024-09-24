@@ -1,0 +1,7 @@
+dbfn $lm0v $nowrite
+dmwrite $aluf $lx0
+dmwrite $lm0v $ly0
+dmread $ly0 $nowrite
+dbfn $mreadf $lr0v
+dmmulu $lx $aluf $nowrite
+dmfmad $lx $lr0v $mauf $ln0v

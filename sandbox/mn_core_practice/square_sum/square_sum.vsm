@@ -1,0 +1,13 @@
+imm i"4" $nowrite
+llsl $mabid $aluf $lt
+nop
+dvmulu $lmt0v $lmt0v $nowrite; 
+dvfmad $lmt0v $lmt0v $mauf $nowrite; 
+dvfmau $lmt8v $lmt8v $mauf $nowrite; 
+dvfmad $lmt8v $lmt8v $mauf $lr0v; 
+nop
+dvadd $mauf $lr2v $nowrite;
+dvadd $mauf $lr4v $nowrite;
+dvadd $mauf $lr6v $nowrite;
+l1bmrdfadd $mauf $lb0
+l1bmm $lbi $ln0v

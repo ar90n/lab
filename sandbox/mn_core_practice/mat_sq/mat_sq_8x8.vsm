@@ -1,0 +1,26 @@
+gbfn $lm0v $lr0v
+gbfn $lm8v $lr8v
+gmwrite $lm0v $ly0
+gmwrite $lm8v $ly4
+gmwrite $lr0v $lx0
+gmwrite $lr8v $lx4
+
+gmread $ly0 $nowrite
+gbfn $mreadf $lr0v
+gmread $ly4 $nowrite
+gbfn $mreadf $lr8v
+
+gmmul $lx $lr0v $ln0v
+gmmul $lx $lr8v $ln8v
+
+
+#d getbd $ls8n0c0b0m0 4 
+#d getbf $lr0n0c0b0m0 8 
+#d getbf $lx0n0c0b0m0 8 
+#d getf $ly0n0c0b0m0 8 
+
+#dmwrite $lm0v $ly0
+#dmread $ly0 $nowrite
+#dbfn $mreadf $lr0v
+#dmmulu $lx $aluf $nowrite
+#dmfmad $lx $lr0v $mauf $ln0v

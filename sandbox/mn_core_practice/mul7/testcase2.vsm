@@ -1,0 +1,20 @@
+# ======= In(0): ((16_MAB:1, 4_PE:1, 16:1))@LM0 / ULong =======
+d set $lm0m0p0 1 000000000000020D # values=[525] / ULong @[0]
+d set $lm2m0p0 1 0000000000000165 # values=[357] / ULong @[1]
+d set $lm4m0p0 1 00000000000001BC # values=[444] / ULong @[2]
+d set $lm6m0p0 1 000000000000001F # values=[31] / ULong @[3]
+d set $lm8m0p0 1 000000000000026A # values=[618] / ULong @[4]
+d set $lm10m0p0 1 000000000000024B # values=[587] / ULong @[5]
+d set $lm12m0p0 1 00000000000001BF # values=[447] / ULong @[6]
+d set $lm14m0p0 1 00000000000002DE # values=[734] / ULong @[7]
+
+# ======= YOUR VSM WILL BE INSERTED HERE =======
+# ======= Out(0): ((16_MAB:1, 4_PE:1, 16:1))@LM1 / ULong =======
+d getd $ln0n0c0b0m0p0 1 # expect=[3675] / ULong @[0]
+d getd $ln2n0c0b0m0p0 1 # expect=[2499] / ULong @[1]
+d getd $ln4n0c0b0m0p0 1 # expect=[3108] / ULong @[2]
+d getd $ln6n0c0b0m0p0 1 # expect=[217] / ULong @[3]
+d getd $ln8n0c0b0m0p0 1 # expect=[4326] / ULong @[4]
+d getd $ln10n0c0b0m0p0 1 # expect=[4109] / ULong @[5]
+d getd $ln12n0c0b0m0p0 1 # expect=[3129] / ULong @[6]
+d getd $ln14n0c0b0m0p0 1 # expect=[5138] / ULong @[7]

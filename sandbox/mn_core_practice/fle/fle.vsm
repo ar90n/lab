@@ -1,0 +1,8 @@
+imm f"1.0" $lr0/1000
+fvadd $lm0v -$aluf $omr1
+imm f"inf" $nowrite; 
+fpassa $aluf $ln0v/$imr1; fvadd $lm8v -$lr0 $omr1; noforward
+fpassa $aluf $ln8v/$imr1; fvadd $lm16v -$lr0 $omr1; noforward
+fpassa $aluf $ln16v/$imr1; fvadd $lm24v -$lr0 $omr1; noforward
+fpassa $aluf $ln24v/$imr1; fvadd $lm32v -$lr0 $omr1; noforward
+fpassa $aluf $ln32v/$imr1

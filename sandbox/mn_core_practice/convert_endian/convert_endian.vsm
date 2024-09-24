@@ -1,0 +1,5 @@
+imm s"8" $nowrite
+sbsl $m[1,0] $aluf $s[0,1]
+nop
+imm i"16" $nowrite
+ibsr $ls0v $aluf $ln0v

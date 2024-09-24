@@ -1,8 +1,6 @@
-imm i"0" $r0  
-imm i"2" $r1 
-linc $lm0v $nowrite
-linc $aluf $ln0v
-ladd $lm8v $lr0 $ln8v 
-ladd $lm16v $lr0 $ln16v 
-ladd $lm24v $lr0 $ln24v 
-ladd $lm32v $lr0 $ln32v 
+imm i"2" $nowrite
+ladd $aluf $m1v2 $n1v2; noforward
+ladd $aluf $m9v2 $n9v2; noforward
+ladd $aluf $m17v2 $n17v2 ; noforward
+ladd $aluf $m25v2 $n25v2 ; noforward
+ladd $aluf $m33v2 $n33v2 ; noforward

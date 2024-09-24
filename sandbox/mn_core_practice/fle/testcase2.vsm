@@ -1,0 +1,20 @@
+# ======= In(0): ((16_MAB:1, 4_PE:1, 20:1, 2_W:1))@LM0 / Float =======
+d set $lm0m0p0 1 4086D00040594000 # values=[4.212890625, 3.39453125] / Float @[0],[1]
+d set $lm2m0p0 1 4012C0003F6F8000 # values=[2.29296875, 0.935546875] / Float @[2],[3]
+d set $lm4m0p0 1 4029A00040952000 # values=[2.650390625, 4.66015625] / Float @[4],[5]
+d set $lm6m0p0 1 4097A0003EB30000 # values=[4.73828125, 0.349609375] / Float @[6],[7]
+d set $lm8m0p0 1 401720003FC3C000 # values=[2.361328125, 1.529296875] / Float @[8],[9]
+d set $lm10m0p0 1 4012E0004033C000 # values=[2.294921875, 2.80859375] / Float @[10],[11]
+d set $lm12m0p0 1 4056400040746000 # values=[3.34765625, 3.818359375] / Float @[12],[13]
+d set $lm14m0p0 1 4081A000403BE000 # values=[4.05078125, 2.935546875] / Float @[14],[15]
+
+# ======= YOUR VSM WILL BE INSERTED HERE =======
+# ======= Out(0): ((16_MAB:1, 4_PE:1, 20:1, 2_W:1))@LM1 / Float =======
+d getd $ln0n0c0b0m0p0 1 # expect=[inf, inf] / Float @[0],[1]
+d getd $ln2n0c0b0m0p0 1 # expect=[inf, 0.0] / Float @[2],[3]
+d getd $ln4n0c0b0m0p0 1 # expect=[inf, inf] / Float @[4],[5]
+d getd $ln6n0c0b0m0p0 1 # expect=[inf, 0.0] / Float @[6],[7]
+d getd $ln8n0c0b0m0p0 1 # expect=[inf, inf] / Float @[8],[9]
+d getd $ln10n0c0b0m0p0 1 # expect=[inf, inf] / Float @[10],[11]
+d getd $ln12n0c0b0m0p0 1 # expect=[inf, inf] / Float @[12],[13]
+d getd $ln14n0c0b0m0p0 1 # expect=[inf, inf] / Float @[14],[15]

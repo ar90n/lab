@@ -1,12 +1,39 @@
 version: '3'
 services:
-  purpur:
-    image: 05jchambers/legendary-minecraft-purpur-geyser:latest
+  mc:
+    image: marctv/minecraft-papermc-server:1.21.3
+    restart: always
+    container_name: "mcserver"
     ports:
-    - "25565:25565"
-    - "19132:19132/udp"
-    - "19132:19132"
+      - "25565:25565"
+      - "19132:19132/udp"
+      - "19132:19132"
     volumes:
-    - minecraft_world:/minecraft
+      - minecraft_world:/data
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+    stdin_open: true
+    tty: true
+  copy_plugins:
+    image: alpine
+    profiles: ["setup"]
+    volumes:
+      - minecraft_world:/data
+      - ./plugins:/plugins
+    command:
+      - sh
+      - -c
+      - "cp /plugins/*.jar /data/plugins/"
+    user: "${PUID}:${PGID}"
+  copy_configs:
+    image: alpine
+    profiles: ["setup"]
+    volumes:
+      - minecraft_world:/data
+      - ./configs:/configs
+    command: /configs/copy.sh
+    user: "${PUID}:${PGID}"
+
 volumes:
   minecraft_world: {}

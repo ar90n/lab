@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <world name="my_world">
+    <plugin
+      name="sample_system::SampleSystem"
+      filename="libSampleSystem.so">
+    </plugin>
+    <plugin
+      name="sample_system::SampleSystem2"
+      filename="libSampleSystem.so">
+    </plugin>
+  </world>
+</sdf>

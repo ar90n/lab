@@ -10,3 +10,9 @@
 [submodule "sandbox/typescript_cv_practice/external/cad-image"]
 	path = sandbox/typescript_cv_practice/external/cad-image
 	url = git@github.com:pangjunbiao/cad-image.git
+[submodule "sandbox/tinygrad_practice/tinygrad"]
+	path = sandbox/tinygrad_practice/tinygrad
+	url = https://github.com/tinygrad/tinygrad.git
+[submodule "sandbox/tinygrad_svm_practice/tinygrad"]
+	path = sandbox/tinygrad_svm_practice/tinygrad
+	url = https://github.com/tinygrad/tinygrad.git

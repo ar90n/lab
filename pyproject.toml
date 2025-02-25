@@ -25,6 +25,7 @@ scikit-learn = "^1.4.2"
 torch = {version = "^2.3.0+cu121", source = "torch_cu121"}
 torchvision = {version = "^0.18.0+cu121", source = "torch_cu121"}
 torchaudio = {version = "^2.3.0+cu121", source = "torch_cu121"}
+clingkernel = {path = "/opt/cling_src/tools/Jupyter/kernel"}
 
 [[tool.poetry.source]]
 name = "torch_cu121"

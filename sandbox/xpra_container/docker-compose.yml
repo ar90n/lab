@@ -9,5 +9,7 @@ services:
         DEFAULT_PORT: 20000
     restart: always
     container_name: xpra
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
     ports:
-    - "20000:20000"
+      - "20000:20000"

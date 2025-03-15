@@ -1,4 +1,4 @@
-FROM ubuntu:lunar
+FROM ubuntu:noble
 
 ARG DEFAULT_DISPLAY_NUMBER=20000
 ARG DEFAULT_PORT=20000
@@ -8,7 +8,7 @@ VOLUME /tmp/.X11-unix
 RUN <<EOF
  apt update
  apt-get install -y wget gnupg
- echo "deb [arch=amd64] https://xpra.org/ lunar main" > /etc/apt/sources.list.d/xpra.list
+ echo "deb [arch=amd64] https://xpra.org/ noble main" > /etc/apt/sources.list.d/xpra.list
  wget -q https://xpra.org/gpg.asc -O- | apt-key add -
 EOF
 

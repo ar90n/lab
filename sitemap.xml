@@ -65,23 +65,7 @@
     <lastmod>2023-01-06T11:03:29.630Z</lastmod>
   </url>
   <url>
-    <loc>https://lab.ar90n.net/posts/2021-08-26-make-usb-to-ttlx4.html</loc>
-    <lastmod>2022-10-24T11:10:44.495Z</lastmod>
-  </url>
-  <url>
-    <loc>https://lab.ar90n.net/posts/2020-11-15-rust-on-nodebook-with-evcxr-jupyter.html</loc>
-    <lastmod>2023-06-05T01:36:12.198Z</lastmod>
-  </url>
-  <url>
-    <loc>https://lab.ar90n.net/index.html</loc>
-    <lastmod>2023-06-30T00:25:35.803Z</lastmod>
-  </url>
-  <url>
-    <loc>https://lab.ar90n.net/about.html</loc>
-    <lastmod>2024-05-12T04:51:54.275Z</lastmod>
-  </url>
-  <url>
-    <loc>https://lab.ar90n.net/projects.html</loc>
+    <loc>https://lab.ar90n.net/posts/2022-11-05-develop-octoprint-plugin.html</loc>
     <lastmod>2023-01-06T11:03:29.630Z</lastmod>
   </url>
   <url>
@@ -89,8 +73,28 @@
     <lastmod>2023-06-30T01:00:23.658Z</lastmod>
   </url>
   <url>
-    <loc>https://lab.ar90n.net/posts/2022-11-05-develop-octoprint-plugin.html</loc>
+    <loc>https://lab.ar90n.net/projects.html</loc>
     <lastmod>2023-01-06T11:03:29.630Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lab.ar90n.net/about.html</loc>
+    <lastmod>2024-05-12T04:51:54.275Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lab.ar90n.net/index.html</loc>
+    <lastmod>2023-06-30T00:25:35.803Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lab.ar90n.net/posts/2020-11-15-rust-on-nodebook-with-evcxr-jupyter.html</loc>
+    <lastmod>2023-06-05T01:36:12.198Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lab.ar90n.net/posts/2021-08-26-make-usb-to-ttlx4.html</loc>
+    <lastmod>2022-10-24T11:10:44.495Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lab.ar90n.net/posts/2025-03-16-memo-about-robust-estimation.html</loc>
+    <lastmod>2025-03-15T18:37:36.249Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2021-01-06-install-starship.html</loc>

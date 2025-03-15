@@ -1,31 +1,36 @@
-[tool.poetry]
+[project]
 name = "build123d-practice"
 version = "0.1.0"
-description = ""
-authors = ["Masahiro Wada <argon.argon.argon@gmail.com>"]
+description = "Add your description here"
+authors = [
+    { name = "Masahiro Wada", email = "argon.argon.argon@gmail.com" }
+]
+dependencies = [
+    "ipython",
+    "ipykernel",
+    "scikit-image",
+    "ocp-vscode",
+    "trianglesolver",
+    "jupyter-cadquery",
+    "cadquery-massembly",
+    "bd-warehouse @ git+https://github.com/gumyr/bd_warehouse",
+    "ocpsvg @ git+https://github.com/snoyer/ocpsvg",
+]
 readme = "README.md"
-packages = [{include = "build123d_practice"}]
-
-[tool.poetry.dependencies]
-python = "^3.10"
-build123d = "^0.6.0"
-ipython = "^8.24.0"
-ipykernel = "^6.29.4"
-matplotlib = "^3.9.0"
-jupyter-cadquery = "^3.5.2"
-cadquery-massembly = "1.0.0"
-ocpsvg = {git = "https://github.com/snoyer/ocpsvg"}
-trianglesolver = "^1.2"
-bd-warehouse = {git = "https://github.com/gumyr/bd_warehouse"}
-vtk = "^9.3.1"
-ocp-vscode = "^2.4.1"
-scikit-image = "^0.24.0"
-
-
-[tool.poetry.group.dev.dependencies]
-black = "^24.4.2"
-pyright = "^1.1.363"
+requires-python = ">= 3.8"
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = [
+    "ruff>=0.9.7",
+]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/build123d_practice"]

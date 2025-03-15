@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/2025-03-16-memo-about-robust-estimation.html",
       "/posts/2023-09-30-devcontainer-nvidia-cuda.html",
       "/posts/2023-07-17-polymorphism-in-zig.html",
       "/posts/2023-06-29-comptime-ray-tracing-in-weekend.html",

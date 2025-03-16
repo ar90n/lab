@@ -573,16 +573,29 @@ import os
 from IPython.display import HTML
 import urllib.request
 import json
-req = urllib.request.Request("https://api.github.com/users/ar90n/repos?per_page=4096")
-req.add_header('Accept', 'application/vnd.github+json')
-req.add_header('Authorization', os.environ.get("GITHUB_TOKEN"))
+
+github_token = os.environ.get("GITHUB_TOKEN")
+headers = {
+    "Accept": "application/vnd.github+json",
+    "Authorization": github_token,
+}
+
+repos = []
+page = 1
+while True:
+    url = f"https://api.github.com/users/ar90n/repos?per_page=100&page={page}"
+    req = urllib.request.Request(url, headers=headers)
+    with urllib.request.urlopen(req) as res:
+        data = json.loads(res.read().decode('utf-8'))
+        if not data:  # これ以上リポジトリがなければループ終了
+            break
+        repos.extend(data)
+    page += 1
 
 my_projects = {}
-with urllib.request.urlopen(req) as res:
-  for repo in json.loads(res.read().decode('utf-8')):
-    if "my-projects" in repo["topics"]:
-      my_projects.setdefault(repo["language"], []).append(repo)
-
+for repo in repos:
+  if "my-projects" in repo["topics"]:
+    my_projects.setdefault(repo["language"], []).append(repo)
 
 tags = []
 for lang, prjs in my_projects.items():

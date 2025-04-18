@@ -30,7 +30,7 @@ attrs==25.1.0
     # via referencing
 babel==2.17.0
     # via jupyterlab-server
-bd-warehouse @ git+https://github.com/gumyr/bd_warehouse@e3a1f2708f92e1ff6f006dab815917044318bd85
+bd-warehouse @ git+https://github.com/gumyr/bd_warehouse@18d0d5d09724f388bc5c6801f25dd8ebf2a945df
     # via build123d-practice
 beautifulsoup4==4.13.3
     # via nbconvert
@@ -240,8 +240,6 @@ pillow==11.1.0
     # via imageio
     # via matplotlib
     # via scikit-image
-pip==25.0.1
-    # via build123d-practice
 platformdirs==4.3.6
     # via jupyter-core
 prometheus-client==0.21.1

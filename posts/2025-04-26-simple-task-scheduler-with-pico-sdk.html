@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2021-05-26">
+<meta name="dcterms.date" content="2025-04-26">
 
-<title>Ubuntu 20.04をシリアルコンソール経由で操作する – lab_note</title>
+<title>PICO-SDKによるシンプルなタスクスケジューラーの実装 – lab_note</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -55,7 +55,27 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -139,14 +159,18 @@ cookieconsent.run({
 
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="Ubuntu 20.04をシリアルコンソール経由で操作する – lab_note">
+<meta property="og:title" content="PICO-SDKによるシンプルなタスクスケジューラーの実装 – lab_note">
 <meta property="og:description" content="my laboratory">
-<meta property="og:image" content="https://lab.ar90n.net/posts/logo.png">
+<meta property="og:image" content="https://lab.ar90n.net/assets/img/common/cpp_logo.png">
 <meta property="og:site_name" content="lab_note">
-<meta name="twitter:title" content="Ubuntu 20.04をシリアルコンソール経由で操作する – lab_note">
+<meta property="og:image:height" content="405">
+<meta property="og:image:width" content="360">
+<meta name="twitter:title" content="PICO-SDKによるシンプルなタスクスケジューラーの実装 – lab_note">
 <meta name="twitter:description" content="my laboratory">
-<meta name="twitter:image" content="https://lab.ar90n.net/posts/logo.png">
+<meta name="twitter:image" content="https://lab.ar90n.net/assets/img/common/cpp_logo.png">
 <meta name="twitter:site" content="@ar90n">
+<meta name="twitter:image-height" content="405">
+<meta name="twitter:image-width" content="360">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
@@ -208,9 +232,14 @@ cookieconsent.run({
   <ul>
   <li><a href="#はじめに" id="toc-はじめに" class="nav-link active" data-scroll-target="#はじめに">はじめに</a></li>
   <li><a href="#やったこと" id="toc-やったこと" class="nav-link" data-scroll-target="#やったこと">やったこと</a></li>
-  <li><a href="#ケーブル作成" id="toc-ケーブル作成" class="nav-link" data-scroll-target="#ケーブル作成">ケーブル作成</a></li>
-  <li><a href="#シリアルコンソールの有効化" id="toc-シリアルコンソールの有効化" class="nav-link" data-scroll-target="#シリアルコンソールの有効化">シリアルコンソールの有効化</a></li>
-  <li><a href="#udevによるシリアルコンソールの自動起動" id="toc-udevによるシリアルコンソールの自動起動" class="nav-link" data-scroll-target="#udevによるシリアルコンソールの自動起動">udevによるシリアルコンソールの自動起動</a></li>
+  <li><a href="#pico-sdkで提供される周期処理の方法" id="toc-pico-sdkで提供される周期処理の方法" class="nav-link" data-scroll-target="#pico-sdkで提供される周期処理の方法">PICO-SDKで提供される周期処理の方法</a>
+  <ul class="collapse">
+  <li><a href="#alarm" id="toc-alarm" class="nav-link" data-scroll-target="#alarm">Alarm</a></li>
+  <li><a href="#repeating-timer" id="toc-repeating-timer" class="nav-link" data-scroll-target="#repeating-timer">Repeating Timer</a></li>
+  <li><a href="#async-context" id="toc-async-context" class="nav-link" data-scroll-target="#async-context">Async Context</a></li>
+  </ul></li>
+  <li><a href="#async-contextを使用したタスクスケジューラーの実装" id="toc-async-contextを使用したタスクスケジューラーの実装" class="nav-link" data-scroll-target="#async-contextを使用したタスクスケジューラーの実装">Async Contextを使用したタスクスケジューラーの実装</a></li>
+  <li><a href="#ossとしての公開" id="toc-ossとしての公開" class="nav-link" data-scroll-target="#ossとしての公開">OSSとしての公開</a></li>
   <li><a href="#参考" id="toc-参考" class="nav-link" data-scroll-target="#参考">参考</a></li>
   </ul>
 </nav>
@@ -220,9 +249,11 @@ cookieconsent.run({
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Ubuntu 20.04をシリアルコンソール経由で操作する</h1>
+<h1 class="title">PICO-SDKによるシンプルなタスクスケジューラーの実装</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">Ubuntu</div>
+    <div class="quarto-category">C++</div>
+    <div class="quarto-category">組み込み</div>
+    <div class="quarto-category">RP2xxx</div>
   </div>
   </div>
 
@@ -234,7 +265,7 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">May 26, 2021</p>
+      <p class="date">April 26, 2025</p>
     </div>
   </div>
   
@@ -248,110 +279,120 @@ cookieconsent.run({
 
 <section id="はじめに" class="level2">
 <h2 class="anchored" data-anchor-id="はじめに">はじめに</h2>
-<p>普段SSHで管理しているサーバーが，ネットワーク関連のトラブルに見舞われると，いつも通りにログインできず色々と大変です． そこで，Ubuntu 20.04をシリアルコンソール経由で操作する環境を構築します．</p>
+<p>マイコン開発において、RTOSを導入するほどではないものの、ループベースの実装では複数の周期処理が煩雑になる場面があります。 そのようなケースに対応するため、PICO-SDKが提供するAPIを利用して、簡易的なタスクスケジューラーを実装しました。</p>
 </section>
 <section id="やったこと" class="level2">
 <h2 class="anchored" data-anchor-id="やったこと">やったこと</h2>
 <ul>
-<li>USB-TTLケーブルによる代用シリアルケーブルの作成</li>
-<li>udevによるケーブル挿入をトリガーとしたシリアルコンソールの有効化</li>
+<li>PICO-SDKが提供する周期処理のためのAPIを調査しました</li>
+<li>async_contextを使用して軽量なスケジューラーを設計・実装しました</li>
+<li>実装をOSSとして公開しました</li>
 </ul>
 </section>
-<section id="ケーブル作成" class="level2">
-<h2 class="anchored" data-anchor-id="ケーブル作成">ケーブル作成</h2>
-<p>特殊なケースを除くと，最近のPCにはシリアルポートが付属していません． そこで，２本のUSB-TTL変換ケーブルを直結することでシリアルケーブルの代用とします． 今回，安価に購入可能な<a href="https://www.amazon.co.jp/gp/product/B00K7YYFNM/">こちらのケーブル</a>を使用しました． 代用ケーブルの作成は，両ケーブルのピンソケットを切断し，以下の様に緑と白を交差して結線します．</p>
-<pre><code>&lt;赤&gt; ---------------- &lt;赤&gt;
-&lt;緑&gt; -------\/------- &lt;緑&gt;
-&lt;白&gt; -------/\------- &lt;白&gt;
-&lt;黒&gt; ---------------- &lt;黒&gt;</code></pre>
-<p>作成したケーブルの動作確認は両端をUSBポートに挿入し，接続したマシンで以下の様に<code>cu</code>コマンドを実行します． 接続が適切に行われると，一方の端末で入力した文字列が他方の端末に表示されると思います． （同一マシンでも可能です）</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> sudo cu <span class="at">-l</span> /dev/ttyUSB0 <span class="co"># &lt;- ttyUSB0の部分は環境によります</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="pico-sdkで提供される周期処理の方法" class="level2">
+<h2 class="anchored" data-anchor-id="pico-sdkで提供される周期処理の方法">PICO-SDKで提供される周期処理の方法</h2>
+<p>PICO-SDKでは、周期処理を実現するために以下の3つのAPIが提供されています。</p>
+<section id="alarm" class="level3">
+<h3 class="anchored" data-anchor-id="alarm">Alarm</h3>
+<p><code>add_alarm_at</code> や <code>alarm_pool_add_alarm_at</code> 等により、指定時刻に一度だけコールバックを実行することができます。<code>alarm_pool</code>を用いることでスケジューリングの調整が可能です。 AlarmではコールバックはISRとして実行されます。</p>
 </section>
-<section id="シリアルコンソールの有効化" class="level2">
-<h2 class="anchored" data-anchor-id="シリアルコンソールの有効化">シリアルコンソールの有効化</h2>
-<p>代用ケーブルを接続したマシンにて，以下のコマンド実行するとシリアルコンソールを有効化することができます．</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> sudo systemctl enable serial-getty@ttyUSB0.service  <span class="co"># &lt;- ttyUSB0の部分は環境によります</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> sudo systemctl start serial-getty@ttyUSB0.service  <span class="co"># &lt;- ttyUSB0の部分は環境によります</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>その後，もう一方を接続したマシンにて，<code>cu</code>コマンドを用いて接続します．すると，以下の様にログインプロンプトが確認できます．(slimeはホスト名です)</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> sudo cu <span class="at">-l</span> /dev/ttyUSB0 <span class="co"># &lt;- ttyUSB0の部分は環境によります</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Password:</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Connected.</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="ex">slime</span> login:</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="repeating-timer" class="level3">
+<h3 class="anchored" data-anchor-id="repeating-timer">Repeating Timer</h3>
+<p><code>add_repeating_timer_ms</code> 等を使うことで、一定周期で処理を繰り返すタイマーを設定できます。Repeating TimerでもコールバックはISRとして実行されます。</p>
 </section>
-<section id="udevによるシリアルコンソールの自動起動" class="level2">
-<h2 class="anchored" data-anchor-id="udevによるシリアルコンソールの自動起動">udevによるシリアルコンソールの自動起動</h2>
-<p>常時ケーブルを刺しっぱなしにするのは不便なので，ケーブルを挿入したタイミングで，シリアルコンソールが有効化されるように設定します． ですが，普通にUSB-TTL変換ケーブルを使いたい時もあるので，単純に<code>ttyUSB0</code>を関しするだけでは都合が悪そうです． そこで，特定のVendor IDとProduct IDを持つUSB-Serialデバイスが接続された場合のみシリアルコンソールを有効化します． Vendor IDとProduct IDは以下のコマンドで確認します．</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> udevadm test-builtin usb_id /sys/class/tty/ttyUSB0</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Load</span> module index</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Parsed</span> configuration file /usr/lib/systemd/network/99-default.link</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Parsed</span> configuration file /usr/lib/systemd/network/73-usb-net-by-mac.link</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="ex">Created</span> link configuration context.</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="va">ID_VENDOR</span><span class="op">=</span>Prolific_Technology_Inc.</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="va">ID_VENDOR_ENC</span><span class="op">=</span>Prolific<span class="dt">\x</span>20Technology<span class="dt">\x</span>20Inc.</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="va">ID_VENDOR_ID</span><span class="op">=</span>067b</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="va">ID_MODEL</span><span class="op">=</span>USB-Serial_Controller</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="va">ID_MODEL_ENC</span><span class="op">=</span>USB-Serial<span class="dt">\x</span>20Controller</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="va">ID_MODEL_ID</span><span class="op">=</span>2303</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="va">ID_REVISION</span><span class="op">=</span>0300</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="va">ID_SERIAL</span><span class="op">=</span>Prolific_Technology_Inc._USB-Serial_Controller</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="va">ID_TYPE</span><span class="op">=</span>generic</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="va">ID_BUS</span><span class="op">=</span>usb</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="va">ID_USB_INTERFACES</span><span class="op">=</span>:ff0000:</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="va">ID_USB_INTERFACE_NUM</span><span class="op">=</span>00</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="va">ID_USB_DRIVER</span><span class="op">=</span>pl2303</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="ex">Unload</span> module index</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="ex">Unloaded</span> link configuration context.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><code>ID_VENDOR_ID=067b</code> および <code>ID_MODEL_ID=2303</code> とあるので，Vendor IDが067bかつProduct IDが2303であることが確認できます． これは，今回使用するケーブルはPL2303を使っているためです.従って，PL2303が接続されるとシリアルコンソールが有効化されることになります．</p>
-<p>以上の結果を元に，以下の様にudevの設定を追加します．</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cat /etc/udev/rules.d/65-serial-console.rules</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="va">ACTION</span><span class="op">=</span>=<span class="st">"remove"</span>, <span class="va">GOTO</span><span class="op">=</span><span class="st">"serial_end"</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="ex">SUBSYSTEM!=</span><span class="st">"tty"</span><span class="ex">,</span> GOTO=<span class="st">"serial_end"</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="ex">ENV{ID_VENDOR_ID}==</span><span class="st">"067b"</span><span class="ex">,</span> ENV{ID_MODEL_ID}==<span class="st">"2303"</span>, ENV{SYSTEMD_WANTS}+=<span class="st">"serial-getty@ttyUSB</span><span class="va">$env</span><span class="st">{.ID_PORT}.service"</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="va">LABEL</span><span class="op">=</span><span class="st">"serial_end"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>1,2行目は，USB-TTLケーブル挿入時以外は処理をスキップすることを表しています． 4行目はVendor IDが067bかつProduct IDが2303である場合，対応するttyUSBに対してserial-gettyサービスを有効化することを表しています．</p>
-<p>設定後，以下のコマンドでケーブル挿入の前後で<code>serial-getty@ttyUSB0.service</code>が有効化されていることを確認できます．</p>
-<ul>
-<li>ケーブル挿入前</li>
-</ul>
-<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="va">$sudo</span> systemctl status serial-getty@ttyUSB0.service</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">●</span> serial-getty@ttyUSB0.service <span class="at">-</span> Serial Getty on ttyUSB0</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>     <span class="ex">Loaded:</span> loaded <span class="er">(</span><span class="ex">/lib/systemd/system/serial-getty@.service</span><span class="kw">;</span> <span class="ex">enabled</span><span class="kw">;</span> <span class="ex">vendor</span> preset: enabled<span class="kw">)</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>     <span class="ex">Active:</span> inactive <span class="er">(</span><span class="ex">dead</span><span class="kw">)</span> <span class="ex">since</span> Sun 2021-05-23 03:26:14 UTC<span class="kw">;</span> <span class="ex">2s</span> ago</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>       <span class="ex">Docs:</span> man:agetty<span class="er">(</span><span class="ex">8</span><span class="kw">)</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>             <span class="ex">man:systemd-getty-generator</span><span class="er">(</span><span class="ex">8</span><span class="kw">)</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>             <span class="ex">http://0pointer.de/blog/projects/serial-console.html</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="ex">Process:</span> 3803 ExecStart=/sbin/agetty <span class="at">-o</span> <span class="at">-p</span> <span class="at">--</span> <span class="dt">\u</span> <span class="at">--keep-baud</span> 115200,38400,9600 ttyUSB0 <span class="va">$TERM</span> <span class="er">(</span><span class="va">code</span><span class="op">=</span>killed, <span class="va">signal</span><span class="op">=</span>HUP<span class="kw">)</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>   <span class="ex">Main</span> PID: 3803 <span class="er">(</span><span class="va">code</span><span class="op">=</span>killed, <span class="va">signal</span><span class="op">=</span>HUP<span class="kw">)</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="ex">May</span> 23 03:26:14 slime systemd<span class="pp">[</span><span class="ss">1</span><span class="pp">]</span>: Stopped Serial Getty on ttyUSB0.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<ul>
-<li>ケーブル挿入後</li>
-</ul>
-<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> sudo systemctl status serial-getty@ttyUSB0.service</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">●</span> serial-getty@ttyUSB0.service <span class="at">-</span> Serial Getty on ttyUSB0</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>     <span class="ex">Loaded:</span> loaded <span class="er">(</span><span class="ex">/lib/systemd/system/serial-getty@.service</span><span class="kw">;</span> <span class="ex">enabled</span><span class="kw">;</span> <span class="ex">vendor</span> preset: enabled<span class="kw">)</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>     <span class="ex">Active:</span> active <span class="er">(</span><span class="ex">running</span><span class="kw">)</span> <span class="ex">since</span> Sun 2021-05-23 03:26:21 UTC<span class="kw">;</span> <span class="ex">1s</span> ago</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>       <span class="ex">Docs:</span> man:agetty<span class="er">(</span><span class="ex">8</span><span class="kw">)</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>             <span class="ex">man:systemd-getty-generator</span><span class="er">(</span><span class="ex">8</span><span class="kw">)</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>             <span class="ex">http://0pointer.de/blog/projects/serial-console.html</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>   <span class="ex">Main</span> PID: 4494 <span class="er">(</span><span class="ex">agetty</span><span class="kw">)</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>      <span class="ex">Tasks:</span> 1 <span class="er">(</span><span class="ex">limit:</span> 76982<span class="kw">)</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>     <span class="ex">Memory:</span> 348.0K</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>     <span class="ex">CGroup:</span> /system.slice/system-serial\x2dgetty.slice/serial-getty@ttyUSB0.service</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>             <span class="ex">└─4494</span> /sbin/agetty <span class="at">-o</span> <span class="at">-p</span> <span class="at">--</span> <span class="dt">\u</span> <span class="at">--keep-baud</span> 115200,38400,9600 ttyUSB0 vt220</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="ex">May</span> 23 03:26:21 slime systemd<span class="pp">[</span><span class="ss">1</span><span class="pp">]</span>: Started Serial Getty on ttyUSB0.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="async-context" class="level3">
+<h3 class="anchored" data-anchor-id="async-context">Async Context</h3>
+<p><code>async_context_add_at_time_worker</code> などの関数を使用して、コールバック関数を一定時刻に実行するよう登録できます。登録されたコールバックは、<code>async_context</code>の実装に応じて実行されます。</p>
+<p><code>async_context_poll_t</code> を使用する場合は、ユーザーが明示的に <code>poll</code> 関数を呼び出すことでコールバックが実行されます。 一方、<code>async_context_threadsafe_background_t</code> を使用する場合は、タイマー割り込みを利用してISRとして自動的に実行されます。</p>
+</section>
+</section>
+<section id="async-contextを使用したタスクスケジューラーの実装" class="level2">
+<h2 class="anchored" data-anchor-id="async-contextを使用したタスクスケジューラーの実装">Async Contextを使用したタスクスケジューラーの実装</h2>
+<p>タスクを周期的に実行する場合、割り込みハンドラ（ISR）内でタスク本体を実行してしまうと、他の割り込み処理を妨げてしまします。そのため、今回の用途では <code>async_context_poll_t</code> を使用します。<code>async_context_add_at_time_worker</code> は、1回分のコールバックのみ登録できます。従って、タスクの実行後に都度 <code>async_context_add_at_time_worker</code> を呼び出して次回実行分を登録します。登録されたコールバックは、メインループ上で <code>poll</code> 関数を明示的に呼び出すことで実行します。</p>
+<p>以下に<code>async_context_poll_t</code> と <code>async_context_add_at_time_worker_in_ms</code> とを使用したタスクスケジューラーの具体的な実装を紹介します。この実装は、タスクそのものを表す<code>SceduledTask</code>クラスと、それを実行する<code>TaskRunner</code>クラスからなります。</p>
+<p><code>ScheduledTask</code>の実装概要を以下に示します。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span><span class="op">&lt;</span>TaskCallable F<span class="op">&gt;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ScheduledTask</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">private</span><span class="op">:</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">async_at_time_worker_t</span> worker<span class="op">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  F                      callback<span class="op">;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">unsigned</span> <span class="at">const</span>         interval<span class="op">;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span><span class="op">:</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  ScheduledTask<span class="op">(</span><span class="dt">unsigned</span> interval<span class="op">,</span> F<span class="op">&amp;&amp;</span> callback<span class="op">)</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">:</span> callback<span class="op">(</span><span class="bu">std::</span>forward<span class="op">&lt;</span>F<span class="op">&gt;(</span>callback<span class="op">))</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">,</span> interval<span class="op">(</span>interval<span class="op">)</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    worker <span class="op">=</span> <span class="op">{</span> <span class="op">.</span>do_work <span class="op">=</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>                 <span class="op">[](</span><span class="dt">async_context_t</span><span class="op">*</span> context<span class="op">,</span> <span class="dt">async_at_time_worker_t</span><span class="op">*</span> worker<span class="op">)</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>               <span class="op">{</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>                 <span class="kw">auto</span><span class="op">*</span> self <span class="op">=</span> <span class="kw">reinterpret_cast</span><span class="op">&lt;</span>ScheduledTask<span class="op">*&gt;(</span>worker<span class="op">-&gt;</span>user_data<span class="op">);</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>                 self<span class="op">-&gt;</span>callback<span class="op">();</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>                 async_context_add_at_time_worker_in_ms<span class="op">(</span>context<span class="op">,</span> worker<span class="op">,</span> self<span class="op">-&gt;</span>interval<span class="op">);</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>               <span class="op">},</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>               <span class="op">.</span>user_data <span class="op">=</span> <span class="kw">reinterpret_cast</span><span class="op">&lt;</span><span class="dt">void</span><span class="op">*&gt;(</span><span class="kw">this</span><span class="op">)</span> <span class="op">};</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="kw">auto</span><span class="op">&amp;</span> get_native_worker<span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> worker<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><code>ScheduledTask</code> は、コンストラクタの引数としてタスクの実行周期を <code>interval</code> として受け取り、タスク本体を <code>callback</code> として受け取ります。ここで、<code>callback</code> の型 <code>F</code> はテンプレート引数として指定されます。型 <code>F</code> は以下のコンセプトを満たす必要があります。</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> F<span class="op">&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">concept</span> TaskCallable <span class="op">=</span> <span class="kw">requires</span><span class="op">(</span>F f<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span> f<span class="op">()</span> <span class="op">}</span> <span class="op">-&gt;</span> <span class="bu">std::</span>same_as<span class="op">&lt;</span><span class="dt">void</span><span class="op">&gt;;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>このコンセプトは、引数なし・戻り値なしで呼び出し可能な関数であることを要求します。</p>
+<p><code>ScheduledTask</code> のコンストラクタでは、<code>async_at_time_worker_t</code> 型の <code>worker</code> を初期化します。この際、タスクの実行と次回登録の処理をまとめたラムダ関数を <code>do_work</code> に設定します。 タスク実行時に <code>callback</code> を呼び出すため、<code>ScheduledTask</code> インスタンス自身を <code>user_data</code> に格納します。</p>
+<p>また、<code>get_native_worker</code> 関数により、この <code>worker</code> への参照を外部から取得できるようにしています。スケジューラー側ではこの関数を通じてタスクに対応する <code>async_at_time_worker_t</code> を取得し、<code>async_context</code> への登録に利用します。</p>
+<p>次に<code>TaskRunner</code>の実装概要を以下に示します。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span><span class="op">&lt;</span>ScheduledTaskInterface<span class="op">...</span> Tasks<span class="op">&gt;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> TaskRunner</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">private</span><span class="op">:</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">async_context_poll_t</span> context<span class="op">;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>tuple<span class="op">&lt;</span>Tasks<span class="op">...&gt;</span> tasks<span class="op">;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span><span class="op">:</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  TaskRunner<span class="op">(</span>Tasks<span class="op">&amp;&amp;...</span> args<span class="op">)</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">:</span> tasks<span class="op">(</span><span class="bu">std::</span>make_tuple<span class="op">(</span><span class="bu">std::</span>forward<span class="op">&lt;</span>Tasks<span class="op">&gt;(</span>args<span class="op">)...))</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    async_context_poll_init_with_defaults<span class="op">(&amp;</span>context<span class="op">);</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>apply<span class="op">(</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>      <span class="op">[</span><span class="kw">this</span><span class="op">](</span><span class="kw">auto</span><span class="op">&amp;...</span> task<span class="op">)</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>      <span class="op">{</span> <span class="op">(</span>async_context_add_at_time_worker_in_ms<span class="op">(&amp;</span>context<span class="op">.</span>core<span class="op">,</span> <span class="op">&amp;</span>task<span class="op">.</span>get_native_worker<span class="op">(),</span> <span class="dv">0</span><span class="op">),</span> <span class="op">...);</span> <span class="op">},</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>      tasks</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">);</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  <span class="dt">void</span> poll<span class="op">()</span> <span class="op">{</span> async_context_poll<span class="op">(&amp;</span>context<span class="op">.</span>core<span class="op">);</span> <span class="op">}</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><code>TaskRunner</code> は、コンストラクタ引数として任意の数のタスクを受け取ります。 この際、タスクの所有権も引き継ぎ、内部の <code>std::tuple</code> に保持します。<br>
+ここで受け取るタスクの型はテンプレートパラメータ <code>Tasks...</code> により与えられ、それぞれが次のコンセプトを満たす必要があります。</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">concept</span> ScheduledTaskInterface <span class="op">=</span> <span class="kw">requires</span><span class="op">(</span>T t<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span> t<span class="op">.</span>get_native_worker<span class="op">()</span> <span class="op">}</span> <span class="op">-&gt;</span> <span class="bu">std::</span>same_as<span class="op">&lt;</span><span class="dt">async_at_time_worker_t</span><span class="op">&amp;&gt;;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>このコンセプトは、タスク型が <code>get_native_worker</code> 関数を持ち、その戻り値が <code>async_at_time_worker_t&amp;</code> 型であることを要求します。<br>
+これにより、<code>ScheduledTask</code> クラスに限らず、同様のインターフェースを持つ独自タスク型にも対応できるようになっています。</p>
+<p><code>TaskRunner</code> のコンストラクタでは、渡されたタスクそれぞれから <code>worker</code> を取得し、<code>async_context</code> に登録します。この登録には、<code>async_context_add_at_time_worker_in_ms</code> を用い、初回登録時は即時実行（0ミリ秒後）として設定しています。 登録後は、<code>poll</code> 関数を呼び出すことで、<code>async_context</code> に登録されたタスクが所定の周期で順次実行されます。</p>
+<p>使用例は以下のとおりです。</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>  TaskRunner runner<span class="op">(</span><span class="bu">std::</span>move<span class="op">(</span>task<span class="op">));</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  runner<span class="op">.</span>poll<span class="op">();</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>このようにすることで、タスク群をまとめて管理し、メインループ上で制御することができます。</p>
+</section>
+<section id="ossとしての公開" class="level2">
+<h2 class="anchored" data-anchor-id="ossとしての公開">OSSとしての公開</h2>
+<p>本実装は、<a href="https://github.com/ar90n/mameTask-pico">mameTask-pico</a> としてGitHub上で公開しています。より具体的な使用方法については、リポジトリ内の <a href="https://github.com/ar90n/mameTask-pico/blob/main/example">example/main.cpp</a> を参照してください。</p>
+<p>導入は、<code>mameTaskPico.hpp</code> をプロジェクトにコピーするだけで完了します。外部ライブラリへの依存はなく、単体で使用可能です。</p>
 </section>
 <section id="参考" class="level2">
 <h2 class="anchored" data-anchor-id="参考">参考</h2>
-<ul>
-<li><a href="https://qiita.com/falcon8823/items/cf6ace48b94946330f24">Ubuntu 15.10 でシリアルコンソールを有効にする</a></li>
-<li><a href="https://gihyo.jp/admin/serial/01/ubuntu-recipe/0555">Ubuntu Weekly Recipe 第555回　いま，あらためてudev</a></li>
-<li><a href="https://thinkami.hatenablog.com/entry/2015/06/25/064658">Raspberry Pi 2 + systemd + udevで、USBデバイス挿入時にサービスを起動する</a></li>
-</ul>
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
+<div id="ref-raspberrypi_pico_sdk" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">Raspberry Pi Ltd 2023. <em><a href="https://datasheets.raspberrypi.com/pico/raspberry-pi-pico-c-sdk.pdf">Raspberry pi pico c/c++ SDK</a></em>. Raspberry Pi Ltd.</div>
+</div>
+</div>
 
 
 </section>

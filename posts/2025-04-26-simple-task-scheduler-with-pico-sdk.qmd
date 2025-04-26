@@ -1,0 +1,154 @@
+---
+title: PICO-SDKによるシンプルなタスクスケジューラーの実装
+date: 2025-04-26
+categories: [C++, 組み込み, RP2xxx]
+image: /assets/img/common/cpp_logo.png
+format:
+  html:
+    code-fold: false
+toc: true
+layout: post
+code-annotations: below
+nocite: |
+  @raspberrypi_pico_sdk,
+---
+## はじめに
+
+マイコン開発において、RTOSを導入するほどではないものの、ループベースの実装では複数の周期処理が煩雑になる場面があります。
+そのようなケースに対応するため、PICO-SDKが提供するAPIを利用して、簡易的なタスクスケジューラーを実装しました。
+
+## やったこと
+
+* PICO-SDKが提供する周期処理のためのAPIを調査しました
+* async_contextを使用して軽量なスケジューラーを設計・実装しました
+* 実装をOSSとして公開しました
+
+## PICO-SDKで提供される周期処理の方法
+
+PICO-SDKでは、周期処理を実現するために以下の3つのAPIが提供されています。
+
+### Alarm
+`add_alarm_at` や `alarm_pool_add_alarm_at` 等により、指定時刻に一度だけコールバックを実行することができます。`alarm_pool`を用いることでスケジューリングの調整が可能です。
+AlarmではコールバックはISRとして実行されます。
+
+### Repeating Timer
+`add_repeating_timer_ms` 等を使うことで、一定周期で処理を繰り返すタイマーを設定できます。Repeating TimerでもコールバックはISRとして実行されます。
+
+### Async Context
+`async_context_add_at_time_worker` などの関数を使用して、コールバック関数を一定時刻に実行するよう登録できます。登録されたコールバックは、`async_context`の実装に応じて実行されます。
+
+`async_context_poll_t` を使用する場合は、ユーザーが明示的に `poll` 関数を呼び出すことでコールバックが実行されます。
+一方、`async_context_threadsafe_background_t` を使用する場合は、タイマー割り込みを利用してISRとして自動的に実行されます。
+
+## Async Contextを使用したタスクスケジューラーの実装
+
+タスクを周期的に実行する場合、割り込みハンドラ（ISR）内でタスク本体を実行してしまうと、他の割り込み処理を妨げてしまします。そのため、今回の用途では `async_context_poll_t` を使用します。`async_context_add_at_time_worker` は、1回分のコールバックのみ登録できます。従って、タスクの実行後に都度 `async_context_add_at_time_worker` を呼び出して次回実行分を登録します。登録されたコールバックは、メインループ上で `poll` 関数を明示的に呼び出すことで実行します。
+
+以下に`async_context_poll_t` と `async_context_add_at_time_worker_in_ms` とを使用したタスクスケジューラーの具体的な実装を紹介します。この実装は、タスクそのものを表す`SceduledTask`クラスと、それを実行する`TaskRunner`クラスからなります。
+
+`ScheduledTask`の実装概要を以下に示します。
+
+```c++
+template<TaskCallable F>
+class ScheduledTask
+{
+private:
+  async_at_time_worker_t worker;
+  F                      callback;
+  unsigned const         interval;
+
+public:
+  ScheduledTask(unsigned interval, F&& callback)
+    : callback(std::forward<F>(callback))
+    , interval(interval)
+  {
+    worker = { .do_work =
+                 [](async_context_t* context, async_at_time_worker_t* worker)
+               {
+                 auto* self = reinterpret_cast<ScheduledTask*>(worker->user_data);
+                 self->callback();
+                 async_context_add_at_time_worker_in_ms(context, worker, self->interval);
+               },
+               .user_data = reinterpret_cast<void*>(this) };
+  }
+
+  auto& get_native_worker() { return worker; }
+};
+```
+
+`ScheduledTask` は、コンストラクタの引数としてタスクの実行周期を `interval` として受け取り、タスク本体を `callback` として受け取ります。ここで、`callback` の型 `F` はテンプレート引数として指定されます。型 `F` は以下のコンセプトを満たす必要があります。
+
+```c++
+template<typename F>
+concept TaskCallable = requires(F f) {
+  { f() } -> std::same_as<void>;
+};
+```
+
+このコンセプトは、引数なし・戻り値なしで呼び出し可能な関数であることを要求します。
+
+`ScheduledTask` のコンストラクタでは、`async_at_time_worker_t` 型の `worker` を初期化します。この際、タスクの実行と次回登録の処理をまとめたラムダ関数を `do_work` に設定します。 タスク実行時に `callback` を呼び出すため、`ScheduledTask` インスタンス自身を `user_data` に格納します。
+
+また、`get_native_worker` 関数により、この `worker` への参照を外部から取得できるようにしています。スケジューラー側ではこの関数を通じてタスクに対応する `async_at_time_worker_t` を取得し、`async_context` への登録に利用します。
+
+次に`TaskRunner`の実装概要を以下に示します。
+
+```c++
+template<ScheduledTaskInterface... Tasks>
+class TaskRunner
+{
+private:
+  async_context_poll_t context;
+  std::tuple<Tasks...> tasks;
+
+public:
+  TaskRunner(Tasks&&... args)
+    : tasks(std::make_tuple(std::forward<Tasks>(args)...))
+  {
+    async_context_poll_init_with_defaults(&context);
+
+    std::apply(
+      [this](auto&... task)
+      { (async_context_add_at_time_worker_in_ms(&context.core, &task.get_native_worker(), 0), ...); },
+      tasks
+    );
+  }
+
+  void poll() { async_context_poll(&context.core); }
+};
+```
+
+`TaskRunner` は、コンストラクタ引数として任意の数のタスクを受け取ります。 この際、タスクの所有権も引き継ぎ、内部の `std::tuple` に保持します。  
+ここで受け取るタスクの型はテンプレートパラメータ `Tasks...` により与えられ、それぞれが次のコンセプトを満たす必要があります。
+
+```c++
+template<typename T>
+concept ScheduledTaskInterface = requires(T t) {
+  { t.get_native_worker() } -> std::same_as<async_at_time_worker_t&>;
+};
+```
+
+このコンセプトは、タスク型が `get_native_worker` 関数を持ち、その戻り値が `async_at_time_worker_t&` 型であることを要求します。  
+これにより、`ScheduledTask` クラスに限らず、同様のインターフェースを持つ独自タスク型にも対応できるようになっています。
+
+`TaskRunner` のコンストラクタでは、渡されたタスクそれぞれから `worker` を取得し、`async_context` に登録します。この登録には、`async_context_add_at_time_worker_in_ms` を用い、初回登録時は即時実行（0ミリ秒後）として設定しています。
+登録後は、`poll` 関数を呼び出すことで、`async_context` に登録されたタスクが所定の周期で順次実行されます。
+
+使用例は以下のとおりです。
+
+```c++
+  TaskRunner runner(std::move(task));
+  runner.poll();
+```
+
+このようにすることで、タスク群をまとめて管理し、メインループ上で制御することができます。
+
+## OSSとしての公開
+
+本実装は、[mameTask-pico](https://github.com/ar90n/mameTask-pico) としてGitHub上で公開しています。より具体的な使用方法については、リポジトリ内の [example/main.cpp](https://github.com/ar90n/mameTask-pico/blob/main/example) を参照してください。
+
+導入は、`mameTaskPico.hpp` をプロジェクトにコピーするだけで完了します。外部ライブラリへの依存はなく、単体で使用可能です。
+
+## 参考 
+::: {#refs}
+:::

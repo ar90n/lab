@@ -74,7 +74,7 @@
   </url>
   <url>
     <loc>https://lab.ar90n.net/projects.html</loc>
-    <lastmod>2025-03-16T01:50:51.360Z</lastmod>
+    <lastmod>2025-03-16T01:59:00.644Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/about.html</loc>
@@ -155,5 +155,13 @@
   <url>
     <loc>https://lab.ar90n.net/posts/2022-08-12-xg-c100c-in-ubuntu-server.html</loc>
     <lastmod>2023-06-05T01:52:02.666Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lab.ar90n.net/posts/2025-04-27-simple-task-scheduler-with-pico-sdk.html</loc>
+    <lastmod>2025-04-26T08:53:24.201Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lab.ar90n.net/posts/2025-04-26-simple-task-scheduler-with-pico-sdk.html</loc>
+    <lastmod>2025-04-26T08:58:09.076Z</lastmod>
   </url>
 </urlset>

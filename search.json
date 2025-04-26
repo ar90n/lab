@@ -844,7 +844,7 @@
     "href": "index.html",
     "title": "lab_note",
     "section": "",
-    "text": "M推定を用いたPCAについてのメモ\n\n\n\n\n\n\nPython\n\n\n機械学習\n\n\n\n\n\n\n\n\n\nMar 16, 2025\n\n\n\n\n\n\n\n\n\n\n\n\ndevcontainersでCUDA環境を整える\n\n\n\n\n\n\n開発環境\n\n\n\n\n\n\n\n\n\nSep 30, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nZigで多態性を表現する\n\n\n\n\n\n\nZig\n\n\n\n\n\n\n\n\n\nJul 17, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nZigでレイトレーシングをしてみる\n\n\n\n\n\n\nZig\n\n\nコンピュータグラフィックス\n\n\n\n\n\n\n\n\n\nJun 29, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nほとんどPythonで作るWebアプリケーション\n\n\n\n\n\n\nPython\n\n\nWeb\n\n\n\n\n\n\n\n\n\nNov 30, 2022\n\n\n\n\n\n\n\n\n\n\n\n\n続・Goによるdot積のベンチマーク\n\n\n\n\n\n\nGo\n\n\n線形代数\n\n\n\n\n\n\n\n\n\nNov 16, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nGoによるdot積のベンチマーク\n\n\n\n\n\n\nGo\n\n\n線形代数\n\n\n\n\n\n\n\n\n\nNov 8, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nOctoPrintのプラグインを作ってみる\n\n\n\n\n\n\nPython\n\n\n3Dプリンタ\n\n\n\n\n\n\n\n\n\nNov 5, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nARモデルによるシンプルなボイスチェンジャ\n\n\n\n\n\n\nPython\n\n\n信号処理\n\n\n\n\n\n\n\n\n\nOct 24, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nXG-C100Cを追加してオンボードNICとブリッジ接続する\n\n\n\n\n\n\nUbuntu\n\n\n\n\n\n\n\n\n\nAug 12, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nKD木と次元の呪い\n\n\n\n\n\n\n機械学習\n\n\n数学\n\n\nPython\n\n\n\n\n\n\n\n\n\nFeb 16, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nGoで類似ベクトルを検索する\n\n\n\n\n\n\nGo\n\n\nアルゴリズム\n\n\n機械学習\n\n\n類似ベクトル検索\n\n\n\n\n\n\n\n\n\nFeb 1, 2022\n\n\n\n\n\n\n\n\n\n\n\n\ncargo-editが上手く動かない時の回避策\n\n\n\n\n\n\nRust\n\n\n\n\n\n\n\n\n\nJan 30, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nAWS Amplifyのメモ\n\n\n\n\n\n\nAWS\n\n\nWeb\n\n\nクラウド\n\n\nAmplify\n\n\n\n\n\n\n\n\n\nJan 3, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nRustによるシンプルなGuidedFilterの実装\n\n\n\n\n\n\nRust\n\n\n画像処理\n\n\n\n\n\n\n\n\n\nSep 30, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nUSB to TTLx4ケーブルの作成\n\n\n\n\n\n\nハードウェア\n\n\n\n\n\n\n\n\n\nAug 26, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nk3sクラスタ on Raspberry Pi 4\n\n\n\n\n\n\nKubernetes\n\n\n\n\n\n\n\n\n\nAug 21, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nPythonでpingの実装してみる\n\n\n\n\n\n\nPython\n\n\nネットワーク\n\n\n\n\n\n\n\n\n\nAug 1, 2021\n\n\n\n\n\n\n\n\n\n\n\n\npaaaaathによる統一的なファイルアクセス\n\n\n\n\n\n\nクラウド\n\n\nPython\n\n\nAWS\n\n\nGCP\n\n\n\n\n\n\n\n\n\nJun 6, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nソフトマックス関数を用いた混合ガウスモデルの計算\n\n\n\n\n\n\n機械学習\n\n\n信号処理\n\n\nPython\n\n\n\n\n\n\n\n\n\nMay 30, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nUbuntu 20.04をシリアルコンソール経由で操作する\n\n\n\n\n\n\nUbuntu\n\n\n\n\n\n\n\n\n\nMay 26, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nRustでレイトレーシングをしてみる\n\n\n\n\n\n\nRust\n\n\nコンピュータグラフィックス\n\n\n\n\n\n\n\n\n\nMar 30, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nglutinに入門してみる\n\n\n\n\n\n\nRust\n\n\nglutin\n\n\nOpenGL\n\n\nコンピュータグラフィックス\n\n\n\n\n\n\n\n\n\nFeb 1, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nstarshipの導入\n\n\n\n\n\n\n開発環境\n\n\n\n\n\n\n\n\n\nJan 6, 2021\n\n\n\n\n\n\n\n\n\n\n\n\n型レベル整数ライブラリtypenumの紹介\n\n\n\n\n\n\nRust\n\n\n\n\n\n\n\n\n\nDec 13, 2020\n\n\n\n\n\n\n\n\n\n\n\n\nevcxr_jupyter - Rust on Notebook\n\n\n\n\n\n\nRust\n\n\nJupyter\n\n\n\n\n\n\n\n\n\nNov 15, 2020\n\n\n\n\n\n\n\n\n\n\n\n\nLeast-Squares Estimation of Transformation Parameters Between Two Point Patterns の読解\n\n\n\n\n\n\n画像処理\n\n\n線形代数\n\n\n\n\n\n\n\n\n\nNov 8, 2020\n\n\n\n\n\n\n\n\n\n\n\n\nsmart_openによる統一的なファイルアクセス\n\n\n\n\n\n\nクラウド\n\n\nPython\n\n\nAWS\n\n\nGCP\n\n\n\n\n\n\n\n\n\nOct 21, 2020\n\n\n\n\n\n\n\n\n\n\n\n\nUbuntu 20.04 LTS Server でUSB-NICを使う\n\n\n\n\n\n\nUbuntu\n\n\n\n\n\n\n\n\n\nOct 17, 2020\n\n\n\n\n\n\n\n\n\n\n\n\nDICOMにおける文字コードの取り扱い\n\n\n\n\n\n\nDICOM\n\n\n\n\n\n\n\n\n\nOct 12, 2020\n\n\n\n\n\n\n\n\n\n\n\n\n移動平均フィルタの零点と周波数特性\n\n\n\n\n\n\n信号処理\n\n\nJupyter\n\n\n\n\n\n\n\n\n\nOct 10, 2020\n\n\n\n\n\n\n\n\n\n\n\n\nGitHub ActionsでWebサイトを自動更新する\n\n\n\n\n\n\nElm\n\n\nWeb\n\n\n\n\n\n\n\n\n\nAug 9, 2020\n\n\n\n\n\n\n\n\n\n\n\n\n純粋なバイナリヒープ\n\n\n\n\n\n\nアルゴリズム\n\n\n\n\n\n\n\n\n\nJun 27, 2020\n\n\n\n\n\n\n\n\n\n\n\n\n三次元空間における行列演算の復習\n\n\n\n\n\n\n数学\n\n\n線形代数\n\n\n\n\n\n\n\n\n\nJun 27, 2020\n\n\n\n\n\n\n\n\n\n\n\n\n5行で書くポアソンブレンディング\n\n\n\n\n\n\n画像処理\n\n\nPython\n\n\n\n\n\n\n\n\n\nMay 31, 2020\n\n\n\n\n\n\n\n\n\n\n\n\nRaspberry Pi 4 + k3s + Rayで分散処理を試す\n\n\n\n\n\n\nKubernetes\n\n\nRay\n\n\nPython\n\n\n分散システム\n\n\n\n\n\n\n\n\n\nMay 25, 2020\n\n\n\n\n\n\nNo matching items"
+    "text": "PICO-SDKによるシンプルなタスクスケジューラーの実装\n\n\n\n\n\n\nC++\n\n\n組み込み\n\n\nRP2xxx\n\n\n\n\n\n\n\n\n\nApr 26, 2025\n\n\n\n\n\n\n\n\n\n\n\n\nM推定を用いたPCAについてのメモ\n\n\n\n\n\n\nPython\n\n\n機械学習\n\n\n\n\n\n\n\n\n\nMar 16, 2025\n\n\n\n\n\n\n\n\n\n\n\n\ndevcontainersでCUDA環境を整える\n\n\n\n\n\n\n開発環境\n\n\n\n\n\n\n\n\n\nSep 30, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nZigで多態性を表現する\n\n\n\n\n\n\nZig\n\n\n\n\n\n\n\n\n\nJul 17, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nZigでレイトレーシングをしてみる\n\n\n\n\n\n\nZig\n\n\nコンピュータグラフィックス\n\n\n\n\n\n\n\n\n\nJun 29, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nほとんどPythonで作るWebアプリケーション\n\n\n\n\n\n\nPython\n\n\nWeb\n\n\n\n\n\n\n\n\n\nNov 30, 2022\n\n\n\n\n\n\n\n\n\n\n\n\n続・Goによるdot積のベンチマーク\n\n\n\n\n\n\nGo\n\n\n線形代数\n\n\n\n\n\n\n\n\n\nNov 16, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nGoによるdot積のベンチマーク\n\n\n\n\n\n\nGo\n\n\n線形代数\n\n\n\n\n\n\n\n\n\nNov 8, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nOctoPrintのプラグインを作ってみる\n\n\n\n\n\n\nPython\n\n\n3Dプリンタ\n\n\n\n\n\n\n\n\n\nNov 5, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nARモデルによるシンプルなボイスチェンジャ\n\n\n\n\n\n\nPython\n\n\n信号処理\n\n\n\n\n\n\n\n\n\nOct 24, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nXG-C100Cを追加してオンボードNICとブリッジ接続する\n\n\n\n\n\n\nUbuntu\n\n\n\n\n\n\n\n\n\nAug 12, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nKD木と次元の呪い\n\n\n\n\n\n\n機械学習\n\n\n数学\n\n\nPython\n\n\n\n\n\n\n\n\n\nFeb 16, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nGoで類似ベクトルを検索する\n\n\n\n\n\n\nGo\n\n\nアルゴリズム\n\n\n機械学習\n\n\n類似ベクトル検索\n\n\n\n\n\n\n\n\n\nFeb 1, 2022\n\n\n\n\n\n\n\n\n\n\n\n\ncargo-editが上手く動かない時の回避策\n\n\n\n\n\n\nRust\n\n\n\n\n\n\n\n\n\nJan 30, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nAWS Amplifyのメモ\n\n\n\n\n\n\nAWS\n\n\nWeb\n\n\nクラウド\n\n\nAmplify\n\n\n\n\n\n\n\n\n\nJan 3, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nRustによるシンプルなGuidedFilterの実装\n\n\n\n\n\n\nRust\n\n\n画像処理\n\n\n\n\n\n\n\n\n\nSep 30, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nUSB to TTLx4ケーブルの作成\n\n\n\n\n\n\nハードウェア\n\n\n\n\n\n\n\n\n\nAug 26, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nk3sクラスタ on Raspberry Pi 4\n\n\n\n\n\n\nKubernetes\n\n\n\n\n\n\n\n\n\nAug 21, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nPythonでpingの実装してみる\n\n\n\n\n\n\nPython\n\n\nネットワーク\n\n\n\n\n\n\n\n\n\nAug 1, 2021\n\n\n\n\n\n\n\n\n\n\n\n\npaaaaathによる統一的なファイルアクセス\n\n\n\n\n\n\nクラウド\n\n\nPython\n\n\nAWS\n\n\nGCP\n\n\n\n\n\n\n\n\n\nJun 6, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nソフトマックス関数を用いた混合ガウスモデルの計算\n\n\n\n\n\n\n機械学習\n\n\n信号処理\n\n\nPython\n\n\n\n\n\n\n\n\n\nMay 30, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nUbuntu 20.04をシリアルコンソール経由で操作する\n\n\n\n\n\n\nUbuntu\n\n\n\n\n\n\n\n\n\nMay 26, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nRustでレイトレーシングをしてみる\n\n\n\n\n\n\nRust\n\n\nコンピュータグラフィックス\n\n\n\n\n\n\n\n\n\nMar 30, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nglutinに入門してみる\n\n\n\n\n\n\nRust\n\n\nglutin\n\n\nOpenGL\n\n\nコンピュータグラフィックス\n\n\n\n\n\n\n\n\n\nFeb 1, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nstarshipの導入\n\n\n\n\n\n\n開発環境\n\n\n\n\n\n\n\n\n\nJan 6, 2021\n\n\n\n\n\n\n\n\n\n\n\n\n型レベル整数ライブラリtypenumの紹介\n\n\n\n\n\n\nRust\n\n\n\n\n\n\n\n\n\nDec 13, 2020\n\n\n\n\n\n\n\n\n\n\n\n\nevcxr_jupyter - Rust on Notebook\n\n\n\n\n\n\nRust\n\n\nJupyter\n\n\n\n\n\n\n\n\n\nNov 15, 2020\n\n\n\n\n\n\n\n\n\n\n\n\nLeast-Squares Estimation of Transformation Parameters Between Two Point Patterns の読解\n\n\n\n\n\n\n画像処理\n\n\n線形代数\n\n\n\n\n\n\n\n\n\nNov 8, 2020\n\n\n\n\n\n\n\n\n\n\n\n\nsmart_openによる統一的なファイルアクセス\n\n\n\n\n\n\nクラウド\n\n\nPython\n\n\nAWS\n\n\nGCP\n\n\n\n\n\n\n\n\n\nOct 21, 2020\n\n\n\n\n\n\n\n\n\n\n\n\nUbuntu 20.04 LTS Server でUSB-NICを使う\n\n\n\n\n\n\nUbuntu\n\n\n\n\n\n\n\n\n\nOct 17, 2020\n\n\n\n\n\n\n\n\n\n\n\n\nDICOMにおける文字コードの取り扱い\n\n\n\n\n\n\nDICOM\n\n\n\n\n\n\n\n\n\nOct 12, 2020\n\n\n\n\n\n\n\n\n\n\n\n\n移動平均フィルタの零点と周波数特性\n\n\n\n\n\n\n信号処理\n\n\nJupyter\n\n\n\n\n\n\n\n\n\nOct 10, 2020\n\n\n\n\n\n\n\n\n\n\n\n\nGitHub ActionsでWebサイトを自動更新する\n\n\n\n\n\n\nElm\n\n\nWeb\n\n\n\n\n\n\n\n\n\nAug 9, 2020\n\n\n\n\n\n\n\n\n\n\n\n\n純粋なバイナリヒープ\n\n\n\n\n\n\nアルゴリズム\n\n\n\n\n\n\n\n\n\nJun 27, 2020\n\n\n\n\n\n\n\n\n\n\n\n\n三次元空間における行列演算の復習\n\n\n\n\n\n\n数学\n\n\n線形代数\n\n\n\n\n\n\n\n\n\nJun 27, 2020\n\n\n\n\n\n\n\n\n\n\n\n\n5行で書くポアソンブレンディング\n\n\n\n\n\n\n画像処理\n\n\nPython\n\n\n\n\n\n\n\n\n\nMay 31, 2020\n\n\n\n\n\n\n\n\n\n\n\n\nRaspberry Pi 4 + k3s + Rayで分散処理を試す\n\n\n\n\n\n\nKubernetes\n\n\nRay\n\n\nPython\n\n\n分散システム\n\n\n\n\n\n\n\n\n\nMay 25, 2020\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "posts/2020-11-15-rust-on-nodebook-with-evcxr-jupyter.html",
@@ -1636,5 +1636,103 @@
     "title": "XG-C100Cを追加してオンボードNICとブリッジ接続する",
     "section": "参考",
     "text": "参考\n\nMarvell Drivers\nNetplan reference"
+  },
+  {
+    "objectID": "posts/2025-04-27-simple-task-scheduler-with-pico-sdk.html",
+    "href": "posts/2025-04-27-simple-task-scheduler-with-pico-sdk.html",
+    "title": "PICO-SDKによるシンプルなタスクスケジューラーの実装",
+    "section": "",
+    "text": "マイコン開発において、RTOSを導入するほどではないものの、ループベースの実装では複数の周期処理が煩雑になる場面があります。 そのようなケースに対応するため、PICO-SDKが提供するAPIを利用して、簡易的なタスクスケジューラーを実装しました。"
+  },
+  {
+    "objectID": "posts/2025-04-27-simple-task-scheduler-with-pico-sdk.html#はじめに",
+    "href": "posts/2025-04-27-simple-task-scheduler-with-pico-sdk.html#はじめに",
+    "title": "PICO-SDKによるシンプルなタスクスケジューラーの実装",
+    "section": "",
+    "text": "マイコン開発において、RTOSを導入するほどではないものの、ループベースの実装では複数の周期処理が煩雑になる場面があります。 そのようなケースに対応するため、PICO-SDKが提供するAPIを利用して、簡易的なタスクスケジューラーを実装しました。"
+  },
+  {
+    "objectID": "posts/2025-04-27-simple-task-scheduler-with-pico-sdk.html#やったこと",
+    "href": "posts/2025-04-27-simple-task-scheduler-with-pico-sdk.html#やったこと",
+    "title": "PICO-SDKによるシンプルなタスクスケジューラーの実装",
+    "section": "やったこと",
+    "text": "やったこと\n\nPICO-SDKが提供する周期処理のためのAPIを調査しました\nasync_contextを使用して軽量なスケジューラーを設計・実装しました\n実装をOSSとして公開しました"
+  },
+  {
+    "objectID": "posts/2025-04-27-simple-task-scheduler-with-pico-sdk.html#pico-sdkで提供される周期処理の方法",
+    "href": "posts/2025-04-27-simple-task-scheduler-with-pico-sdk.html#pico-sdkで提供される周期処理の方法",
+    "title": "PICO-SDKによるシンプルなタスクスケジューラーの実装",
+    "section": "PICO-SDKで提供される周期処理の方法",
+    "text": "PICO-SDKで提供される周期処理の方法\nPICO-SDKでは、周期処理を実現するために以下の3つのAPIが提供されています。\n\nAlarm\nadd_alarm_at や alarm_pool_add_alarm_at 等により、指定時刻に一度だけコールバックを実行することができます。alarm_poolを用いることでスケジューリングの調整が可能です。 AlarmではコールバックはISRとして実行されます。\n\n\nRepeating Timer\nadd_repeating_timer_ms 等を使うことで、一定周期で処理を繰り返すタイマーを設定できます。Repeating TimerでもコールバックはISRとして実行されます。\n\n\nAsync Context\nasync_context_add_at_time_worker などの関数を使用して、コールバック関数を一定時刻に実行するよう登録できます。登録されたコールバックは、async_contextの実装に応じて実行されます。 async_context_poll_t を使用する場合は、ユーザーが明示的に poll 関数を呼び出すことでコールバックが実行されます。 一方、async_context_threadsafe_background_t を使用する場合は、タイマー割り込みを利用してISRとして自動的に実行されます。"
+  },
+  {
+    "objectID": "posts/2025-04-27-simple-task-scheduler-with-pico-sdk.html#async-contextを使用したタスクスケジューラーの実装",
+    "href": "posts/2025-04-27-simple-task-scheduler-with-pico-sdk.html#async-contextを使用したタスクスケジューラーの実装",
+    "title": "PICO-SDKによるシンプルなタスクスケジューラーの実装",
+    "section": "Async Contextを使用したタスクスケジューラーの実装",
+    "text": "Async Contextを使用したタスクスケジューラーの実装\nタスクを周期的に実行する場合、割り込みハンドラ（ISR）内でタスク本体を実行してしまうと、他の割り込み処理を妨げてしまします。そのため、今回の用途では async_context_poll_t を使用します。async_context_add_at_time_worker は、1回分のコールバックのみ登録できます。従って、タスクの実行後に都度 async_context_add_at_time_worker を呼び出して次回実行分を登録します。登録されたコールバックは、メインループ上で poll 関数を明示的に呼び出すことで実行します。\n以下にasync_context_poll_t と async_context_add_at_time_worker_in_ms とを使用したタスクスケジューラーの具体的な実装を紹介します。この実装は、タスクそのものを表すSceduledTaskクラスと、それを実行するTaskRunnerクラスからなります。\nScheduledTaskの実装概要を以下に示します。\ntemplate&lt;TaskCallable F&gt;\nclass ScheduledTask\n{\nprivate:\n  async_at_time_worker_t worker;\n  F                      callback;\n  unsigned const         interval;\n\npublic:\n  ScheduledTask(unsigned interval, F&& callback)\n    : callback(std::forward&lt;F&gt;(callback))\n    , interval(interval)\n  {\n    worker = { .do_work =\n                 [](async_context_t* context, async_at_time_worker_t* worker)\n               {\n                 auto* self = reinterpret_cast&lt;ScheduledTask*&gt;(worker-&gt;user_data);\n                 self-&gt;callback();\n                 async_context_add_at_time_worker_in_ms(context, worker, self-&gt;interval);\n               },\n               .user_data = reinterpret_cast&lt;void*&gt;(this) };\n  }\n\n  auto& get_native_worker() { return worker; }\n};\nScheduledTask は、コンストラクタの引数としてタスクの実行周期を interval として受け取り、タスク本体を callback として受け取ります。ここで、callback の型 F はテンプレート引数として指定されます。型 F は以下のコンセプトを満たす必要があります。\ntemplate&lt;typename F&gt;\nconcept TaskCallable = requires(F f) {\n  { f() } -&gt; std::same_as&lt;void&gt;;\n};\nこのコンセプトは、引数なし・戻り値なしで呼び出し可能な関数であることを要求します。\nScheduledTask のコンストラクタでは、async_at_time_worker_t 型の worker を初期化します。この際、タスクの実行と次回登録の処理をまとめたラムダ関数を do_work に設定します。 タスク実行時に callback を呼び出すため、ScheduledTask インスタンス自身を user_data に格納します。\nまた、get_native_worker() 関数により、この worker への参照を外部から取得できるようにしています。スケジューラー側ではこの関数を通じてタスクに対応する async_at_time_worker_t を取得し、async_context への登録に利用します。\n次にTaskRunnerの実装概要を以下に示します。\ntemplate&lt;ScheduledTaskInterface... Tasks&gt;\nclass TaskRunner\n{\nprivate:\n  async_context_poll_t context;\n  std::tuple&lt;Tasks...&gt; tasks;\n\npublic:\n  TaskRunner(Tasks&&... args)\n    : tasks(std::make_tuple(std::forward&lt;Tasks&gt;(args)...))\n  {\n    async_context_poll_init_with_defaults(&context);\n\n    std::apply(\n      [this](auto&... task)\n      { (async_context_add_at_time_worker_in_ms(&context.core, &task.get_native_worker(), 0), ...); },\n      tasks\n    );\n  }\n\n  void poll() { async_context_poll(&context.core); }\n};\nTaskRunner は、コンストラクタ引数として任意の数のタスクを受け取ります。\nこの際、タスクの所有権も引き継ぎ、内部の std::tuple に保持します。\nここで受け取るタスクの型はテンプレートパラメータ Tasks... により与えられ、それぞれが次のコンセプトを満たす必要があります。\ntemplate&lt;typename T&gt;\nconcept ScheduledTaskInterface = requires(T t) {\n  { t.get_native_worker() } -&gt; std::same_as&lt;async_at_time_worker_t&&gt;;\n};\nこのコンセプトは、タスク型が get_native_worker() 関数を持ち、その戻り値が async_at_time_worker_t& 型であることを要求します。\nこれにより、ScheduledTask クラスに限らず、同様のインターフェースを持つ独自タスク型にも対応できるようになっています。\nTaskRunner のコンストラクタでは、渡されたタスクそれぞれから worker を取得し、async_context に登録します。\nこの登録には、async_context_add_at_time_worker_in_ms() を用い、初回登録時は即時実行（0ミリ秒後）として設定しています。\n登録後は、poll() 関数を呼び出すことで、async_context に登録されたタスクが所定の周期で順次実行されます。\n使用例は以下のとおりです。\n  TaskRunner runner(std::move(task));\n  runner.poll();\nこのようにすることで、タスク群をまとめて管理し、メインループ上で制御することができます。"
+  },
+  {
+    "objectID": "posts/2025-04-27-simple-task-scheduler-with-pico-sdk.html#ossとしての公開",
+    "href": "posts/2025-04-27-simple-task-scheduler-with-pico-sdk.html#ossとしての公開",
+    "title": "PICO-SDKによるシンプルなタスクスケジューラーの実装",
+    "section": "OSSとしての公開",
+    "text": "OSSとしての公開\n本実装は、mameTask-pico としてGitHub上で公開しています。\nより具体的な使用方法については、リポジトリ内の example/main.cpp を参照してください。\n導入は、mameTaskPico.hpp をプロジェクトにコピーするだけで完了します。外部ライブラリへの依存はなく、単体で使用可能です。"
+  },
+  {
+    "objectID": "posts/2025-04-27-simple-task-scheduler-with-pico-sdk.html#参考",
+    "href": "posts/2025-04-27-simple-task-scheduler-with-pico-sdk.html#参考",
+    "title": "PICO-SDKによるシンプルなタスクスケジューラーの実装",
+    "section": "参考",
+    "text": "参考\n\n\n[1] 藤澤洋徳. 2017. ロバスト統計：外れ値への対処の仕方 ＩＳＭシリーズ：進化する統計数理. 近代科学社."
+  },
+  {
+    "objectID": "posts/2025-04-26-simple-task-scheduler-with-pico-sdk.html",
+    "href": "posts/2025-04-26-simple-task-scheduler-with-pico-sdk.html",
+    "title": "PICO-SDKによるシンプルなタスクスケジューラーの実装",
+    "section": "",
+    "text": "マイコン開発において、RTOSを導入するほどではないものの、ループベースの実装では複数の周期処理が煩雑になる場面があります。 そのようなケースに対応するため、PICO-SDKが提供するAPIを利用して、簡易的なタスクスケジューラーを実装しました。"
+  },
+  {
+    "objectID": "posts/2025-04-26-simple-task-scheduler-with-pico-sdk.html#はじめに",
+    "href": "posts/2025-04-26-simple-task-scheduler-with-pico-sdk.html#はじめに",
+    "title": "PICO-SDKによるシンプルなタスクスケジューラーの実装",
+    "section": "",
+    "text": "マイコン開発において、RTOSを導入するほどではないものの、ループベースの実装では複数の周期処理が煩雑になる場面があります。 そのようなケースに対応するため、PICO-SDKが提供するAPIを利用して、簡易的なタスクスケジューラーを実装しました。"
+  },
+  {
+    "objectID": "posts/2025-04-26-simple-task-scheduler-with-pico-sdk.html#やったこと",
+    "href": "posts/2025-04-26-simple-task-scheduler-with-pico-sdk.html#やったこと",
+    "title": "PICO-SDKによるシンプルなタスクスケジューラーの実装",
+    "section": "やったこと",
+    "text": "やったこと\n\nPICO-SDKが提供する周期処理のためのAPIを調査しました\nasync_contextを使用して軽量なスケジューラーを設計・実装しました\n実装をOSSとして公開しました"
+  },
+  {
+    "objectID": "posts/2025-04-26-simple-task-scheduler-with-pico-sdk.html#pico-sdkで提供される周期処理の方法",
+    "href": "posts/2025-04-26-simple-task-scheduler-with-pico-sdk.html#pico-sdkで提供される周期処理の方法",
+    "title": "PICO-SDKによるシンプルなタスクスケジューラーの実装",
+    "section": "PICO-SDKで提供される周期処理の方法",
+    "text": "PICO-SDKで提供される周期処理の方法\nPICO-SDKでは、周期処理を実現するために以下の3つのAPIが提供されています。\n\nAlarm\nadd_alarm_at や alarm_pool_add_alarm_at 等により、指定時刻に一度だけコールバックを実行することができます。alarm_poolを用いることでスケジューリングの調整が可能です。 AlarmではコールバックはISRとして実行されます。\n\n\nRepeating Timer\nadd_repeating_timer_ms 等を使うことで、一定周期で処理を繰り返すタイマーを設定できます。Repeating TimerでもコールバックはISRとして実行されます。\n\n\nAsync Context\nasync_context_add_at_time_worker などの関数を使用して、コールバック関数を一定時刻に実行するよう登録できます。登録されたコールバックは、async_contextの実装に応じて実行されます。\nasync_context_poll_t を使用する場合は、ユーザーが明示的に poll 関数を呼び出すことでコールバックが実行されます。 一方、async_context_threadsafe_background_t を使用する場合は、タイマー割り込みを利用してISRとして自動的に実行されます。"
+  },
+  {
+    "objectID": "posts/2025-04-26-simple-task-scheduler-with-pico-sdk.html#async-contextを使用したタスクスケジューラーの実装",
+    "href": "posts/2025-04-26-simple-task-scheduler-with-pico-sdk.html#async-contextを使用したタスクスケジューラーの実装",
+    "title": "PICO-SDKによるシンプルなタスクスケジューラーの実装",
+    "section": "Async Contextを使用したタスクスケジューラーの実装",
+    "text": "Async Contextを使用したタスクスケジューラーの実装\nタスクを周期的に実行する場合、割り込みハンドラ（ISR）内でタスク本体を実行してしまうと、他の割り込み処理を妨げてしまします。そのため、今回の用途では async_context_poll_t を使用します。async_context_add_at_time_worker は、1回分のコールバックのみ登録できます。従って、タスクの実行後に都度 async_context_add_at_time_worker を呼び出して次回実行分を登録します。登録されたコールバックは、メインループ上で poll 関数を明示的に呼び出すことで実行します。\n以下にasync_context_poll_t と async_context_add_at_time_worker_in_ms とを使用したタスクスケジューラーの具体的な実装を紹介します。この実装は、タスクそのものを表すSceduledTaskクラスと、それを実行するTaskRunnerクラスからなります。\nScheduledTaskの実装概要を以下に示します。\ntemplate&lt;TaskCallable F&gt;\nclass ScheduledTask\n{\nprivate:\n  async_at_time_worker_t worker;\n  F                      callback;\n  unsigned const         interval;\n\npublic:\n  ScheduledTask(unsigned interval, F&& callback)\n    : callback(std::forward&lt;F&gt;(callback))\n    , interval(interval)\n  {\n    worker = { .do_work =\n                 [](async_context_t* context, async_at_time_worker_t* worker)\n               {\n                 auto* self = reinterpret_cast&lt;ScheduledTask*&gt;(worker-&gt;user_data);\n                 self-&gt;callback();\n                 async_context_add_at_time_worker_in_ms(context, worker, self-&gt;interval);\n               },\n               .user_data = reinterpret_cast&lt;void*&gt;(this) };\n  }\n\n  auto& get_native_worker() { return worker; }\n};\nScheduledTask は、コンストラクタの引数としてタスクの実行周期を interval として受け取り、タスク本体を callback として受け取ります。ここで、callback の型 F はテンプレート引数として指定されます。型 F は以下のコンセプトを満たす必要があります。\ntemplate&lt;typename F&gt;\nconcept TaskCallable = requires(F f) {\n  { f() } -&gt; std::same_as&lt;void&gt;;\n};\nこのコンセプトは、引数なし・戻り値なしで呼び出し可能な関数であることを要求します。\nScheduledTask のコンストラクタでは、async_at_time_worker_t 型の worker を初期化します。この際、タスクの実行と次回登録の処理をまとめたラムダ関数を do_work に設定します。 タスク実行時に callback を呼び出すため、ScheduledTask インスタンス自身を user_data に格納します。\nまた、get_native_worker 関数により、この worker への参照を外部から取得できるようにしています。スケジューラー側ではこの関数を通じてタスクに対応する async_at_time_worker_t を取得し、async_context への登録に利用します。\n次にTaskRunnerの実装概要を以下に示します。\ntemplate&lt;ScheduledTaskInterface... Tasks&gt;\nclass TaskRunner\n{\nprivate:\n  async_context_poll_t context;\n  std::tuple&lt;Tasks...&gt; tasks;\n\npublic:\n  TaskRunner(Tasks&&... args)\n    : tasks(std::make_tuple(std::forward&lt;Tasks&gt;(args)...))\n  {\n    async_context_poll_init_with_defaults(&context);\n\n    std::apply(\n      [this](auto&... task)\n      { (async_context_add_at_time_worker_in_ms(&context.core, &task.get_native_worker(), 0), ...); },\n      tasks\n    );\n  }\n\n  void poll() { async_context_poll(&context.core); }\n};\nTaskRunner は、コンストラクタ引数として任意の数のタスクを受け取ります。 この際、タスクの所有権も引き継ぎ、内部の std::tuple に保持します。\nここで受け取るタスクの型はテンプレートパラメータ Tasks... により与えられ、それぞれが次のコンセプトを満たす必要があります。\ntemplate&lt;typename T&gt;\nconcept ScheduledTaskInterface = requires(T t) {\n  { t.get_native_worker() } -&gt; std::same_as&lt;async_at_time_worker_t&&gt;;\n};\nこのコンセプトは、タスク型が get_native_worker 関数を持ち、その戻り値が async_at_time_worker_t& 型であることを要求します。\nこれにより、ScheduledTask クラスに限らず、同様のインターフェースを持つ独自タスク型にも対応できるようになっています。\nTaskRunner のコンストラクタでは、渡されたタスクそれぞれから worker を取得し、async_context に登録します。この登録には、async_context_add_at_time_worker_in_ms を用い、初回登録時は即時実行（0ミリ秒後）として設定しています。 登録後は、poll 関数を呼び出すことで、async_context に登録されたタスクが所定の周期で順次実行されます。\n使用例は以下のとおりです。\n  TaskRunner runner(std::move(task));\n  runner.poll();\nこのようにすることで、タスク群をまとめて管理し、メインループ上で制御することができます。"
+  },
+  {
+    "objectID": "posts/2025-04-26-simple-task-scheduler-with-pico-sdk.html#ossとしての公開",
+    "href": "posts/2025-04-26-simple-task-scheduler-with-pico-sdk.html#ossとしての公開",
+    "title": "PICO-SDKによるシンプルなタスクスケジューラーの実装",
+    "section": "OSSとしての公開",
+    "text": "OSSとしての公開\n本実装は、mameTask-pico としてGitHub上で公開しています。より具体的な使用方法については、リポジトリ内の example/main.cpp を参照してください。\n導入は、mameTaskPico.hpp をプロジェクトにコピーするだけで完了します。外部ライブラリへの依存はなく、単体で使用可能です。"
+  },
+  {
+    "objectID": "posts/2025-04-26-simple-task-scheduler-with-pico-sdk.html#参考",
+    "href": "posts/2025-04-26-simple-task-scheduler-with-pico-sdk.html#参考",
+    "title": "PICO-SDKによるシンプルなタスクスケジューラーの実装",
+    "section": "参考",
+    "text": "参考\n\n\n[1] Raspberry Pi Ltd 2023. Raspberry pi pico c/c++ SDK. Raspberry Pi Ltd."
   }
 ]

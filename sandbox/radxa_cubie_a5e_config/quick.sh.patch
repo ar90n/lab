@@ -1,0 +1,4 @@
+735c735
+< if [ ! -f $1 ] && [ $1 = "build_help" ] ; then
+---
+> if [ ! -f $1 ] && [ $1 == "build_help" ] ; then

@@ -1,0 +1,22 @@
+services:
+  dhcp-tftp-server:
+    build: ./dhcp_tftp_server
+    container_name: dhcp-tftp-server
+    network_mode: "host"
+    privileged: true
+    volumes:
+      - ./dhcp_tftp_server/dnsmasq.conf:/etc/dnsmasq.conf
+      - /var/tftpboot:/var/tftpboot
+    restart: unless-stopped
+  nfs-server:
+    build: ./nfs_server
+    container_name: nfs-server
+    privileged: true
+    network_mode: host
+    volumes:
+      - /var/nfsroot:/var/nfsroot:rw
+    cap_add:
+      - SYS_ADMIN
+      - DAC_READ_SEARCH
+    restart: unless-stopped
+

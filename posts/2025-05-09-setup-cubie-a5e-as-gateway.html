@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.43">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2025-05-09">
+
+<title>Radxa Cubie A5Eゲートウェイをとして仕立てる – lab_note</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../logo.png" rel="icon" type="image/png">
+<script src="../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-c45024c95b46c0a0cf42223b3a4356a3.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-92d0d7859a0a648635dbb21a21ba82e7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+<script type="text/plain" cookie-consent="tracking">
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-90473091-1', 'auto');
+
+ga('send', {
+  hitType: 'pageview',
+  'anonymizeIp': true,
+});
+</script>
+
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"headline",
+  "consent_type":"express",
+  "palette":"dark",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  ,
+"language":"en"
+  });
+});
+</script> 
+  
+
+
+<link rel="stylesheet" href="../styles.css">
+<meta property="og:title" content="Radxa Cubie A5Eゲートウェイをとして仕立てる – lab_note">
+<meta property="og:description" content="my laboratory">
+<meta property="og:image" content="https://lab.ar90n.net/assets/img/common/cubie_a5e.jpg">
+<meta property="og:site_name" content="lab_note">
+<meta name="twitter:title" content="Radxa Cubie A5Eゲートウェイをとして仕立てる – lab_note">
+<meta name="twitter:description" content="my laboratory">
+<meta name="twitter:image" content="https://lab.ar90n.net/assets/img/common/cubie_a5e.jpg">
+<meta name="twitter:site" content="@ar90n">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">lab_note</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../projects.html"> 
+<span class="menu-text">Projects</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/ar90n"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/ar90n"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../index.xml"> <i class="bi bi-rss" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#はじめに" id="toc-はじめに" class="nav-link active" data-scroll-target="#はじめに">はじめに</a></li>
+  <li><a href="#やったこと" id="toc-やったこと" class="nav-link" data-scroll-target="#やったこと">やったこと</a></li>
+  <li><a href="#ユースケースに合わせたカーネルの再構築" id="toc-ユースケースに合わせたカーネルの再構築" class="nav-link" data-scroll-target="#ユースケースに合わせたカーネルの再構築">ユースケースに合わせたカーネルの再構築</a></li>
+  <li><a href="#dhcptftpnfsサーバーの構築" id="toc-dhcptftpnfsサーバーの構築" class="nav-link" data-scroll-target="#dhcptftpnfsサーバーの構築">DHCP・TFTP・NFSサーバーの構築</a>
+  <ul class="collapse">
+  <li><a href="#dnsmasqによるdhcptftpサーバーの構築" id="toc-dnsmasqによるdhcptftpサーバーの構築" class="nav-link" data-scroll-target="#dnsmasqによるdhcptftpサーバーの構築">dnsmasqによるDHCP・TFTPサーバーの構築</a></li>
+  <li><a href="#nfsサーバーの構築" id="toc-nfsサーバーの構築" class="nav-link" data-scroll-target="#nfsサーバーの構築">NFSサーバーの構築</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Radxa Cubie A5Eゲートウェイをとして仕立てる</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Linux</div>
+    <div class="quarto-category">組み込み</div>
+    <div class="quarto-category">SBC</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">May 9, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="はじめに" class="level2">
+<h2 class="anchored" data-anchor-id="はじめに">はじめに</h2>
+<p>Ethernetポートを2つ備えた低価格なSBCとして、Radxa Cubie A5E があります。 今回はこのSBCを用いて、以下のネットワークサービスを提供するシンプルなゲートウェイとして構築しました。</p>
+<ul>
+<li>DHCP</li>
+<li>TFTP</li>
+<li>NFS</li>
+</ul>
+<p>技術基準適合証明（技適）に関しては、対象の無線機能を無効化することにより問題ないと判断しました。 具体的には、ドライバを削除することで該当の無線機能を有効化しない構成としています。この方針は文献 <span class="citation" data-cites="maclineto_giteki_wifi_ble">[<a href="#ref-maclineto_giteki_wifi_ble" role="doc-biblioref">2</a>]</span> を参考にしています。</p>
+</section>
+<section id="やったこと" class="level2">
+<h2 class="anchored" data-anchor-id="やったこと">やったこと</h2>
+<ul>
+<li>利用目的に合わせたカーネルの再構築を行いました</li>
+<li>カスタムカーネルを反映したインストールメディアを作成しました</li>
+<li>dnsmasq による DHCP・TFTPサーバー、および NFS サーバーのセットアップを行いました</li>
+</ul>
+</section>
+<section id="ユースケースに合わせたカーネルの再構築" class="level2">
+<h2 class="anchored" data-anchor-id="ユースケースに合わせたカーネルの再構築">ユースケースに合わせたカーネルの再構築</h2>
+<p>カーネルの再構築にあたっては、<span class="citation" data-cites="radxa_a5e_build">[<a href="#ref-radxa_a5e_build" role="doc-biblioref">1</a>]</span> を参考に、無線機能を無効化した上でシステムを構成しました。</p>
+<p>まず、Radxaが提供しているSDK（<code>t527_tina5.0_aiot_sdk.repo.tar.gz</code>）を取得し、展開します。このSDKは <code>repo</code> によって構成されているため、展開後に各リポジトリの同期を行います。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> tar <span class="at">-zxvf</span> t527_tina5.0_aiot_sdk.repo.tar.gz</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> repo sync <span class="at">-l</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>続いて、置き換えが必要なリポジトリを指定のブランチでクローンします。</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cd target</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> rm <span class="at">-rf</span> a527</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git clone <span class="at">--depth</span> 1 <span class="at">--branch</span> target-a527 git@github.com:radxa/allwinner-target.git a527</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cd ../device/config/chips</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> rm <span class="at">-rf</span> a527</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git clone <span class="at">--depth</span> 1 <span class="at">--branch</span> device-a527 git@github.com:radxa/allwinner-device.git a527</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cd ../../../</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> rm <span class="at">-rf</span> bsp</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git clone <span class="at">--depth</span> 1 <span class="at">--branch</span> product-t527-linux git@github.com:radxa/allwinner-bsp.git bsp</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cd kernel</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> rm <span class="at">-rf</span> linux-5.15</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git clone <span class="at">--depth</span> 1 <span class="at">--branch</span> allwinner-aiot-linux-5.15 git@github.com:radxa/kernel.git linux-5.15</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cd ../brandy/brandy-2.0</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> rm <span class="at">-rf</span> u-boot-2018</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git clone <span class="at">--depth</span> 1 <span class="at">--branch</span> allwinner-aiot-v2018.07 git@github.com:radxa/u-boot.git u-boot-2018</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>提供されている <code>quick.sh</code> スクリプトには条件式の誤りがあるため、以下のように修正を行います。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cat quick.sh.diff</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">735c735</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span> if <span class="bu">[</span> <span class="ot">!</span> <span class="ot">-f</span> <span class="va">$1</span> <span class="bu">]</span> <span class="kw">&amp;&amp;</span> <span class="bu">[</span> <span class="va">$1</span> <span class="ot">=</span> <span class="st">"build_help"</span> <span class="bu">]</span> <span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="ex">---</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> if <span class="bu">[</span> <span class="ot">!</span> <span class="ot">-f</span> <span class="va">$1</span> <span class="bu">]</span> <span class="kw">&amp;&amp;</span> <span class="bu">[</span> <span class="va">$1</span> <span class="ot">==</span> <span class="st">"build_help"</span> <span class="bu">]</span> <span class="kw">;</span> <span class="cf">then</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>これで、ビルドに必要なファイルが揃いました。次に、ビルド環境の初期化と必要なパッケージの導入を行います。Radxaのドキュメントに記載された <code>source build/envsetup.sh</code> に加えて、32bitアーキテクチャ向けのライブラリ群を導入します。</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> source build/envsetup.sh</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">NOTE:</span> The SDK<span class="er">(</span><span class="ex">/home/argon/workspace/radxa</span><span class="kw">)</span> <span class="ex">was</span> successfully loaded</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">...</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> sudo dpkg <span class="at">--add-architecture</span> i386</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> sudo apt install libc6-i386 libz1:i386</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> sudo apt-get install libc6:i386 libstdc++6:i386 zlib1g:i386</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> export PATH=<span class="va">$PATH</span>:<span class="va">$(</span><span class="bu">pwd</span><span class="va">)</span>/brandy/arisc/ar100s/tools/or32-elf-gcc/toolchain/bin</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>次に、システムの全体構成を設定します。 <code>./build.sh config</code> を実行し、ルートファイルシステムとして <code>linaro-bullseye-lite-arm64.tar.gz</code> を選択します。</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ./build.sh config</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">...</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="ex">You</span> read time left 8 seconds....</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="ex">I</span> have already read, understood and accepted the above terms<span class="pp">?</span> <span class="pp">[</span><span class="ss">Y/N</span><span class="pp">]</span>Y</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="ex">You</span> select Yes, Build continue....</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="ex">========ACTION</span> List: mk_config <span class="kw">;</span><span class="ex">========</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="ex">options</span> :</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="ex">All</span> available platform:</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>   <span class="ex">0.</span> android</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>   <span class="ex">1.</span> linux</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="ex">Choice</span> <span class="pp">[</span><span class="ss">android</span><span class="pp">]</span>: 1</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="ex">All</span> available linux_dev:</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>   <span class="ex">0.</span> bsp</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>   <span class="ex">1.</span> dragonboard</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>   <span class="ex">2.</span> buildroot</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>   <span class="ex">3.</span> debian</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="ex">Choice</span> <span class="pp">[</span><span class="ss">bsp</span><span class="pp">]</span>: 3</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="ex">All</span> available kern_name:</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>   <span class="ex">0.</span> linux-5.10</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>   <span class="ex">1.</span> linux-5.15</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="ex">Choice</span> <span class="pp">[</span><span class="ss">linux</span><span class="pp">-</span><span class="ss">5.10</span><span class="pp">]</span>: 1</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="ex">All</span> available ic:</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>   <span class="ex">0.</span> a523</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>   <span class="ex">1.</span> a527</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>   <span class="ex">2.</span> t527</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="ex">Choice</span> <span class="pp">[</span><span class="ss">a523</span><span class="pp">]</span>: 1</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="ex">All</span> available board:</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>   <span class="ex">0.</span> cubie_a5e</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>   <span class="ex">1.</span> d10_linux_aiot</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>   <span class="ex">2.</span> demo_linux_aiot</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>   <span class="ex">3.</span> pro2_linux_aiot</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="ex">Choice</span> <span class="pp">[</span><span class="ss">cubie_a5e</span><span class="pp">]</span>: 0</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a><span class="ex">All</span> available flash:</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>   <span class="ex">0.</span> default</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>   <span class="ex">1.</span> nor</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a><span class="ex">Choice</span> <span class="pp">[</span><span class="ss">default</span><span class="pp">]</span>: 0</span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a><span class="ex">cat:</span> /home/argon/workspace/radxa_blog/debian/.config: No such file or directory</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a><span class="ex">All</span> available rootfs files:</span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>   <span class="ex">0.</span> linaro-bullseye-gnome-arm64.tar.gz</span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>   <span class="ex">1.</span> linaro-bullseye-lite-arm64.tar.gz</span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>   <span class="ex">2.</span> linaro-bullseye-lxde-arm64.tar.gz</span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>   <span class="ex">3.</span> linaro-bullseye-xfce-arm64.tar.gz</span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a><span class="ex">Choice</span> <span class="pp">[</span><span class="ss">linaro</span><span class="pp">-</span><span class="ss">bullseye</span><span class="pp">-</span><span class="ss">gnome</span><span class="pp">-</span><span class="ss">arm64.tar.gz</span><span class="pp">]</span>: 1</span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a><span class="ex">...</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>カーネル設定は <code>./build.sh menuconfig</code> から行います。ローカルバージョンの指定、Wi-Fi/Bluetoothの無効化、NFSの有効化、loopデバイスの有効化などを行います。具体的な変更項目は以下の通りです。</p>
+<ul>
+<li>ローカルバージョンの指定</li>
+</ul>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">General</span> setup  <span class="at">---</span><span class="op">&gt;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">(</span><span class="ex">-cubie-A5E-giteki</span><span class="kw">)</span> <span class="ex">Local</span> version <span class="at">-</span> append to kernel release</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Wifiを無効化</li>
+</ul>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Device</span> Drivers  <span class="at">---</span><span class="op">&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Network</span> device support  <span class="at">---</span><span class="op">&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">[</span> <span class="bu">]</span> <span class="ex">Wireless</span> LAN  <span class="at">---</span><span class="op">&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>BlueToothを無効化</li>
+</ul>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Networking</span> support  <span class="at">---</span><span class="op">&gt;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>   <span class="op">&lt;</span> <span class="op">&gt;</span> Bluetooth <span class="ex">subsystem</span> support  <span class="at">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>nfsを有効化</li>
+</ul>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">File</span> systems  <span class="at">---</span><span class="op">&gt;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Network</span> File Systems  <span class="at">---</span><span class="op">&gt;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span><span class="ex">*</span><span class="op">&gt;</span> NFS client support</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span><span class="ex">*</span><span class="op">&gt;</span>   NFS client support for NFS version 2</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span><span class="ex">*</span><span class="op">&gt;</span>   NFS client support for NFS version 3</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span><span class="ex">*</span><span class="op">&gt;</span> NFS server support</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="ex">-*-</span>   NFS server support for NFS version 3</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="ex">[*]</span>   NFS server support for NFS version 4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>loopデバイスのマウントを有効化</li>
+</ul>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Device</span> Drivers  <span class="at">---</span><span class="op">&gt;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Block</span> devices  <span class="at">---</span><span class="op">&gt;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span><span class="ex">*</span><span class="op">&gt;</span> Loopback device support</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>システム初期化用のファイルは、<code>target/a527/debian/cubie_a5e/overlay</code> に配置し、ルートファイルシステム内の設定を上書きします。以下の例のように、APTソース、ホスト名、DNS、ユーザー環境、ネットワーク設定などを行います。</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cat <span class="op">&gt;&gt;</span> /etc/apt/sources.list</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ex">deb</span> http://deb.debian.org/debian/ stable main contrib non-free</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="ex">deb</span> http://deb.debian.org/debian/ stable-updates main contrib non-free</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="ex">deb</span> http://security.debian.org/debian-security stable-security main contrib non-free</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>今回はホスト名を<code>mochi</code>という名前にします。</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> echo mochi <span class="op">&gt;</span> /etc/hostname</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cat <span class="op">&gt;</span> /etc/resolv.conf</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="ex">nameserver</span> 8.8.8.8</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="ex">nameserver</span> 8.8.4.4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>これらの環境変数は後述する<code>config.sh</code>で使用します</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cat <span class="op">&gt;</span> environment</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="va">USERNAME</span><span class="op">=</span>argon</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="va">GROUPNAME</span><span class="op">=</span>nebarinet</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="va">USER_ID</span><span class="op">=</span>501</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="va">GROUP_ID</span><span class="op">=</span>6809</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="va">GITHUB_ID</span><span class="op">=</span>ar90n</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cat <span class="op">&gt;</span> network/interfaces.d/eth0.conf</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="ex">auto</span> eth0</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="ex">iface</span> eth0 inet static</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="ex">address</span> 10.0.1.1</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="ex">netmask</span> 255.255.255.0</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cat <span class="op">&gt;</span> network/interfaces.d/eth1.conf</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="ex">auto</span> eth1</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="ex">iface</span> eth1 inet dhcp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cat <span class="op">&gt;</span> sysctl.conf</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="ex">net.ipv4.ip_forward=1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>初回起動時にのみ実行される初期化スクリプト <code>config.sh</code> も同様に配置します。このスクリプトは3段階で構成され、パーティショニング・ユーザー作成・Docker導入などを自動化します。各ステージの詳細を以下に述べます。</p>
+<p><strong>ステージ1: ディスクの初期化とマウント設定</strong></p>
+<p>NVMeディスク <code>/dev/nvme0n1</code> を初期化し、以下の構成でパーティションを作成します。</p>
+<ul>
+<li>p1: swap</li>
+<li>p2: <code>/home</code></li>
+<li>p3: <code>/usr</code></li>
+<li>p4: <code>/var</code></li>
+</ul>
+<p>各パーティションには対応ディレクトリの内容を <code>rsync</code> でコピーし、<code>fstab</code> に登録します。また、無線関連の systemd サービス（<code>wpa_supplicant</code>、<code>hostapd</code>、<code>bluetooth</code> など）を無効化します。</p>
+<p>処理完了後、<code>stage2</code> を記録し再起動します。</p>
+<p><strong>ステージ2: パッケージ導入とユーザー作成</strong></p>
+<p><code>zsh</code>、<code>chrony</code>、<code>avahi-daemon</code> などをインストールし、環境変数で定義されたユーザー・グループを作成します。 <code>GITHUB_ID</code> が指定されていれば、SSH公開鍵を GitHub から取得して登録します。また、タイムゾーンを <code>Asia/Tokyo</code> に設定し、<code>guest</code> ユーザーを削除します。</p>
+<p>完了後、<code>stage3</code> に移行して再起動します。</p>
+<p><strong>ステージ3: Dockerのインストールと後処理</strong></p>
+<p>APTを通じて Docker CE をインストールし、対象ユーザーを <code>docker</code> グループに追加します。処理完了後、スクリプト自身と <code>/etc/rc.local</code> からの呼び出しを削除し、初期化を終了します。</p>
+<p>以下に実際の<code>config.sh</code>を示します。</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># /etc/config.sh - 3-stage init script for direct partitioning and user setup</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">DEBIAN_FRONTEND</span><span class="op">=</span>noninteractive</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="va">STAGE_FILE</span><span class="op">=</span><span class="st">"/etc/config-stage"</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="va">ENV</span><span class="op">=</span><span class="st">"/etc/environment"</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="bu">[</span> <span class="ot">-f</span> <span class="st">"</span><span class="va">$ENV</span><span class="st">"</span> <span class="bu">]</span> <span class="kw">&amp;&amp;</span> <span class="bu">source</span> <span class="st">"</span><span class="va">$ENV</span><span class="st">"</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="va">DISK</span><span class="op">=</span><span class="st">"/dev/nvme0n1"</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="va">MOUNT_BASE</span><span class="op">=</span><span class="st">"/mnt/ssd"</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="co"># === Stage 1: Partition, format, and copy from SD ===</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">[</span> <span class="ot">!</span> <span class="ot">-f</span> <span class="st">"</span><span class="va">$STAGE_FILE</span><span class="st">"</span> <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">"[Stage 1] Partitioning and copying rootfs..."</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Disable services</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>  <span class="ex">systemctl</span> mask wpa_supplicant.service</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>  <span class="ex">systemctl</span> stop hostapd.service</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>  <span class="ex">systemctl</span> disable hostapd.service</span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>  <span class="ex">systemctl</span> stop bluetooth.target</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>  <span class="ex">systemctl</span> disable bluetooth.target</span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>  <span class="ex">systemctl</span> stop wpa_supplicant-nl80211@.service</span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>  <span class="ex">systemctl</span> disable wpa_supplicant-nl80211@.service</span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>  <span class="ex">systemctl</span> stop wpa_supplicant-wired@.service</span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>  <span class="ex">systemctl</span> disable wpa_supplicant-wired@.service</span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>  <span class="ex">systemctl</span> stop wpa_supplicant@.service</span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>  <span class="ex">systemctl</span> disable wpa_supplicant@.service</span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>  <span class="ex">systemctl</span> stop dbus-fi.w1.wpa_supplicant1.service</span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>  <span class="ex">systemctl</span> disable dbus-fi.w1.wpa_supplicant1.service</span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>  <span class="ex">systemctl</span> stop NetworkManager</span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>  <span class="ex">systemctl</span> disable NetworkManager</span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Install packages</span></span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a>  <span class="ex">ntpdate</span> pool.ntp.org</span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a>  <span class="ex">dpkg</span> <span class="at">--configure</span> <span class="at">-a</span> <span class="kw">||</span> <span class="fu">true</span></span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a>  <span class="ex">apt</span> <span class="at">--fix-broken</span> install <span class="at">-y</span> <span class="kw">||</span> <span class="fu">true</span></span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a>  <span class="ex">apt-get</span> update</span>
+<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a>  <span class="ex">apt-get</span> install <span class="at">-y</span> rsync</span>
+<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Uninstall packages</span></span>
+<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a>  <span class="ex">apt-get</span> purge <span class="at">-y</span> x11-common hostapd wpasupplicant bluez pulseaudio</span>
+<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Partition the disk (swap, home, usr, var)</span></span>
+<span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a>  <span class="ex">wipefs</span> <span class="at">-a</span> <span class="va">$DISK</span></span>
+<span id="cb17-46"><a href="#cb17-46" aria-hidden="true" tabindex="-1"></a>  <span class="ex">parted</span> <span class="at">-s</span> <span class="va">$DISK</span> mklabel gpt</span>
+<span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a>  <span class="ex">parted</span> <span class="at">-s</span> <span class="va">$DISK</span> mkpart primary linux-swap 1MiB 4097MiB</span>
+<span id="cb17-48"><a href="#cb17-48" aria-hidden="true" tabindex="-1"></a>  <span class="ex">parted</span> <span class="at">-s</span> <span class="va">$DISK</span> mkpart primary ext4 4097MiB 20481MiB     <span class="co"># home</span></span>
+<span id="cb17-49"><a href="#cb17-49" aria-hidden="true" tabindex="-1"></a>  <span class="ex">parted</span> <span class="at">-s</span> <span class="va">$DISK</span> mkpart primary ext4 20481MiB 36865MiB    <span class="co"># usr</span></span>
+<span id="cb17-50"><a href="#cb17-50" aria-hidden="true" tabindex="-1"></a>  <span class="ex">parted</span> <span class="at">-s</span> <span class="va">$DISK</span> mkpart primary ext4 36865MiB 100%</span>
+<span id="cb17-51"><a href="#cb17-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-52"><a href="#cb17-52" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Wait for partitions to settle</span></span>
+<span id="cb17-53"><a href="#cb17-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sleep</span> 2</span>
+<span id="cb17-54"><a href="#cb17-54" aria-hidden="true" tabindex="-1"></a>  <span class="ex">partprobe</span></span>
+<span id="cb17-55"><a href="#cb17-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sleep</span> 1</span>
+<span id="cb17-56"><a href="#cb17-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-57"><a href="#cb17-57" aria-hidden="true" tabindex="-1"></a>  <span class="ex">mkswap</span> <span class="va">${DISK}</span>p1</span>
+<span id="cb17-58"><a href="#cb17-58" aria-hidden="true" tabindex="-1"></a>  <span class="ex">mkfs.ext4</span> <span class="at">-F</span> <span class="va">${DISK}</span>p2  <span class="co"># home</span></span>
+<span id="cb17-59"><a href="#cb17-59" aria-hidden="true" tabindex="-1"></a>  <span class="ex">mkfs.ext4</span> <span class="at">-F</span> <span class="va">${DISK}</span>p3  <span class="co"># usr</span></span>
+<span id="cb17-60"><a href="#cb17-60" aria-hidden="true" tabindex="-1"></a>  <span class="ex">mkfs.ext4</span> <span class="at">-F</span> <span class="va">${DISK}</span>p4  <span class="co"># var</span></span>
+<span id="cb17-61"><a href="#cb17-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-62"><a href="#cb17-62" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mkdir</span> <span class="at">-p</span> <span class="va">$MOUNT_BASE</span>/home <span class="va">$MOUNT_BASE</span>/usr <span class="va">$MOUNT_BASE</span>/var</span>
+<span id="cb17-63"><a href="#cb17-63" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mount</span> <span class="va">${DISK}</span>p2 <span class="va">$MOUNT_BASE</span>/home</span>
+<span id="cb17-64"><a href="#cb17-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rsync</span> <span class="at">-aAX</span> /home/ <span class="va">$MOUNT_BASE</span>/home/ <span class="kw">||</span> <span class="bu">exit</span> 0</span>
+<span id="cb17-65"><a href="#cb17-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">umount</span> <span class="va">$MOUNT_BASE</span>/home</span>
+<span id="cb17-66"><a href="#cb17-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-67"><a href="#cb17-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mount</span> <span class="va">${DISK}</span>p3 <span class="va">$MOUNT_BASE</span>/usr</span>
+<span id="cb17-68"><a href="#cb17-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rsync</span> <span class="at">-aAX</span> /usr/ <span class="va">$MOUNT_BASE</span>/usr/ <span class="kw">||</span> <span class="bu">exit</span> 0</span>
+<span id="cb17-69"><a href="#cb17-69" aria-hidden="true" tabindex="-1"></a>  <span class="fu">umount</span> <span class="va">$MOUNT_BASE</span>/usr</span>
+<span id="cb17-70"><a href="#cb17-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-71"><a href="#cb17-71" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mount</span> <span class="va">${DISK}</span>p4 <span class="va">$MOUNT_BASE</span>/var</span>
+<span id="cb17-72"><a href="#cb17-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rsync</span> <span class="at">-aAX</span> /var/ <span class="va">$MOUNT_BASE</span>/var/ <span class="kw">||</span> <span class="bu">exit</span> 0</span>
+<span id="cb17-73"><a href="#cb17-73" aria-hidden="true" tabindex="-1"></a>  <span class="fu">umount</span> <span class="va">$MOUNT_BASE</span>/var</span>
+<span id="cb17-74"><a href="#cb17-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-75"><a href="#cb17-75" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">"UUID=</span><span class="va">$(</span><span class="ex">blkid</span> <span class="at">-s</span> UUID <span class="at">-o</span> value <span class="va">${DISK}</span>p1<span class="va">)</span><span class="st"> none swap sw 0 0"</span> <span class="op">&gt;&gt;</span> /etc/fstab</span>
+<span id="cb17-76"><a href="#cb17-76" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">"UUID=</span><span class="va">$(</span><span class="ex">blkid</span> <span class="at">-s</span> UUID <span class="at">-o</span> value <span class="va">${DISK}</span>p2<span class="va">)</span><span class="st"> /home ext4 defaults 0 2"</span> <span class="op">&gt;&gt;</span> /etc/fstab</span>
+<span id="cb17-77"><a href="#cb17-77" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">"UUID=</span><span class="va">$(</span><span class="ex">blkid</span> <span class="at">-s</span> UUID <span class="at">-o</span> value <span class="va">${DISK}</span>p3<span class="va">)</span><span class="st"> /usr  ext4 defaults 0 2"</span> <span class="op">&gt;&gt;</span> /etc/fstab</span>
+<span id="cb17-78"><a href="#cb17-78" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">"UUID=</span><span class="va">$(</span><span class="ex">blkid</span> <span class="at">-s</span> UUID <span class="at">-o</span> value <span class="va">${DISK}</span>p4<span class="va">)</span><span class="st"> /var  ext4 defaults 0 2"</span> <span class="op">&gt;&gt;</span> /etc/fstab</span>
+<span id="cb17-79"><a href="#cb17-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-80"><a href="#cb17-80" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">"stage2"</span> <span class="op">&gt;</span> <span class="st">"</span><span class="va">$STAGE_FILE</span><span class="st">"</span></span>
+<span id="cb17-81"><a href="#cb17-81" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sync</span></span>
+<span id="cb17-82"><a href="#cb17-82" aria-hidden="true" tabindex="-1"></a>  <span class="ex">reboot</span></span>
+<span id="cb17-83"><a href="#cb17-83" aria-hidden="true" tabindex="-1"></a>  <span class="bu">exit</span> 0</span>
+<span id="cb17-84"><a href="#cb17-84" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span>
+<span id="cb17-85"><a href="#cb17-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-86"><a href="#cb17-86" aria-hidden="true" tabindex="-1"></a><span class="co"># === Stage 2: Install base packages and create user ===</span></span>
+<span id="cb17-87"><a href="#cb17-87" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="fu">grep</span> <span class="at">-q</span> <span class="st">"stage2"</span> <span class="st">"</span><span class="va">$STAGE_FILE</span><span class="st">"</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb17-88"><a href="#cb17-88" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">"[Stage 2] Installing base packages and creating user..."</span></span>
+<span id="cb17-89"><a href="#cb17-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-90"><a href="#cb17-90" aria-hidden="true" tabindex="-1"></a>  <span class="ex">apt</span> install <span class="at">-y</span> avahi-daemon avahi-utils zsh chrony curl gnupg ca-certificates lsb-release</span>
+<span id="cb17-91"><a href="#cb17-91" aria-hidden="true" tabindex="-1"></a>  <span class="ex">systemctl</span> enable avahi-daemon</span>
+<span id="cb17-92"><a href="#cb17-92" aria-hidden="true" tabindex="-1"></a>  <span class="ex">systemctl</span> disable avahi-daemon.socket</span>
+<span id="cb17-93"><a href="#cb17-93" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cp</span> /lib/systemd/system/avahi-daemon.service /etc/systemd/system/avahi-daemon.service</span>
+<span id="cb17-94"><a href="#cb17-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-95"><a href="#cb17-95" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="bu">[</span> <span class="ot">-n</span> <span class="st">"</span><span class="va">$USERNAME</span><span class="st">"</span> <span class="bu">]</span> <span class="kw">&amp;&amp;</span> <span class="bu">[</span> <span class="ot">-n</span> <span class="st">"</span><span class="va">$GROUPNAME</span><span class="st">"</span> <span class="bu">]</span> <span class="kw">&amp;&amp;</span> <span class="bu">[</span> <span class="ot">-n</span> <span class="st">"</span><span class="va">$USER_ID</span><span class="st">"</span> <span class="bu">]</span> <span class="kw">&amp;&amp;</span> <span class="bu">[</span> <span class="ot">-n</span> <span class="st">"</span><span class="va">$GROUP_ID</span><span class="st">"</span> <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb17-96"><a href="#cb17-96" aria-hidden="true" tabindex="-1"></a>    <span class="ex">groupadd</span> <span class="at">-g</span> <span class="st">"</span><span class="va">$GROUP_ID</span><span class="st">"</span> <span class="st">"</span><span class="va">$GROUPNAME</span><span class="st">"</span></span>
+<span id="cb17-97"><a href="#cb17-97" aria-hidden="true" tabindex="-1"></a>    <span class="ex">useradd</span> <span class="at">-m</span> <span class="at">-u</span> <span class="st">"</span><span class="va">$USER_ID</span><span class="st">"</span> <span class="at">-g</span> <span class="st">"</span><span class="va">$GROUP_ID</span><span class="st">"</span> <span class="at">-s</span> /usr/bin/zsh <span class="st">"</span><span class="va">$USERNAME</span><span class="st">"</span></span>
+<span id="cb17-98"><a href="#cb17-98" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">"</span><span class="va">$USERNAME</span><span class="st">:</span><span class="va">$USERNAME</span><span class="st">"</span> <span class="kw">|</span> <span class="ex">chpasswd</span></span>
+<span id="cb17-99"><a href="#cb17-99" aria-hidden="true" tabindex="-1"></a>    <span class="ex">usermod</span> <span class="at">-aG</span> sudo <span class="st">"</span><span class="va">$USERNAME</span><span class="st">"</span></span>
+<span id="cb17-100"><a href="#cb17-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-101"><a href="#cb17-101" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mkdir</span> <span class="at">-p</span> <span class="st">"/home/</span><span class="va">$USERNAME</span><span class="st">/.ssh"</span></span>
+<span id="cb17-102"><a href="#cb17-102" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">[</span> <span class="ot">-n</span> <span class="st">"</span><span class="va">$GITHUB_ID</span><span class="st">"</span> <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb17-103"><a href="#cb17-103" aria-hidden="true" tabindex="-1"></a>      <span class="ex">curl</span> <span class="at">-sL</span> <span class="st">"https://github.com/</span><span class="va">$GITHUB_ID</span><span class="st">.keys"</span> <span class="op">&gt;</span> <span class="st">"/home/</span><span class="va">$USERNAME</span><span class="st">/.ssh/authorized_keys"</span></span>
+<span id="cb17-104"><a href="#cb17-104" aria-hidden="true" tabindex="-1"></a>      <span class="fu">chown</span> <span class="st">"</span><span class="va">$USERNAME</span><span class="st">:</span><span class="va">$GROUPNAME</span><span class="st">"</span> <span class="st">"/home/</span><span class="va">$USERNAME</span><span class="st">/.ssh/authorized_keys"</span></span>
+<span id="cb17-105"><a href="#cb17-105" aria-hidden="true" tabindex="-1"></a>      <span class="fu">chmod</span> 600 <span class="st">"/home/</span><span class="va">$USERNAME</span><span class="st">/.ssh/authorized_keys"</span></span>
+<span id="cb17-106"><a href="#cb17-106" aria-hidden="true" tabindex="-1"></a>    <span class="cf">fi</span></span>
+<span id="cb17-107"><a href="#cb17-107" aria-hidden="true" tabindex="-1"></a>    <span class="fu">chown</span> <span class="at">-R</span> <span class="st">"</span><span class="va">$USERNAME</span><span class="st">:</span><span class="va">$GROUPNAME</span><span class="st">"</span> <span class="st">"/home/</span><span class="va">$USERNAME</span><span class="st">/.ssh"</span></span>
+<span id="cb17-108"><a href="#cb17-108" aria-hidden="true" tabindex="-1"></a>  <span class="cf">fi</span></span>
+<span id="cb17-109"><a href="#cb17-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-110"><a href="#cb17-110" aria-hidden="true" tabindex="-1"></a>  <span class="ex">userdel</span> <span class="at">-r</span> guest</span>
+<span id="cb17-111"><a href="#cb17-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-112"><a href="#cb17-112" aria-hidden="true" tabindex="-1"></a>  <span class="ex">timedatectl</span> set-timezone Asia/Tokyo</span>
+<span id="cb17-113"><a href="#cb17-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-114"><a href="#cb17-114" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">"stage3"</span> <span class="op">&gt;</span> <span class="st">"</span><span class="va">$STAGE_FILE</span><span class="st">"</span></span>
+<span id="cb17-115"><a href="#cb17-115" aria-hidden="true" tabindex="-1"></a>  <span class="ex">reboot</span></span>
+<span id="cb17-116"><a href="#cb17-116" aria-hidden="true" tabindex="-1"></a>  <span class="bu">exit</span> 0</span>
+<span id="cb17-117"><a href="#cb17-117" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span>
+<span id="cb17-118"><a href="#cb17-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-119"><a href="#cb17-119" aria-hidden="true" tabindex="-1"></a><span class="co"># === Stage 3: Install Docker CE and finalize user setup ===</span></span>
+<span id="cb17-120"><a href="#cb17-120" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="fu">grep</span> <span class="at">-q</span> <span class="st">"stage3"</span> <span class="st">"</span><span class="va">$STAGE_FILE</span><span class="st">"</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb17-121"><a href="#cb17-121" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">"[Stage 3] Installing Docker CE..."</span></span>
+<span id="cb17-122"><a href="#cb17-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-123"><a href="#cb17-123" aria-hidden="true" tabindex="-1"></a>  <span class="fu">install</span> <span class="at">-m</span> 0755 <span class="at">-d</span> /etc/apt/keyrings</span>
+<span id="cb17-124"><a href="#cb17-124" aria-hidden="true" tabindex="-1"></a>  <span class="ex">curl</span> <span class="at">-fsSL</span> https://download.docker.com/linux/debian/gpg <span class="kw">|</span> <span class="ex">gpg</span> <span class="at">--dearmor</span> <span class="at">-o</span> /etc/apt/keyrings/docker.gpg</span>
+<span id="cb17-125"><a href="#cb17-125" aria-hidden="true" tabindex="-1"></a>  <span class="fu">chmod</span> a+r /etc/apt/keyrings/docker.gpg</span>
+<span id="cb17-126"><a href="#cb17-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-127"><a href="#cb17-127" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="dt">\</span></span>
+<span id="cb17-128"><a href="#cb17-128" aria-hidden="true" tabindex="-1"></a>    <span class="st">"deb [arch=</span><span class="va">$(</span><span class="ex">dpkg</span> <span class="at">--print-architecture</span><span class="va">)</span><span class="st"> signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian </span><span class="dt">\</span></span>
+<span id="cb17-129"><a href="#cb17-129" aria-hidden="true" tabindex="-1"></a><span class="st">    </span><span class="va">$(</span><span class="ex">lsb_release</span> <span class="at">-cs</span><span class="va">)</span><span class="st"> stable"</span> <span class="kw">|</span> <span class="dt">\</span></span>
+<span id="cb17-130"><a href="#cb17-130" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tee</span> /etc/apt/sources.list.d/docker.list <span class="op">&gt;</span> /dev/null</span>
+<span id="cb17-131"><a href="#cb17-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-132"><a href="#cb17-132" aria-hidden="true" tabindex="-1"></a>  <span class="ex">apt</span> update</span>
+<span id="cb17-133"><a href="#cb17-133" aria-hidden="true" tabindex="-1"></a>  <span class="ex">apt</span> install <span class="at">-y</span> docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin</span>
+<span id="cb17-134"><a href="#cb17-134" aria-hidden="true" tabindex="-1"></a>  <span class="ex">systemctl</span> enable docker</span>
+<span id="cb17-135"><a href="#cb17-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-136"><a href="#cb17-136" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="bu">[</span> <span class="ot">-n</span> <span class="st">"</span><span class="va">$USERNAME</span><span class="st">"</span> <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb17-137"><a href="#cb17-137" aria-hidden="true" tabindex="-1"></a>    <span class="ex">usermod</span> <span class="at">-aG</span> docker <span class="st">"</span><span class="va">$USERNAME</span><span class="st">"</span></span>
+<span id="cb17-138"><a href="#cb17-138" aria-hidden="true" tabindex="-1"></a>  <span class="cf">fi</span></span>
+<span id="cb17-139"><a href="#cb17-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-140"><a href="#cb17-140" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">"cleanup"</span> <span class="op">&gt;</span> <span class="st">"</span><span class="va">$STAGE_FILE</span><span class="st">"</span></span>
+<span id="cb17-141"><a href="#cb17-141" aria-hidden="true" tabindex="-1"></a>  <span class="ex">reboot</span></span>
+<span id="cb17-142"><a href="#cb17-142" aria-hidden="true" tabindex="-1"></a>  <span class="bu">exit</span> 0</span>
+<span id="cb17-143"><a href="#cb17-143" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span>
+<span id="cb17-144"><a href="#cb17-144" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-145"><a href="#cb17-145" aria-hidden="true" tabindex="-1"></a><span class="co"># === Cleanup state: remove self and rc.local entry ===</span></span>
+<span id="cb17-146"><a href="#cb17-146" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="fu">grep</span> <span class="at">-q</span> <span class="st">"cleanup"</span> <span class="st">"</span><span class="va">$STAGE_FILE</span><span class="st">"</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb17-147"><a href="#cb17-147" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">"[Stage Cleanup] Removing config.sh and rc.local entry"</span></span>
+<span id="cb17-148"><a href="#cb17-148" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rm</span> <span class="at">-f</span> /etc/config.sh</span>
+<span id="cb17-149"><a href="#cb17-149" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sed</span> <span class="at">-i</span> <span class="st">'/\/etc\/config.sh/d'</span> /etc/rc.local</span>
+<span id="cb17-150"><a href="#cb17-150" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rm</span> <span class="at">-f</span> <span class="st">"</span><span class="va">$STAGE_FILE</span><span class="st">"</span></span>
+<span id="cb17-151"><a href="#cb17-151" aria-hidden="true" tabindex="-1"></a>  <span class="bu">exit</span> 0</span>
+<span id="cb17-152"><a href="#cb17-152" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>最後に、全体のビルドとパッケージングを行い、SDカードイメージを作成します。</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ./buils.sh</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ./buils.sh kernel</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ./buils.sh pack</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="dhcptftpnfsサーバーの構築" class="level2">
+<h2 class="anchored" data-anchor-id="dhcptftpnfsサーバーの構築">DHCP・TFTP・NFSサーバーの構築</h2>
+<p>このゲートウェイは、他のSBC（シングルボードコンピュータ）に対してネットブート環境を提供することも目的としています。 そのため、DHCP、TFTP、NFS といった基本的なネットワークブート用サービスを構成します。</p>
+<p>今回構築したサービス群の設定は、<a href="https://github.com/ar90n/lab/tree/main/infra/mochi_gateway">GitHubリポジトリ</a> にまとめてあります。 この構成では、以下の各サービスを <code>docker-compose.yml</code> によってコンテナとしてホスティングします。</p>
+<section id="dnsmasqによるdhcptftpサーバーの構築" class="level3">
+<h3 class="anchored" data-anchor-id="dnsmasqによるdhcptftpサーバーの構築">dnsmasqによるDHCP・TFTPサーバーの構築</h3>
+<p>DHCPとTFTPは、<code>dnsmasq</code> を利用して構築します。 <code>dnsmasq</code> は、以下の <code>Dockerfile</code> に基づいた軽量コンテナで提供します。</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode dockerfile code-with-copy"><code class="sourceCode dockerfile"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> debian:bookworm-slim</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="kw">RUN</span> <span class="ex">apt-get</span> update <span class="kw">&amp;&amp;</span> <span class="ex">apt-get</span> install <span class="at">-y</span> <span class="at">--no-install-recommends</span> <span class="dt">\</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    dnsmasq <span class="dt">\</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&amp;&amp;</span> <span class="fu">rm</span> <span class="at">-rf</span> /var/lib/apt/lists/<span class="pp">*</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="kw">CMD</span> [<span class="st">"dnsmasq"</span>, <span class="st">"--no-daemon"</span>, <span class="st">"--conf-file=/etc/dnsmasq.conf"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>設定ファイル（<code>dnsmasq.conf</code>）の内容は以下の通りです。</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode conf code-with-copy"><code class="sourceCode toml"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># TFTP</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="dt">enable-tftp</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="dt">tftp-root</span><span class="op">=</span><span class="er">/</span><span class="dt">var</span><span class="er">/</span><span class="dt">tftpboot</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="dt">tftp-no-blocksize</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="dt">tftp-max</span><span class="op">=</span><span class="dv">65535</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="co"># DHCP</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="dt">interface</span><span class="op">=</span><span class="dt">eth0</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="dt">bind-interfaces</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="dt">dhcp-range</span><span class="op">=</span><span class="fl">10.0</span><span class="dt">.1.100</span><span class="er">,</span><span class="dt">10.0.1.200</span><span class="er">,</span><span class="dt">12h</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="co"># DHCP option</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="dt">dhcp-option</span><span class="op">=</span><span class="dv">66</span><span class="er">,</span><span class="dt">"10.0.1.1"</span>   <span class="co"># TFTPサーバIP</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="dt">dhcp-option</span><span class="op">=</span><span class="dv">67</span><span class="er">,</span><span class="dt">"kernel8.img"</span> <span class="co"># ブートファイル名</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="nfsサーバーの構築" class="level3">
+<h3 class="anchored" data-anchor-id="nfsサーバーの構築">NFSサーバーの構築</h3>
+<p>NFSサーバーも同様に、以下の <code>Dockerfile</code> によって構築します。 公開ディレクトリは <code>/var/nfsroot</code> とし、<code>/etc/exports</code> によってエクスポート設定を行います。</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode dockerfile code-with-copy"><code class="sourceCode dockerfile"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> debian:stable-slim</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="kw">RUN</span> <span class="ex">apt-get</span> update <span class="kw">&amp;&amp;</span> <span class="dt">\</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="ex">apt-get</span> install <span class="at">-y</span> <span class="at">--no-install-recommends</span> <span class="dt">\</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    nfs-kernel-server <span class="kw">&amp;&amp;</span> <span class="dt">\</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="ex">apt-get</span> clean <span class="kw">&amp;&amp;</span> <span class="dt">\</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rm</span> <span class="at">-rf</span> /var/lib/apt/lists/<span class="pp">*</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="kw">RUN</span> <span class="fu">mkdir</span> <span class="at">-p</span> /var/nfsroot</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="kw">VOLUME</span> [<span class="st">"/var/nfsroot"</span>]</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="kw">COPY</span> exports /etc/exports</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="kw">EXPOSE</span> 2049 111/udp 111/tcp</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a><span class="kw">CMD</span> [<span class="st">"/bin/sh"</span>, <span class="st">"-c"</span>, <span class="st">"</span><span class="op">\</span></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a><span class="st">  mkdir -p /run/rpcbind &amp;&amp; </span><span class="op">\</span></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a><span class="st">  rpcbind &amp;&amp; </span><span class="op">\</span></span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a><span class="st">  exportfs -rv &amp;&amp; </span><span class="op">\</span></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a><span class="st">  /usr/sbin/rpc.nfsd &amp;&amp; </span><span class="op">\</span></span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a><span class="st">  /usr/sbin/rpc.mountd -F -N 2 &amp;&amp; </span><span class="op">\</span></span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a><span class="st">  tail -f /dev/null"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>エクスポート設定ファイルは以下の通りです。</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">/var/nfsroot</span> <span class="pp">*(</span>rw,sync,no_subtree_check,no_root_squash,fsid=0<span class="pp">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>このように、DHCP・TFTP・NFS の各サービスはコンテナ化されており、<code>docker-compose</code> を使って一括で管理できる構成としています。 設定の移植性・再現性を高める目的で、ホスト上ではなくコンテナベースで提供しています。</p>
+
+
+
+</section>
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
+<div id="ref-radxa_a5e_build" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">Radxa cubie A5E low-level build guide: 2024. <a href="https://docs.radxa.com/en/cubie/a5e/low-level-dev/build"><em>https://docs.radxa.com/en/cubie/a5e/low-level-dev/build</em></a>.</div>
+</div>
+<div id="ref-maclineto_giteki_wifi_ble" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">ハードはそのまま技適を通ってないWi-fi、BLEボードを合法的に使う: 2022. <a href="https://qiita.com/maclineto/items/8939e703f844e95b820e"><em>https://qiita.com/maclineto/items/8939e703f844e95b820e</em></a>.</div>
+</div>
+</div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/lab\.ar90n\.net");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+
+<div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

@@ -234,6 +234,7 @@ cookieconsent.run({
   <li><a href="#dnsmasqによるdhcptftpサーバーの構築" id="toc-dnsmasqによるdhcptftpサーバーの構築" class="nav-link" data-scroll-target="#dnsmasqによるdhcptftpサーバーの構築">dnsmasqによるDHCP・TFTPサーバーの構築</a></li>
   <li><a href="#nfsサーバーの構築" id="toc-nfsサーバーの構築" class="nav-link" data-scroll-target="#nfsサーバーの構築">NFSサーバーの構築</a></li>
   </ul></li>
+  <li><a href="#参考" id="toc-参考" class="nav-link" data-scroll-target="#参考">参考</a></li>
   </ul>
 </nav>
     </div>
@@ -666,20 +667,23 @@ cookieconsent.run({
 <p>エクスポート設定ファイルは以下の通りです。</p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">/var/nfsroot</span> <span class="pp">*(</span>rw,sync,no_subtree_check,no_root_squash,fsid=0<span class="pp">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>このように、DHCP・TFTP・NFS の各サービスはコンテナ化されており、<code>docker-compose</code> を使って一括で管理できる構成としています。 設定の移植性・再現性を高める目的で、ホスト上ではなくコンテナベースで提供しています。</p>
-
-
-
 </section>
 </section>
-
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
+<section id="参考" class="level2">
+<h2 class="anchored" data-anchor-id="参考">参考</h2>
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
 <div id="ref-radxa_a5e_build" class="csl-entry" role="listitem">
 <div class="csl-left-margin">[1] </div><div class="csl-right-inline">Radxa cubie A5E low-level build guide: 2024. <a href="https://docs.radxa.com/en/cubie/a5e/low-level-dev/build"><em>https://docs.radxa.com/en/cubie/a5e/low-level-dev/build</em></a>.</div>
 </div>
 <div id="ref-maclineto_giteki_wifi_ble" class="csl-entry" role="listitem">
 <div class="csl-left-margin">[2] </div><div class="csl-right-inline">ハードはそのまま技適を通ってないWi-fi、BLEボードを合法的に使う: 2022. <a href="https://qiita.com/maclineto/items/8939e703f844e95b820e"><em>https://qiita.com/maclineto/items/8939e703f844e95b820e</em></a>.</div>
 </div>
-</div></section></div></main> <!-- /main -->
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

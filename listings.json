@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/2025-05-16-ubuntu-server-with-netboot-on-rp4.html",
       "/posts/2025-05-09-setup-cubie-a5e-as-gateway.html",
       "/posts/2025-04-26-simple-task-scheduler-with-pico-sdk.html",
       "/posts/2025-03-16-memo-about-robust-estimation.html",

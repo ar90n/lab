@@ -1,0 +1,249 @@
+---
+title: Ubuntu Server on RP4 をネットワークブートで運用する
+date: 2025-05-16
+categories: [Linux, 組み込み, SBC]
+image: /assets/img/common/ubuntu-logo.svg
+format:
+  html:
+    code-fold: false
+toc: true
+layout: post
+code-annotations: below
+---
+
+## はじめに
+
+Raspberry Piをネットワークブートで運用するための環境構築を行いました。
+ブートに必要なファイルは、[先日構築したゲートウェイ](https://lab.ar90n.net/posts/2025-05-09-setup-cubie-a5e-as-gateway.html)上でホスティングしています。
+
+## やったこと
+
+* Ubuntu Serverのイメージからルートファイルシステムを作成しました
+* NFSでルートファイルシステムをマウントするための `initrd.img` を作成しました
+* 作成したファイル群をゲートウェイに配置し、ネットワークブートできる環境を整備しました
+
+## ルートファイルシステムの作成
+
+ルートファイルシステムは NFS 経由でマウントします。
+マウントポイントの構成は以下の通りです。
+
+* `/var`: 書き込み可能。マシンごとに専用ディレクトリを用意します
+* `/home`: 書き込み可能。全マシンで共有します
+* `/`: 読み取り専用。全マシンで共通です
+
+---
+
+### Ubuntu Serverのイメージからファイルをコピーする
+
+まず、`ubuntu-25.04-preinstalled-server-arm64+raspi.img` を `kpartx` を使ってマウントします。
+
+```bash
+$ sudo /sbin/kpartx -av ubuntu-25.04-preinstalled-server-arm64+raspi.img
+add map loop0p1 (253:0): 0 1048576 linear 7:0 2048
+add map loop0p2 (253:1): 0 6991396 linear 7:0 1050624
+$ sudo mount /dev/mapper/loop0p1 /mnt/boot
+$ sudo mount /dev/mapper/loop0p2 /mnt/root
+```
+
+そして、`/mnt/boot`を`/var/tftpboot`にコピーします。
+
+```bash
+$ sudo rsync -av /mnt/boot/ /var/tftpboot/
+```
+
+続いて、ファイルのコピー先となる NFS 公開用のディレクトリを作成します。
+`${SERIAL}` は各 Raspberry Pi の CPU シリアル番号を想定しています。
+
+```bash
+$ sudo mkdir -p /var/nfsroot/home
+$ sudo mkdir -p /var/nfsroot/root
+$ sudo mkdir -p /var/nfsroot/clients/${SERIAL}/
+```
+
+`/var/nfsroot/home` と `/var/nfsroot/clients/${SERIAL}/` を `/root` 以下に bind マウントしてからファイルをコピーします。
+
+```bash
+% mkdir -p /var/nfsroot/root/{home, var}
+% sudo mount --bind /var/nfsroot/clients/${SERIAL}/var /var/nfsroot/root/var/
+% sudo mount --bind /var/nfsroot/home /var/nfsroot/root/home
+% sudo rsync -av /mnt/root/ /var/nfsroot/root/
+```
+
+これで、ベースとなるルートファイルシステムが作成されました。
+
+---
+
+### 必要なパッケージの導入と初期設定
+
+このルートファイルシステムは読み取り専用で運用するため、`chroot` 環境内で必要なパッケージの導入や設定を行います。
+
+まず、作業用のユーザーとグループを作成します。
+
+```bash
+% sudo chroot /var/nfsroot/root/ /bin/bash
+$ groupadd -g 6809 ${GROUP_NAME}
+$ useradd -m -u ${USER_ID} -g ${GROUP_ID} -s /usr/bin/zsh  ${USER_NAME}
+$ passwd ${USER_NAME}
+$ usermod -aG sudo ${USER_NAME}
+$ mkdir -p /home/argon/.ssh
+$ curl  https://github.com/ar90n.keys > /home/${USER_NAME}/.ssh/authorized_keys
+$ chown -R ${USER_NAME}:${GROUP_NAME} /home/${USER_NAME}/
+```
+
+次に、必要なパッケージのインストールと `avahi-daemon` の有効化を行います。
+
+```bash
+$ apt-get update
+$ apt install avahi-daemon avahi-utils zsh chrony moreutils git
+$ systemctl --no-reload enable avahi-daemon.service
+$ systemctl --no-reload disable avahi-daemon.socket
+```
+
+また、`cloud-init` を無効化し、fstab の内容をクリアします。
+
+```bash
+$ head -n 1 ./etc/fstab | sudo sponge etc/fstab
+$ touch /etc/cloud/cloud-init.disabled
+```
+
+ネームサーバーの設定も行います。
+
+```bash
+$ chroot /var/nfsroot/root /usr/bin/systemctl --no-reload disable systemd-resolved.service
+$ rm /var/nfsroot/root/etc/resolv.conf
+$ echo 'nameserver 8.8.8.8\nnameserver 8.8.4.4' | sudo tee  /var/nfsroot/root/etc/resolv.conf
+```
+
+最後に、SSHホスト鍵を作成します。
+
+```bash
+$ ssh-keygen -A
+```
+
+## initrd.imgの作成
+
+Ubuntu Server に付属している `initrd.img` では、NFSを用いたルートファイルシステムのマウントができません。
+そのため、NFSマウントに対応した独自の `initrd.img` を作成します。
+
+---
+
+### 必要なファイルのコピー
+
+まず、作業用のディレクトリ `/tmp/initrd` を作成します。
+
+```bash
+$ mkdir -p /tmp/initrd/{bin,dev,lib/modules,lower,newroot,proc,sbin,sys,upper,work}
+```
+
+続いて `busybox` を導入します。通常の `busybox` はいくつかのライブラリと動的リンクしているため、静的リンクされた `busybox-static` を使用します。
+
+```bash
+$ sudo apt install -y busybox-static
+$ cp $(which busybox) /tmp/initrd/bin
+$ chroot /tmp/initrd/ /bin/busybox --install /bin -s
+```
+
+次に、ルートファイルシステムから必要なカーネルモジュールを抽出して配置します。
+
+```bash
+$ cd /var/nfsroot/root/lib/modules/6.14.0-1005-raspi/kernel
+$ unzstd ./fs/nfs_common/grace.ko.zst -o /tmp/initrd/lib/modules/grace.ko
+$ unzstd ./fs/lockd/lockd.ko.zst -o /tmp/initrd/lib/modules/lockd.ko
+$ unzstd ./fs/netfs/netfs.ko.zst -o /tmp/initrd/lib/modules/netfs.ko
+$ unzstd ./fs/nfs/nfs.ko.zst -o /tmp/initrd/lib/modules/nfs.ko
+$ unzstd ./fs/nfs_common/nfs_acl.ko.zst -o /tmp/initrd/lib/modules/nfs_acl.ko
+$ unzstd ./fs/overlayfs/overlay.ko.zst -o /tmp/initrd/lib/modules/overlay.ko
+$ unzstd ./fs/nfs/nfsv4.ko.zst -o /tmp/initrd/lib/modules/nfsv4.ko
+$ unzstd ./net/sunrpc/sunrpc.ko.zst -o /tmp/initrd/lib/modules/sunrpc.ko
+```
+
+---
+
+### initスクリプトの作成
+
+次に、`init` スクリプトを作成します。このスクリプトでは以下の処理を行います。
+
+* 仮想ファイルシステム（`proc`, `sysfs`, `devtmpfs`）のマウント
+* CPUシリアルに基づいたホスト名の設定
+* 必要なカーネルモジュールのロード
+* NFS上のルートファイルシステムを読み取り専用でマウント
+* Overlayfsで書き込み可能に構成
+* `/home`, `/var` の書き込み領域を個別にマウント
+* `switch_root` により本来のinitへ移行
+
+```bash
+$ cat << EOF > /tmp/initrd/init
+#!/bin/sh
+mount -t proc none /proc
+mount -t sysfs none /sys
+mount -t devtmpfs none /dev
+mknod -m 600 /dev/console c 5 1
+
+echo "INITRD: start" > /dev/console
+
+SERIAL="$(awk '/Serial/ {print substr($3,9)}' /proc/cpuinfo)"
+
+HOSTNAME=""
+case "$SERIAL" in
+  1bd6823c) HOSTNAME="caramel-01" ;;
+  a9f552e2) HOSTNAME="caramel-02" ;;
+  *)        HOSTNAME="caramel-$SERIAL" ;;
+esac
+
+insmod /lib/modules/sunrpc.ko
+insmod /lib/modules/nfs_acl.ko
+insmod /lib/modules/netfs.ko
+insmod /lib/modules/grace.ko
+insmod /lib/modules/lockd.ko
+insmod /lib/modules/nfs.ko
+insmod /lib/modules/nfsv4.ko
+insmod /lib/modules/overlay.ko
+
+mkdir -p /run/overlay
+mount -t tmpfs -o mode=755,size=128M tmpfs /run/overlay
+mkdir -p /run/overlay/upper
+mkdir -p /run/overlay/work
+
+mount -t nfs4 -o vers=4.2,nolock,ro,nosharecache 10.0.1.1:/root /lower
+
+mount -t overlay overlay -o lowerdir=/lower,upperdir=/run/overlay/upper,workdir=/run/overlay/work /newroot
+
+mkdir -p /newroot/etc
+echo ${HOSTNAME} > /newroot/etc/hostname
+echo "127.0.0.1       ${HOSTNAME}" >> /newroot/etc/hosts
+
+mkdir -p /newroot/home
+mount -t nfs4 -o vers=4.2,nolock,rw 10.0.1.1:/home /newroot/home
+
+mkdir -p /newroot/var
+mount -t nfs4 -o vers=4.2,nolock,rw 10.0.1.1:/clients/${SERIAL}/var /newroot/var
+
+exec switch_root /newroot /sbin/init
+EOF
+$ chmod +x /var/initrd/init
+```
+
+---
+
+### initrd.imgのパッキング
+
+準備が完了したら、以下の手順で `initrd.img` を作成します。
+
+```bash
+$ cd /tmp/intird
+$ find . | cpio -H newc -o  > /var/tftpboot/initrd.img
+```
+
+これで、NFSマウントに対応したカスタム `initrd.img` の作成が完了しました。
+
+## 必要なファイルの配置とネットブートの確認
+
+最後に、`initrd.img` を使用して起動するための `cmdline.txt` を用意します。以下のコマンドで、必要なカーネルパラメータを含む `cmdline.txt` を生成します。
+
+```bash
+$ echo 'console=serial0,115200 root=/dev/ram0 rw ip=dhcp rootwait cloud-init=disabled apparmor=0' > /var/tftpboot/cmdline.txt
+```
+
+この時点で、`/var/tftpboot/` 以下に必要なファイルが揃っていれば、ネットワーク経由での起動準備は完了です。
+
+あとは、対象デバイスをネットブート可能な状態にし、TFTP サーバと DHCP サーバの動作を確認すれば、ルートファイルシステムの初期化およびブートシーケンスの動作確認が行えます。

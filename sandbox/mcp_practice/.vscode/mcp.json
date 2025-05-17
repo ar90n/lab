@@ -1,0 +1,27 @@
+{
+    "servers": {
+        "filesystem": {
+            "type": "stdio",
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-filesystem",
+                "/proc"
+            ]
+        },
+        "mcp-server-time": {
+            "command": "python",
+            "args": [
+                "-m",
+                "mcp_server_time",
+                "--local-timezone=Asia/Tokyo"
+            ],
+        },
+        "weather": {
+            "command": "python",
+            "args": [
+                "/workspaces/lab/sandbox/mcp_practice/weather.py"
+            ]
+        }
+    }
+}

@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2020-06-27">
+<meta name="dcterms.date" content="2025-07-11">
 
-<title>三次元空間における行列演算の復習 – lab_note</title>
+<title>Claude CodeをWebブラウザから使う – lab_note</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,6 +20,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -104,45 +139,20 @@ cookieconsent.run({
 </script> 
   
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="三次元空間における行列演算の復習 – lab_note">
+<meta property="og:title" content="Claude CodeをWebブラウザから使う – lab_note">
 <meta property="og:description" content="my laboratory">
-<meta property="og:image" content="https://lab.ar90n.net/posts/logo.png">
+<meta property="og:image" content="https://lab.ar90n.net/assets/img/2025-07-11-claude-code-via-browser/main-image.png">
 <meta property="og:site_name" content="lab_note">
-<meta name="twitter:title" content="三次元空間における行列演算の復習 – lab_note">
+<meta property="og:image:height" content="338">
+<meta property="og:image:width" content="600">
+<meta name="twitter:title" content="Claude CodeをWebブラウザから使う – lab_note">
 <meta name="twitter:description" content="my laboratory">
-<meta name="twitter:image" content="https://lab.ar90n.net/posts/logo.png">
+<meta name="twitter:image" content="https://lab.ar90n.net/assets/img/2025-07-11-claude-code-via-browser/main-image.png">
 <meta name="twitter:site" content="@ar90n">
+<meta name="twitter:image-height" content="338">
+<meta name="twitter:image-width" content="600">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
@@ -202,9 +212,18 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#任意の単位ベクトルへの射影行列" id="toc-任意の単位ベクトルへの射影行列" class="nav-link active" data-scroll-target="#任意の単位ベクトルへの射影行列">任意の単位ベクトルへの射影行列</a></li>
-  <li><a href="#法線ベクトルに直交する平面への射影行列" id="toc-法線ベクトルに直交する平面への射影行列" class="nav-link" data-scroll-target="#法線ベクトルに直交する平面への射影行列">法線ベクトルに直交する平面への射影行列</a></li>
-  <li><a href="#任意の単位ベクトルを回転軸とした回転行列" id="toc-任意の単位ベクトルを回転軸とした回転行列" class="nav-link" data-scroll-target="#任意の単位ベクトルを回転軸とした回転行列">任意の単位ベクトルを回転軸とした回転行列</a></li>
+  <li><a href="#はじめに" id="toc-はじめに" class="nav-link active" data-scroll-target="#はじめに">はじめに</a></li>
+  <li><a href="#やったこと" id="toc-やったこと" class="nav-link" data-scroll-target="#やったこと">やったこと</a></li>
+  <li><a href="#ttydによるclaude-code実行環境の構築" id="toc-ttydによるclaude-code実行環境の構築" class="nav-link" data-scroll-target="#ttydによるclaude-code実行環境の構築">ttydによるClaude Code実行環境の構築</a>
+  <ul class="collapse">
+  <li><a href="#ttydのインストール" id="toc-ttydのインストール" class="nav-link" data-scroll-target="#ttydのインストール">ttydのインストール</a></li>
+  <li><a href="#claude-codeの起動" id="toc-claude-codeの起動" class="nav-link" data-scroll-target="#claude-codeの起動">Claude Codeの起動</a></li>
+  </ul></li>
+  <li><a href="#モバイル対応のための工夫" id="toc-モバイル対応のための工夫" class="nav-link" data-scroll-target="#モバイル対応のための工夫">モバイル対応のための工夫</a>
+  <ul class="collapse">
+  <li><a href="#オーバーレイキーボードの実装" id="toc-オーバーレイキーボードの実装" class="nav-link" data-scroll-target="#オーバーレイキーボードの実装">オーバーレイキーボードの実装</a></li>
+  <li><a href="#htmlファイルの使用方法" id="toc-htmlファイルの使用方法" class="nav-link" data-scroll-target="#htmlファイルの使用方法">HTMLファイルの使用方法</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -213,10 +232,11 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">三次元空間における行列演算の復習</h1>
+<h1 class="title">Claude CodeをWebブラウザから使う</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">数学</div>
-    <div class="quarto-category">線形代数</div>
+    <div class="quarto-category">開発環境</div>
+    <div class="quarto-category">Claude Code</div>
+    <div class="quarto-category">Web</div>
   </div>
   </div>
 
@@ -228,7 +248,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 27, 2020</p>
+      <p class="date">July 11, 2025</p>
     </div>
   </div>
   
@@ -240,78 +260,64 @@ window.Quarto = {
 </header>
 
 
-<p>ぱっと思いつかなかったのでメモ．</p>
-<section id="任意の単位ベクトルへの射影行列" class="level3">
-<h3 class="anchored" data-anchor-id="任意の単位ベクトルへの射影行列">任意の単位ベクトルへの射影行列</h3>
-<p>任意の単位ベクトルを<span class="math inline">\(\vec{n}\)</span>とすると，<span class="math inline">\(\vec{n}\)</span>への射影行列<span class="math inline">\(P_{p}\)</span>は以下の様に表されます．</p>
-<p><span class="math display">\[
-P_{p} = \vec{n}\vec{n}^{T}
-\]</span></p>
+<section id="はじめに" class="level2">
+<h2 class="anchored" data-anchor-id="はじめに">はじめに</h2>
+<p>Claude Codeはターミナルからの利用が前提となっています。しかし、モバイル環境からの状況確認や、複数の環境から同じセッションにアクセスしたい場合などは中々不便だったりします。 そこで、ここではブラウザ経由でClaude Codeを利用することでこの問題の解決をここみます。</p>
 </section>
-<section id="法線ベクトルに直交する平面への射影行列" class="level3">
-<h3 class="anchored" data-anchor-id="法線ベクトルに直交する平面への射影行列">法線ベクトルに直交する平面への射影行列</h3>
-<p>法線ベクトルへの射影を元のベクトルから引くことで，法線ベクトルと直交する平面への射影が可能となります． そのため，法線ベクトルと直交する平面への射影行列<span class="math inline">\(P_{o}\)</span>は以下のように表されます．</p>
-<p><span class="math display">\[
-\begin{aligned}
-P_{o} &amp;= I - P_{p} \\
-      &amp;= I - \vec{n}\vec{n}^{T}
-\end{aligned}
-\]</span></p>
+<section id="やったこと" class="level2">
+<h2 class="anchored" data-anchor-id="やったこと">やったこと</h2>
+<ul>
+<li>ttydを用いてClaude Codeを実行し、複数のブラウザから単一のttyを共有</li>
+<li>モバイル環境で特殊キーを入力するためのオーバーレイキーボードを含むHTMLファイルを作成</li>
+<li>ブラウザ環境でのClaude Code利用体験の検証</li>
+</ul>
 </section>
-<section id="任意の単位ベクトルを回転軸とした回転行列" class="level3">
-<h3 class="anchored" data-anchor-id="任意の単位ベクトルを回転軸とした回転行列">任意の単位ベクトルを回転軸とした回転行列</h3>
-<p>任意の単位ベクトル<span class="math inline">\(\vec{n}\)</span>を以下のように定義します． <span class="math display">\[
-\vec{n} = \left(n_x, n_y, n_z \right)
-\]</span></p>
-<p>ここで，Z軸方向の単位ベクトル<span class="math inline">\(\vec{e_{z}}\)</span>を<span class="math inline">\(\vec{n}\)</span>に変換する行列<span class="math inline">\(P\)</span>を考えます．<span class="math inline">\(P\)</span>はY軸回転<span class="math inline">\(R_{y}\)</span>とZ軸回転<span class="math inline">\(R_{z}\)</span>の積で以下のように表現できます． <span class="math display">\[
-\begin{aligned}
-c_{\theta} &amp;= \frac{n_{x}}{\sqrt{n_{x}^{2} + n_{y}^{2}}} \\\\
-s_{\theta} &amp;= \frac{n_{y}}{\sqrt{n_{x}^{2} + n_{y}^{2}}} \\\\
-c_{\phi} &amp;= \frac{n_{z}}{\sqrt{n_{x}^{2} + n_{y}^{2} + n_{z}^{2}}} \\\\
-s_{\phi} &amp;= \frac{\sqrt{n_{x}^{2} + n_{y}^{2}}}{\sqrt{n_{x}^{2} + n_{y}^{2} + n_{z}^{2}}} \\\\
-R_{xz} &amp;= \left(\begin{array}{rrr}
-c_{\phi} &amp; 0 &amp; s_{\phi} \\\\
-0 &amp; 1 &amp; 0 \\\\
--s_{\phi}&amp; 0 &amp; c_{\phi}
-\end{array}\right)\\\\
-R_{xy} &amp;= \left(\begin{array}{rrr}
-c_{\theta} &amp; -s_{\theta} &amp; 0 \\\\
-s_{\theta} &amp; c_{\theta} &amp; 0 \\\\
-0 &amp; 0 &amp; 1
-\end{array}\right)\\\\
-P &amp;= R_{xy} * R_{xz}
-\end{aligned}
-\]</span></p>
-<p><span class="math inline">\(P\)</span>によって変換されたZ軸を<span class="math inline">\(\vec{e_{z}'}(=\vec{n})\)</span>とすると，所望の任意の単位ベクトルを回転軸とする回転行列は以下の３つの変換の合成で表すことができます．</p>
-<ol type="1">
-<li><span class="math inline">\(\vec{e_{z}}\)</span>を<span class="math inline">\(\vec{e_{z}}'\)</span>に変換する<span class="math inline">\(P\)</span></li>
-<li><span class="math inline">\(\vec{e_{z}}\)</span>を回転軸とする回転<span class="math inline">\(R_{a}\)</span></li>
-<li><span class="math inline">\(\vec{e_{z}}'\)</span>を<span class="math inline">\(\vec{e_{z}}\)</span>に変換する<span class="math inline">\(P^{T}\)</span></li>
-</ol>
-<p>したがって，最終的な回転行列<span class="math inline">\(R\)</span>は以下のように表されます．</p>
-<p><span class="math display">\[
-\begin{aligned}
-R_{a} &amp;= \left(\begin{array}{rrr}
-\cos\left(a\right) &amp; -\sin\left(a\right) &amp; 0 \\\\
-\sin\left(a\right) &amp; \cos\left(a\right) &amp; 0 \\\\
-0 &amp; 0 &amp; 1
-\end{array}\right) \\\\
-R &amp;= P * R_{a} * P^{T} \\\\
-&amp;= \left(\begin{array}{rrr}
-\mathit{n_{x}}^{2} + {\left(\mathit{n_{y}}^{2} + \mathit{n_{z}}^{2}\right)} \cos\left(a\right) &amp; -\mathit{n_{x}} \mathit{n_{y}} \cos\left(a\right) + \mathit{n_{x}} \mathit{n_{y}} - {\left(\mathit{n_{z}}^{3} + {\left(\mathit{n_{x}}^{2} + \mathit{n_{y}}^{2}\right)} \mathit{n_{z}}\right)} \sin\left(a\right) &amp; -\mathit{n_{x}} \mathit{n_{z}} \cos\left(a\right) + \mathit{n_{x}} \mathit{n_{z}} + \mathit{n_{y}} \sin\left(a\right) \\\\
--\mathit{n_{x}} \mathit{n_{y}} \cos\left(a\right) + \mathit{n_{x}} \mathit{n_{y}} + {\left(\mathit{n_{z}}^{3} + {\left(\mathit{n_{x}}^{2} + \mathit{n_{y}}^{2}\right)} \mathit{n_{z}}\right)} \sin\left(a\right) &amp; \mathit{n_{y}}^{2} + {\left(\mathit{n_{x}}^{2} + \mathit{n_{z}}^{2}\right)} \cos\left(a\right) &amp; -\mathit{n_{y}} \mathit{n_{z}} \cos\left(a\right) + \mathit{n_{y}} \mathit{n_{z}} - \mathit{n_{x}} \sin\left(a\right) \\\\
--\mathit{n_{x}} \mathit{n_{z}} \cos\left(a\right) + \mathit{n_{x}} \mathit{n_{z}} - {\left(\mathit{n_{x}}^{2} \mathit{n_{y}} + \mathit{n_{y}}^{3} + \mathit{n_{y}} \mathit{n_{z}}^{2}\right)} \sin\left(a\right) &amp; -\mathit{n_{y}} \mathit{n_{z}} \cos\left(a\right) + \mathit{n_{y}} \mathit{n_{z}} + {\left(\mathit{n_{x}}^{3} + \mathit{n_{x}} \mathit{n_{y}}^{2} + \mathit{n_{x}} \mathit{n_{z}}^{2}\right)} \sin\left(a\right) &amp; \mathit{n_{z}}^{2} + {\left(\mathit{n_{x}}^{2} + \mathit{n_{y}}^{2}\right)} \cos\left(a\right)
-\end{array}\right) \\\\
-&amp;= \left(\begin{array}{rrr}
-\cos\left(a\right) + \mathit{n_{x}}^{2} \left(1-\cos\left(a\right)\right) &amp; \mathit{n_{x}} \mathit{n_{y}} \left(1 - \cos\left(a\right) \right) - \mathit{n_{z}}\sin\left(a\right) &amp; \mathit{n_{x}} \mathit{n_{z}} \left( 1 -  \cos\left(a\right) \right) + \mathit{n_{y}} \sin\left(a\right) \\\\
-\mathit{n_{x}} \mathit{n_{y}}\left( 1 -  \cos\left(a\right) \right) + \mathit{n_{z}} \sin\left(a\right) &amp; \cos\left(a\right) + \mathit{n_{y}}^{2}\left( 1-  \cos\left(a\right)\right) &amp; \mathit{n_{y}} \mathit{n_{z}}
-\left( 1- \cos\left(a\right) \right) - \mathit{n_{x}} \sin\left(a\right) \\\\
-\mathit{n_{x}} \mathit{n_{z}}\left(1- \cos\left(a\right) \right) - \mathit{n_{y}}\sin\left(a\right) &amp; \mathit{n_{y}} \mathit{n_{z}} \left(1- \cos\left(a\right) \right) + \mathit{n_{x}}\sin\left(a\right) &amp; \cos\left(a\right) + \mathit{n_{z}}^{2} \left( 1-\cos\left(a\right) \right)
-\end{array}\right)
-\end{aligned}
-\]</span></p>
+<section id="ttydによるclaude-code実行環境の構築" class="level2">
+<h2 class="anchored" data-anchor-id="ttydによるclaude-code実行環境の構築">ttydによるClaude Code実行環境の構築</h2>
+<section id="ttydのインストール" class="level3">
+<h3 class="anchored" data-anchor-id="ttydのインストール">ttydのインストール</h3>
+<p><a href="https://github.com/tsl0922/ttyd">ttyd</a>を使用するとWebブラウザからターミナルの操作や共有が可能となります。導入には以下のように環境に応じた複数の方法があります。</p>
+<p><strong>apt</strong></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="va">$sudo</span> apt update</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="va">$sudo</span> apt install ttyd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>brew</strong></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> brew install ttyd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>直接ダウンロード</strong></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://github.com/tsl0922/ttyd/releases/download/1.7.3/ttyd.x86_64</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x ttyd.x86_64</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> mv ttyd.x86_64 /usr/local/bin/ttyd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="claude-codeの起動" class="level3">
+<h3 class="anchored" data-anchor-id="claude-codeの起動">Claude Codeの起動</h3>
+<p>ttydは</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ttyd <span class="at">--writable</span> claude</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>起動後、<code>http://localhost:7681</code>にアクセスすることでブラウザからClaude Codeを利用できます。この際、複数のブラウザからアクセスするとターミナルを共有しているかのように振舞います。</p>
+</section>
+</section>
+<section id="モバイル対応のための工夫" class="level2">
+<h2 class="anchored" data-anchor-id="モバイル対応のための工夫">モバイル対応のための工夫</h2>
+<p>複数の環境でClaude Codeを共有することはできたのですが、モバイル環境からの使用を考慮すると特殊キーの入力が課題となります。実際の運用を考えると、</p>
+<ul>
+<li>Shift+Tab</li>
+<li>Up</li>
+<li>Down</li>
+<li>Esc</li>
+</ul>
+<p>などの入力が必須となります。しかしながら、これらのキーをモバイル環境のキーボードから入力することは容易ではありません。</p>
+<section id="オーバーレイキーボードの実装" class="level3">
+<h3 class="anchored" data-anchor-id="オーバーレイキーボードの実装">オーバーレイキーボードの実装</h3>
+<p>モバイル環境での操作を改善するため、上述の特殊キーを入力するためのバーチャルキーボードを含むHTMLファイルを作成しました。実装したHTMLファイルは以下のリポジトリで公開しています。</p>
+<p><strong><a href="https://github.com/ar90n/ttyd-overlay-keys-html">ttyd-overlay-keys-html</a></strong></p>
+<p>このHTMLファイルを使用すると、以下のようにモバイル環境からClaude Codeを操作することが可能となります。</p>
+<p><img src="https://raw.githubusercontent.com/ar90n/ttyd-overlay-keys-html/assets/demo.gif" class="img-fluid"></p>
+</section>
+<section id="htmlファイルの使用方法" class="level3">
+<h3 class="anchored" data-anchor-id="htmlファイルの使用方法">HTMLファイルの使用方法</h3>
+<p>ttydは起動時に<code>--index</code>オプションにて使用するHTMLファイルを指定することが可能です。そこで、上述したHTMLファイルを指定します。</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ttyd <span class="at">--index</span> <span class="op">&lt;</span>path to html<span class="op">&gt;</span> --writable claude</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

@@ -1,0 +1,65 @@
+---
+title: "記事タイトル"
+date: YYYY-MM-DD
+categories: [カテゴリー1, カテゴリー2]
+image: /assets/img/YYYY-MM-DD-article-name/main-image.png
+format:
+  html:
+    code-fold: false
+jupyter: python3
+nocite: |
+  @reference_key
+---
+
+## はじめに
+
+この記事の背景、目的、なぜこの記事を書くのかを説明します。
+
+## やったこと
+
+この記事で実装・検証・解説することの要約を箇条書きで示します。
+
+* 項目1
+* 項目2
+* 項目3
+
+## メイン内容
+
+### サブセクション1
+
+実装や解説の詳細を記述します。
+
+```{python}
+# コード例
+import numpy as np
+import matplotlib.pyplot as plt
+
+# サンプルデータ
+x = np.linspace(0, 10, 100)
+y = np.sin(x)
+
+plt.figure(figsize=(10, 6))
+plt.plot(x, y)
+plt.title('サンプルプロット')
+plt.xlabel('x')
+plt.ylabel('sin(x)')
+plt.grid(True)
+plt.show()
+```
+
+### サブセクション2
+
+必要に応じてさらに詳しい解説や実装を追加します。
+
+数式の例：
+$$
+f(x) = \sum_{i=1}^{n} a_i x^i
+$$
+
+## 結果・まとめ
+
+実装・検証の結果をまとめ、得られた知見や今後の課題を記述します。
+
+## 参考 
+::: {#refs}
+:::

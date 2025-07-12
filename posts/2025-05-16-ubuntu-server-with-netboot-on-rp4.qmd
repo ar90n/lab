@@ -94,7 +94,7 @@ $ chown -R ${USER_NAME}:${GROUP_NAME} /home/${USER_NAME}/
 
 ```bash
 $ apt-get update
-$ apt install avahi-daemon avahi-utils zsh chrony moreutils git
+$ apt install avahi-daemon avahi-utils zsh chrony moreutils git nfs-common
 $ systemctl --no-reload enable avahi-daemon.service
 $ systemctl --no-reload disable avahi-daemon.socket
 ```

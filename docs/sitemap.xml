@@ -21,8 +21,12 @@
     <lastmod>2022-10-24T11:08:12.613Z</lastmod>
   </url>
   <url>
-    <loc>https://lab.ar90n.net/posts/2021-09-30-simple-guided-filter-rs.html</loc>
-    <lastmod>2023-06-05T01:50:48.865Z</lastmod>
+    <loc>https://lab.ar90n.net/posts/2025-05-09-setup-cubie-a5e-as-gateway.html</loc>
+    <lastmod>2025-05-16T14:25:48.366Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lab.ar90n.net/posts/2025-05-16-ubuntu-server-with-netboot-on-rp4.html</loc>
+    <lastmod>2025-05-19T22:43:45.066Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2022-01-30-cargo-edit-workaround.html</loc>
@@ -61,20 +65,24 @@
     <lastmod>2023-01-06T11:03:29.630Z</lastmod>
   </url>
   <url>
-    <loc>https://lab.ar90n.net/posts/2021-01-06-install-starship.html</loc>
-    <lastmod>2022-10-24T11:10:02.062Z</lastmod>
+    <loc>https://lab.ar90n.net/posts/2025-07-11-claude-code-via-browser.html</loc>
+    <lastmod>2025-07-12T02:16:56.750Z</lastmod>
   </url>
   <url>
-    <loc>https://lab.ar90n.net/posts/2025-03-16-memo-about-robust-estimation.html</loc>
-    <lastmod>2025-03-15T18:42:09.483Z</lastmod>
+    <loc>https://lab.ar90n.net/posts/2022-11-30-pypypy.html</loc>
+    <lastmod>2023-01-06T11:03:29.630Z</lastmod>
   </url>
   <url>
-    <loc>https://lab.ar90n.net/posts/2021-08-26-make-usb-to-ttlx4.html</loc>
-    <lastmod>2022-10-24T11:10:44.495Z</lastmod>
+    <loc>https://lab.ar90n.net/posts/2022-11-05-develop-octoprint-plugin.html</loc>
+    <lastmod>2023-01-06T11:03:29.630Z</lastmod>
   </url>
   <url>
-    <loc>https://lab.ar90n.net/posts/2020-11-15-rust-on-nodebook-with-evcxr-jupyter.html</loc>
-    <lastmod>2023-06-05T01:36:12.198Z</lastmod>
+    <loc>https://lab.ar90n.net/posts/2021-08-21-k3s-cluster-on-rp4.html</loc>
+    <lastmod>2023-06-30T01:00:23.658Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lab.ar90n.net/CLAUDE.html</loc>
+    <lastmod>2025-07-10T05:15:23.743Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/index.html</loc>
@@ -89,16 +97,20 @@
     <lastmod>2025-03-16T01:59:00.644Z</lastmod>
   </url>
   <url>
-    <loc>https://lab.ar90n.net/posts/2021-08-21-k3s-cluster-on-rp4.html</loc>
-    <lastmod>2023-06-30T01:00:23.658Z</lastmod>
+    <loc>https://lab.ar90n.net/posts/2020-11-15-rust-on-nodebook-with-evcxr-jupyter.html</loc>
+    <lastmod>2023-06-05T01:36:12.198Z</lastmod>
   </url>
   <url>
-    <loc>https://lab.ar90n.net/posts/2022-11-05-develop-octoprint-plugin.html</loc>
-    <lastmod>2023-01-06T11:03:29.630Z</lastmod>
+    <loc>https://lab.ar90n.net/posts/2021-08-26-make-usb-to-ttlx4.html</loc>
+    <lastmod>2022-10-24T11:10:44.495Z</lastmod>
   </url>
   <url>
-    <loc>https://lab.ar90n.net/posts/2022-11-30-pypypy.html</loc>
-    <lastmod>2023-01-06T11:03:29.630Z</lastmod>
+    <loc>https://lab.ar90n.net/posts/2025-03-16-memo-about-robust-estimation.html</loc>
+    <lastmod>2025-03-15T18:42:09.483Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lab.ar90n.net/posts/2021-01-06-install-starship.html</loc>
+    <lastmod>2022-10-24T11:10:02.062Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2023-09-30-devcontainer-nvidia-cuda.html</loc>
@@ -141,6 +153,10 @@
     <lastmod>2022-10-24T11:08:32.794Z</lastmod>
   </url>
   <url>
+    <loc>https://lab.ar90n.net/posts/2021-09-30-simple-guided-filter-rs.html</loc>
+    <lastmod>2023-06-05T01:50:48.865Z</lastmod>
+  </url>
+  <url>
     <loc>https://lab.ar90n.net/posts/2022-11-08-dot-benchmark-in-go.html</loc>
     <lastmod>2023-01-06T11:03:29.630Z</lastmod>
   </url>
@@ -159,21 +175,5 @@
   <url>
     <loc>https://lab.ar90n.net/posts/2022-08-12-xg-c100c-in-ubuntu-server.html</loc>
     <lastmod>2023-06-05T01:52:02.666Z</lastmod>
-  </url>
-  <url>
-    <loc>https://lab.ar90n.net/posts/2025-05-10-setup-cubie-a5e-as-gateway.html</loc>
-    <lastmod>2025-05-08T13:55:30.018Z</lastmod>
-  </url>
-  <url>
-    <loc>https://lab.ar90n.net/posts/2025-05-09-setup-cubie-a5e-as-gateway.html</loc>
-    <lastmod>2025-05-15T15:37:27.635Z</lastmod>
-  </url>
-  <url>
-    <loc>https://lab.ar90n.net/posts/2025-05-18-ubuntu-server-with-netboot-on-rp4.html</loc>
-    <lastmod>2025-05-16T13:23:11.016Z</lastmod>
-  </url>
-  <url>
-    <loc>https://lab.ar90n.net/posts/2025-05-16-ubuntu-server-with-netboot-on-rp4.html</loc>
-    <lastmod>2025-05-16T14:13:50.888Z</lastmod>
   </url>
 </urlset>

@@ -1,0 +1,86 @@
+---
+title: Claude CodeをWebブラウザから使う
+date: 2025-07-11
+categories: [開発環境, Claude Code, Web]
+image: /assets/img/2025-07-11-claude-code-via-browser/main-image.png
+format:
+  html:
+    code-fold: false
+toc: true
+layout: post
+code-annotations: below
+---
+
+## はじめに
+
+Claude Codeはターミナルからの利用が前提となっています。しかし、モバイル環境からの状況確認や、複数の環境から同じセッションにアクセスしたい場合などは中々不便だったりします。
+そこで、ここではブラウザ経由でClaude Codeを利用することでこの問題の解決をここみます。
+
+## やったこと
+
+* ttydを用いてClaude Codeを実行し、複数のブラウザから単一のttyを共有
+* モバイル環境で特殊キーを入力するためのオーバーレイキーボードを含むHTMLファイルを作成
+* ブラウザ環境でのClaude Code利用体験の検証
+
+## ttydによるClaude Code実行環境の構築
+
+### ttydのインストール
+
+[ttyd](https://github.com/tsl0922/ttyd)を使用するとWebブラウザからターミナルの操作や共有が可能となります。導入には以下のように環境に応じた複数の方法があります。
+
+**apt**
+```bash
+$sudo apt update
+$sudo apt install ttyd
+```
+
+**brew**
+```bash
+$ brew install ttyd
+```
+
+**直接ダウンロード**
+```bash
+wget https://github.com/tsl0922/ttyd/releases/download/1.7.3/ttyd.x86_64
+chmod +x ttyd.x86_64
+sudo mv ttyd.x86_64 /usr/local/bin/ttyd
+```
+
+### Claude Codeの起動
+
+ttydは
+
+```bash
+$ ttyd --writable claude
+```
+
+起動後、`http://localhost:7681`にアクセスすることでブラウザからClaude Codeを利用できます。この際、複数のブラウザからアクセスするとターミナルを共有しているかのように振舞います。
+
+## モバイル対応のための工夫
+
+複数の環境でClaude Codeを共有することはできたのですが、モバイル環境からの使用を考慮すると特殊キーの入力が課題となります。実際の運用を考えると、
+
+- Shift+Tab
+- Up
+- Down
+- Esc
+
+などの入力が必須となります。しかしながら、これらのキーをモバイル環境のキーボードから入力することは容易ではありません。
+
+### オーバーレイキーボードの実装
+
+モバイル環境での操作を改善するため、上述の特殊キーを入力するためのバーチャルキーボードを含むHTMLファイルを作成しました。実装したHTMLファイルは以下のリポジトリで公開しています。
+
+**[ttyd-overlay-keys-html](https://github.com/ar90n/ttyd-overlay-keys-html)**
+
+このHTMLファイルを使用すると、以下のようにモバイル環境からClaude Codeを操作することが可能となります。
+
+![](https://raw.githubusercontent.com/ar90n/ttyd-overlay-keys-html/assets/demo.gif)
+
+### HTMLファイルの使用方法
+
+ttydは起動時に`--index`オプションにて使用するHTMLファイルを指定することが可能です。そこで、上述したHTMLファイルを指定します。
+
+```bash
+$ ttyd --index <path to html> --writable claude
+```

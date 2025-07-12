@@ -690,35 +690,42 @@
     "href": "posts/2025-07-11-claude-code-via-browser.html",
     "title": "Claude CodeをWebブラウザから使う",
     "section": "",
-    "text": "Claude Codeはターミナルからの利用が前提となっています。しかし、モバイル環境からの状況確認や、複数の環境から同じセッションにアクセスしたい場合などは中々不便だったりします。 そこで、ここではブラウザ経由でClaude Codeを利用することでこの問題の解決をここみます。"
+    "text": "Claude Codeはターミナルからの利用が前提となっています。しかし、モバイル環境からの利用には中々不便だったりします。そこで、ここではブラウザ経由でClaude Codeを利用することでこの問題の解決をここみます。"
   },
   {
     "objectID": "posts/2025-07-11-claude-code-via-browser.html#はじめに",
     "href": "posts/2025-07-11-claude-code-via-browser.html#はじめに",
     "title": "Claude CodeをWebブラウザから使う",
     "section": "",
-    "text": "Claude Codeはターミナルからの利用が前提となっています。しかし、モバイル環境からの状況確認や、複数の環境から同じセッションにアクセスしたい場合などは中々不便だったりします。 そこで、ここではブラウザ経由でClaude Codeを利用することでこの問題の解決をここみます。"
+    "text": "Claude Codeはターミナルからの利用が前提となっています。しかし、モバイル環境からの利用には中々不便だったりします。そこで、ここではブラウザ経由でClaude Codeを利用することでこの問題の解決をここみます。"
   },
   {
     "objectID": "posts/2025-07-11-claude-code-via-browser.html#やったこと",
     "href": "posts/2025-07-11-claude-code-via-browser.html#やったこと",
     "title": "Claude CodeをWebブラウザから使う",
     "section": "やったこと",
-    "text": "やったこと\n\nttydを用いてClaude Codeを実行し、複数のブラウザから単一のttyを共有\nモバイル環境で特殊キーを入力するためのオーバーレイキーボードを含むHTMLファイルを作成\nブラウザ環境でのClaude Code利用体験の検証"
+    "text": "やったこと\n\nttydを用いてClaude Codeを実行しブラウザからttyアクセス\nモバイル環境で特殊キーを入力するためのオーバーレイキーボードを含むHTMLファイルを作成\nブラウザ環境でのClaude Code利用体験の検証"
   },
   {
     "objectID": "posts/2025-07-11-claude-code-via-browser.html#ttydによるclaude-code実行環境の構築",
     "href": "posts/2025-07-11-claude-code-via-browser.html#ttydによるclaude-code実行環境の構築",
     "title": "Claude CodeをWebブラウザから使う",
     "section": "ttydによるClaude Code実行環境の構築",
-    "text": "ttydによるClaude Code実行環境の構築\n\nttydのインストール\nttydを使用するとWebブラウザからターミナルの操作や共有が可能となります。導入には以下のように環境に応じた複数の方法があります。\napt\n$sudo apt update\n$sudo apt install ttyd\nbrew\n$ brew install ttyd\n直接ダウンロード\nwget https://github.com/tsl0922/ttyd/releases/download/1.7.3/ttyd.x86_64\nchmod +x ttyd.x86_64\nsudo mv ttyd.x86_64 /usr/local/bin/ttyd\n\n\nClaude Codeの起動\nttydは\n$ ttyd --writable claude\n起動後、http://localhost:7681にアクセスすることでブラウザからClaude Codeを利用できます。この際、複数のブラウザからアクセスするとターミナルを共有しているかのように振舞います。"
+    "text": "ttydによるClaude Code実行環境の構築\n\nttydのインストール\nttydを使用するとWebブラウザからターミナルの操作や共有が可能となります。導入には以下のように環境に応じた複数の方法があります。\napt\n$sudo apt update\n$sudo apt install ttyd\nbrew\n$ brew install ttyd\n直接ダウンロード\nwget https://github.com/tsl0922/ttyd/releases/download/1.7.3/ttyd.x86_64\nchmod +x ttyd.x86_64\nsudo mv ttyd.x86_64 /usr/local/bin/ttyd\n\n\nClaude Codeの起動\nttydは\n$ ttyd --writable claude\n起動後、http://localhost:7681にアクセスすることでブラウザからClaude Codeを利用できます。"
   },
   {
     "objectID": "posts/2025-07-11-claude-code-via-browser.html#モバイル対応のための工夫",
     "href": "posts/2025-07-11-claude-code-via-browser.html#モバイル対応のための工夫",
     "title": "Claude CodeをWebブラウザから使う",
     "section": "モバイル対応のための工夫",
-    "text": "モバイル対応のための工夫\n複数の環境でClaude Codeを共有することはできたのですが、モバイル環境からの使用を考慮すると特殊キーの入力が課題となります。実際の運用を考えると、\n\nShift+Tab\nUp\nDown\nEsc\n\nなどの入力が必須となります。しかしながら、これらのキーをモバイル環境のキーボードから入力することは容易ではありません。\n\nオーバーレイキーボードの実装\nモバイル環境での操作を改善するため、上述の特殊キーを入力するためのバーチャルキーボードを含むHTMLファイルを作成しました。実装したHTMLファイルは以下のリポジトリで公開しています。\nttyd-overlay-keys-html\nこのHTMLファイルを使用すると、以下のようにモバイル環境からClaude Codeを操作することが可能となります。\n\n\n\nHTMLファイルの使用方法\nttydは起動時に--indexオプションにて使用するHTMLファイルを指定することが可能です。そこで、上述したHTMLファイルを指定します。\n$ ttyd --index &lt;path to html&gt; --writable claude"
+    "text": "モバイル対応のための工夫\nブラウザ環境でClaude Codeを使用することはできたのですが、モバイル環境からの使用を考慮すると特殊キーの入力が課題となります。実際の運用を考えると、\n\nShift+Tab\nUp\nDown\nEsc\n\nなどの入力が必須となります。しかしながら、これらのキーをモバイル環境のキーボードから入力することは容易ではありません。\n\nオーバーレイキーボードの実装\nモバイル環境での操作を改善するため、上述の特殊キーを入力するためのバーチャルキーボードを含むHTMLファイルを作成しました。実装したHTMLファイルは以下のリポジトリで公開しています。\nttyd-overlay-keys-html\nこのHTMLファイルを使用すると、以下のようにモバイル環境からClaude Codeを操作することが可能となります。\n\n\n\nHTMLファイルの使用方法\nttydは起動時に--indexオプションにて使用するHTMLファイルを指定することが可能です。そこで、上述したHTMLファイルを指定します。\n$ ttyd --index &lt;path to html&gt; --writable claude"
+  },
+  {
+    "objectID": "posts/2025-07-11-claude-code-via-browser.html#更新履歴",
+    "href": "posts/2025-07-11-claude-code-via-browser.html#更新履歴",
+    "title": "Claude CodeをWebブラウザから使う",
+    "section": "更新履歴",
+    "text": "更新履歴\n\n2025-07-12: ttydの機能について誤りがあったため修正。（ttyの共有機能は存在しなかった）\n2025-07-11: 公開"
   },
   {
     "objectID": "posts/2022-11-30-pypypy.html",

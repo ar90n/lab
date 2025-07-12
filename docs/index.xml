@@ -28,12 +28,12 @@
 
 <section id="はじめに" class="level2">
 <h2 class="anchored" data-anchor-id="はじめに">はじめに</h2>
-<p>Claude Codeはターミナルからの利用が前提となっています。しかし、モバイル環境からの状況確認や、複数の環境から同じセッションにアクセスしたい場合などは中々不便だったりします。 そこで、ここではブラウザ経由でClaude Codeを利用することでこの問題の解決をここみます。</p>
+<p>Claude Codeはターミナルからの利用が前提となっています。しかし、モバイル環境からの利用には中々不便だったりします。そこで、ここではブラウザ経由でClaude Codeを利用することでこの問題の解決をここみます。</p>
 </section>
 <section id="やったこと" class="level2">
 <h2 class="anchored" data-anchor-id="やったこと">やったこと</h2>
 <ul>
-<li>ttydを用いてClaude Codeを実行し、複数のブラウザから単一のttyを共有</li>
+<li>ttydを用いてClaude Codeを実行しブラウザからttyアクセス</li>
 <li>モバイル環境で特殊キーを入力するためのオーバーレイキーボードを含むHTMLファイルを作成</li>
 <li>ブラウザ環境でのClaude Code利用体験の検証</li>
 </ul>
@@ -73,12 +73,12 @@ background-color: null;
 font-style: inherit;">$</span> ttyd <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">--writable</span> claude</span></code></pre></div>
-<p>起動後、<code>http://localhost:7681</code>にアクセスすることでブラウザからClaude Codeを利用できます。この際、複数のブラウザからアクセスするとターミナルを共有しているかのように振舞います。</p>
+<p>起動後、<code>http://localhost:7681</code>にアクセスすることでブラウザからClaude Codeを利用できます。</p>
 </section>
 </section>
 <section id="モバイル対応のための工夫" class="level2">
 <h2 class="anchored" data-anchor-id="モバイル対応のための工夫">モバイル対応のための工夫</h2>
-<p>複数の環境でClaude Codeを共有することはできたのですが、モバイル環境からの使用を考慮すると特殊キーの入力が課題となります。実際の運用を考えると、</p>
+<p>ブラウザ環境でClaude Codeを使用することはできたのですが、モバイル環境からの使用を考慮すると特殊キーの入力が課題となります。実際の運用を考えると、</p>
 <ul>
 <li>Shift+Tab</li>
 <li>Up</li>
@@ -105,9 +105,16 @@ background-color: null;
 font-style: inherit;">&lt;</span>path to html<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&gt;</span> --writable claude</span></code></pre></div>
-
-
 </section>
+</section>
+<section id="更新履歴" class="level2">
+<h2 class="anchored" data-anchor-id="更新履歴">更新履歴</h2>
+<ul>
+<li>2025-07-12: ttydの機能について誤りがあったため修正。（ttyの共有機能は存在しなかった）</li>
+<li>2025-07-11: 公開</li>
+</ul>
+
+
 </section>
 
  ]]></description>

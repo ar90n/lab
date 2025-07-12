@@ -224,6 +224,7 @@ cookieconsent.run({
   <li><a href="#オーバーレイキーボードの実装" id="toc-オーバーレイキーボードの実装" class="nav-link" data-scroll-target="#オーバーレイキーボードの実装">オーバーレイキーボードの実装</a></li>
   <li><a href="#htmlファイルの使用方法" id="toc-htmlファイルの使用方法" class="nav-link" data-scroll-target="#htmlファイルの使用方法">HTMLファイルの使用方法</a></li>
   </ul></li>
+  <li><a href="#更新履歴" id="toc-更新履歴" class="nav-link" data-scroll-target="#更新履歴">更新履歴</a></li>
   </ul>
 </nav>
     </div>
@@ -262,12 +263,12 @@ cookieconsent.run({
 
 <section id="はじめに" class="level2">
 <h2 class="anchored" data-anchor-id="はじめに">はじめに</h2>
-<p>Claude Codeはターミナルからの利用が前提となっています。しかし、モバイル環境からの状況確認や、複数の環境から同じセッションにアクセスしたい場合などは中々不便だったりします。 そこで、ここではブラウザ経由でClaude Codeを利用することでこの問題の解決をここみます。</p>
+<p>Claude Codeはターミナルからの利用が前提となっています。しかし、モバイル環境からの利用には中々不便だったりします。そこで、ここではブラウザ経由でClaude Codeを利用することでこの問題の解決をここみます。</p>
 </section>
 <section id="やったこと" class="level2">
 <h2 class="anchored" data-anchor-id="やったこと">やったこと</h2>
 <ul>
-<li>ttydを用いてClaude Codeを実行し、複数のブラウザから単一のttyを共有</li>
+<li>ttydを用いてClaude Codeを実行しブラウザからttyアクセス</li>
 <li>モバイル環境で特殊キーを入力するためのオーバーレイキーボードを含むHTMLファイルを作成</li>
 <li>ブラウザ環境でのClaude Code利用体験の検証</li>
 </ul>
@@ -291,12 +292,12 @@ cookieconsent.run({
 <h3 class="anchored" data-anchor-id="claude-codeの起動">Claude Codeの起動</h3>
 <p>ttydは</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ttyd <span class="at">--writable</span> claude</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>起動後、<code>http://localhost:7681</code>にアクセスすることでブラウザからClaude Codeを利用できます。この際、複数のブラウザからアクセスするとターミナルを共有しているかのように振舞います。</p>
+<p>起動後、<code>http://localhost:7681</code>にアクセスすることでブラウザからClaude Codeを利用できます。</p>
 </section>
 </section>
 <section id="モバイル対応のための工夫" class="level2">
 <h2 class="anchored" data-anchor-id="モバイル対応のための工夫">モバイル対応のための工夫</h2>
-<p>複数の環境でClaude Codeを共有することはできたのですが、モバイル環境からの使用を考慮すると特殊キーの入力が課題となります。実際の運用を考えると、</p>
+<p>ブラウザ環境でClaude Codeを使用することはできたのですが、モバイル環境からの使用を考慮すると特殊キーの入力が課題となります。実際の運用を考えると、</p>
 <ul>
 <li>Shift+Tab</li>
 <li>Up</li>
@@ -315,9 +316,16 @@ cookieconsent.run({
 <h3 class="anchored" data-anchor-id="htmlファイルの使用方法">HTMLファイルの使用方法</h3>
 <p>ttydは起動時に<code>--index</code>オプションにて使用するHTMLファイルを指定することが可能です。そこで、上述したHTMLファイルを指定します。</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ttyd <span class="at">--index</span> <span class="op">&lt;</span>path to html<span class="op">&gt;</span> --writable claude</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-
 </section>
+</section>
+<section id="更新履歴" class="level2">
+<h2 class="anchored" data-anchor-id="更新履歴">更新履歴</h2>
+<ul>
+<li>2025-07-12: ttydの機能について誤りがあったため修正。（ttyの共有機能は存在しなかった）</li>
+<li>2025-07-11: 公開</li>
+</ul>
+
+
 </section>
 
 </main> <!-- /main -->

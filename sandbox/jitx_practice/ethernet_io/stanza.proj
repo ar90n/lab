@@ -1,0 +1,8 @@
+include? ".slm/stanza.proj"
+pkg-cache: ".slm/pkg-cache"
+
+package main defined-in "main.stanza"
+package helpers defined-in "helpers.stanza"
+
+packages ethernet-io/* defined-in "src/"
+package components/MC-93LC46CT defined-in "src/components/MC-93LC46CT.stanza"

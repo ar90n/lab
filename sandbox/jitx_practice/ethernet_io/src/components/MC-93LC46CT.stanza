@@ -1,0 +1,67 @@
+; When renaming the stanza package name below, also rename it in the folder stanza.proj
+; See docs.jitx.com for help
+#use-added-syntax(jitx)
+defpackage components/MC-93LC46CT:
+  import core
+  import jitx
+  import jitx/commands
+  import jitx/parts
+
+  import jsl
+
+public pcb-component component :
+  name = "MC-93LC46CT"
+  description = "1K 2.5V Microwire Serial EEPROM"
+  mpn = "93LC46CT-I/SN"
+  manufacturer = "Microchip Technology Inc."
+  datasheet = "https://www.microchip.com/en-us/product/93LC46C"
+  reference-prefix = "U"
+  pin-properties :
+    [pin:Ref      | pads:Int ... | side:Dir ]
+    [CS           | 1            | Left     ]
+    [CLK          | 2            | Left     ]
+    [DI           | 3            | Left     ]
+    [DO           | 4            | Left     ]
+    [VSS          | 5            | Left     ]
+    [VCC          | 8            | Right    ]
+    [ORG          | 6            | Right    ]
+    [NC           | 7            | Right    ]
+
+  val box = BoxSymbol(self)
+  val symb = create-symbol(box)
+  assign-symbol(symb)
+
+  val pkg = SOIC-N(
+    num-leads = 8
+    ,
+    lead-span = min-max(5.8, 6.2),
+    package-length = min-max(4.8, 5.0)
+    density-level = DensityLevelA
+  )
+  val lp = create-landpattern(pkg)
+  assign-landpattern(lp)
+
+public pcb-module module :
+  port VDD-3v3 : power
+  port cfg : microwire-4()
+
+  inst EEPROM : components/MC-93LC46CT/component
+  net (EEPROM.VCC VDD-3v3.V+)
+  net (EEPROM.VSS VDD-3v3.V-)
+  net (EEPROM.CS cfg.cs)
+  net (EEPROM.CLK cfg.clk)
+  net (EEPROM.DI cfg.di)
+  net (EEPROM.DO cfg.do)
+
+  insert-resistor(
+    EEPROM.ORG EEPROM.VCC
+    helpers/R-query
+    resistance = 10.e3
+  )
+
+  insert-capacitor(
+    EEPROM.VCC EEPROM.VSS
+    helpers/C-query
+    capacitance = 2.2e-6
+    short-trace? = true
+  )

@@ -1,0 +1,125 @@
+#use-added-syntax(jitx)
+defpackage invert-pendulum/power :
+  import core
+  import jitx
+  import jitx/commands
+  import jitx/parts
+
+  import helpers
+  import jsl
+
+pcb-module power-system-Ideal-Diode :
+  name = "Ideal_Diode"
+
+  port VIN: power
+  port VOUT: power
+
+  inst TVS   : create-part(mpn = "SMBJ10A", manufacturer = "Littelfuse")
+  inst IDEAL : create-part(mpn = "LTC4412ES6#TRPBF", manufacturer = "Analog Devices")
+  inst Q1    : create-part(mpn = "BSZ086P03NS3G", manufacturer = "Infineon")
+
+  net GND (VIN.V- VOUT.V-)
+
+  net (VIN.V+ IDEAL.VIN)
+  net (GND IDEAL.GND IDEAL.CTL)
+  net (IDEAL.VIN Q1.D0 Q1.D1 Q1.D2 Q1.D3 Q1.D4)
+  net (IDEAL.GATE Q1.G)
+  net (Q1.S0 Q1.S1 Q1.S2 VOUT.V+)
+
+  net (IDEAL.SENSE VOUT.V+)
+  net (VOUT.V+ TVS.p[1])
+  net (VOUT.V- TVS.p[2])
+
+pcb-module power-system-2S-to-5V :
+  name = "2S_to_5V"
+
+  port BUS : power
+  port V5  : power
+
+  net V_BUS (BUS.V+)
+  symbol(V_BUS) = PWR-SYMB
+
+  inst U1 : create-part(mpn = "LMR33640DDDAR", manufacturer = "Texas Instruments")
+  inst L1 : create-part(mpn = "VLS4012ET-4R7M", manufacturer = "TDK Corp")
+
+  val large_cq = CapacitorQuery(BaseQuery(mounting = "smd", case = ["0805", "1206", "2010"]))
+  insert-capacitor(BUS.V+ BUS.V- large_cq capacitance = 22.0e-6)
+  insert-capacitor(BUS.V+ BUS.V- large_cq capacitance = 22.0e-6)
+  insert-capacitor(V5.V+ V5.V- large_cq capacitance = 22.0e-6)
+  insert-capacitor(V5.V+ V5.V- large_cq capacitance = 22.0e-6)
+  insert-capacitor(V5.V+ V5.V- large_cq capacitance = 220.0e-6)
+
+  val cq = get-default-capacitor-query()
+  insert-capacitor(U1.VIN BUS.V- cq capacitance = 10.0e-6)
+  insert-capacitor(U1.VCC BUS.V- cq capacitance = 1.0e-6)
+  insert-capacitor(U1.BOOT U1.SW  cq capacitance = 100.0e-9)
+
+  val rq = get-default-resistor-query()
+  insert-resistor(V5.V+ U1.FB rq resistance = 100.0e3)
+  insert-resistor(U1.FB V5.V- rq resistance = 24.9e3)
+  insert-capacitor(V5.V+ U1.FB cq capacitance = 100.0e-12)
+
+  net (U1.SW L1.p[1])
+  net (V5.V+ L1.p[2])
+
+  net (U1.PGND BUS.V-)
+  net (U1.VIN BUS.V+)
+  net (U1.EN U1.VIN)
+  net (U1.EP BUS.V-)
+
+pcb-module power-system-3V3 :
+  name = "5V_to_3V3"
+
+  port V5  : power
+  port V3V3 : power
+
+  inst U3 : create-part(mpn = "TPS7A2033PDBVR", manufacturer = "Texas Instruments")
+  inst FB : create-part(mpn = "BLM21PG220SH1D", manufacturer = "MURATA")
+  val cq = get-default-capacitor-query()
+  insert-capacitor(U3.IN  U3.GND cq capacitance = 2.2e-6)
+  insert-capacitor(U3.OUT U3.GND cq capacitance = 2.2e-6)
+
+  net GND (V5.V- V3V3.V- U3.GND)
+  net V_5V (V5.V+)
+  net V_3V3 (V3V3.V+)
+
+  symbol(GND) = GND-SYMB
+  symbol(V_5V) = PWR-SYMB
+  symbol(V_3V3) = PWR-SYMB
+
+  net (U3.OUT FB.p[1])
+  net (FB.p[2] V3V3.V+)
+  net (U3.IN V5.V+)
+  net (U3.IN U3.EN)
+
+public pcb-module power-system :
+  name = "Power_System_2S_to_5V_and_3V3IMU"
+
+  port BAT : power
+  port BUS : power
+  port V5  : power
+  port V3V3 : power
+
+  net GND (BAT.V- BUS.V- V5.V- V3V3.V-)
+
+  inst F1  : create-part(mpn = "SF-1206F200-2", manufacturer = "BOURNS")
+  net (BAT.V+ F1.p[1])
+  net V_FUSED (F1.p[2])
+
+  ; ── Ideal Diode ─────────────────────────────────────────────
+  inst IDEAL : power-system-Ideal-Diode
+  net (IDEAL.VIN.V+ V_FUSED)
+  net (IDEAL.VIN.V- GND)
+  net (IDEAL.VOUT BUS)
+
+  ; ── 5V ────────────────────────
+  inst DCDC5V : power-system-2S-to-5V
+  net (DCDC5V.BUS BUS)
+  net (DCDC5V.V5 V5)
+
+  ; ── 3.3V ────────────────────────
+  inst DCDC3V3 : power-system-3V3
+  net (DCDC3V3.V5 V5)
+  net (DCDC3V3.V3V3 V3V3)
+
+  symbol(V_FUSED) = PWR-SYMB

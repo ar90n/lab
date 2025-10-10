@@ -1,0 +1,131 @@
+; ====================
+; A number of helpful functions to check your designs, export to CAD,
+; update your design in CAD, etc.
+; ====================
+#use-added-syntax(jitx)
+defpackage helpers :
+  import core
+  import jitx
+  import jitx/commands
+  import jitx/parts
+
+  import jsl
+; ==================
+; setup-part-search
+; ==================
+jsl/design/settings/OPERATING-TEMPERATURE = min-max(0.0 50.0)
+
+
+public var R-query
+public var C-query
+
+public defn setup-part-query (
+  --
+  vendors:Tuple<String|AuthorizedVendor> = jsl/design/settings/APPROVED-DISTRIBUTOR-LIST
+  ) :
+
+  set-global-query-defaults!(
+    min-stock = 1, ; we want in stock parts
+    sellers! = vendors ; we want parts from these vendors
+    )
+
+  val all-cats = BaseQuery(
+    mounting = "smd", ; default mounting style for resistors and capacitors
+    case = ["0402", "0603"], ; default case size for resistors and capacitors
+    sort! = SortKey(area = Increasing) ; prefer smaller parts
+  )
+
+  ; Must instantiate after setting global defaults.
+  R-query = ResistorQuery(
+    all-cats,
+    precision = (1 %) ; 1% tolerance parts, please
+  )
+  set-default-resistor-query!(R-query)
+
+  C-query = CapacitorQuery(
+    all-cats,
+    type = "ceramic", ; ceramic capacitors
+    temperature-coefficient_code = ["X7R", "X5R"], ; X7R and X5R dielectric capacitors
+    tolerance_max = 0.2, ; +/- 20% tolerance parts
+    rated-voltage = AtLeast(6.0) ; at least 6V rated capacitors
+  )
+  set-default-capacitor-query!(C-query)
+
+; =================
+; Setup BOM stuff
+; =================
+public defn setup-bill-of-materials (qty:Int, vendors:Tuple<String|AuthorizedVendor>) :
+  set-bom-metrics([
+    BOMMetric(BOMMetricLineItems, "Line Items"),
+    BOMMetric(BOMMetricComponentCount, "Components"),
+    BOMMetric(BOMMetricTotalCost, "Cost")
+  ])
+  set-bom-columns([
+    BOMColumn(BOMFieldStatus, "Status", 10.0)
+    BOMColumn(BOMFieldQuantity, "Qty", 5.0)
+    BOMColumn(BOMFieldInsts, "References", 10.0)
+    BOMColumn(BOMFieldMPN, "MPN", 10.0)
+    BOMColumn(BOMFieldManufacturer, "Manufacturer", 10.0)
+    BOMColumn(BOMFieldDescription, "Description", 20.0)
+    BOMColumn(BOMFieldVendor, "Supplier", 10.0)
+    BOMColumn(BOMFieldSKU, "SKU", 10.0)
+    BOMColumn(BOMFieldDatasheet, "Datasheet", 10.0)
+    BOMColumn(BOMFieldPreferred, "Preferred", 5.0)
+  ])
+  set-bom-vendors(vendors)
+  set-bom-design-quantity(qty)
+
+; ====================
+; Setup the board information using https://github.com/JITx-Inc/jlc-pcb.git
+; JLC04161H-1080() is a stackup for a 4-layer board with 1.6mm thickness
+; ====================
+public val substrate = jlc-pcb/stackups/JLC04161H-1080/JLC04161H-1080()
+
+; ============
+; setup-design
+; ============
+public defn setup-design (name:String, board-shape:Shape
+                          --
+                          signal-shrink:Double = ?
+                          vendors:Tuple<String|AuthorizedVendor> = jsl/design/settings/APPROVED-DISTRIBUTOR-LIST
+                          quantity:Int = jsl/design/settings/DESIGN-QUANTITY
+                          paper-size:Paper = ANSI-A
+                          ) :
+  ; Set the current design name to the name provided in the string argument
+  set-current-design(name)
+  ; Setup the part query
+  setup-part-query(vendors = vendors)
+  ; Set the board definition
+  set-board(make-board-def(substrate, board-shape, signal-shrink = signal-shrink))
+  ; Set the design rules
+  set-rules(jlc-pcb/rules/multi_1oz/jlcpcb-rules-multi-1oz)
+  ; Setup the BOM report
+  setup-bill-of-materials(quantity, vendors)
+  ; Set the paper size for the schematic and export
+  set-paper(paper-size)
+  set-use-layout-groups()
+; set the CAD software for export to be kicad (also supported: `altium)
+  set-export-backend(`kicad) 
+; ====================
+; Actual Export design
+; ====================
+public defn export-to-cad () :
+  ; if we are exporting to Kicad for boards assembled at JLCPCB, we can add:
+  ; ["vendor_part_numbers.lcsc" => "LCSC"] to the argument of export-cad()
+  ; This will add the LCSC part number property to the symbols in the schematic
+  export-cad()
+
+; ====================
+; Export design to CAD
+; ====================
+public defn export-design () :
+  set-export-board?(true)
+  export-to-cad()
+
+; ===================================
+; Update CAD, keeping layout progress
+; ===================================
+public defn update-design () :
+  set-export-board?(false)
+  export-to-cad()
+

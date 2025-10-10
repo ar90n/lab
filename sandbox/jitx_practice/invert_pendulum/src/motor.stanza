@@ -1,0 +1,46 @@
+#use-added-syntax(jitx)
+defpackage invert-pendulum/motor :
+  import core
+  import jitx
+  import jitx/commands
+  import jitx/parts
+
+  import helpers
+  import jsl
+
+public pcb-module motor-system :
+  name = "Motor System"
+
+  port PWR : power
+  port AOUT : pin[2]
+  port BOUT : pin[2]
+  port AIN : pin[2]
+  port BIN : pin[2]
+  port nSLEEP : pin
+  port nFAULT : pin
+
+  net V_BUS (PWR.V+)
+  net GND (PWR.V-)
+
+  inst U_DRV : create-part(mpn = "DRV8833CPWPR", manufacturer = "Texas Instruments")
+
+  val cq = get-default-capacitor-query()
+  insert-capacitor(V_BUS GND cq capacitance = 10.0e-6)
+  insert-capacitor(U_DRV.VINT GND cq capacitance = 2.2e-6)
+  insert-capacitor(V_BUS GND cq capacitance = 0.1e-6)
+
+  net (U_DRV.VM V_BUS)
+  net (U_DRV.GND GND)
+  net (U_DRV.EPAD GND)
+  net (U_DRV.AISEN GND)
+  net (U_DRV.BISEN GND)
+  net (U_DRV.AOUT1 AOUT[0])
+  net (U_DRV.AOUT2 AOUT[1])
+  net (U_DRV.BOUT1 BOUT[0])
+  net (U_DRV.BOUT2 BOUT[1])
+  net (U_DRV.AIN1 AIN[0])
+  net (U_DRV.AIN2 AIN[1])
+  net (U_DRV.BIN1 BIN[0])
+  net (U_DRV.BIN2 BIN[1])
+  net (U_DRV.nSLEEP nSLEEP)
+  net (U_DRV.nFAULT nFAULT)

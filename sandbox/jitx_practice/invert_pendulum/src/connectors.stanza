@@ -1,0 +1,72 @@
+#use-added-syntax(jitx)
+defpackage invert-pendulum/connectors :
+  import core
+  import jitx
+  import jitx/commands
+  import jitx/parts
+
+  import helpers
+  import jsl
+
+public pcb-module connectors :
+  name = "Connectors"
+
+  port BAT  : power
+  port V5  : power
+  port M1   : pin[2]
+  port M2   : pin[2]
+  port WIO_M1CTRL : pin[2]
+  port WIO_M2CTRL : pin[2]
+  port WIO_nSLEEP : pin
+  port WIO_I2C0 : i2c
+  port WIO_I2C1 : i2c
+
+  net GND (BAT.V- V5.V-)
+
+  inst CON_M1 : create-part(mpn = "A2501WR-S-2P", manufacturer = "CJT(Changjiang Connectors)")
+  net (CON_M1.p[1] M1[0])
+  net (CON_M1.p[2] M1[1])
+  net (CON_M1.p[0] GND)
+
+  inst CON_M2 : create-part(mpn = "A2501WR-S-2P", manufacturer = "CJT(Changjiang Connectors)")
+  net (CON_M2.p[1] M2[0])
+  net (CON_M2.p[2] M2[1])
+  net (CON_M2.p[0] GND)
+
+  inst CON_BAT : create-part(mpn = "A2501WR-S-2P", manufacturer = "CJT(Changjiang Connectors)")
+  net (CON_BAT.p[1] BAT.V+)
+  net (CON_BAT.p[2] BAT.V-)
+  net (CON_BAT.p[0] GND)
+
+  public inst CON_WIO : create-part(mpn = "PH-00650", manufacturer = "Liansheng")
+  net (V5.V+ CON_WIO.p[2])
+  net (V5.V+ CON_WIO.p[4])
+  net (WIO_I2C0.sda CON_WIO.p[27])
+  net (WIO_I2C0.scl CON_WIO.p[28])
+  net (WIO_I2C1.sda CON_WIO.p[3])
+  net (WIO_I2C1.scl CON_WIO.p[5])
+  net (WIO_M1CTRL[0] CON_WIO.p[13])
+  net (WIO_M1CTRL[1] CON_WIO.p[16])
+  net (WIO_M2CTRL[0] CON_WIO.p[37])
+  net (WIO_M2CTRL[1] CON_WIO.p[33])
+  net (WIO_nSLEEP CON_WIO.p[11])
+  net WIO_V3V3 (CON_WIO.p[1])
+  net (GND CON_WIO.p[6] CON_WIO.p[9] CON_WIO.p[14] CON_WIO.p[20] CON_WIO.p[25] CON_WIO.p[30] CON_WIO.p[34] CON_WIO.p[39])
+
+  val rq = get-default-resistor-query()
+  insert-resistor(WIO_I2C0.sda WIO_V3V3 rq resistance = 4.7e3)
+  insert-resistor(WIO_I2C0.scl WIO_V3V3 rq resistance = 4.7e3)
+  insert-resistor(WIO_I2C1.sda WIO_V3V3 rq resistance = 4.7e3)
+  insert-resistor(WIO_I2C1.scl WIO_V3V3 rq resistance = 4.7e3)
+
+  inst CON_M1_ENC : create-part(mpn = "KH-2.54PH180-1X4P-L11.5", manufacturer = "Shenzhen Kinghelm Elec")
+  net (CON_M1_ENC.p[2] WIO_I2C1.sda)
+  net (CON_M1_ENC.p[1] WIO_I2C1.scl)
+  net (CON_M1_ENC.p[4] WIO_V3V3)
+  net (CON_M1_ENC.p[3] GND)
+
+  inst CON_M2_ENC : create-part(mpn = "KH-2.54PH180-1X4P-L11.5", manufacturer = "Shenzhen Kinghelm Elec")
+  net (CON_M2_ENC.p[2] WIO_I2C0.sda)
+  net (CON_M2_ENC.p[1] WIO_I2C0.scl)
+  net (CON_M2_ENC.p[4] WIO_V3V3)
+  net (CON_M2_ENC.p[3] GND)

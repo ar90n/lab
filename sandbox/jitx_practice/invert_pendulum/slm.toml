@@ -1,0 +1,5 @@
+name = "design-template"
+version = "0.1.0"
+[dependencies]
+JITX3 = { path = "{SLM_ROOT}/JITX3" }
+jlc-pcb = { git = "JITx-Inc/jlc-pcb", version = "0.3.2" }

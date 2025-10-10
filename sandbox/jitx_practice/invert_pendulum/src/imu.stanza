@@ -1,0 +1,35 @@
+#use-added-syntax(jitx)
+defpackage invert-pendulum/imu :
+  import core
+  import jitx
+  import jitx/commands
+  import jitx/parts
+
+  import helpers
+  import jsl
+
+public pcb-module imu :
+  name = "IMU"
+
+  port V3V3  : power
+  port I2C : i2c
+  port INT1 : pin
+
+  net V_3V3 (V3V3.V+)
+  net GND (V3V3.V-)
+  val cq = get-default-capacitor-query()
+  insert-capacitor(V_3V3 GND cq capacitance = 0.1e-6)
+  insert-capacitor(V_3V3 GND cq capacitance = 10.0e-9)
+
+  inst U_IMU: create-part(mpn = "MPU-6500", manufacturer = "TDK Corp")
+  insert-capacitor(U_IMU.REGOUT GND cq capacitance = 0.1e-6)
+  net (U_IMU.SDA_SDI I2C.sda)
+  net (U_IMU.SCL_SCLK I2C.scl)
+  net (U_IMU.SDO_AD0 GND)
+  net (U_IMU.nCS V_3V3)
+  net (U_IMU.FSYNC GND)
+  net (U_IMU.RESV1 GND)
+  net (U_IMU.VDD V_3V3)
+  net (U_IMU.VDDIO V_3V3)
+  net (U_IMU.GND GND)
+  net (U_IMU.INT INT1)

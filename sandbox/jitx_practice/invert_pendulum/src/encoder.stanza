@@ -1,0 +1,28 @@
+#use-added-syntax(jitx)
+defpackage invert-pendulum/encoder :
+  import core
+  import jitx
+  import jitx/commands
+  import jitx/parts
+
+  import helpers
+  import jsl
+
+public pcb-module encoder-system :
+  name = "Encoder System"
+
+  port PWR  : power
+  port I2C  : i2c
+
+  net VDD (PWR.V+)
+  net GND (PWR.V-)
+
+  public inst U_ENC : create-part(mpn = "MT6701CT-STD-R", manufacturer = "Magn Tek")
+  net (U_ENC.VDD VDD)
+  net (U_ENC.GND GND)
+  net (U_ENC.A I2C.sda)
+  net (U_ENC.B I2C.scl)
+  net (U_ENC.MODE VDD)
+
+  val cq = get-default-capacitor-query()
+  insert-capacitor(VDD GND cq capacitance = 0.1e-6)

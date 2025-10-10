@@ -9,28 +9,15 @@ dependencies = [
     "ipython",
     "ipykernel",
     "scikit-image",
-    "ocp-vscode",
+    "ocp-vscode == 2.9.0",
     "trianglesolver",
     "jupyter-cadquery",
     "cadquery-massembly",
     "bd-warehouse @ git+https://github.com/gumyr/bd_warehouse",
     "ocpsvg @ git+https://github.com/snoyer/ocpsvg",
+    "jupyter>=1.1.1",
+    "notebook>=7.4.5",
+    "build123d>=0.9.1",
 ]
 readme = "README.md"
-requires-python = ">= 3.8"
-
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[tool.rye]
-managed = true
-dev-dependencies = [
-    "ruff>=0.9.7",
-]
-
-[tool.hatch.metadata]
-allow-direct-references = true
-
-[tool.hatch.build.targets.wheel]
-packages = ["src/build123d_practice"]
+requires-python = ">= 3.12"

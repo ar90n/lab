@@ -99,3 +99,15 @@
     font-size: 12px;
     padding-right: 5px;
 }
+
+.quarto-light :not(pre):not(.sourceCode) > code,
+.quarto-dark  :not(pre):not(.sourceCode) > code {
+  background: var(--bs-body-bg) !important; /* ページ背景と同じ */
+  background-image: none !important;        /* 念のため */
+  color: var(--bs-code-color, inherit);
+  padding: 0;                                /* 装飾を消すなら 0 推奨 */
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  filter: none;
+}

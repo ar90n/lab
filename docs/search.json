@@ -900,21 +900,21 @@
     "href": "index.html",
     "title": "lab_note",
     "section": "",
-    "text": "Claude CodeをWebブラウザから使う\n\n\n\n開発環境\n\nClaude Code\n\nWeb\n\n\n\n\n\n\n\n\n\nJul 11, 2025\n\n\n\n\n\n\n\n\n\n\n\n\nUbuntu Server on RP4 をネットワークブートで運用する\n\n\n\nLinux\n\n組み込み\n\nSBC\n\n\n\n\n\n\n\n\n\nMay 16, 2025\n\n\n\n\n\n\n\n\n\n\n\n\nRadxa Cubie A5Eゲートウェイをとして仕立てる\n\n\n\nLinux\n\n組み込み\n\nSBC\n\n\n\n\n\n\n\n\n\nMay 9, 2025\n\n\n\n\n\n\n\n\n\n\n\n\nPICO-SDKによるシンプルなタスクスケジューラーの実装\n\n\n\nC++\n\n組み込み\n\nRP2xxx\n\n\n\n\n\n\n\n\n\nApr 26, 2025\n\n\n\n\n\n\n\n\n\n\n\n\nM推定を用いたPCAについてのメモ\n\n\n\nPython\n\n機械学習\n\n\n\n\n\n\n\n\n\nMar 16, 2025\n\n\n\n\n\n\n\n\n\n\n\n\ndevcontainersでCUDA環境を整える\n\n\n\n開発環境\n\n\n\n\n\n\n\n\n\nSep 30, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nZigで多態性を表現する\n\n\n\nZig\n\n\n\n\n\n\n\n\n\nJul 17, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nZigでレイトレーシングをしてみる\n\n\n\nZig\n\nコンピュータグラフィックス\n\n\n\n\n\n\n\n\n\nJun 29, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nほとんどPythonで作るWebアプリケーション\n\n\n\nPython\n\nWeb\n\n\n\n\n\n\n\n\n\nNov 30, 2022\n\n\n\n\n\n\n\n\n\n\n\n\n続・Goによるdot積のベンチマーク\n\n\n\nGo\n\n線形代数\n\n\n\n\n\n\n\n\n\nNov 16, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nGoによるdot積のベンチマーク\n\n\n\nGo\n\n線形代数\n\n\n\n\n\n\n\n\n\nNov 8, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nOctoPrintのプラグインを作ってみる\n\n\n\nPython\n\n3Dプリンタ\n\n\n\n\n\n\n\n\n\nNov 5, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nARモデルによるシンプルなボイスチェンジャ\n\n\n\nPython\n\n信号処理\n\n\n\n\n\n\n\n\n\nOct 24, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nXG-C100Cを追加してオンボードNICとブリッジ接続する\n\n\n\nUbuntu\n\n\n\n\n\n\n\n\n\nAug 12, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nKD木と次元の呪い\n\n\n\n機械学習\n\n数学\n\nPython\n\n\n\n\n\n\n\n\n\nFeb 16, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nGoで類似ベクトルを検索する\n\n\n\nGo\n\nアルゴリズム\n\n機械学習\n\n類似ベクトル検索\n\n\n\n\n\n\n\n\n\nFeb 1, 2022\n\n\n\n\n\n\n\n\n\n\n\n\ncargo-editが上手く動かない時の回避策\n\n\n\nRust\n\n\n\n\n\n\n\n\n\nJan 30, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nAWS Amplifyのメモ\n\n\n\nAWS\n\nWeb\n\nクラウド\n\nAmplify\n\n\n\n\n\n\n\n\n\nJan 3, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nRustによるシンプルなGuidedFilterの実装\n\n\n\nRust\n\n画像処理\n\n\n\n\n\n\n\n\n\nSep 30, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nUSB to TTLx4ケーブルの作成\n\n\n\nハードウェア\n\n\n\n\n\n\n\n\n\nAug 26, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nk3sクラスタ on Raspberry Pi 4\n\n\n\nKubernetes\n\n\n\n\n\n\n\n\n\nAug 21, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nPythonでpingの実装してみる\n\n\n\nPython\n\nネットワーク\n\n\n\n\n\n\n\n\n\nAug 1, 2021\n\n\n\n\n\n\n\n\n\n\n\n\npaaaaathによる統一的なファイルアクセス\n\n\n\nクラウド\n\nPython\n\nAWS\n\nGCP\n\n\n\n\n\n\n\n\n\nJun 6, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nソフトマックス関数を用いた混合ガウスモデルの計算\n\n\n\n機械学習\n\n信号処理\n\nPython\n\n\n\n\n\n\n\n\n\nMay 30, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nUbuntu 20.04をシリアルコンソール経由で操作する\n\n\n\nUbuntu\n\n\n\n\n\n\n\n\n\nMay 26, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nRustでレイトレーシングをしてみる\n\n\n\nRust\n\nコンピュータグラフィックス\n\n\n\n\n\n\n\n\n\nMar 30, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nglutinに入門してみる\n\n\n\nRust\n\nglutin\n\nOpenGL\n\nコンピュータグラフィックス\n\n\n\n\n\n\n\n\n\nFeb 1, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nstarshipの導入\n\n\n\n開発環境\n\n\n\n\n\n\n\n\n\nJan 6, 2021\n\n\n\n\n\n\n\n\n\n\n\n\n型レベル整数ライブラリtypenumの紹介\n\n\n\nRust\n\n\n\n\n\n\n\n\n\nDec 13, 2020\n\n\n\n\n\n\n\n\n\n\n\n\nevcxr_jupyter - Rust on Notebook\n\n\n\nRust\n\nJupyter\n\n\n\n\n\n\n\n\n\nNov 15, 2020\n\n\n\n\n\n\n\n\n\n\n\n\nLeast-Squares Estimation of Transformation Parameters Between Two Point Patterns の読解\n\n\n\n画像処理\n\n線形代数\n\n\n\n\n\n\n\n\n\nNov 8, 2020\n\n\n\n\n\n\n\n\n\n\n\n\nsmart_openによる統一的なファイルアクセス\n\n\n\nクラウド\n\nPython\n\nAWS\n\nGCP\n\n\n\n\n\n\n\n\n\nOct 21, 2020\n\n\n\n\n\n\n\n\n\n\n\n\nUbuntu 20.04 LTS Server でUSB-NICを使う\n\n\n\nUbuntu\n\n\n\n\n\n\n\n\n\nOct 17, 2020\n\n\n\n\n\n\n\n\n\n\n\n\nDICOMにおける文字コードの取り扱い\n\n\n\nDICOM\n\n\n\n\n\n\n\n\n\nOct 12, 2020\n\n\n\n\n\n\n\n\n\n\n\n\n移動平均フィルタの零点と周波数特性\n\n\n\n信号処理\n\nJupyter\n\n\n\n\n\n\n\n\n\nOct 10, 2020\n\n\n\n\n\n\n\n\n\n\n\n\nGitHub ActionsでWebサイトを自動更新する\n\n\n\nElm\n\nWeb\n\n\n\n\n\n\n\n\n\nAug 9, 2020\n\n\n\n\n\n\n\n\n\n\n\n\n純粋なバイナリヒープ\n\n\n\nアルゴリズム\n\n\n\n\n\n\n\n\n\nJun 27, 2020\n\n\n\n\n\n\n\n\n\n\n\n\n三次元空間における行列演算の復習\n\n\n\n数学\n\n線形代数\n\n\n\n\n\n\n\n\n\nJun 27, 2020\n\n\n\n\n\n\n\n\n\n\n\n\n5行で書くポアソンブレンディング\n\n\n\n画像処理\n\nPython\n\n\n\n\n\n\n\n\n\nMay 31, 2020\n\n\n\n\n\n\n\n\n\n\n\n\nRaspberry Pi 4 + k3s + Rayで分散処理を試す\n\n\n\nKubernetes\n\nRay\n\nPython\n\n分散システム\n\n\n\n\n\n\n\n\n\nMay 25, 2020\n\n\n\n\n\nNo matching items"
+    "text": "Milk-V DUO S をrocサーバーに仕立てる\n\n\n\nLinux\n\n組み込み\n\nSBC\n\n\n\n\n\n\n\n\n\nOct 15, 2025\n\n\n\n\n\n\n\n\n\n\n\n\nClaude CodeをWebブラウザから使う\n\n\n\n開発環境\n\nClaude Code\n\nWeb\n\n\n\n\n\n\n\n\n\nJul 11, 2025\n\n\n\n\n\n\n\n\n\n\n\n\nUbuntu Server on RP4 をネットワークブートで運用する\n\n\n\nLinux\n\n組み込み\n\nSBC\n\n\n\n\n\n\n\n\n\nMay 16, 2025\n\n\n\n\n\n\n\n\n\n\n\n\nRadxa Cubie A5Eゲートウェイをとして仕立てる\n\n\n\nLinux\n\n組み込み\n\nSBC\n\n\n\n\n\n\n\n\n\nMay 9, 2025\n\n\n\n\n\n\n\n\n\n\n\n\nPICO-SDKによるシンプルなタスクスケジューラーの実装\n\n\n\nC++\n\n組み込み\n\nRP2xxx\n\n\n\n\n\n\n\n\n\nApr 26, 2025\n\n\n\n\n\n\n\n\n\n\n\n\nM推定を用いたPCAについてのメモ\n\n\n\nPython\n\n機械学習\n\n\n\n\n\n\n\n\n\nMar 16, 2025\n\n\n\n\n\n\n\n\n\n\n\n\ndevcontainersでCUDA環境を整える\n\n\n\n開発環境\n\n\n\n\n\n\n\n\n\nSep 30, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nZigで多態性を表現する\n\n\n\nZig\n\n\n\n\n\n\n\n\n\nJul 17, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nZigでレイトレーシングをしてみる\n\n\n\nZig\n\nコンピュータグラフィックス\n\n\n\n\n\n\n\n\n\nJun 29, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nほとんどPythonで作るWebアプリケーション\n\n\n\nPython\n\nWeb\n\n\n\n\n\n\n\n\n\nNov 30, 2022\n\n\n\n\n\n\n\n\n\n\n\n\n続・Goによるdot積のベンチマーク\n\n\n\nGo\n\n線形代数\n\n\n\n\n\n\n\n\n\nNov 16, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nGoによるdot積のベンチマーク\n\n\n\nGo\n\n線形代数\n\n\n\n\n\n\n\n\n\nNov 8, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nOctoPrintのプラグインを作ってみる\n\n\n\nPython\n\n3Dプリンタ\n\n\n\n\n\n\n\n\n\nNov 5, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nARモデルによるシンプルなボイスチェンジャ\n\n\n\nPython\n\n信号処理\n\n\n\n\n\n\n\n\n\nOct 24, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nXG-C100Cを追加してオンボードNICとブリッジ接続する\n\n\n\nUbuntu\n\n\n\n\n\n\n\n\n\nAug 12, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nKD木と次元の呪い\n\n\n\n機械学習\n\n数学\n\nPython\n\n\n\n\n\n\n\n\n\nFeb 16, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nGoで類似ベクトルを検索する\n\n\n\nGo\n\nアルゴリズム\n\n機械学習\n\n類似ベクトル検索\n\n\n\n\n\n\n\n\n\nFeb 1, 2022\n\n\n\n\n\n\n\n\n\n\n\n\ncargo-editが上手く動かない時の回避策\n\n\n\nRust\n\n\n\n\n\n\n\n\n\nJan 30, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nAWS Amplifyのメモ\n\n\n\nAWS\n\nWeb\n\nクラウド\n\nAmplify\n\n\n\n\n\n\n\n\n\nJan 3, 2022\n\n\n\n\n\n\n\n\n\n\n\n\nRustによるシンプルなGuidedFilterの実装\n\n\n\nRust\n\n画像処理\n\n\n\n\n\n\n\n\n\nSep 30, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nUSB to TTLx4ケーブルの作成\n\n\n\nハードウェア\n\n\n\n\n\n\n\n\n\nAug 26, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nk3sクラスタ on Raspberry Pi 4\n\n\n\nKubernetes\n\n\n\n\n\n\n\n\n\nAug 21, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nPythonでpingの実装してみる\n\n\n\nPython\n\nネットワーク\n\n\n\n\n\n\n\n\n\nAug 1, 2021\n\n\n\n\n\n\n\n\n\n\n\n\npaaaaathによる統一的なファイルアクセス\n\n\n\nクラウド\n\nPython\n\nAWS\n\nGCP\n\n\n\n\n\n\n\n\n\nJun 6, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nソフトマックス関数を用いた混合ガウスモデルの計算\n\n\n\n機械学習\n\n信号処理\n\nPython\n\n\n\n\n\n\n\n\n\nMay 30, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nUbuntu 20.04をシリアルコンソール経由で操作する\n\n\n\nUbuntu\n\n\n\n\n\n\n\n\n\nMay 26, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nRustでレイトレーシングをしてみる\n\n\n\nRust\n\nコンピュータグラフィックス\n\n\n\n\n\n\n\n\n\nMar 30, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nglutinに入門してみる\n\n\n\nRust\n\nglutin\n\nOpenGL\n\nコンピュータグラフィックス\n\n\n\n\n\n\n\n\n\nFeb 1, 2021\n\n\n\n\n\n\n\n\n\n\n\n\nstarshipの導入\n\n\n\n開発環境\n\n\n\n\n\n\n\n\n\nJan 6, 2021\n\n\n\n\n\n\n\n\n\n\n\n\n型レベル整数ライブラリtypenumの紹介\n\n\n\nRust\n\n\n\n\n\n\n\n\n\nDec 13, 2020\n\n\n\n\n\n\n\n\n\n\n\n\nevcxr_jupyter - Rust on Notebook\n\n\n\nRust\n\nJupyter\n\n\n\n\n\n\n\n\n\nNov 15, 2020\n\n\n\n\n\n\n\n\n\n\n\n\nLeast-Squares Estimation of Transformation Parameters Between Two Point Patterns の読解\n\n\n\n画像処理\n\n線形代数\n\n\n\n\n\n\n\n\n\nNov 8, 2020\n\n\n\n\n\n\n\n\n\n\n\n\nsmart_openによる統一的なファイルアクセス\n\n\n\nクラウド\n\nPython\n\nAWS\n\nGCP\n\n\n\n\n\n\n\n\n\nOct 21, 2020\n\n\n\n\n\n\n\n\n\n\n\n\nUbuntu 20.04 LTS Server でUSB-NICを使う\n\n\n\nUbuntu\n\n\n\n\n\n\n\n\n\nOct 17, 2020\n\n\n\n\n\n\n\n\n\n\n\n\nDICOMにおける文字コードの取り扱い\n\n\n\nDICOM\n\n\n\n\n\n\n\n\n\nOct 12, 2020\n\n\n\n\n\n\n\n\n\n\n\n\n移動平均フィルタの零点と周波数特性\n\n\n\n信号処理\n\nJupyter\n\n\n\n\n\n\n\n\n\nOct 10, 2020\n\n\n\n\n\n\n\n\n\n\n\n\nGitHub ActionsでWebサイトを自動更新する\n\n\n\nElm\n\nWeb\n\n\n\n\n\n\n\n\n\nAug 9, 2020\n\n\n\n\n\n\n\n\n\n\n\n\n純粋なバイナリヒープ\n\n\n\nアルゴリズム\n\n\n\n\n\n\n\n\n\nJun 27, 2020\n\n\n\n\n\n\n\n\n\n\n\n\n三次元空間における行列演算の復習\n\n\n\n数学\n\n線形代数\n\n\n\n\n\n\n\n\n\nJun 27, 2020\n\n\n\n\n\n\n\n\n\n\n\n\n5行で書くポアソンブレンディング\n\n\n\n画像処理\n\nPython\n\n\n\n\n\n\n\n\n\nMay 31, 2020\n\n\n\n\n\n\n\n\n\n\n\n\nRaspberry Pi 4 + k3s + Rayで分散処理を試す\n\n\n\nKubernetes\n\nRay\n\nPython\n\n分散システム\n\n\n\n\n\n\n\n\n\nMay 25, 2020\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "about.html",
     "href": "about.html",
     "title": "和田政弘",
     "section": "",
-    "text": "関東でソフトウェアエンジニアをやっています。\n画像処理、信号処理、Python、Rust、Zig, Rosなどに興味があります。"
+    "text": "関東でソフトウェアエンジニアをやっています。\n画像処理、信号処理、Python、Rust、Zig、Rosなどに興味があります。 本業・副業問わずお仕事に関するお話がありましたらメールにて連絡をいただきたいです。"
   },
   {
     "objectID": "about.html#経歴",
     "href": "about.html#経歴",
     "title": "和田政弘",
     "section": "経歴",
-    "text": "経歴\n株式会社LexxPluss | ソフトウェアエンジニア | 2024/1 - 現在\n株式会社Hacobu | ソフトウェアエンジニア | 2023/3 - 2023/12\nフリーランス | ソフトウェアエンジニア | 2022/1 - 2023/3\nキャディ株式会社 | ソフトウェアエンジニア | 2020/6 - 2022/1\nエルピクセル株式会社 | ソフトウェアエンジニア | 2017/10 - 2020/5\nテラリコンインコーポレイテッド日本支店 | ソフトウェアエンジニア | 2014/10 - 2017/10\n株式会社コロプラ | ソフトウェアエンジニア | 22013/2 - 2014/10\n株式会社モルフォ | ソフトウェアエンジニア | 2011/4 - 2013/2"
+    "text": "経歴\n株式会社LexxPluss | ソフトウェアエンジニア | 2024/1 - 現在\n株式会社Hacobu | ソフトウェアエンジニア | 2023/3 - 2023/12\nフリーランス | ソフトウェアエンジニア | 2022/1 - 2023/3\nキャディ株式会社 | ソフトウェアエンジニア | 2020/6 - 2022/1\nエルピクセル株式会社 | ソフトウェアエンジニア | 2017/10 - 2020/5\nテラリコンインコーポレイテッド日本支店 | ソフトウェアエンジニア | 2014/10 - 2017/10\n株式会社コロプラ | ソフトウェアエンジニア | 22013/2 - 2014/10\n株式会社モルフォ | ソフトウェアエンジニア | 2011/4 - 2013/2\n職務経歴ページ"
   },
   {
     "objectID": "projects.html",
@@ -1839,5 +1839,68 @@
     "title": "XG-C100Cを追加してオンボードNICとブリッジ接続する",
     "section": "参考",
     "text": "参考\n\nMarvell Drivers\nNetplan reference"
+  },
+  {
+    "objectID": "posts/2025-10-15-setup-milkv-duos-as-roc-server.html",
+    "href": "posts/2025-10-15-setup-milkv-duos-as-roc-server.html",
+    "title": "Milk-V DUO S をrocサーバーに仕立てる",
+    "section": "",
+    "text": "RISC‑Vベースの低価格SBCであるMilk‑V DUO Sを使い、ライン入力／出力をネットワークに載せるオーディオサーバーを作りました。プロトコルは低レイテンシなroc（roc‑toolkit）を採用し、システムはduo-buildroot-sdk-v2で構築しています。技適の観点からオンボードWi‑Fiは使わず、USBのWi‑Fiドングル（rtl8xxxu系）を利用しました。"
+  },
+  {
+    "objectID": "posts/2025-10-15-setup-milkv-duos-as-roc-server.html#はじめに",
+    "href": "posts/2025-10-15-setup-milkv-duos-as-roc-server.html#はじめに",
+    "title": "Milk-V DUO S をrocサーバーに仕立てる",
+    "section": "",
+    "text": "RISC‑Vベースの低価格SBCであるMilk‑V DUO Sを使い、ライン入力／出力をネットワークに載せるオーディオサーバーを作りました。プロトコルは低レイテンシなroc（roc‑toolkit）を採用し、システムはduo-buildroot-sdk-v2で構築しています。技適の観点からオンボードWi‑Fiは使わず、USBのWi‑Fiドングル（rtl8xxxu系）を利用しました。"
+  },
+  {
+    "objectID": "posts/2025-10-15-setup-milkv-duos-as-roc-server.html#やったこと",
+    "href": "posts/2025-10-15-setup-milkv-duos-as-roc-server.html#やったこと",
+    "title": "Milk-V DUO S をrocサーバーに仕立てる",
+    "section": "やったこと",
+    "text": "やったこと\n\nduo-buildroot-sdk-v2でカーネルとrootfsを最小構成＋必要機能にカスタマイズ\nroc‑toolkitでALSAのLine In/Outをネットワーク公開\nrtl8xxxuドライバでUSB Wi‑Fiドングルを有効化（オンボードは未使用）\n作業内容と設定を公開"
+  },
+  {
+    "objectID": "posts/2025-10-15-setup-milkv-duos-as-roc-server.html#duo-buildroot-sdk-v2を使用した開発環境構築",
+    "href": "posts/2025-10-15-setup-milkv-duos-as-roc-server.html#duo-buildroot-sdk-v2を使用した開発環境構築",
+    "title": "Milk-V DUO S をrocサーバーに仕立てる",
+    "section": "duo-buildroot-sdk-v2を使用した開発環境構築",
+    "text": "duo-buildroot-sdk-v2を使用した開発環境構築\nSDK本体はサブモジュールとしてvendor/duo-buildroot-sdk-v2に置き、カスタマイズはすべてSDK外（external/）に集約しました。ビルドはDocker前提で、一部の設定はファイルシステムをマウント機能を利用してSDK内に反映させています。基本的な操作は公式ドキュメントに準拠します。\n今回のリポジトリ構成は次の通りです。\nduo-buildroot-sdk-v2\n├── .env\n├── docker\n│   └── Dockerfile\n├── docker-compose.yml\n├── external\n│   ├── config\n│   │   ├── buildroot_dot_config\n│   │   ├── kernel_dot_config\n│   │   └── system-users.txt\n│   ├── Config.in\n│   ├── external.desc\n│   ├── external.mk\n│   ├── overlay\n│   │   ├── etc\n│   │   └── mnt\n│   ├── package\n│   │   ├── roc-toolkit\n│   │   └── rtl8xxxu\n│   └── template\n│       ├── roc-aoip\n│       └── wpa_supplicant.conf\n├── LICENSE\n├── Makefile\n└── vendor\n    └── duo-buildroot-sdk-v2\nexternal/配下は、config/にBuildrootとカーネルの設定、overlay/にrootfsへ展開するファイル、package/に追加パッケージ（roc-toolkit, rtl8xxxu）を配置しています。テンプレート類（template/）にはwpa_supplicant.confやroc用のサンプルを置き、.envの情報を元に設定ファイルを生成します。\nビルド環境はdocker/Dockerfileで定義し、docker-compose.ymlから初期化とビルドを実行できるようにしています。これによりホスト差分の影響を抑えつつ、コンフィグやオーバーレイを外部ツリーで安全に管理できます。\n\n環境の初期化\n環境の初期化はdocker compose run initで実施します（内部ではmake init）。コンテナ定義をコード化して起動設定を一元管理しています。make initではSDKの追加データ取得と初回ビルドを行います。これは公式のOne-click compilation using Dockerに相当し、本来は初回フルビルドを避けたいところですが、必要ディレクトリの自動作成方法が不明だったため、この方式にしています。\ndocker compose run --rm init\n\n\n成果物(SDイメージ)のビルド\n成果物のビルドはdocker compose run buildで実施します（内部ではmake all）。\ndocker compose run --rm build\nmake allの処理内容は以下のとおりです。\n\n生成物の削除\ntemplateから設定ファイルの生成\n.configファイルのロード\nカーネルとルートファイルシステムのビルド\nSDイメージのパック"
+  },
+  {
+    "objectID": "posts/2025-10-15-setup-milkv-duos-as-roc-server.html#外部パッケージのビルド",
+    "href": "posts/2025-10-15-setup-milkv-duos-as-roc-server.html#外部パッケージのビルド",
+    "title": "Milk-V DUO S をrocサーバーに仕立てる",
+    "section": "外部パッケージのビルド",
+    "text": "外部パッケージのビルド\nBuildrootに無いソフトは、外部ツリー（external/）にパッケージを用意して組み込みます。ここではroc-toolkitとrtl8xxxuを追加しています。今回のケースにおける外部ツリーの構成は以下の通りです。\nexternal/\n  Config.in           # 外部パッケージをmenuconfigに出す\n  external.desc       # 外部ツリーのメタ情報\n  external.mk         # 任意のフックや共通設定\n  package/\n    roc-toolkit/\n      Config.in       # roc-toolkitをmenuconfigに出す\n      roc-toolkit.mk  # roc-toolkitのビルド手順\n    rtl8xxxu/\n      Config.in       # rtl8xxxuをmenuconfigに出す\n      rtl8xxxu.mk     # rtl8xxxuのビルド手順\nConfig.inにはmenuconfigなどコンフィグレーションツールに対する設定を記述します。以下にexternal/Config.inとrtl8xxxu/Config.inを示します。external/Config.inには各パッケージのConfig.inへのリンクが、rtl8xxxu/Config.inにはrtl8xxxuパッケージの詳細が記述されていることが確認できます。\nexternal/Config.in\nmenu \"roc-audio-conv external\"\n    source \"$BR2_EXTERNAL_ROC_AUDIO_CONV_PATH/package/rtl8xxxu/Config.in\"\n    source \"$BR2_EXTERNAL_ROC_AUDIO_CONV_PATH/package/roc-toolkit/Config.in\"\nendmenu\nrtl8xxxu/Config.in\nconfig BR2_PACKAGE_RTL8XXXU\n    bool \"rtl8xxxu (out-of-tree kernel module)\"\n    help\n      Realtek 8xxxu USB Wi-Fi driver from lwfinger/rtl8xxxu.\nまた、roc-toolkit.mkやrtl8xxxu.mkには各パッケージのビルド方法を記述します。以下にrtl8xxxu.mkを示します。rtl8xxxuはmakeを使ってビルドするためgeneric-packageを使用します。他のビルドツールに対しては専用のツールが用意されており、設定が簡易化されています。\nRTL8XXXU_VERSION      = refs/heads/main\nRTL8XXXU_SITE         = https://github.com/lwfinger/rtl8xxxu.git\nRTL8XXXU_SITE_METHOD  = git\n\n# Require the SDK-provided kernel build tree (exposed by Buildroot as LINUX_DIR).\n# Do not add any Kconfig dependency; fail fast at build time if missing.\nRTL8XXXU_KERNEL_DIR  := $(strip $(KERNEL_PATH))\nRTL8XXXU_BUILD_DIR   := ${RTL8XXXU_KERNEL_DIR}/build/${MV_BOARD_LINK}\n\ndefine RTL8XXXU_BUILD_CMDS\n    env\n    env | grep sg2000\n    $(MAKE) -C $(RTL8XXXU_KERNEL_DIR) O=$(RTL8XXXU_BUILD_DIR) \\\n        M=\"$(@D)\" ARCH=$(KERNEL_ARCH) CROSS_COMPILE=\"$(TARGET_CROSS)\" \\\n        modules\nendef\n\ndefine RTL8XXXU_INSTALL_TARGET_CMDS\n    mkdir -p \"$(TARGET_DIR)/mnt/system/ko\"\n    { \\\n        mod=\"$$(find \"$(@D)\" -maxdepth 1 -type f -name '*.ko' | head -n1)\"; \\\n        test -n \"$$mod\" || { echo \"ERROR: no .ko built\"; exit 1; }; \\\n        $(INSTALL) -m 0644 \"$$mod\" \"$(TARGET_DIR)/mnt/system/ko/rtl8xxxu.ko\"; \\\n    }\nendef\n\n$(eval $(generic-package))\n外部パッケージは上述したdocker compose run --rm buildでビルドされます。しかしながら、以下のように特定の外部パッケージのみをビルドすることも可能です。外部パッケージのビルド設定を調整する時に重宝します。(この例では/home/workにリポジトリを配置しています)\nexport BR2_EXTERNAL=/home/work/external\nO=/home/work/vendor/duo-buildroot-sdk-v2/buildroot/output/milkv-duos-musl-riscv64-sd\nmake -C /home/work/vendor/duo-buildroot-sdk-v2/buildroot O=“$O” roc-toolkit-dirclean\nmake -C /home/work/vendor/duo-buildroot-sdk-v2/buildroot O=“$O” roc-toolkit-rebuild V=1"
+  },
+  {
+    "objectID": "posts/2025-10-15-setup-milkv-duos-as-roc-server.html#設定ファイルの追加",
+    "href": "posts/2025-10-15-setup-milkv-duos-as-roc-server.html#設定ファイルの追加",
+    "title": "Milk-V DUO S をrocサーバーに仕立てる",
+    "section": "設定ファイルの追加",
+    "text": "設定ファイルの追加\n\n設定ファイルはオーバーレイ機能を用いてルートファイルシステムにコピーする\nオーバーレイ機能は所定の位置にあるディレクトリ構造をルートファイルシステムにコピーする機能\n今回のケースでは主に/etc以下のファイル群をコピーするのに使用"
+  },
+  {
+    "objectID": "posts/2025-10-15-setup-milkv-duos-as-roc-server.html#まとめ",
+    "href": "posts/2025-10-15-setup-milkv-duos-as-roc-server.html#まとめ",
+    "title": "Milk-V DUO S をrocサーバーに仕立てる",
+    "section": "まとめ",
+    "text": "まとめ\n\nDUO S + Buildrootで小型のオーディオ配信装置を構築\nWi‑FiはUSBドングル（rtl8xxxu）で安定、国設定（JP）は必須\nroc-send/roc-recvでライン入出力を簡単にネットワーク化"
+  },
+  {
+    "objectID": "posts/2025-10-15-setup-milkv-duos-as-roc-server.html#参考",
+    "href": "posts/2025-10-15-setup-milkv-duos-as-roc-server.html#参考",
+    "title": "Milk-V DUO S をrocサーバーに仕立てる",
+    "section": "参考",
+    "text": "参考"
+  },
+  {
+    "objectID": "about.html#経歴---職務経歴",
+    "href": "about.html#経歴---職務経歴",
+    "title": "和田政弘",
+    "section": "経歴 - 職務経歴",
+    "text": "経歴 - 職務経歴\n株式会社LexxPluss | ソフトウェアエンジニア | 2024/1 - 現在\n株式会社Hacobu | ソフトウェアエンジニア | 2023/3 - 2023/12\nフリーランス | ソフトウェアエンジニア | 2022/1 - 2023/3\nキャディ株式会社 | ソフトウェアエンジニア | 2020/6 - 2022/1\nエルピクセル株式会社 | ソフトウェアエンジニア | 2017/10 - 2020/5\nテラリコンインコーポレイテッド日本支店 | ソフトウェアエンジニア | 2014/10 - 2017/10\n株式会社コロプラ | ソフトウェアエンジニア | 22013/2 - 2014/10\n株式会社モルフォ | ソフトウェアエンジニア | 2011/4 - 2013/2"
   }
 ]

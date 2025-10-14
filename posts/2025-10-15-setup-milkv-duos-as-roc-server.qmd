@@ -1,0 +1,166 @@
+---
+title: Milk-V DUO S をrocサーバーに仕立てる
+date: 2025-10-15
+categories: [Linux, 組み込み, SBC]
+image: /assets/img/common/milkv.jpg
+format:
+  html:
+    code-fold: false
+toc: true
+layout: post
+code-annotations: below
+nocite: |
+  @misc{milkvIntroductionMilkV,
+---
+
+## はじめに
+RISC‑Vベースの低価格SBCであるMilk‑V DUO Sを使い、ライン入力／出力をネットワークに載せるオーディオサーバーを作りました。プロトコルは低レイテンシなroc（[roc‑toolkit](https://github.com/roc-streaming/roc-toolkit)）を採用し、システムは[duo-buildroot-sdk-v2](https://github.com/milkv-duo/duo-buildroot-sdk-v2)で構築しています。技適の観点からオンボードWi‑Fiは使わず、USBのWi‑Fiドングル（rtl8xxxu系）を利用しました。
+
+## やったこと
+* duo-buildroot-sdk-v2でカーネルとrootfsを最小構成＋必要機能にカスタマイズ
+* roc‑toolkitでALSAのLine In/Outをネットワーク公開
+* [rtl8xxxu](https://github.com/lwfinger/rtl8xxxu)ドライバでUSB Wi‑Fiドングルを有効化（オンボードは未使用）
+* 作業内容と設定を[公開](https://github.com/ar90n/roc-audio-conv-milkv-duos)
+
+## duo-buildroot-sdk-v2を使用した開発環境構築
+SDK本体はサブモジュールとして`vendor/duo-buildroot-sdk-v2`に置き、カスタマイズはすべてSDK外（`external/`）に集約しました。ビルドはDocker前提で、一部の設定はファイルシステムをマウント機能を利用してSDK内に反映させています。基本的な操作は[公式ドキュメント](https://milkv.io/ja/docs/duo/getting-started/buildroot-sdk)に準拠します。
+
+今回のリポジトリ構成は次の通りです。
+```bash
+duo-buildroot-sdk-v2
+├── .env
+├── docker
+│   └── Dockerfile
+├── docker-compose.yml
+├── external
+│   ├── config
+│   │   ├── buildroot_dot_config
+│   │   ├── kernel_dot_config
+│   │   └── system-users.txt
+│   ├── Config.in
+│   ├── external.desc
+│   ├── external.mk
+│   ├── overlay
+│   │   ├── etc
+│   │   └── mnt
+│   ├── package
+│   │   ├── roc-toolkit
+│   │   └── rtl8xxxu
+│   └── template
+│       ├── roc-aoip
+│       └── wpa_supplicant.conf
+├── LICENSE
+├── Makefile
+└── vendor
+    └── duo-buildroot-sdk-v2
+```
+`external/`配下は、`config/`にBuildrootとカーネルの設定、`overlay/`にrootfsへ展開するファイル、`package/`に追加パッケージ（`roc-toolkit`, `rtl8xxxu`）を配置しています。テンプレート類（`template/`）には`wpa_supplicant.conf`やroc用のサンプルを置き、`.env`の情報を元に設定ファイルを生成します。
+
+ビルド環境は`docker/Dockerfile`で定義し、`docker-compose.yml`から初期化とビルドを実行できるようにしています。これによりホスト差分の影響を抑えつつ、コンフィグやオーバーレイを外部ツリーで安全に管理できます。
+
+### 環境の初期化
+環境の初期化は`docker compose run init`で実施します（内部では`make init`）。コンテナ定義をコード化して起動設定を一元管理しています。`make init`ではSDKの追加データ取得と初回ビルドを行います。これは公式の[One-click compilation using Docker](https://milkv.io/ja/docs/duo/getting-started/buildroot-sdk#1-one-click-compilation-using-docker)に相当し、本来は初回フルビルドを避けたいところですが、必要ディレクトリの自動作成方法が不明だったため、この方式にしています。
+
+```bash
+docker compose run --rm init
+```
+
+### 成果物(SDイメージ)のビルド
+成果物のビルドは`docker compose run build`で実施します（内部では`make all`）。
+
+```bash
+docker compose run --rm build
+```
+
+`make all`の処理内容は以下のとおりです。
+
+1. 生成物の削除
+2. templateから設定ファイルの生成
+3. .configファイルのロード
+4. カーネルとルートファイルシステムのビルド
+5. SDイメージのパック
+
+## 外部パッケージのビルド
+Buildrootに無いソフトは、外部ツリー（`external/`）にパッケージを用意して組み込みます。ここでは`roc-toolkit`と`rtl8xxxu`を追加しています。今回のケースにおける外部ツリーの構成は以下の通りです。
+
+```bash
+external/
+  Config.in           # 外部パッケージをmenuconfigに出す
+  external.desc       # 外部ツリーのメタ情報
+  external.mk         # 任意のフックや共通設定
+  package/
+    roc-toolkit/
+      Config.in       # roc-toolkitをmenuconfigに出す
+      roc-toolkit.mk  # roc-toolkitのビルド手順
+    rtl8xxxu/
+      Config.in       # rtl8xxxuをmenuconfigに出す
+      rtl8xxxu.mk     # rtl8xxxuのビルド手順
+```
+
+`Config.in`には`menuconfig`などコンフィグレーションツールに対する設定を記述します。以下に`external/Config.in`と`rtl8xxxu/Config.in`を示します。`external/Config.in`には各パッケージのConfig.inへのリンクが、`rtl8xxxu/Config.in`にはrtl8xxxuパッケージの詳細が記述されていることが確認できます。
+
+**external/Config.in**
+```bash
+menu "roc-audio-conv external"
+    source "$BR2_EXTERNAL_ROC_AUDIO_CONV_PATH/package/rtl8xxxu/Config.in"
+    source "$BR2_EXTERNAL_ROC_AUDIO_CONV_PATH/package/roc-toolkit/Config.in"
+endmenu
+```
+
+**rtl8xxxu/Config.in**
+```bash
+config BR2_PACKAGE_RTL8XXXU
+    bool "rtl8xxxu (out-of-tree kernel module)"
+    help
+      Realtek 8xxxu USB Wi-Fi driver from lwfinger/rtl8xxxu.
+```
+
+また、`roc-toolkit.mk`や`rtl8xxxu.mk`には各パッケージのビルド方法を記述します。以下に`rtl8xxxu.mk`を示します。`rtl8xxxu`はmakeを使ってビルドするため`generic-package`を使用します。他のビルドツールに対しては専用のツールが用意されており、設定が簡易化されています。
+
+```bash
+RTL8XXXU_VERSION      = refs/heads/main
+RTL8XXXU_SITE         = https://github.com/lwfinger/rtl8xxxu.git
+RTL8XXXU_SITE_METHOD  = git
+
+# Require the SDK-provided kernel build tree (exposed by Buildroot as LINUX_DIR).
+# Do not add any Kconfig dependency; fail fast at build time if missing.
+RTL8XXXU_KERNEL_DIR  := $(strip $(KERNEL_PATH))
+RTL8XXXU_BUILD_DIR   := ${RTL8XXXU_KERNEL_DIR}/build/${MV_BOARD_LINK}
+
+define RTL8XXXU_BUILD_CMDS
+    env
+    env | grep sg2000
+    $(MAKE) -C $(RTL8XXXU_KERNEL_DIR) O=$(RTL8XXXU_BUILD_DIR) \
+        M="$(@D)" ARCH=$(KERNEL_ARCH) CROSS_COMPILE="$(TARGET_CROSS)" \
+        modules
+endef
+
+define RTL8XXXU_INSTALL_TARGET_CMDS
+    mkdir -p "$(TARGET_DIR)/mnt/system/ko"
+    { \
+        mod="$$(find "$(@D)" -maxdepth 1 -type f -name '*.ko' | head -n1)"; \
+        test -n "$$mod" || { echo "ERROR: no .ko built"; exit 1; }; \
+        $(INSTALL) -m 0644 "$$mod" "$(TARGET_DIR)/mnt/system/ko/rtl8xxxu.ko"; \
+    }
+endef
+
+$(eval $(generic-package))
+```
+
+外部パッケージは上述した`docker compose run --rm build`でビルドされます。しかしながら、以下のように特定の外部パッケージのみをビルドすることも可能です。外部パッケージのビルド設定を調整する時に重宝します。(この例では`/home/work`にリポジトリを配置しています)
+
+```bash
+export BR2_EXTERNAL=/home/work/external
+O=/home/work/vendor/duo-buildroot-sdk-v2/buildroot/output/milkv-duos-musl-riscv64-sd
+make -C /home/work/vendor/duo-buildroot-sdk-v2/buildroot O=“$O” roc-toolkit-dirclean
+make -C /home/work/vendor/duo-buildroot-sdk-v2/buildroot O=“$O” roc-toolkit-rebuild V=1
+```
+
+## 設定ファイルの追加
+- 設定ファイルはオーバーレイ機能を用いてルートファイルシステムにコピーする
+- オーバーレイ機能は所定の位置にあるディレクトリ構造をルートファイルシステムにコピーする機能
+- 今回のケースでは主に`/etc`以下のファイル群をコピーするのに使用
+
+## 参考 
+::: {#refs}
+:::

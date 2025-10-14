@@ -13,11 +13,527 @@
 <url>https://lab.ar90n.net/logo.png</url>
 <title>lab_note</title>
 <link>https://lab.ar90n.net/</link>
-<height>144</height>
-<width>144</width>
 </image>
-<generator>quarto-1.7.32</generator>
-<lastBuildDate>Fri, 11 Jul 2025 00:00:00 GMT</lastBuildDate>
+<generator>quarto-1.8.25</generator>
+<lastBuildDate>Wed, 15 Oct 2025 00:00:00 GMT</lastBuildDate>
+<item>
+  <title>Milk-V DUO S をrocサーバーに仕立てる</title>
+  <link>https://lab.ar90n.net/posts/2025-10-15-setup-milkv-duos-as-roc-server.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="はじめに" class="level2">
+<h2 class="anchored" data-anchor-id="はじめに">はじめに</h2>
+<p>RISC‑Vベースの低価格SBCであるMilk‑V DUO Sを使い、ライン入力／出力をネットワークに載せるオーディオサーバーを作りました。プロトコルは低レイテンシなroc（<a href="https://github.com/roc-streaming/roc-toolkit">roc‑toolkit</a>）を採用し、システムは<a href="https://github.com/milkv-duo/duo-buildroot-sdk-v2">duo-buildroot-sdk-v2</a>で構築しています。技適の観点からオンボードWi‑Fiは使わず、USBのWi‑Fiドングル（rtl8xxxu系）を利用しました。</p>
+</section>
+<section id="やったこと" class="level2">
+<h2 class="anchored" data-anchor-id="やったこと">やったこと</h2>
+<ul>
+<li>duo-buildroot-sdk-v2でカーネルとrootfsを最小構成＋必要機能にカスタマイズ</li>
+<li>roc‑toolkitでALSAのLine In/Outをネットワーク公開</li>
+<li><a href="https://github.com/lwfinger/rtl8xxxu">rtl8xxxu</a>ドライバでUSB Wi‑Fiドングルを有効化（オンボードは未使用）</li>
+<li>作業内容と設定を<a href="https://github.com/ar90n/roc-audio-conv-milkv-duos">公開</a></li>
+</ul>
+</section>
+<section id="duo-buildroot-sdk-v2を使用した開発環境構築" class="level2">
+<h2 class="anchored" data-anchor-id="duo-buildroot-sdk-v2を使用した開発環境構築">duo-buildroot-sdk-v2を使用した開発環境構築</h2>
+<p>SDK本体はサブモジュールとして<code>vendor/duo-buildroot-sdk-v2</code>に置き、カスタマイズはすべてSDK外（<code>external/</code>）に集約しました。ビルドはDocker前提で、一部の設定はファイルシステムをマウント機能を利用してSDK内に反映させています。基本的な操作は<a href="https://milkv.io/ja/docs/duo/getting-started/buildroot-sdk">公式ドキュメント</a>に準拠します。</p>
+<p>今回のリポジトリ構成は次の通りです。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">duo-buildroot-sdk-v2</span></span>
+<span id="cb1-2"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">├──</span> .env</span>
+<span id="cb1-3"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">├──</span> docker</span>
+<span id="cb1-4"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">│&nbsp;&nbsp;</span> └── Dockerfile</span>
+<span id="cb1-5"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">├──</span> docker-compose.yml</span>
+<span id="cb1-6"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">├──</span> external</span>
+<span id="cb1-7"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">│&nbsp;&nbsp;</span> ├── config</span>
+<span id="cb1-8"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">│&nbsp;&nbsp;</span> │&nbsp;&nbsp; ├── buildroot_dot_config</span>
+<span id="cb1-9"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">│&nbsp;&nbsp;</span> │&nbsp;&nbsp; ├── kernel_dot_config</span>
+<span id="cb1-10"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">│&nbsp;&nbsp;</span> │&nbsp;&nbsp; └── system-users.txt</span>
+<span id="cb1-11"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">│&nbsp;&nbsp;</span> ├── Config.in</span>
+<span id="cb1-12"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">│&nbsp;&nbsp;</span> ├── external.desc</span>
+<span id="cb1-13"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">│&nbsp;&nbsp;</span> ├── external.mk</span>
+<span id="cb1-14"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">│&nbsp;&nbsp;</span> ├── overlay</span>
+<span id="cb1-15"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">│&nbsp;&nbsp;</span> │&nbsp;&nbsp; ├── etc</span>
+<span id="cb1-16"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">│&nbsp;&nbsp;</span> │&nbsp;&nbsp; └── mnt</span>
+<span id="cb1-17"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">│&nbsp;&nbsp;</span> ├── package</span>
+<span id="cb1-18"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">│&nbsp;&nbsp;</span> │&nbsp;&nbsp; ├── roc-toolkit</span>
+<span id="cb1-19"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">│&nbsp;&nbsp;</span> │&nbsp;&nbsp; └── rtl8xxxu</span>
+<span id="cb1-20"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">│&nbsp;&nbsp;</span> └── template</span>
+<span id="cb1-21"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">│&nbsp;&nbsp;</span>     ├── roc-aoip</span>
+<span id="cb1-22"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">│&nbsp;&nbsp;</span>     └── wpa_supplicant.conf</span>
+<span id="cb1-23"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">├──</span> LICENSE</span>
+<span id="cb1-24"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">├──</span> Makefile</span>
+<span id="cb1-25"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">└──</span> vendor</span>
+<span id="cb1-26">    <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">└──</span> duo-buildroot-sdk-v2</span></code></pre></div></div>
+<p><code>external/</code>配下は、<code>config/</code>にBuildrootとカーネルの設定、<code>overlay/</code>にrootfsへ展開するファイル、<code>package/</code>に追加パッケージ（<code>roc-toolkit</code>, <code>rtl8xxxu</code>）を配置しています。テンプレート類（<code>template/</code>）には<code>wpa_supplicant.conf</code>やroc用のサンプルを置き、<code>.env</code>の情報を元に設定ファイルを生成します。</p>
+<p>ビルド環境は<code>docker/Dockerfile</code>で定義し、<code>docker-compose.yml</code>から初期化とビルドを実行できるようにしています。これによりホスト差分の影響を抑えつつ、コンフィグやオーバーレイを外部ツリーで安全に管理できます。</p>
+<section id="環境の初期化" class="level3">
+<h3 class="anchored" data-anchor-id="環境の初期化">環境の初期化</h3>
+<p>環境の初期化は<code>docker compose run init</code>で実施します（内部では<code>make init</code>）。コンテナ定義をコード化して起動設定を一元管理しています。<code>make init</code>ではSDKの追加データ取得と初回ビルドを行います。これは公式の<a href="https://milkv.io/ja/docs/duo/getting-started/buildroot-sdk#1-one-click-compilation-using-docker">One-click compilation using Docker</a>に相当し、本来は初回フルビルドを避けたいところですが、必要ディレクトリの自動作成方法が不明だったため、この方式にしています。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">docker</span> compose run <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--rm</span> init</span></code></pre></div></div>
+</section>
+<section id="成果物sdイメージのビルド" class="level3">
+<h3 class="anchored" data-anchor-id="成果物sdイメージのビルド">成果物(SDイメージ)のビルド</h3>
+<p>成果物のビルドは<code>docker compose run build</code>で実施します（内部では<code>make all</code>）。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">docker</span> compose run <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--rm</span> build</span></code></pre></div></div>
+<p><code>make all</code>の処理内容は以下のとおりです。</p>
+<ol type="1">
+<li>生成物の削除</li>
+<li>templateから設定ファイルの生成</li>
+<li>.configファイルのロード</li>
+<li>カーネルとルートファイルシステムのビルド</li>
+<li>SDイメージのパック</li>
+</ol>
+</section>
+</section>
+<section id="外部パッケージのビルド" class="level2">
+<h2 class="anchored" data-anchor-id="外部パッケージのビルド">外部パッケージのビルド</h2>
+<p>Buildrootに無いソフトは、外部ツリー（<code>external/</code>）にパッケージを用意して組み込みます。ここでは<code>roc-toolkit</code>と<code>rtl8xxxu</code>を追加しています。今回のケースにおける外部ツリーの構成は以下の通りです。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">external/</span></span>
+<span id="cb4-2">  <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">Config.in</span>           <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># 外部パッケージをmenuconfigに出す</span></span>
+<span id="cb4-3">  <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">external.desc</span>       <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># 外部ツリーのメタ情報</span></span>
+<span id="cb4-4">  <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">external.mk</span>         <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># 任意のフックや共通設定</span></span>
+<span id="cb4-5">  <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">package/</span></span>
+<span id="cb4-6">    <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">roc-toolkit/</span></span>
+<span id="cb4-7">      <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">Config.in</span>       <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># roc-toolkitをmenuconfigに出す</span></span>
+<span id="cb4-8">      <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">roc-toolkit.mk</span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># roc-toolkitのビルド手順</span></span>
+<span id="cb4-9">    <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">rtl8xxxu/</span></span>
+<span id="cb4-10">      <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">Config.in</span>       <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># rtl8xxxuをmenuconfigに出す</span></span>
+<span id="cb4-11">      <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">rtl8xxxu.mk</span>     <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># rtl8xxxuのビルド手順</span></span></code></pre></div></div>
+<p><code>Config.in</code>には<code>menuconfig</code>などコンフィグレーションツールに対する設定を記述します。以下に<code>external/Config.in</code>と<code>rtl8xxxu/Config.in</code>を示します。<code>external/Config.in</code>には各パッケージのConfig.inへのリンクが、<code>rtl8xxxu/Config.in</code>にはrtl8xxxuパッケージの詳細が記述されていることが確認できます。</p>
+<p><strong>external/Config.in</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">menu</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"roc-audio-conv external"</span></span>
+<span id="cb5-2">    <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">source</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">$BR2_EXTERNAL_ROC_AUDIO_CONV_PATH</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">/package/rtl8xxxu/Config.in"</span></span>
+<span id="cb5-3">    <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">source</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">$BR2_EXTERNAL_ROC_AUDIO_CONV_PATH</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">/package/roc-toolkit/Config.in"</span></span>
+<span id="cb5-4"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">endmenu</span></span></code></pre></div></div>
+<p><strong>rtl8xxxu/Config.in</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">config</span> BR2_PACKAGE_RTL8XXXU</span>
+<span id="cb6-2">    <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">bool</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"rtl8xxxu (out-of-tree kernel module)"</span></span>
+<span id="cb6-3">    <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">help</span></span>
+<span id="cb6-4">      <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">Realtek</span> 8xxxu USB Wi-Fi driver from lwfinger/rtl8xxxu.</span></code></pre></div></div>
+<p>また、<code>roc-toolkit.mk</code>や<code>rtl8xxxu.mk</code>には各パッケージのビルド方法を記述します。以下に<code>rtl8xxxu.mk</code>を示します。<code>rtl8xxxu</code>はmakeを使ってビルドするため<code>generic-package</code>を使用します。他のビルドツールに対しては専用のツールが用意されており、設定が簡易化されています。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">RTL8XXXU_VERSION</span>      = refs/heads/main</span>
+<span id="cb7-2"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">RTL8XXXU_SITE</span>         = https://github.com/lwfinger/rtl8xxxu.git</span>
+<span id="cb7-3"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">RTL8XXXU_SITE_METHOD</span>  = git</span>
+<span id="cb7-4"></span>
+<span id="cb7-5"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Require the SDK-provided kernel build tree (exposed by Buildroot as LINUX_DIR).</span></span>
+<span id="cb7-6"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Do not add any Kconfig dependency; fail fast at build time if missing.</span></span>
+<span id="cb7-7"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">RTL8XXXU_KERNEL_DIR</span>  := <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">$(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">strip</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">$(</span><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">KERNEL_PATH</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">))</span></span>
+<span id="cb7-8"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">RTL8XXXU_BUILD_DIR</span>   := <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">${RTL8XXXU_KERNEL_DIR}</span>/build/<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">${MV_BOARD_LINK}</span></span>
+<span id="cb7-9"></span>
+<span id="cb7-10"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">define</span> RTL8XXXU_BUILD_CMDS</span>
+<span id="cb7-11">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">env</span></span>
+<span id="cb7-12">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">env</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">|</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">grep</span> sg2000</span>
+<span id="cb7-13">    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">$(</span><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">MAKE</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">)</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-C</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">$(</span><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">RTL8XXXU_KERNEL_DIR</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">)</span> O=<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">$(</span><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">RTL8XXXU_BUILD_DIR</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">)</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">\</span></span>
+<span id="cb7-14">        M=<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">$(</span><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">@D</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">)</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span> ARCH=<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">$(</span><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">KERNEL_ARCH</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">)</span> CROSS_COMPILE=<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">$(</span><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">TARGET_CROSS</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">)</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">\</span></span>
+<span id="cb7-15">        modules</span>
+<span id="cb7-16"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">endef</span></span>
+<span id="cb7-17"></span>
+<span id="cb7-18"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">define</span> RTL8XXXU_INSTALL_TARGET_CMDS</span>
+<span id="cb7-19">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mkdir</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-p</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">$(</span><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">TARGET_DIR</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">)</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">/mnt/system/ko"</span></span>
+<span id="cb7-20">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">{</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">\</span></span>
+<span id="cb7-21">        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">mod</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">$$</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">(find "</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">$(</span><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">@D</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">)</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">" -maxdepth 1 -type f -name '*.ko' | head -n1)"</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">;</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">\</span></span>
+<span id="cb7-22">        <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">test</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-n</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">$$</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">mod"</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">||</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">{</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">echo</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"ERROR: no .ko built"</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">;</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">exit</span> 1<span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">;</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">};</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">\</span></span>
+<span id="cb7-23">        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">$(</span><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">INSTALL</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">)</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-m</span> 0644 <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">$$</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">mod"</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">$(</span><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">TARGET_DIR</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">)</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">/mnt/system/ko/rtl8xxxu.ko"</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">;</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">\</span></span>
+<span id="cb7-24">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">}</span></span>
+<span id="cb7-25"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">endef</span></span>
+<span id="cb7-26"></span>
+<span id="cb7-27"><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">$(</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">eval</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">$(</span><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">generic-package</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">))</span></span></code></pre></div></div>
+<p>外部パッケージは上述した<code>docker compose run --rm build</code>でビルドされます。しかしながら、以下のように特定の外部パッケージのみをビルドすることも可能です。外部パッケージのビルド設定を調整する時に重宝します。(この例では<code>/home/work</code>にリポジトリを配置しています)</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">export</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">BR2_EXTERNAL</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>/home/work/external</span>
+<span id="cb8-2"><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">O</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>/home/work/vendor/duo-buildroot-sdk-v2/buildroot/output/milkv-duos-musl-riscv64-sd</span>
+<span id="cb8-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">make</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-C</span> /home/work/vendor/duo-buildroot-sdk-v2/buildroot O=“<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">$O</span>” roc-toolkit-dirclean</span>
+<span id="cb8-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">make</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-C</span> /home/work/vendor/duo-buildroot-sdk-v2/buildroot O=“<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">$O</span>” roc-toolkit-rebuild V=1</span></code></pre></div></div>
+</section>
+<section id="設定ファイルの追加" class="level2">
+<h2 class="anchored" data-anchor-id="設定ファイルの追加">設定ファイルの追加</h2>
+<ul>
+<li>設定ファイルはオーバーレイ機能を用いてルートファイルシステムにコピーする</li>
+<li>オーバーレイ機能は所定の位置にあるディレクトリ構造をルートファイルシステムにコピーする機能</li>
+<li>今回のケースでは主に<code>/etc</code>以下のファイル群をコピーするのに使用</li>
+</ul>
+</section>
+<section id="参考" class="level2">
+<h2 class="anchored" data-anchor-id="参考">参考</h2>
+<div id="refs">
+
+</div>
+
+
+</section>
+
+ ]]></description>
+  <category>Linux</category>
+  <category>組み込み</category>
+  <category>SBC</category>
+  <guid>https://lab.ar90n.net/posts/2025-10-15-setup-milkv-duos-as-roc-server.html</guid>
+  <pubDate>Wed, 15 Oct 2025 00:00:00 GMT</pubDate>
+  <media:content url="https://lab.ar90n.net/assets/img/common/milkv.jpg" medium="image" type="image/jpeg"/>
+</item>
 <item>
   <title>Claude CodeをWebブラウザから使う</title>
   <link>https://lab.ar90n.net/posts/2025-07-11-claude-code-via-browser.html</link>
@@ -44,18 +560,18 @@
 <h3 class="anchored" data-anchor-id="ttydのインストール">ttydのインストール</h3>
 <p><a href="https://github.com/tsl0922/ttyd">ttyd</a>を使用するとWebブラウザからターミナルの操作や共有が可能となります。導入には以下のように環境に応じた複数の方法があります。</p>
 <p><strong>apt</strong></p>
-<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><span class="va" style="color: #111111;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">$sudo</span> apt update</span>
 <span id="cb1-2"><span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">$sudo</span> apt install ttyd</span></code></pre></div>
+font-style: inherit;">$sudo</span> apt install ttyd</span></code></pre></div></div>
 <p><strong>brew</strong></p>
-<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><span class="ex" style="color: null;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><span class="ex" style="color: null;
 background-color: null;
-font-style: inherit;">$</span> brew install ttyd</span></code></pre></div>
+font-style: inherit;">$</span> brew install ttyd</span></code></pre></div></div>
 <p><strong>直接ダウンロード</strong></p>
-<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><span class="fu" style="color: #4758AB;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">wget</span> https://github.com/tsl0922/ttyd/releases/download/1.7.3/ttyd.x86_64</span>
 <span id="cb3-2"><span class="fu" style="color: #4758AB;
@@ -63,16 +579,16 @@ background-color: null;
 font-style: inherit;">chmod</span> +x ttyd.x86_64</span>
 <span id="cb3-3"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">sudo</span> mv ttyd.x86_64 /usr/local/bin/ttyd</span></code></pre></div>
+font-style: inherit;">sudo</span> mv ttyd.x86_64 /usr/local/bin/ttyd</span></code></pre></div></div>
 </section>
 <section id="claude-codeの起動" class="level3">
 <h3 class="anchored" data-anchor-id="claude-codeの起動">Claude Codeの起動</h3>
 <p>ttydは</p>
-<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><span class="ex" style="color: null;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">$</span> ttyd <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">--writable</span> claude</span></code></pre></div>
+font-style: inherit;">--writable</span> claude</span></code></pre></div></div>
 <p>起動後、<code>http://localhost:7681</code>にアクセスすることでブラウザからClaude Codeを利用できます。</p>
 </section>
 </section>
@@ -96,7 +612,7 @@ font-style: inherit;">--writable</span> claude</span></code></pre></div>
 <section id="htmlファイルの使用方法" class="level3">
 <h3 class="anchored" data-anchor-id="htmlファイルの使用方法">HTMLファイルの使用方法</h3>
 <p>ttydは起動時に<code>--index</code>オプションにて使用するHTMLファイルを指定することが可能です。そこで、上述したHTMLファイルを指定します。</p>
-<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><span class="ex" style="color: null;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">$</span> ttyd <span class="at" style="color: #657422;
 background-color: null;
@@ -104,7 +620,7 @@ font-style: inherit;">--index</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;</span>path to html<span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">&gt;</span> --writable claude</span></code></pre></div>
+font-style: inherit;">&gt;</span> --writable claude</span></code></pre></div></div>
 </section>
 </section>
 <section id="更新履歴" class="level2">
@@ -157,7 +673,7 @@ font-style: inherit;">&gt;</span> --writable claude</span></code></pre></div>
 <section id="ubuntu-serverのイメージからファイルをコピーする" class="level3">
 <h3 class="anchored" data-anchor-id="ubuntu-serverのイメージからファイルをコピーする">Ubuntu Serverのイメージからファイルをコピーする</h3>
 <p>まず、<code>ubuntu-25.04-preinstalled-server-arm64+raspi.img</code> を <code>kpartx</code> を使ってマウントします。</p>
-<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><span class="ex" style="color: null;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">$</span> sudo /sbin/kpartx <span class="at" style="color: #657422;
 background-color: null;
@@ -191,15 +707,15 @@ background-color: null;
 font-style: inherit;">$</span> sudo mount /dev/mapper/loop0p1 /mnt/boot</span>
 <span id="cb1-5"><span class="ex" style="color: null;
 background-color: null;
-font-style: inherit;">$</span> sudo mount /dev/mapper/loop0p2 /mnt/root</span></code></pre></div>
+font-style: inherit;">$</span> sudo mount /dev/mapper/loop0p2 /mnt/root</span></code></pre></div></div>
 <p>そして、<code>/mnt/boot</code>を<code>/var/tftpboot</code>にコピーします。</p>
-<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><span class="ex" style="color: null;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">$</span> sudo rsync <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">-av</span> /mnt/boot/ /var/tftpboot/</span></code></pre></div>
+font-style: inherit;">-av</span> /mnt/boot/ /var/tftpboot/</span></code></pre></div></div>
 <p>続いて、ファイルのコピー先となる NFS 公開用のディレクトリを作成します。 <code>${SERIAL}</code> は各 Raspberry Pi の CPU シリアル番号を想定しています。</p>
-<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><span class="ex" style="color: null;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">$</span> sudo mkdir <span class="at" style="color: #657422;
 background-color: null;
@@ -215,9 +731,9 @@ font-style: inherit;">$</span> sudo mkdir <span class="at" style="color: #657422
 background-color: null;
 font-style: inherit;">-p</span> /var/nfsroot/clients/<span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">${SERIAL}</span>/</span></code></pre></div>
+font-style: inherit;">${SERIAL}</span>/</span></code></pre></div></div>
 <p><code>/var/nfsroot/home</code> と <code>/var/nfsroot/clients/${SERIAL}/</code> を <code>/root</code> 以下に bind マウントしてからファイルをコピーします。</p>
-<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><span class="ex" style="color: null;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">%</span> mkdir <span class="at" style="color: #657422;
 background-color: null;
@@ -238,7 +754,7 @@ font-style: inherit;">--bind</span> /var/nfsroot/home /var/nfsroot/root/home</sp
 background-color: null;
 font-style: inherit;">%</span> sudo rsync <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">-av</span> /mnt/root/ /var/nfsroot/root/</span></code></pre></div>
+font-style: inherit;">-av</span> /mnt/root/ /var/nfsroot/root/</span></code></pre></div></div>
 <p>これで、ベースとなるルートファイルシステムが作成されました。</p>
 <hr>
 </section>
@@ -246,7 +762,7 @@ font-style: inherit;">-av</span> /mnt/root/ /var/nfsroot/root/</span></code></pr
 <h3 class="anchored" data-anchor-id="必要なパッケージの導入と初期設定">必要なパッケージの導入と初期設定</h3>
 <p>このルートファイルシステムは読み取り専用で運用するため、<code>chroot</code> 環境内で必要なパッケージの導入や設定を行います。</p>
 <p>まず、作業用のユーザーとグループを作成します。</p>
-<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><span class="ex" style="color: null;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">%</span> sudo chroot /var/nfsroot/root/ /bin/bash</span>
 <span id="cb5-2"><span class="ex" style="color: null;
@@ -307,9 +823,9 @@ font-style: inherit;">${USER_NAME}</span>:<span class="va" style="color: #111111
 background-color: null;
 font-style: inherit;">${GROUP_NAME}</span> /home/<span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">${USER_NAME}</span>/</span></code></pre></div>
+font-style: inherit;">${USER_NAME}</span>/</span></code></pre></div></div>
 <p>次に、必要なパッケージのインストールと <code>avahi-daemon</code> の有効化を行います。</p>
-<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><span class="ex" style="color: null;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">$</span> apt-get update</span>
 <span id="cb6-2"><span class="ex" style="color: null;
@@ -324,9 +840,9 @@ font-style: inherit;">--no-reload</span> enable avahi-daemon.service</span>
 background-color: null;
 font-style: inherit;">$</span> systemctl <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">--no-reload</span> disable avahi-daemon.socket</span></code></pre></div>
+font-style: inherit;">--no-reload</span> disable avahi-daemon.socket</span></code></pre></div></div>
 <p>また、<code>cloud-init</code> を無効化し、fstab の内容をクリアします。</p>
-<div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><span class="ex" style="color: null;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">$</span> head <span class="at" style="color: #657422;
 background-color: null;
@@ -338,9 +854,9 @@ background-color: null;
 font-style: inherit;">sudo</span> sponge etc/fstab</span>
 <span id="cb7-2"><span class="ex" style="color: null;
 background-color: null;
-font-style: inherit;">$</span> touch /etc/cloud/cloud-init.disabled</span></code></pre></div>
+font-style: inherit;">$</span> touch /etc/cloud/cloud-init.disabled</span></code></pre></div></div>
 <p>ネームサーバーの設定も行います。</p>
-<div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><span class="ex" style="color: null;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">$</span> chroot /var/nfsroot/root /usr/bin/systemctl <span class="at" style="color: #657422;
 background-color: null;
@@ -357,13 +873,13 @@ background-color: null;
 font-weight: bold;
 font-style: inherit;">|</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">sudo</span> tee  /var/nfsroot/root/etc/resolv.conf</span></code></pre></div>
+font-style: inherit;">sudo</span> tee  /var/nfsroot/root/etc/resolv.conf</span></code></pre></div></div>
 <p>最後に、SSHホスト鍵を作成します。</p>
-<div class="sourceCode" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><span class="ex" style="color: null;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">$</span> ssh-keygen <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">-A</span></span></code></pre></div>
+font-style: inherit;">-A</span></span></code></pre></div></div>
 </section>
 </section>
 <section id="initrd.imgの作成" class="level2">
@@ -373,7 +889,7 @@ font-style: inherit;">-A</span></span></code></pre></div>
 <section id="必要なファイルのコピー" class="level3">
 <h3 class="anchored" data-anchor-id="必要なファイルのコピー">必要なファイルのコピー</h3>
 <p>まず、作業用のディレクトリ <code>/tmp/initrd</code> を作成します。</p>
-<div class="sourceCode" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><span class="ex" style="color: null;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">$</span> mkdir <span class="at" style="color: #657422;
 background-color: null;
@@ -415,9 +931,9 @@ font-style: inherit;">upper</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">,</span><span class="dt" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">work}</span></span></code></pre></div>
+font-style: inherit;">work}</span></span></code></pre></div></div>
 <p>続いて <code>busybox</code> を導入します。通常の <code>busybox</code> はいくつかのライブラリと動的リンクしているため、静的リンクされた <code>busybox-static</code> を使用します。</p>
-<div class="sourceCode" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><span class="ex" style="color: null;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">$</span> sudo apt install <span class="at" style="color: #657422;
 background-color: null;
@@ -437,9 +953,9 @@ font-style: inherit;">$</span> chroot /tmp/initrd/ /bin/busybox <span class="at"
 background-color: null;
 font-style: inherit;">--install</span> /bin <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">-s</span></span></code></pre></div>
+font-style: inherit;">-s</span></span></code></pre></div></div>
 <p>次に、ルートファイルシステムから必要なカーネルモジュールを抽出して配置します。</p>
-<div class="sourceCode" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><span class="ex" style="color: null;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">$</span> cd /var/nfsroot/root/lib/modules/6.14.0-1005-raspi/kernel</span>
 <span id="cb12-2"><span class="ex" style="color: null;
@@ -481,7 +997,7 @@ font-style: inherit;">-o</span> /tmp/initrd/lib/modules/nfsv4.ko</span>
 background-color: null;
 font-style: inherit;">$</span> unzstd ./net/sunrpc/sunrpc.ko.zst <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">-o</span> /tmp/initrd/lib/modules/sunrpc.ko</span></code></pre></div>
+font-style: inherit;">-o</span> /tmp/initrd/lib/modules/sunrpc.ko</span></code></pre></div></div>
 <hr>
 </section>
 <section id="initスクリプトの作成" class="level3">
@@ -496,7 +1012,7 @@ font-style: inherit;">-o</span> /tmp/initrd/lib/modules/sunrpc.ko</span></code><
 <li><code>/home</code>, <code>/var</code> の書き込み領域を個別にマウント</li>
 <li><code>switch_root</code> により本来のinitへ移行</li>
 </ul>
-<div class="sourceCode" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><span class="ex" style="color: null;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">$</span> cat <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -654,13 +1170,13 @@ background-color: null;
 font-style: inherit;">EOF</span></span>
 <span id="cb13-49"><span class="ex" style="color: null;
 background-color: null;
-font-style: inherit;">$</span> chmod +x /var/initrd/init</span></code></pre></div>
+font-style: inherit;">$</span> chmod +x /var/initrd/init</span></code></pre></div></div>
 <hr>
 </section>
 <section id="initrd.imgのパッキング" class="level3">
 <h3 class="anchored" data-anchor-id="initrd.imgのパッキング">initrd.imgのパッキング</h3>
 <p>準備が完了したら、以下の手順で <code>initrd.img</code> を作成します。</p>
-<div class="sourceCode" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><span class="ex" style="color: null;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">$</span> cd /tmp/intird</span>
 <span id="cb14-2"><span class="ex" style="color: null;
@@ -676,20 +1192,20 @@ font-style: inherit;">-H</span> newc <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">-o</span>  <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">&gt;</span> /var/tftpboot/initrd.img</span></code></pre></div>
+font-style: inherit;">&gt;</span> /var/tftpboot/initrd.img</span></code></pre></div></div>
 <p>これで、NFSマウントに対応したカスタム <code>initrd.img</code> の作成が完了しました。</p>
 </section>
 </section>
 <section id="必要なファイルの配置とネットブートの確認" class="level2">
 <h2 class="anchored" data-anchor-id="必要なファイルの配置とネットブートの確認">必要なファイルの配置とネットブートの確認</h2>
 <p>最後に、<code>initrd.img</code> を使用して起動するための <code>cmdline.txt</code> を用意します。以下のコマンドで、必要なカーネルパラメータを含む <code>cmdline.txt</code> を生成します。</p>
-<div class="sourceCode" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><span class="ex" style="color: null;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">$</span> echo <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'console=serial0,115200 root=/dev/ram0 rw ip=dhcp rootwait cloud-init=disabled apparmor=0'</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">&gt;</span> /var/tftpboot/cmdline.txt</span></code></pre></div>
+font-style: inherit;">&gt;</span> /var/tftpboot/cmdline.txt</span></code></pre></div></div>
 <p>この時点で、<code>/var/tftpboot/</code> 以下に必要なファイルが揃っていれば、ネットワーク経由での起動準備は完了です。</p>
 <p>あとは、対象デバイスをネットブート可能な状態にし、TFTP サーバと DHCP サーバの動作を確認すれば、ルートファイルシステムの初期化およびブートシーケンスの動作確認が行えます。</p>
 
@@ -15976,67 +16492,6 @@ font-style: inherit;">0.8</span>)</span></code></pre></div>
   <guid>https://lab.ar90n.net/posts/2021-09-30-simple-guided-filter-rs.html</guid>
   <pubDate>Thu, 30 Sep 2021 00:00:00 GMT</pubDate>
   <media:content url="https://lab.ar90n.net/assets/img/2021-09-30-simple-guided-filter-rs/media/output.jpg" medium="image" type="image/jpeg"/>
-</item>
-<item>
-  <title>USB to TTLx4ケーブルの作成</title>
-  <link>https://lab.ar90n.net/posts/2021-08-26-make-usb-to-ttlx4.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<section id="はじめに" class="level2">
-<h2 class="anchored" data-anchor-id="はじめに">はじめに</h2>
-<p>USBハブとUSBシリアルコンバータとを組み合わせることで，USB(1ch) to TTL(4ch) の変換ケーブルを作成しました．</p>
-</section>
-<section id="やったこと" class="level2">
-<h2 class="anchored" data-anchor-id="やったこと">やったこと</h2>
-<ul>
-<li><a href="https://www.aitendo.com/product/18898">type-cコネクタ</a>，<a href="https://www.aitendo.com/product/20012">USBハブコントローラ基板</a>，<a href="https://www.aitendo.com/product/17408">USBシリアルコンバータ</a>を組み合わせてUSB(1ch) to TTL(4ch)変換ケーブルを作成</li>
-</ul>
-</section>
-<section id="回路設計" class="level2">
-<h2 class="anchored" data-anchor-id="回路設計">回路設計</h2>
-<p>特別なことは特に何もしていません．<a href="http://aitendo3.sakura.ne.jp/aitendo_data/product_img/ic/inteface/CH330N/CH330N.PDF">CH330のデータシート</a>に従って単純に部品を繋いで行きました．type-cコネクタは<code>VCC</code>端子より<code>5v</code>を取得するため， <code>cc</code>を<code>5.1kΩ</code>でプルダウンしています．</p>
-<p>今回，<a href="`https://easyeda.com/`">EasyEDA</a>を使って回路図を起こしてみたのですが中々使い勝手がよかったです．ブラウザ内で全てが完結するので環境構築が非常に簡単です．私は使用しませんでしたがPCBエディタとの連携機能もあるようです．また，各種ボード(<code>USB1</code>と<code>HUB1</code>)とケーブル(<code>TTL1</code>から<code>TTL4</code>)のピン番号はシステムの都合上割り当てています．そのため，実際にはピン番号はありません．何か良い方法があると良いのですが．</p>
-<p><img src="https://lab.ar90n.net/assets/img/2021-08-28-make-usb-to-ttlx4/media/Schematic_USB_to_TTL4_2021-08-25.png" class="img-fluid"></p>
-</section>
-<section id="実装" class="level2">
-<h2 class="anchored" data-anchor-id="実装">実装</h2>
-<p>可能な限りケーブルの様に使いたかったので，USBハブコントローラ背面にカプトンテープを貼り，その上にUSBシリアルコンバータを実装しました．</p>
-<p><img src="https://lab.ar90n.net/assets/img/2021-08-28-make-usb-to-ttlx4/media/dev1.jpg" class="img-fluid"></p>
-<p>次にケーブルを取り付け全体をグルーガンで固定します．</p>
-<p><img src="https://lab.ar90n.net/assets/img/2021-08-28-make-usb-to-ttlx4/media/dev2.jpg" class="img-fluid"></p>
-<p>最後に熱収縮ケーブルで全体をさらに固定して完成です．</p>
-<p><img src="https://lab.ar90n.net/assets/img/2021-08-28-make-usb-to-ttlx4/media/dev3.jpg" class="img-fluid"></p>
-</section>
-<section id="動作確認" class="level2">
-<h2 class="anchored" data-anchor-id="動作確認">動作確認</h2>
-<p><code>lsusb</code>コマンドを実行すると以下のデバイスを確認できました．意図した通りに動作しているようです．</p>
-<pre><code>Bus 020 Device 018: ID 1a40:0101 TERMINUS TECHNOLOGY INC. USB 2.0 Hub
-Bus 020 Device 021: ID 1a86:7523 1a86 USB2.0-Serial
-Bus 020 Device 029: ID 1a86:7523 1a86 USB2.0-Serial
-Bus 020 Device 024: ID 1a86:7523 1a86 USB2.0-Serial
-Bus 020 Device 010: ID 1a86:7523 1a86 USB2.0-Serial</code></pre>
-</section>
-<section id="後から気が付いたこと" class="level2">
-<h2 class="anchored" data-anchor-id="後から気が付いたこと">後から気が付いたこと</h2>
-<p>今回はUSBハブとUSBシリアルコンバータとを組み合わせて所望の機能を実現しました．しかしながら，調べてみると同様の機能をワンチップで実現する<a href="https://jp.silabs.com/interface/usb-bridges/classic/device.cp2108">IC</a>があるようです．次に同様のものを作る時はこちらを使いたいですね．</p>
-</section>
-<section id="参考" class="level2">
-<h2 class="anchored" data-anchor-id="参考">参考</h2>
-<ul>
-<li><a href="http://aitendo3.sakura.ne.jp/aitendo_data/product_img/ic/inteface/CH330N/CH330N.PDF">USB 转串口芯片 CH330</a></li>
-<li><a href="https://emb.macnica.co.jp/articles/8968/">組込み技術ラボ</a></li>
-</ul>
-
-
-</section>
-
- ]]></description>
-  <category>ハードウェア</category>
-  <guid>https://lab.ar90n.net/posts/2021-08-26-make-usb-to-ttlx4.html</guid>
-  <pubDate>Thu, 26 Aug 2021 00:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>

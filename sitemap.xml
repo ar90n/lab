@@ -66,7 +66,7 @@
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2025-07-11-claude-code-via-browser.html</loc>
-    <lastmod>2025-07-12T12:59:28.648Z</lastmod>
+    <lastmod>2025-07-12T13:04:08.789Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/posts/2022-11-30-pypypy.html</loc>
@@ -90,7 +90,7 @@
   </url>
   <url>
     <loc>https://lab.ar90n.net/about.html</loc>
-    <lastmod>2024-05-12T04:51:54.275Z</lastmod>
+    <lastmod>2025-10-14T14:33:41.029Z</lastmod>
   </url>
   <url>
     <loc>https://lab.ar90n.net/projects.html</loc>
@@ -175,5 +175,9 @@
   <url>
     <loc>https://lab.ar90n.net/posts/2022-08-12-xg-c100c-in-ubuntu-server.html</loc>
     <lastmod>2023-06-05T01:52:02.666Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lab.ar90n.net/posts/2025-10-15-setup-milkv-duos-as-roc-server.html</loc>
+    <lastmod>2025-10-14T14:28:22.012Z</lastmod>
   </url>
 </urlset>

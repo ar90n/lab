@@ -13,6 +13,8 @@
 <url>https://lab.ar90n.net/logo.png</url>
 <title>lab_note</title>
 <link>https://lab.ar90n.net/</link>
+<height>144</height>
+<width>144</width>
 </image>
 <generator>quarto-1.8.25</generator>
 <lastBuildDate>Wed, 15 Oct 2025 00:00:00 GMT</lastBuildDate>
@@ -519,8 +521,10 @@ font-style: inherit;">$O</span>” roc-toolkit-rebuild V=1</span></code></pre></
 </section>
 <section id="参考" class="level2">
 <h2 class="anchored" data-anchor-id="参考">参考</h2>
-<div id="refs">
-
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0">
+<div id="ref-milkvIntroductionMilkV" class="csl-entry">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline"><span>I</span>ntroduction | <span>M</span>ilk-<span>V</span> — milkv.io. <a href="https://milkv.io/ja/docs/duo/getting-started/buildroot-sdk" class="uri">https://milkv.io/ja/docs/duo/getting-started/buildroot-sdk</a>.</div>
+</div>
 </div>
 
 
@@ -560,18 +564,18 @@ font-style: inherit;">$O</span>” roc-toolkit-rebuild V=1</span></code></pre></
 <h3 class="anchored" data-anchor-id="ttydのインストール">ttydのインストール</h3>
 <p><a href="https://github.com/tsl0922/ttyd">ttyd</a>を使用するとWebブラウザからターミナルの操作や共有が可能となります。導入には以下のように環境に応じた複数の方法があります。</p>
 <p><strong>apt</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><span class="va" style="color: #111111;
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">$sudo</span> apt update</span>
 <span id="cb1-2"><span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">$sudo</span> apt install ttyd</span></code></pre></div></div>
+font-style: inherit;">$sudo</span> apt install ttyd</span></code></pre></div>
 <p><strong>brew</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><span class="ex" style="color: null;
+<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><span class="ex" style="color: null;
 background-color: null;
-font-style: inherit;">$</span> brew install ttyd</span></code></pre></div></div>
+font-style: inherit;">$</span> brew install ttyd</span></code></pre></div>
 <p><strong>直接ダウンロード</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><span class="fu" style="color: #4758AB;
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">wget</span> https://github.com/tsl0922/ttyd/releases/download/1.7.3/ttyd.x86_64</span>
 <span id="cb3-2"><span class="fu" style="color: #4758AB;
@@ -579,16 +583,16 @@ background-color: null;
 font-style: inherit;">chmod</span> +x ttyd.x86_64</span>
 <span id="cb3-3"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">sudo</span> mv ttyd.x86_64 /usr/local/bin/ttyd</span></code></pre></div></div>
+font-style: inherit;">sudo</span> mv ttyd.x86_64 /usr/local/bin/ttyd</span></code></pre></div>
 </section>
 <section id="claude-codeの起動" class="level3">
 <h3 class="anchored" data-anchor-id="claude-codeの起動">Claude Codeの起動</h3>
 <p>ttydは</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><span class="ex" style="color: null;
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">$</span> ttyd <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">--writable</span> claude</span></code></pre></div></div>
+font-style: inherit;">--writable</span> claude</span></code></pre></div>
 <p>起動後、<code>http://localhost:7681</code>にアクセスすることでブラウザからClaude Codeを利用できます。</p>
 </section>
 </section>
@@ -612,7 +616,7 @@ font-style: inherit;">--writable</span> claude</span></code></pre></div></div>
 <section id="htmlファイルの使用方法" class="level3">
 <h3 class="anchored" data-anchor-id="htmlファイルの使用方法">HTMLファイルの使用方法</h3>
 <p>ttydは起動時に<code>--index</code>オプションにて使用するHTMLファイルを指定することが可能です。そこで、上述したHTMLファイルを指定します。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><span class="ex" style="color: null;
+<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">$</span> ttyd <span class="at" style="color: #657422;
 background-color: null;
@@ -620,7 +624,7 @@ font-style: inherit;">--index</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;</span>path to html<span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">&gt;</span> --writable claude</span></code></pre></div></div>
+font-style: inherit;">&gt;</span> --writable claude</span></code></pre></div>
 </section>
 </section>
 <section id="更新履歴" class="level2">
@@ -673,7 +677,7 @@ font-style: inherit;">&gt;</span> --writable claude</span></code></pre></div></d
 <section id="ubuntu-serverのイメージからファイルをコピーする" class="level3">
 <h3 class="anchored" data-anchor-id="ubuntu-serverのイメージからファイルをコピーする">Ubuntu Serverのイメージからファイルをコピーする</h3>
 <p>まず、<code>ubuntu-25.04-preinstalled-server-arm64+raspi.img</code> を <code>kpartx</code> を使ってマウントします。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><span class="ex" style="color: null;
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">$</span> sudo /sbin/kpartx <span class="at" style="color: #657422;
 background-color: null;
@@ -707,15 +711,15 @@ background-color: null;
 font-style: inherit;">$</span> sudo mount /dev/mapper/loop0p1 /mnt/boot</span>
 <span id="cb1-5"><span class="ex" style="color: null;
 background-color: null;
-font-style: inherit;">$</span> sudo mount /dev/mapper/loop0p2 /mnt/root</span></code></pre></div></div>
+font-style: inherit;">$</span> sudo mount /dev/mapper/loop0p2 /mnt/root</span></code></pre></div>
 <p>そして、<code>/mnt/boot</code>を<code>/var/tftpboot</code>にコピーします。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><span class="ex" style="color: null;
+<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">$</span> sudo rsync <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">-av</span> /mnt/boot/ /var/tftpboot/</span></code></pre></div></div>
+font-style: inherit;">-av</span> /mnt/boot/ /var/tftpboot/</span></code></pre></div>
 <p>続いて、ファイルのコピー先となる NFS 公開用のディレクトリを作成します。 <code>${SERIAL}</code> は各 Raspberry Pi の CPU シリアル番号を想定しています。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><span class="ex" style="color: null;
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">$</span> sudo mkdir <span class="at" style="color: #657422;
 background-color: null;
@@ -731,9 +735,9 @@ font-style: inherit;">$</span> sudo mkdir <span class="at" style="color: #657422
 background-color: null;
 font-style: inherit;">-p</span> /var/nfsroot/clients/<span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">${SERIAL}</span>/</span></code></pre></div></div>
+font-style: inherit;">${SERIAL}</span>/</span></code></pre></div>
 <p><code>/var/nfsroot/home</code> と <code>/var/nfsroot/clients/${SERIAL}/</code> を <code>/root</code> 以下に bind マウントしてからファイルをコピーします。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><span class="ex" style="color: null;
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">%</span> mkdir <span class="at" style="color: #657422;
 background-color: null;
@@ -754,7 +758,7 @@ font-style: inherit;">--bind</span> /var/nfsroot/home /var/nfsroot/root/home</sp
 background-color: null;
 font-style: inherit;">%</span> sudo rsync <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">-av</span> /mnt/root/ /var/nfsroot/root/</span></code></pre></div></div>
+font-style: inherit;">-av</span> /mnt/root/ /var/nfsroot/root/</span></code></pre></div>
 <p>これで、ベースとなるルートファイルシステムが作成されました。</p>
 <hr>
 </section>
@@ -762,7 +766,7 @@ font-style: inherit;">-av</span> /mnt/root/ /var/nfsroot/root/</span></code></pr
 <h3 class="anchored" data-anchor-id="必要なパッケージの導入と初期設定">必要なパッケージの導入と初期設定</h3>
 <p>このルートファイルシステムは読み取り専用で運用するため、<code>chroot</code> 環境内で必要なパッケージの導入や設定を行います。</p>
 <p>まず、作業用のユーザーとグループを作成します。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><span class="ex" style="color: null;
+<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">%</span> sudo chroot /var/nfsroot/root/ /bin/bash</span>
 <span id="cb5-2"><span class="ex" style="color: null;
@@ -823,9 +827,9 @@ font-style: inherit;">${USER_NAME}</span>:<span class="va" style="color: #111111
 background-color: null;
 font-style: inherit;">${GROUP_NAME}</span> /home/<span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">${USER_NAME}</span>/</span></code></pre></div></div>
+font-style: inherit;">${USER_NAME}</span>/</span></code></pre></div>
 <p>次に、必要なパッケージのインストールと <code>avahi-daemon</code> の有効化を行います。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><span class="ex" style="color: null;
+<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">$</span> apt-get update</span>
 <span id="cb6-2"><span class="ex" style="color: null;
@@ -840,9 +844,9 @@ font-style: inherit;">--no-reload</span> enable avahi-daemon.service</span>
 background-color: null;
 font-style: inherit;">$</span> systemctl <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">--no-reload</span> disable avahi-daemon.socket</span></code></pre></div></div>
+font-style: inherit;">--no-reload</span> disable avahi-daemon.socket</span></code></pre></div>
 <p>また、<code>cloud-init</code> を無効化し、fstab の内容をクリアします。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><span class="ex" style="color: null;
+<div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">$</span> head <span class="at" style="color: #657422;
 background-color: null;
@@ -854,9 +858,9 @@ background-color: null;
 font-style: inherit;">sudo</span> sponge etc/fstab</span>
 <span id="cb7-2"><span class="ex" style="color: null;
 background-color: null;
-font-style: inherit;">$</span> touch /etc/cloud/cloud-init.disabled</span></code></pre></div></div>
+font-style: inherit;">$</span> touch /etc/cloud/cloud-init.disabled</span></code></pre></div>
 <p>ネームサーバーの設定も行います。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><span class="ex" style="color: null;
+<div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">$</span> chroot /var/nfsroot/root /usr/bin/systemctl <span class="at" style="color: #657422;
 background-color: null;
@@ -873,13 +877,13 @@ background-color: null;
 font-weight: bold;
 font-style: inherit;">|</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">sudo</span> tee  /var/nfsroot/root/etc/resolv.conf</span></code></pre></div></div>
+font-style: inherit;">sudo</span> tee  /var/nfsroot/root/etc/resolv.conf</span></code></pre></div>
 <p>最後に、SSHホスト鍵を作成します。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><span class="ex" style="color: null;
+<div class="sourceCode" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">$</span> ssh-keygen <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">-A</span></span></code></pre></div></div>
+font-style: inherit;">-A</span></span></code></pre></div>
 </section>
 </section>
 <section id="initrd.imgの作成" class="level2">
@@ -889,7 +893,7 @@ font-style: inherit;">-A</span></span></code></pre></div></div>
 <section id="必要なファイルのコピー" class="level3">
 <h3 class="anchored" data-anchor-id="必要なファイルのコピー">必要なファイルのコピー</h3>
 <p>まず、作業用のディレクトリ <code>/tmp/initrd</code> を作成します。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><span class="ex" style="color: null;
+<div class="sourceCode" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">$</span> mkdir <span class="at" style="color: #657422;
 background-color: null;
@@ -931,9 +935,9 @@ font-style: inherit;">upper</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">,</span><span class="dt" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">work}</span></span></code></pre></div></div>
+font-style: inherit;">work}</span></span></code></pre></div>
 <p>続いて <code>busybox</code> を導入します。通常の <code>busybox</code> はいくつかのライブラリと動的リンクしているため、静的リンクされた <code>busybox-static</code> を使用します。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><span class="ex" style="color: null;
+<div class="sourceCode" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">$</span> sudo apt install <span class="at" style="color: #657422;
 background-color: null;
@@ -953,9 +957,9 @@ font-style: inherit;">$</span> chroot /tmp/initrd/ /bin/busybox <span class="at"
 background-color: null;
 font-style: inherit;">--install</span> /bin <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">-s</span></span></code></pre></div></div>
+font-style: inherit;">-s</span></span></code></pre></div>
 <p>次に、ルートファイルシステムから必要なカーネルモジュールを抽出して配置します。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><span class="ex" style="color: null;
+<div class="sourceCode" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">$</span> cd /var/nfsroot/root/lib/modules/6.14.0-1005-raspi/kernel</span>
 <span id="cb12-2"><span class="ex" style="color: null;
@@ -997,7 +1001,7 @@ font-style: inherit;">-o</span> /tmp/initrd/lib/modules/nfsv4.ko</span>
 background-color: null;
 font-style: inherit;">$</span> unzstd ./net/sunrpc/sunrpc.ko.zst <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">-o</span> /tmp/initrd/lib/modules/sunrpc.ko</span></code></pre></div></div>
+font-style: inherit;">-o</span> /tmp/initrd/lib/modules/sunrpc.ko</span></code></pre></div>
 <hr>
 </section>
 <section id="initスクリプトの作成" class="level3">
@@ -1012,7 +1016,7 @@ font-style: inherit;">-o</span> /tmp/initrd/lib/modules/sunrpc.ko</span></code><
 <li><code>/home</code>, <code>/var</code> の書き込み領域を個別にマウント</li>
 <li><code>switch_root</code> により本来のinitへ移行</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><span class="ex" style="color: null;
+<div class="sourceCode" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">$</span> cat <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -1170,13 +1174,13 @@ background-color: null;
 font-style: inherit;">EOF</span></span>
 <span id="cb13-49"><span class="ex" style="color: null;
 background-color: null;
-font-style: inherit;">$</span> chmod +x /var/initrd/init</span></code></pre></div></div>
+font-style: inherit;">$</span> chmod +x /var/initrd/init</span></code></pre></div>
 <hr>
 </section>
 <section id="initrd.imgのパッキング" class="level3">
 <h3 class="anchored" data-anchor-id="initrd.imgのパッキング">initrd.imgのパッキング</h3>
 <p>準備が完了したら、以下の手順で <code>initrd.img</code> を作成します。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><span class="ex" style="color: null;
+<div class="sourceCode" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">$</span> cd /tmp/intird</span>
 <span id="cb14-2"><span class="ex" style="color: null;
@@ -1192,20 +1196,20 @@ font-style: inherit;">-H</span> newc <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">-o</span>  <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">&gt;</span> /var/tftpboot/initrd.img</span></code></pre></div></div>
+font-style: inherit;">&gt;</span> /var/tftpboot/initrd.img</span></code></pre></div>
 <p>これで、NFSマウントに対応したカスタム <code>initrd.img</code> の作成が完了しました。</p>
 </section>
 </section>
 <section id="必要なファイルの配置とネットブートの確認" class="level2">
 <h2 class="anchored" data-anchor-id="必要なファイルの配置とネットブートの確認">必要なファイルの配置とネットブートの確認</h2>
 <p>最後に、<code>initrd.img</code> を使用して起動するための <code>cmdline.txt</code> を用意します。以下のコマンドで、必要なカーネルパラメータを含む <code>cmdline.txt</code> を生成します。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><span class="ex" style="color: null;
+<div class="sourceCode" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">$</span> echo <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'console=serial0,115200 root=/dev/ram0 rw ip=dhcp rootwait cloud-init=disabled apparmor=0'</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">&gt;</span> /var/tftpboot/cmdline.txt</span></code></pre></div></div>
+font-style: inherit;">&gt;</span> /var/tftpboot/cmdline.txt</span></code></pre></div>
 <p>この時点で、<code>/var/tftpboot/</code> 以下に必要なファイルが揃っていれば、ネットワーク経由での起動準備は完了です。</p>
 <p>あとは、対象デバイスをネットブート可能な状態にし、TFTP サーバと DHCP サーバの動作を確認すれば、ルートファイルシステムの初期化およびブートシーケンスの動作確認が行えます。</p>
 

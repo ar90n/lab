@@ -1,0 +1,39 @@
+---
+title: ADX-Sをネットワーク経由で使う
+date: 2025-11-29
+categories: [組み込み,無線]
+image: /assets/img/2025-11-29-ft8-over-ip-with-roc/wsjt_x_water_fall.png
+format:
+  html:
+    code-fold: false
+toc: true
+layout: post
+code-annotations: below
+---
+
+## はじめに
+非常にレイテンシの小さい音響信号配信プロトコルとして、[ROC](https://roc-streaming.org/)があります。ここでは、このROCを用いてFT8信号をIPネットワーク経由で無線機（ADX-S）とやり取りする構成を紹介します。
+
+## やったこと
+* [roc-vad](https://github.com/roc-streaming/roc-vad)を用いて無線機(ADX-S)をmacサウンドデバイスとして認識
+* [wsjtx](https://wsjt.sourceforge.io/wsjtx.html)を用いてFT8信号を送受信
+
+## roc-vadによるROC仮想デバイスの作成
+
+まず、ホスト側でROCの仮想オーディオデバイスを用意します。送信側は次のように作成しました。
+
+```bash
+$ roc-vad device add sender -r 48000 -c mono --fec-encoding rs8m --resampler-backend speex --resampler-profile low
+```
+
+受信側は、以下のようにデバイスを追加し、ROCのストリームにバインドします。
+
+```bash
+$ roc-vad device add receiver
+$ roc-vad device bind <device index> --source rtp+rs8m://0.0.0.0:10001 --repair rs8m://0.0.0.0:10002 --control rtcp://0.0.0.0:10003
+```
+
+## wsjtxによるFT8信号の送受信
+WSJT-Xの「設定」→「オーディオ」から、入力と出力のデバイスに上で作成したRoc Virtual Deviceを指定します。設定が正しければ、通常と同様にウォーターフォールが表示され、FT8の送受信をネットワーク越しのADX-Sで行えるようになります。
+
+![](/assets/img/2025-11-29-ft8-over-ip-with-roc/wsjt_x_water_fall.png)

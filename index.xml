@@ -17,7 +17,73 @@
 <width>144</width>
 </image>
 <generator>quarto-1.8.25</generator>
-<lastBuildDate>Sun, 19 Oct 2025 00:00:00 GMT</lastBuildDate>
+<lastBuildDate>Sat, 29 Nov 2025 00:00:00 GMT</lastBuildDate>
+<item>
+  <title>ADX-Sをネットワーク経由で使う</title>
+  <link>https://lab.ar90n.net/posts/2025-11-29-ft8-over-ip-with-roc.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="はじめに" class="level2">
+<h2 class="anchored" data-anchor-id="はじめに">はじめに</h2>
+<p>非常にレイテンシの小さい音響信号配信プロトコルとして、<a href="https://roc-streaming.org/">ROC</a>があります。ここでは、このROCを用いてFT8信号をIPネットワーク経由で無線機（ADX-S）とやり取りする構成を紹介します。</p>
+</section>
+<section id="やったこと" class="level2">
+<h2 class="anchored" data-anchor-id="やったこと">やったこと</h2>
+<ul>
+<li><a href="https://github.com/roc-streaming/roc-vad">roc-vad</a>を用いて無線機(ADX-S)をmacサウンドデバイスとして認識</li>
+<li><a href="https://wsjt.sourceforge.io/wsjtx.html">wsjtx</a>を用いてFT8信号を送受信</li>
+</ul>
+</section>
+<section id="roc-vadによるroc仮想デバイスの作成" class="level2">
+<h2 class="anchored" data-anchor-id="roc-vadによるroc仮想デバイスの作成">roc-vadによるROC仮想デバイスの作成</h2>
+<p>まず、ホスト側でROCの仮想オーディオデバイスを用意します。送信側は次のように作成しました。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">$</span> roc-vad device add sender <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-r</span> 48000 <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-c</span> mono <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--fec-encoding</span> rs8m <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--resampler-backend</span> speex <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--resampler-profile</span> low</span></code></pre></div></div>
+<p>受信側は、以下のようにデバイスを追加し、ROCのストリームにバインドします。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">$</span> roc-vad device add receiver</span>
+<span id="cb2-2"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">$</span> roc-vad device bind <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span>device index<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> --source rtp+rs8m://0.0.0.0:10001 <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--repair</span> rs8m://0.0.0.0:10002 <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--control</span> rtcp://0.0.0.0:10003</span></code></pre></div></div>
+</section>
+<section id="wsjtxによるft8信号の送受信" class="level2">
+<h2 class="anchored" data-anchor-id="wsjtxによるft8信号の送受信">wsjtxによるFT8信号の送受信</h2>
+<p>WSJT-Xの「設定」→「オーディオ」から、入力と出力のデバイスに上で作成したRoc Virtual Deviceを指定します。設定が正しければ、通常と同様にウォーターフォールが表示され、FT8の送受信をネットワーク越しのADX-Sで行えるようになります。</p>
+<p><img src="https://lab.ar90n.net/assets/img/2025-11-29-ft8-over-ip-with-roc/wsjt_x_water_fall.png" class="img-fluid"></p>
+
+
+</section>
+
+ ]]></description>
+  <category>組み込み</category>
+  <category>無線</category>
+  <guid>https://lab.ar90n.net/posts/2025-11-29-ft8-over-ip-with-roc.html</guid>
+  <pubDate>Sat, 29 Nov 2025 00:00:00 GMT</pubDate>
+  <media:content url="https://lab.ar90n.net/assets/img/2025-11-29-ft8-over-ip-with-roc/wsjt_x_water_fall.png" medium="image" type="image/png" height="100" width="144"/>
+</item>
 <item>
   <title>ADX-Sに対してJARDの新スプリアス確認保証を取得する</title>
   <link>https://lab.ar90n.net/posts/2025-10-19-jard-cert-for-adx-s.html</link>
@@ -15001,195 +15067,6 @@ font-style: inherit;">Adding</span> anyhow v1.0.53 to dependenciesa</span></code
   <category>Rust</category>
   <guid>https://lab.ar90n.net/posts/2022-01-30-cargo-edit-workaround.html</guid>
   <pubDate>Sun, 30 Jan 2022 00:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>AWS Amplifyのメモ</title>
-  <link>https://lab.ar90n.net/posts/2022-01-03-aws-amplify-tips.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<section id="はじめに" class="level2">
-<h2 class="anchored" data-anchor-id="はじめに">はじめに</h2>
-<p>AWS Amplifyを使ってみて個人的にハマったことのメモです．</p>
-</section>
-<section id="やったこと" class="level2">
-<h2 class="anchored" data-anchor-id="やったこと">やったこと</h2>
-<ul>
-<li>コンテナ（Fargate）に対して，環境に応じた環境変数を設定する</li>
-<li>ロールに対して任意のポリシーを追加する</li>
-<li>コンテナが配置されたVPCにリソースを配置する</li>
-</ul>
-</section>
-<section id="コンテナfargateに対して環境に応じた環境変数を設定する" class="level2">
-<h2 class="anchored" data-anchor-id="コンテナfargateに対して環境に応じた環境変数を設定する">コンテナ（Fargate）に対して，環境に応じた環境変数を設定する</h2>
-<p>AWS AmplifyではAPIを実装するリソースとしてコンテナ（Fargate）がサポートされています．ですが，現状ではデプロイ環境（<code>dev</code>や<code>prod</code>など）に応じた環境変数を設定することができないようです．（少なくとも，私には見つけることができませんでした）</p>
-<p>最初は，CloudFormationの定義ファイルを手動で書き換えることで実現できると考えていました．ですが，実際に作業を進めるとこのファイルは<code>amplify push</code>のたびに<code>docker-compose.yaml</code>から生成されることが判明しました．そこで，</p>
-<ul>
-<li><code>dev</code>環境向けに<code>docker-compose.yaml.dev</code>を，<code>prod</code>環境向けに<code>docker-compose.yaml.prod</code>をそれぞれ作成</li>
-<li><a href="https://docs.amplify.aws/cli/project/command-hooks/">コマンドフック</a>を利用して，<code>amplify push</code>のタイミングで<code>docker-compose.yaml.dev</code>または<code>docker-compose.yaml.prod</code>を<code>docker-compose.yaml</code>にコピー</li>
-</ul>
-<p>という対応を採用しました．</p>
-</section>
-<section id="ロールに対して任意のポリシーを追加する" class="level2">
-<h2 class="anchored" data-anchor-id="ロールに対して任意のポリシーを追加する">ロールに対して任意のポリシーを追加する</h2>
-<p>カスタムリソースを追加した場合など，Lambdaに任意のポリシーを追加したい場合があると思います．そのような場合は，<code>custom-policies.json</code>を利用するのが楽です． 一応，<a href="https://aws.amazon.com/jp/blogs/news/extend-amplify-backend-with-custom-aws-resource-using-aws-cdk-or-cloudformation/">ここ</a>や<a href="https://docs.amplify.aws/cli/usage/containers/#custom-policy-file-structure">ここ</a>など，AWSの公式ドキュメントにも記載されているようですが，目立つところには記載されていないため気がつくまでに時間がかかりました．</p>
-</section>
-<section id="コンテナが配置されたvpcにリソースを配置する" class="level2">
-<h2 class="anchored" data-anchor-id="コンテナが配置されたvpcにリソースを配置する">コンテナが配置されたVPCにリソースを配置する</h2>
-<p>コンテナの配置されるVPCは, <code>amplify/backend/backend-config.json</code>中に記述されている<code>NetworkStack</code>というリソースによって作成されれます．<code>NetworkStack</code>は</p>
-<ul>
-<li>CloudMapNamespaceId</li>
-<li>ClusterName</li>
-<li>Igw</li>
-<li>SubnetIds</li>
-<li>VpcCidrBlock</li>
-<li>VpcId</li>
-<li>VpcLinkId</li>
-</ul>
-<p>を出力します．必要なパラメータはリソースによって異なると思いますが，<code>SubnetIds</code>や<code>VpcId</code>などを参照することでコンテナと同じVPC内にリソースを配置することができると思います．</p>
-<p>上記パラメータを参照するためには，</p>
-<ol type="1">
-<li><p><code>amplify/backend/backend-config.json</code>において，上記パラメータを参照するリソースの<code>dependsOn</code>に<code>NetworkStack</code>を追加</p>
-<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb1-1"><span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">...</span></span>
-<span id="cb1-2"></span>
-<span id="cb1-3">  <span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">"dependsOn":</span> <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">[</span></span>
-<span id="cb1-4">    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">{</span></span>
-<span id="cb1-5">      <span class="dt" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">"category"</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">:</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">""</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">,</span></span>
-<span id="cb1-6">      <span class="dt" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">"resourceName"</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">:</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"NetworkStack"</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">,</span></span>
-<span id="cb1-7">      <span class="dt" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">"attributes"</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">:</span> <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">[</span></span>
-<span id="cb1-8">        <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"VpcId"</span><span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">,</span></span>
-<span id="cb1-9">        <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"SubnetIds"</span></span>
-<span id="cb1-10">      <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">]</span></span>
-<span id="cb1-11">    <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">}</span></span>
-<span id="cb1-12">  <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">]</span></span>
-<span id="cb1-13"></span>
-<span id="cb1-14"><span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">...</span></span></code></pre></div></li>
-<li><p>上述のリソースのCloudFormationの設定ファイルにパラメータの設定を追加.この際，パラメータ名は<code>NetworkStack&lt;Attribute名&gt;</code>となります</p>
-<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb2-1"><span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">...</span></span>
-<span id="cb2-2"></span>
-<span id="cb2-3"><span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">"Parameters":</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">{</span></span>
-<span id="cb2-4">  <span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">...</span></span>
-<span id="cb2-5"></span>
-<span id="cb2-6">  <span class="dt" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">"NetworkStackVpcId"</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">:</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">{</span></span>
-<span id="cb2-7">    <span class="dt" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">"Type"</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">:</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"String"</span></span>
-<span id="cb2-8">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">},</span></span>
-<span id="cb2-9">  <span class="dt" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">"NetworkStackSubnetIds"</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">:</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">{</span></span>
-<span id="cb2-10">    <span class="dt" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">"Type"</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">:</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"CommaDelimitedList"</span></span>
-<span id="cb2-11">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">},</span></span>
-<span id="cb2-12"></span>
-<span id="cb2-13">  <span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">...</span></span>
-<span id="cb2-14"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">}</span><span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">,</span> </span>
-<span id="cb2-15"><span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">...</span></span></code></pre></div></li>
-<li><p><code>amplify env checkout &lt;env&gt;</code>を実行して環境のチェックアウトを行う</p></li>
-</ol>
-</section>
-<section id="参考" class="level2">
-<h2 class="anchored" data-anchor-id="参考">参考</h2>
-<ul>
-<li><a href="https://aws.amazon.com/jp/blogs/news/extend-amplify-backend-with-custom-aws-resource-using-aws-cdk-or-cloudformation/">AWS CDKまたはCloudFormationを使用し、カスタムAWSリソースでAmplifyバックエンドを拡張する新機能「カスタム」のご紹介</a></li>
-<li><a href="https://docs.amplify.aws/">Amplify Docs</a></li>
-</ul>
-
-
-</section>
-
- ]]></description>
-  <category>AWS</category>
-  <category>Web</category>
-  <category>クラウド</category>
-  <category>Amplify</category>
-  <guid>https://lab.ar90n.net/posts/2022-01-03-aws-amplify-tips.html</guid>
-  <pubDate>Mon, 03 Jan 2022 00:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>

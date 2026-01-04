@@ -17,7 +17,176 @@
 <width>144</width>
 </image>
 <generator>quarto-1.8.25</generator>
-<lastBuildDate>Sat, 29 Nov 2025 00:00:00 GMT</lastBuildDate>
+<lastBuildDate>Sun, 04 Jan 2026 00:00:00 GMT</lastBuildDate>
+<item>
+  <title>EasyThreed K10にネットワーク経由でファイルを送信する</title>
+  <link>https://lab.ar90n.net/posts/2026-01-04-esp32-as-sd-card-gateway.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="はじめに" class="level2">
+<h2 class="anchored" data-anchor-id="はじめに">はじめに</h2>
+<p>EasyThreed K10という非常に安価な3Dプリンタがあります。本機はマザーボードの機能が限定的であり、ネットワーク経由で制御することができません。そのため、microSDカードを都度抜き差しする運用が必要でした。そこで、microSDカードにネットワーク経由でファイルを書き込むことで運用の簡易化を試みます。</p>
+</section>
+<section id="やったこと" class="level2">
+<h2 class="anchored" data-anchor-id="やったこと">やったこと</h2>
+<ul>
+<li>XIAO ESP32C3を使用してHTTP PUTでmicroSDにファイルを書き込み</li>
+<li>microSD スニッファーボードを使用してmicroSDを共有</li>
+<li>EasyThreed K10に対してネットワーク経由でgcodeファイルを送信</li>
+</ul>
+</section>
+<section id="ハードウェアの準備" class="level2">
+<h2 class="anchored" data-anchor-id="ハードウェアの準備">ハードウェアの準備</h2>
+<p>microSDを制御するマイコンにはXIAO ESP32C3を、ターゲットデバイスのmicroSDソケットへのアクセスには<a href="https://www.google.com/search?q=microSD+%E3%82%B9%E3%83%8B%E3%83%83%E3%83%95%E3%82%A1%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89">microSD スニッファーボード</a>を使用しました。</p>
+<section id="microsd-スニッファーボードのパターンカットと抵抗の挿入" class="level3">
+<h3 class="anchored" data-anchor-id="microsd-スニッファーボードのパターンカットと抵抗の挿入">microSD スニッファーボードのパターンカットと抵抗の挿入</h3>
+<p>ターゲットデバイスとのmicroSDの共有方法はESPWebDAVを参考にします。これは、<code>CS</code>、<code>MOSI</code>、<code>SCK</code>に抵抗を挿入するというものです。これにより、デバイス側の状態によらず、これらのピンの制御が可能となるはずです。</p>
+<p>しかしながら、microSD スニッファーボードにはこれらの抵抗を挿入するパターンがありません。したがって、以下のようにレジストの剥離とパターンのカットを行い、そこに抵抗を挿入します。レジストの剥離は超音波カッターにて該当箇所をなぞると簡単にできます。</p>
+<p><img src="https://lab.ar90n.net/assets/img/2026-01-04-esp32-as-sd-card-gateway/sniffer_board.jpg" class="img-fluid"></p>
+</section>
+<section id="xiao-esp32c3の接続" class="level3">
+<h3 class="anchored" data-anchor-id="xiao-esp32c3の接続">XIAO ESP32C3の接続</h3>
+<p>以下に示すようにmicroSD スニッファーボードと接続を行いました。</p>
+<p><img src="https://lab.ar90n.net/assets/img/2026-01-04-esp32-as-sd-card-gateway/schematics.png" class="img-fluid"></p>
+<p>また、ESPWebDAVにある回路と異なる点は以下の通りです。</p>
+<ul>
+<li>空いているピンにステータス表示用のLEDを追加</li>
+<li>microSDリセット用のMOS FETを追加</li>
+</ul>
+<p>なお、後者のmicroSDリセット用MOS FETは想定通りに機能しなかったため、本実装では使用していません。</p>
+</section>
+</section>
+<section id="ソフトウェアの準備" class="level2">
+<h2 class="anchored" data-anchor-id="ソフトウェアの準備">ソフトウェアの準備</h2>
+<p>PlatformIOを用いて環境構築を行いました。環境一式は以下の通りです。</p>
+<p><a href="https://github.com/ar90n/lab/tree/main/sandbox/esp_put_store">GitHubリポジトリ</a></p>
+<p><code>secrets.h.template</code>を修正して<code>secrets.h</code>を作成し、以下のコマンドでファームウェアを書き込みます。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">$</span> pio run <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-t</span> upload</span></code></pre></div></div>
+<section id="http-putによるファイルの書き込み" class="level3">
+<h3 class="anchored" data-anchor-id="http-putによるファイルの書き込み">HTTP PUTによるファイルの書き込み</h3>
+<p>上述のハードウェアとソフトウェアの準備が完了したら、<code>curl</code>を用いてファイルをPUTすると以下のような結果が得られます。ここでは、<code>10.0.0.24</code>がESP32-C3のIPアドレスとして割り当てられているものとします。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">❯</span> curl <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-v</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--http1.1</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-T</span> test6.gcode http://10.0.0.24/upload</span>
+<span id="cb2-2"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">*</span>   Trying 10.0.0.24:80...</span>
+<span id="cb2-3"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">*</span> Connected to 10.0.0.24 <span class="er" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">(</span><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">10.0.0.24</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">)</span> <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">port</span> 80</span>
+<span id="cb2-4"><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> PUT <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">/upload</span> HTTP/1.1</span>
+<span id="cb2-5"><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> Host: <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">10.0.0.24</span></span>
+<span id="cb2-6"><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> User-Agent: <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">curl/8.7.1</span></span>
+<span id="cb2-7"><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> Accept: <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">*/*</span></span>
+<span id="cb2-8"><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> Content-Length: <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">149446</span></span>
+<span id="cb2-9"><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span></span>
+<span id="cb2-10"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">*</span> upload completely sent off: 149446 bytes</span>
+<span id="cb2-11"><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span> HTTP/1.1 <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">200</span> OK</span>
+<span id="cb2-12"><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span> Connection: <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">close</span></span>
+<span id="cb2-13"><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span> Content-Type: <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">text/plain</span></span>
+<span id="cb2-14"><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span> Content-Length: <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">22</span></span>
+<span id="cb2-15"><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span></span>
+<span id="cb2-16"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">OK</span> saved /model.gcode</span>
+<span id="cb2-17"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">*</span> Closing connection</span></code></pre></div></div>
+</section>
+<section id="webdavの検討と諦め" class="level3">
+<h3 class="anchored" data-anchor-id="webdavの検討と諦め">WebDAVの検討と諦め</h3>
+<p>当初、ESPWebDAVをそのまま使用することを想定していました。しかしながら、私の環境ではファイルサイズが1MB程度になるとアップロードに失敗しました。したがって、WebDAVの使用を諦めました。</p>
+</section>
+</section>
+<section id="動作確認" class="level2">
+<h2 class="anchored" data-anchor-id="動作確認">動作確認</h2>
+<p>ESP32-C3からはSPIモードでmicroSDにファイルを書き込みますが、EasyThreed K10はネイティブモードでmicroSDからファイルを読み込みます。したがって、ファイルのアップロードが完了したら、プリント開始前にmicroSDの電源（EasyThreed K10の電源）をOFFにする必要があります。</p>
+<p>以下はペンプロッタとして動かした例になります。<code>curl</code>にてgcodeを送信したのちにスタートボタンを押下しました。ペンプロッタ用の治具は<a href="https://www.printables.com/model/1285208-easythreed-k10-cute-pen-plotter-head-mod">こちら</a>からお借りしました。</p>
+<div class="quarto-video"><video id="video_shortcode_videojs_video1" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="../assets/video/2026-01-04-esp32-as-sd-card-gateway/k10.mp4"></video></div>
+</section>
+<section id="参考" class="level2">
+<h2 class="anchored" data-anchor-id="参考">参考</h2>
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0">
+<div id="ref-ESPWevDAV" class="csl-entry">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">ESPWevDAV. <em>GitHub repository</em>. <a href="https://github.com/ardyesp/ESPWebDAV" class="uri">https://github.com/ardyesp/ESPWebDAV</a>; GitHub.</div>
+</div>
+</div>
+
+
+</section>
+
+ ]]></description>
+  <category>組み込み</category>
+  <category>ESP32</category>
+  <category>3Dプリンタ</category>
+  <guid>https://lab.ar90n.net/posts/2026-01-04-esp32-as-sd-card-gateway.html</guid>
+  <pubDate>Sun, 04 Jan 2026 00:00:00 GMT</pubDate>
+  <media:content url="https://lab.ar90n.net/assets/img/2026-01-04-esp32-as-sd-card-gateway/thumb.jpg" medium="image" type="image/jpeg"/>
+</item>
 <item>
   <title>ADX-Sをネットワーク経由で使う</title>
   <link>https://lab.ar90n.net/posts/2025-11-29-ft8-over-ip-with-roc.html</link>
@@ -14649,424 +14818,6 @@ font-style: inherit;">&gt;</span></span></code></pre></div>
   <category>類似ベクトル検索</category>
   <guid>https://lab.ar90n.net/posts/2022-02-01-mimic-annoy-wiht-go.html</guid>
   <pubDate>Tue, 01 Feb 2022 00:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>cargo-editが上手く動かない時の回避策</title>
-  <link>https://lab.ar90n.net/posts/2022-01-30-cargo-edit-workaround.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<section id="はじめに" class="level2">
-<h2 class="anchored" data-anchor-id="はじめに">はじめに</h2>
-<p><a href="https://github.com/killercup/cargo-edit">cargo-edit</a> v0.8.0が上手く動かなかったので，その対処法についてのメモです．</p>
-</section>
-<section id="やったこと" class="level2">
-<h2 class="anchored" data-anchor-id="やったこと">やったこと</h2>
-<ul>
-<li>ssh-agentに秘密鍵を登録</li>
-<li>v0.7.0にダウングレード</li>
-</ul>
-</section>
-<section id="error-authenticating-no-auth-sock-variable-classssh-23-でcargo-editをインストールすることができない" class="level2">
-<h2 class="anchored" data-anchor-id="error-authenticating-no-auth-sock-variable-classssh-23-でcargo-editをインストールすることができない"><code>error authenticating: no auth sock variable; class=Ssh (23)</code> で<code>cargo-edit</code>をインストールすることができない</h2>
-<p>単純に <code>cargo install cargo-edit</code> をすると，以下の様に<code>ssh-agent</code>との連携に失敗してエラーとなりました．</p>
-<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">$</span> cargo install cargo-edit</span>
-<span id="cb1-2">    <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">Updating</span> crates.io index</span>
-<span id="cb1-3"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">error:</span> failed to fetch <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">`</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">https://github.com/rust-lang/crates.io-index</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">`</span></span>
-<span id="cb1-4"></span>
-<span id="cb1-5"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">Caused</span> by:</span>
-<span id="cb1-6">  <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">failed</span> to authenticate when downloading repository: ssh://git@github.com/rust-lang/crates.io-index</span>
-<span id="cb1-7"></span>
-<span id="cb1-8">  <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">*</span> attempted ssh-agent authentication, but no usernames succeeded: <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">`</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">git</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">`</span></span>
-<span id="cb1-9"></span>
-<span id="cb1-10">  <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">if</span> <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">the</span> git CLI succeeds then <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">`</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">net.git-fetch-with-cli</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">`</span> may help here</span>
-<span id="cb1-11">  <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">https://doc.rust-lang.org/cargo/reference/config.html#netgit-fetch-with-cli</span></span>
-<span id="cb1-12"></span>
-<span id="cb1-13"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">Caused</span> by:</span>
-<span id="cb1-14">  <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">error</span> authenticating: no auth sock variable<span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">;</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">class</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>Ssh <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">23</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">)</span></span></code></pre></div>
-<p>対処法はエラーメッセージの中に書いてあるので，以下の様にssh-agentの起動と秘密鍵の登録を行います．</p>
-<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">$</span> eval <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">`</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ssh-agent</span> <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">-s</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">`</span></span>
-<span id="cb2-2"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">Agent</span> pid 1756</span>
-<span id="cb2-3"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">$</span> ssh-add</span>
-<span id="cb2-4"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">Identity</span> added: <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;</span>path to home<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;</span>/.ssh/id_rsa <span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;</span>mail <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">address</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">)</span></span></code></pre></div>
-<p>再度，<code>cargo install cargo-edit</code> を実行すると無事にインストールできました．</p>
-<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">$</span> cargo install cargo-edit</span>
-<span id="cb3-2">    <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">Updating</span> crates.io index</span>
-<span id="cb3-3">  <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">Downloaded</span> cargo-edit v0.8.0</span>
-<span id="cb3-4">  <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">Downloaded</span> 1 crate <span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">61.1</span> KB<span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">)</span> <span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">in</span> <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">0.40s</span></span>
-<span id="cb3-5">  <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">Installing</span> cargo-edit v0.8.0</span>
-<span id="cb3-6"></span>
-<span id="cb3-7"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">...</span></span>
-<span id="cb3-8"></span>
-<span id="cb3-9">   <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">Compiling</span> crates-index v0.17.0</span>
-<span id="cb3-10">   <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">Compiling</span> cargo-edit v0.8.0</span>
-<span id="cb3-11">    <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">Finished</span> release <span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">[</span><span class="ss" style="color: #20794D;
-background-color: null;
-font-style: inherit;">optimized</span><span class="pp" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">]</span> target<span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">s</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">)</span> <span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">in</span> <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">1m</span> 05s</span>
-<span id="cb3-12">  <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">Installing</span> /usr/local/cargo/bin/cargo-add</span>
-<span id="cb3-13">  <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">Installing</span> /usr/local/cargo/bin/cargo-rm</span>
-<span id="cb3-14">  <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">Installing</span> /usr/local/cargo/bin/cargo-set-version</span>
-<span id="cb3-15">  <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">Installing</span> /usr/local/cargo/bin/cargo-upgrade</span>
-<span id="cb3-16">   <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">Installed</span> package <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">`</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">cargo-edit</span> v0.8.0<span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">`</span> <span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">executables</span> <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">`</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">cargo-add</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">`</span>, <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">`</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">cargo-rm</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">`</span>, <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">`</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">cargo-set-version</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">`</span>, <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">`</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">cargo-upgrade</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">`)</span></span></code></pre></div>
-</section>
-<section id="command-failed-due-to-unhandled-error-authentication-required-but-no-callback-set-classssh-23-codeauth--16-で-cargo-add-できない" class="level2">
-<h2 class="anchored" data-anchor-id="command-failed-due-to-unhandled-error-authentication-required-but-no-callback-set-classssh-23-codeauth--16-で-cargo-add-できない"><code>Command failed due to unhandled error: authentication required but no callback set; class=Ssh (23); code=Auth (-16)</code> で <code>cargo add</code> できない</h2>
-<p><code>cargo add</code> でクレートを追加しようとすると，以下の様にエラーが発生します．</p>
-<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">$</span> cargo add anyhow</span>
-<span id="cb4-2">    <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">Updating</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'https://github.com/rust-lang/crates.io-index'</span> index</span>
-<span id="cb4-3"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">Command</span> failed due to unhandled error: authentication required but no callback set<span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">;</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">class</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>Ssh <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">23</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">);</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">code</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>Auth <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">-16</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">)</span></span></code></pre></div>
-<p><a href="https://github.com/killercup/cargo-edit/issues/333">こちら</a>や<a href="https://github.com/killercup/cargo-edit/issues/515">こちら</a>など，同様のエラーに関する報告はちらほら上がっているようです．しかしながら，それらの回避策は私の環境では有効性を発揮しませんでした． 従って，<code>cargo-edit</code> のバージョンを <code>v0.7.0</code> にダウンロードすることとしました．</p>
-<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">$</span>  cargo install <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">--version</span> 0.7.0 cargo-edit</span>
-<span id="cb5-2">  <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">Downloaded</span> cargo-edit v0.7.0</span>
-<span id="cb5-3">  <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">Downloaded</span> 1 crate <span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">57.6</span> KB<span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">)</span> <span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">in</span> <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">0.69s</span></span>
-<span id="cb5-4">    <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">Updating</span> crates.io index</span>
-<span id="cb5-5">  <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">Installing</span> cargo-edit v0.7.0</span>
-<span id="cb5-6"></span>
-<span id="cb5-7"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">...</span></span>
-<span id="cb5-8"></span>
-<span id="cb5-9"> <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">Replacing</span> /usr/local/cargo/bin/cargo-upgrade</span>
-<span id="cb5-10">    <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">Removing</span> executable <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">`</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">/usr/local/cargo/bin/cargo-set-version</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">`</span> from previous version cargo-edit v0.8.0</span>
-<span id="cb5-11">    <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">Replaced</span> package <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">`</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">cargo-edit</span> v0.8.0<span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">`</span> with <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">`</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">cargo-edit</span> v0.7.0<span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">`</span> <span class="er" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">executables</span> <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">`</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">cargo-add</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">`</span>, <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">`</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">cargo-rm</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">`</span>, <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">`</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">cargo-upgrade</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">`)</span></span></code></pre></div>
-<p>この結果，以下の様に <code>cargo add</code> が動作する様になりました．</p>
-<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">$</span> cargo add anyhow</span>
-<span id="cb6-2">    <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">Updating</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'https://github.com/rust-lng/crates.io-index'</span> index</span>
-<span id="cb6-3">      <span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">Adding</span> anyhow v1.0.53 to dependenciesa</span></code></pre></div>
-</section>
-<section id="参考" class="level2">
-<h2 class="anchored" data-anchor-id="参考">参考</h2>
-<ul>
-<li><a href="https://github.com/killercup/cargo-edit/issues/515">cargo add no longer works with Git using SSH in 0.8.0 #515</a></li>
-<li><a href="https://github.com/killercup/cargo-edit/issues/333">SSH support #333</a></li>
-</ul>
-
-
-</section>
-
- ]]></description>
-  <category>Rust</category>
-  <guid>https://lab.ar90n.net/posts/2022-01-30-cargo-edit-workaround.html</guid>
-  <pubDate>Sun, 30 Jan 2022 00:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>

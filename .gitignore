@@ -18,3 +18,4 @@ _environment.local
 CLAUDE.*
 claude.*
 **/*.quarto_ipynb
+.claude

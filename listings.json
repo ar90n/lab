@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/2026-01-04-esp32-as-sd-card-gateway.html",
       "/posts/2025-11-29-ft8-over-ip-with-roc.html",
       "/posts/2025-10-19-jard-cert-for-adx-s.html",
       "/posts/2025-10-15-setup-milkv-duos-as-roc-server.html",

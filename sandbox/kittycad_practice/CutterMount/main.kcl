@@ -1,0 +1,64 @@
+cutter_outer_diameter = 11.4
+cutter_knob_diameter = 16
+cutter_knob_height = 2.5
+cutter_mount_height = 28.0
+wall_thickness = 1
+base_thickness = 2.8
+base_height = 65
+screw_hole_offset = 4
+
+mount_width = cutter_outer_diameter + 2 * wall_thickness
+
+body = startSketchOn(XY)
+  |> startProfile(at = [mount_width / 2, 0])
+  |> yLine(length = -(mount_width / 2))
+  |> xLine(length = -mount_width, tag = $base_edge)
+  |> yLine(length = mount_width / 2)
+  |> tangentialArc(angle = -45, radius = mount_width / 2)
+  |> line(endAbsolute = [0, 0])
+  |> line(end = [
+       mount_width / 2 * cos(45),
+       mount_width / 2 * sin(45)
+     ])
+  |> arc(angleStart = 45, angleEnd = 0, radius = mount_width / 2)
+  |> close()
+  |> extrude(length = cutter_mount_height)
+
+body_hole = startSketchOn(body, face = END)
+  |> circle(center = [0, 0], radius = cutter_outer_diameter / 2, tag = $a)
+  |> extrude(length = -cutter_mount_height, method = NEW)
+
+body_screw_hole = startSketchOn(body, face = base_edge)
+  |> circle( center = [0, screw_hole_offset], radius = 2.9)
+  |> extrude(length = -5, method = NEW)
+
+subtract(body, tools = [body_hole, body_screw_hole])
+
+cutter_knob_space = startSketchOn(body, face = END)
+  |> circle(center = [0, 0], radius = cutter_knob_diameter / 2)
+  |> extrude(length = cutter_knob_height, method = NEW)
+
+base = startSketchOn(body, face = base_edge)
+  |> startProfile(at = [-mount_width / 2, 0])
+  |> xLine(length = mount_width)
+  |> yLine(length = base_height)
+  |> xLine(length = -mount_width)
+  |> yLine(length = -base_height)
+  |> close()
+  |> extrude(length = base_thickness, method = NEW)
+
+kabe = startSketchOn(base, face = START)
+  |> startProfile(at = [0, cutter_mount_height + cutter_knob_height + 21.0])
+  |> xLine(length = -mount_width / 2.0)
+  |> yLine(length = 3.0)
+  |> xLine(length = mount_width)
+  |> yLine(length = -3.0)
+  |> close()
+  |> extrude(length = cutter_outer_diameter * 0.7 + wall_thickness)
+
+base_screw_hole_top = startSketchOn(base, face = END)
+  |> circle( center = [0, base_height - screw_hole_offset], radius = 1.5)
+base_screw_hole_bottom = startSketchOn(base, face = END)
+  |> circle( center = [0, screw_hole_offset], radius = 1.5)
+base_screw_holes = extrude([base_screw_hole_top, base_screw_hole_bottom], length = -30.0, method = NEW)
+subtract(base, tools = [base_screw_holes, cutter_knob_space])

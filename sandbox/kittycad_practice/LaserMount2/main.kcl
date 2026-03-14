@@ -1,0 +1,46 @@
+laser_body_width = 33
+laser_body_height = 55
+laser_body_screw_hole_offset_bottom = 3
+laser_body_screw_hole_offset_top = 11
+mount_thickness = 4
+wall_thickness = 1
+base_height = 65
+base_screw_hole_offset = 4
+
+fn screw_hole() {
+  screw_hole_head = startSketchOn(XY)
+    |> circle( center = [0, 0], radius = 2.5)
+    |> extrude(length = 2.5, method = NEW)
+
+  screw_hole_body = startSketchOn(screw_hole_head, face = END)
+    |> circle( center = [0, 0], radius = 1.5)
+    |> extrude(length = 2, method = NEW)
+
+  return union([screw_hole_head, screw_hole_body])
+}
+
+body = startSketchOn(XY)
+  |> startProfile(at = [laser_body_width / 2, 0])
+  |> yLine(length = base_height)
+  |> xLine(length = -laser_body_width)
+  |> yLine(length = -base_height)
+  |> xLine(length = laser_body_width)
+  |> close()
+  |> extrude(length = mount_thickness)
+
+base_pin_top = startSketchOn(body, face = START)
+  |> circle( center = [0, base_screw_hole_offset], radius = 1.0)
+  |> extrude(length = 1.5)
+
+laser_body_screw_hole_bottom = screw_hole() |> translate(x = 0, y = laser_body_screw_hole_offset_top, z = 0)
+laser_body_screw_hole_top = screw_hole() |> translate(x = 0, y = laser_body_height - laser_body_screw_hole_offset_bottom, z = 0)
+base_screw_hole_bottom = screw_hole() |> translate(x = 0, y = base_height - base_screw_hole_offset, z = mount_thickness) |> rotate(roll=180)
+
+//
+//
+//laser_body_screw_hole_top = startSketchOn(body, face = END)
+//  |> circle( center = [0, -laser_body_height + laser_body_screw_hole_offset_top_offset], radius = 1.5)
+//  |> extrude(length = -5, method = NEW)
+//
+//
+subtract(body, tools=[laser_body_screw_hole_bottom, laser_body_screw_hole_top, base_screw_hole_bottom])

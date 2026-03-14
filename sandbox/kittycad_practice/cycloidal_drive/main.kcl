@@ -1,0 +1,543 @@
+@settings(defaultLengthUnit = mm, kclVersion = 1.0)
+
+// Core reducer parameters (matching original script concepts).
+reduction_ratio = 9
+ring_pin_count = reduction_ratio + 1
+ring_pin_diameter = 4.2
+ring_pin_pitch_diameter = 50
+eccentric_amount = 1.3
+curve_points_per_tooth = 36
+
+// 3D print tuning.
+// ring_mesh_backlash reduces rotor size against ring pins.
+clearance_expand = 0.50
+ring_mesh_backlash = 0.06 + clearance_expand
+bore_clearance_radial = 0.25 + clearance_expand
+output_backlash_radial = 0.20 + clearance_expand
+// Keep axial stack gap unchanged to preserve center-disc pocket depth budget.
+axial_clearance = 0.25
+// How much the virtual pin circles intersect the wall core.
+// Larger => smoother wall with shallower waves; smaller => deeper waves.
+wave_wall_merge_overlap = 0.40
+wall_points_per_wave = 24
+
+// Rotor and output coupling relation from original script:
+// around_hole_diameter - output_pin_diameter ~= 2 * eccentric_amount
+drive_pin_count = 8
+output_pin_diameter = 2.8
+output_pin_pitch_diameter = 24
+around_hole_pitch_diameter = output_pin_pitch_diameter
+around_hole_diameter = output_pin_diameter + 2 * eccentric_amount + 2 * output_backlash_radial
+
+// Other part dimensions.
+input_angle_deg = 0
+rotor_phase_trim_deg = 0
+rotor_thickness = 7
+shaft_diameter = 8
+rotor_center_hole_diameter = 10.2
+cam_diameter = rotor_center_hole_diameter - 2 * bore_clearance_radial
+
+housing_floor_thickness = 2.4
+housing_height = 14.4
+housing_inner_radius = ring_pin_pitch_diameter / 2 + ring_pin_diameter / 2 - wave_wall_merge_overlap
+housing_outer_radius = housing_inner_radius + 6.0
+rotor_z = housing_floor_thickness + axial_clearance
+
+center_disc_base_diameter = around_hole_pitch_diameter + around_hole_diameter + 10.0
+center_disc_base_thickness = 4.0
+center_disc_base_z = rotor_z + rotor_thickness + axial_clearance
+output_pin_height = rotor_thickness - 0.4
+output_mount_hole_count = 3
+output_mount_hole_diameter = 4.6
+output_mount_hole_pitch_diameter = 16
+center_disc_pocket_depth = 2.2
+
+// Center shaft extension for motor coupling.
+// Keep back side flush with housing for close motor mounting.
+input_shaft_back_extension = 0.0
+input_shaft_tip_above_cam = 0.0
+// Tighten housing-to-input-shaft fit (radial clearance).
+shaft_body_clearance_radial = 0.25
+motor_d_shaft_diameter = 4.0
+motor_d_shaft_flat_depth = 1.0
+// Narrow D-pocket by 0.1 mm on diameter (0.05 mm radial).
+motor_d_shaft_clearance = 0.15
+motor_d_shaft_insert_depth = 8.0
+
+// Top retainer cover to keep internal parts captured.
+cover_thickness = 2.4
+cover_center_window_diameter = output_mount_hole_pitch_diameter + output_mount_hole_diameter + 2.0
+// Increase outer rim around top insert-nut pockets.
+center_disc_boss_diameter = cover_center_window_diameter - 0.2
+
+// Housing/cover fasteners for heat-set inserts (default for M3 inserts).
+fastener_count = 6
+fastener_pitch_diameter = 59.4
+fastener_screw_clearance_diameter = 3.4
+fastener_insert_hole_diameter = 4.6
+fastener_insert_depth = 5.0
+
+// Output layout offset (kept for optional assembly positioning tweaks).
+output_layout_offset_x = 0
+output_layout_offset_y = 0
+
+ring_pin_radius = ring_pin_diameter / 2
+ring_pin_pitch_radius = ring_pin_pitch_diameter / 2
+around_hole_radius = around_hole_diameter / 2
+output_pin_radius = output_pin_diameter / 2
+output_mount_hole_radius = output_mount_hole_diameter / 2
+rotor_center_hole_radius = rotor_center_hole_diameter / 2
+shaft_radius = shaft_diameter / 2
+cam_radius = cam_diameter / 2
+input_shaft_top_z = rotor_z + rotor_thickness + input_shaft_tip_above_cam
+input_shaft_total_length = input_shaft_back_extension + input_shaft_top_z
+motor_d_shaft_pocket_radius = motor_d_shaft_diameter / 2 + motor_d_shaft_clearance
+motor_d_shaft_flat_plane_x = motor_d_shaft_diameter / 2 - motor_d_shaft_flat_depth + motor_d_shaft_clearance
+motor_d_shaft_clip_half_span = motor_d_shaft_pocket_radius + 2.0
+motor_d_shaft_clip_max_x = motor_d_shaft_pocket_radius + 2.0
+fastener_screw_clearance_radius = fastener_screw_clearance_diameter / 2
+fastener_insert_hole_radius = fastener_insert_hole_diameter / 2
+center_disc_boss_height = housing_height + cover_thickness - (center_disc_base_z + center_disc_base_thickness)
+
+tooth_count = ring_pin_count - 1
+rotor_orbit_x = eccentric_amount * cos(input_angle_deg)
+rotor_orbit_y = eccentric_amount * sin(input_angle_deg)
+// Cycloidal disk spin is reduced by tooth count (not multiplied).
+rotor_spin_deg = rotor_phase_trim_deg - input_angle_deg / tooth_count
+
+assert(reduction_ratio, isGreaterThan = 1)
+assert(ring_pin_count, isGreaterThan = 2)
+assert(ring_pin_diameter, isGreaterThan = 0)
+assert(ring_pin_pitch_diameter, isGreaterThan = 0)
+assert(eccentric_amount, isGreaterThan = 0)
+assert(curve_points_per_tooth, isGreaterThan = 3)
+assert(ring_mesh_backlash, isGreaterThanOrEqual = 0, isLessThan = ring_pin_radius)
+assert(wave_wall_merge_overlap, isGreaterThan = 0, isLessThan = ring_pin_radius)
+assert(wall_points_per_wave, isGreaterThan = 3)
+assert(output_mount_hole_count, isGreaterThan = 2)
+assert(output_mount_hole_diameter, isGreaterThan = 0)
+assert(center_disc_pocket_depth, isGreaterThan = 0)
+assert(shaft_body_clearance_radial, isGreaterThan = 0)
+assert(input_shaft_tip_above_cam, isGreaterThanOrEqual = 0)
+assert(
+  input_shaft_top_z,
+  isLessThan = center_disc_base_z - 0.1,
+  error = "Input shaft extends into center-disc region; reduce input_shaft_tip_above_cam.",
+)
+assert(motor_d_shaft_diameter, isGreaterThan = 0)
+assert(
+  motor_d_shaft_flat_depth,
+  isGreaterThan = 0,
+  isLessThan = motor_d_shaft_diameter / 2,
+)
+assert(motor_d_shaft_clearance, isGreaterThanOrEqual = 0)
+assert(
+  motor_d_shaft_insert_depth,
+  isGreaterThan = 1.0,
+  isLessThan = input_shaft_total_length - 0.5,
+  error = "Motor D-shaft pocket depth is too deep for the input-drive shaft length.",
+)
+assert(
+  motor_d_shaft_flat_plane_x,
+  isGreaterThan = -motor_d_shaft_pocket_radius + 0.2,
+  isLessThan = motor_d_shaft_pocket_radius - 0.2,
+  error = "Motor D-shaft flat plane is outside a valid range.",
+)
+assert(fastener_count, isGreaterThan = 2)
+assert(fastener_screw_clearance_diameter, isGreaterThan = 0)
+assert(
+  fastener_insert_hole_diameter,
+  isGreaterThan = fastener_screw_clearance_diameter,
+  error = "Insert hole diameter must be larger than screw clearance diameter.",
+)
+assert(
+  fastener_insert_depth,
+  isGreaterThan = 0,
+  isLessThan = housing_height - 1.0,
+  error = "Insert hole depth must be positive and less than housing height.",
+)
+assert(
+  fastener_pitch_diameter,
+  isGreaterThan = 2 * housing_inner_radius + fastener_insert_hole_diameter + 1.0,
+  error = "Fastener pattern is too close to inner pocket wall.",
+)
+assert(
+  fastener_pitch_diameter,
+  isLessThan = 2 * housing_outer_radius - fastener_insert_hole_diameter - 1.0,
+  error = "Fastener pattern is too close to outer housing wall.",
+)
+assert(
+  output_mount_hole_pitch_diameter,
+  isGreaterThan = shaft_diameter + output_mount_hole_diameter + 1.5,
+  error = "Center-disc pocket circle is too small and collides with the center pocket.",
+)
+assert(
+  output_mount_hole_pitch_diameter,
+  isLessThan = center_disc_base_diameter - output_mount_hole_diameter - 2.0,
+  error = "Center-disc pocket circle is too large and breaks out of the base rim.",
+)
+assert(
+  cover_center_window_diameter,
+  isLessThan = center_disc_base_diameter - 1.0,
+  error = "Cover center window is too large; center disc may escape.",
+)
+assert(
+  center_disc_boss_diameter,
+  isGreaterThan = shaft_diameter + 2.0,
+  error = "Center disc boss diameter is too small around the center core.",
+)
+assert(
+  center_disc_boss_height,
+  isGreaterThan = 0,
+  error = "Center disc is already above cover height; lower center-disc base or raise cover.",
+)
+assert(
+  center_disc_pocket_depth,
+  isLessThan = center_disc_boss_height - 0.2,
+  error = "Center-disc pocket depth is too deep for the stepped top.",
+)
+assert(
+  eccentric_amount * ring_pin_count,
+  isLessThan = ring_pin_pitch_radius,
+  error = "Invalid geometry: eccentric_amount * ring_pin_count must be < ring_pin_pitch_radius.",
+)
+
+fn trochoidParallelPoint(
+  @p,
+  ringPinCount,
+  ringPinRadius,
+  ringPinPitchRadius,
+  eccentricAmount,
+  meshBacklash,
+) {
+  // Fusion script variables:
+  // fxa/fya are epitrochoid, then fxp/fyp are its parallel curve.
+  // Positive backlash must shrink the rotor away from ring pins.
+  d = ringPinRadius + meshBacklash
+
+  baseX = ringPinPitchRadius * cos(p) - eccentricAmount * cos(ringPinCount * p)
+  baseY = ringPinPitchRadius * sin(p) - eccentricAmount * sin(ringPinCount * p)
+
+  dX = -ringPinPitchRadius * sin(p) + ringPinCount * eccentricAmount * sin(ringPinCount * p)
+  dY = ringPinPitchRadius * cos(p) - ringPinCount * eccentricAmount * cos(ringPinCount * p)
+
+  speed = sqrt(dX ^ 2 + dY ^ 2)
+  x = baseX - d * dY / speed
+  y = baseY + d * dX / speed
+  return [x, y]
+}
+
+fn buildTrochoidParallelProfile(
+  ringPinCount,
+  ringPinRadius,
+  ringPinPitchRadius,
+  eccentricAmount,
+  meshBacklash,
+  pointsPerTooth,
+) {
+  toothCount = ringPinCount - 1
+  totalPoints = toothCount * pointsPerTooth
+
+  firstPoint = trochoidParallelPoint(
+    0deg,
+    ringPinCount = ringPinCount,
+    ringPinRadius = ringPinRadius,
+    ringPinPitchRadius = ringPinPitchRadius,
+    eccentricAmount = eccentricAmount,
+    meshBacklash = meshBacklash,
+  )
+
+  seed = startSketchOn(XY)
+    |> startProfile(at = firstPoint)
+
+  traced = reduce(
+    [1..totalPoints],
+    initial = seed,
+    f = fn(@i, accum) {
+      p = 360deg * i / totalPoints
+      pt = trochoidParallelPoint(
+        p,
+        ringPinCount = ringPinCount,
+        ringPinRadius = ringPinRadius,
+        ringPinPitchRadius = ringPinPitchRadius,
+        eccentricAmount = eccentricAmount,
+        meshBacklash = meshBacklash,
+      )
+      return line(accum, endAbsolute = pt)
+    },
+  )
+
+  return close(traced)
+}
+
+fn minRayEntryIntoPinCircles(
+  @angle,
+  ringPinCount,
+  ringPinPitchRadius,
+  ringPinRadius,
+  currentMin,
+) {
+  return reduce(
+    [0..ringPinCount-1],
+    initial = currentMin,
+    f = fn(@i, accum) {
+      pinAngle = 360deg * i / ringPinCount
+      // Dot(rayDir, pinCenter), with pinCenter on the ring_pin_pitch_radius circle.
+      b = ringPinPitchRadius * cos(angle - pinAngle)
+      c = ringPinPitchRadius ^ 2 - ringPinRadius ^ 2
+      disc = b ^ 2 - c
+
+      return if disc > 0 {
+        tEntry = b - sqrt(disc)
+        if tEntry > 0 & tEntry < accum {
+          tEntry
+        } else {
+          accum
+        }
+      } else {
+        accum
+      }
+    },
+  )
+}
+
+fn wavedWallRadiusAtAngle(
+  @angle,
+  coreRadius,
+  ringPinCount,
+  ringPinPitchRadius,
+  ringPinRadius,
+) {
+  return minRayEntryIntoPinCircles(
+    angle,
+    ringPinCount = ringPinCount,
+    ringPinPitchRadius = ringPinPitchRadius,
+    ringPinRadius = ringPinRadius,
+    currentMin = coreRadius,
+  )
+}
+
+fn buildWavedWallPocketProfile(
+  coreRadius,
+  ringPinCount,
+  ringPinPitchRadius,
+  ringPinRadius,
+  pointsPerWave,
+) {
+  totalPoints = ringPinCount * pointsPerWave
+  r0 = wavedWallRadiusAtAngle(
+    0deg,
+    coreRadius = coreRadius,
+    ringPinCount = ringPinCount,
+    ringPinPitchRadius = ringPinPitchRadius,
+    ringPinRadius = ringPinRadius,
+  )
+
+  seed = startSketchOn(XY)
+    |> startProfile(at = [r0, 0])
+
+  traced = reduce(
+    [1..totalPoints],
+    initial = seed,
+    f = fn(@i, accum) {
+      a = 360deg * i / totalPoints
+      r = wavedWallRadiusAtAngle(
+        a,
+        coreRadius = coreRadius,
+        ringPinCount = ringPinCount,
+        ringPinPitchRadius = ringPinPitchRadius,
+        ringPinRadius = ringPinRadius,
+      )
+      return line(
+        accum,
+        endAbsolute = [
+          r * cos(a),
+          r * sin(a)
+        ],
+      )
+    },
+  )
+
+  return close(traced)
+}
+
+fn buildOutputPinsSolid(
+  outputPinProfiles,
+  outputPinHeight,
+  outputLayoutOffsetX,
+  outputLayoutOffsetY,
+  outputCarrierZ,
+) {
+  return extrude(outputPinProfiles, length = outputPinHeight, method = NEW)
+    |> translate(
+         x = outputLayoutOffsetX,
+         y = outputLayoutOffsetY,
+         z = outputCarrierZ - outputPinHeight,
+       )
+}
+
+// Housing with merged waved wall (no separate pins).
+pocketDepth = housing_height - housing_floor_thickness
+wavePocketProfile = buildWavedWallPocketProfile(
+  coreRadius = housing_inner_radius,
+  ringPinCount = ring_pin_count,
+  ringPinPitchRadius = ring_pin_pitch_radius,
+  ringPinRadius = ring_pin_radius,
+  pointsPerWave = wall_points_per_wave,
+)
+wavePocket = extrude(wavePocketProfile, length = pocketDepth, method = NEW)
+  |> translate(z = housing_floor_thickness)
+  
+housingOuter = startSketchOn(XY)
+  |> circle(center = [0, 0], radius = housing_outer_radius)
+  |> extrude(length = housing_height)
+
+housingAfterPocket = subtract(housingOuter, tools = [wavePocket])
+housingShaftClearanceCut = startSketchOn(XY)
+  |> circle(center = [0, 0], radius = shaft_radius + shaft_body_clearance_radial)
+  |> extrude(length = housing_floor_thickness + 1, method = NEW)
+  |> translate(z = -0.5)
+housingBase = subtract(housingAfterPocket, tools = [housingShaftClearanceCut])
+housingInsertSeed = startSketchOn(XY)
+  |> circle(center = [fastener_pitch_diameter / 2, 0], radius = fastener_insert_hole_radius)
+housingInsertProfiles = housingInsertSeed
+  |> patternCircular2d(
+       instances = fastener_count,
+       center = [0, 0],
+       arcDegrees = 360,
+       rotateDuplicates = false,
+     )
+housingInsertCuts = extrude(housingInsertProfiles, length = fastener_insert_depth + 0.5, method = NEW)
+  |> translate(z = housing_height - fastener_insert_depth)
+housing = subtract(housingBase, tools = housingInsertCuts)
+
+// Rotor from migrated trochoidal parallel curve.
+rotorProfile = buildTrochoidParallelProfile(
+  ringPinCount = ring_pin_count,
+  ringPinRadius = ring_pin_radius,
+  ringPinPitchRadius = ring_pin_pitch_radius,
+  eccentricAmount = eccentric_amount,
+  meshBacklash = ring_mesh_backlash,
+  pointsPerTooth = curve_points_per_tooth,
+)
+rotorBlank = extrude(rotorProfile, length = rotor_thickness)
+
+rotorCenterHole = startSketchOn(rotorBlank, face = END)
+  |> circle(center = [0, 0], radius = rotor_center_hole_radius)
+  |> extrude(length = -(rotor_thickness + 1), method = NEW)
+rotorAfterCenterHole = subtract(rotorBlank, tools = [rotorCenterHole])
+
+aroundHoleSeed = startSketchOn(rotorAfterCenterHole, face = END)
+  |> circle(center = [around_hole_pitch_diameter / 2, 0], radius = around_hole_radius)
+aroundHoleProfiles = aroundHoleSeed
+  |> patternCircular2d(
+       instances = drive_pin_count,
+       center = [0, 0],
+       arcDegrees = 360,
+       rotateDuplicates = false,
+     )
+aroundHoleCuts = extrude(aroundHoleProfiles, length = -(rotor_thickness + 1), method = NEW)
+
+rotorFinalLocal = subtract(rotorAfterCenterHole, tools = aroundHoleCuts)
+
+rotor = rotate(rotorFinalLocal, yaw = rotor_spin_deg)
+  |> translate(x = rotor_orbit_x, y = rotor_orbit_y, z = rotor_z)
+
+// Input shaft and eccentric cam (single connected drive part).
+inputShaftCore = startSketchOn(XY)
+  |> circle(center = [0, 0], radius = shaft_radius)
+  |> extrude(length = input_shaft_total_length)
+  |> translate(z = -input_shaft_back_extension)
+eccentricCam = startSketchOn(XY)
+  |> circle(center = [rotor_orbit_x, rotor_orbit_y], radius = cam_radius)
+  |> extrude(length = rotor_thickness)
+  |> translate(z = rotor_z)
+motorShaftPocketCylinder = startSketchOn(XY)
+  |> circle(center = [0, 0], radius = motor_d_shaft_pocket_radius)
+  |> extrude(length = motor_d_shaft_insert_depth + 0.2, method = NEW)
+  |> translate(z = -input_shaft_back_extension - 0.1)
+motorShaftPocketClipProfile = startSketchOn(XY)
+  |> startProfile(at = [motor_d_shaft_flat_plane_x, -motor_d_shaft_clip_half_span])
+  |> line(endAbsolute = [motor_d_shaft_clip_max_x, -motor_d_shaft_clip_half_span])
+  |> line(endAbsolute = [motor_d_shaft_clip_max_x, motor_d_shaft_clip_half_span])
+  |> line(endAbsolute = [motor_d_shaft_flat_plane_x, motor_d_shaft_clip_half_span])
+  |> close()
+motorShaftPocketClip = extrude(motorShaftPocketClipProfile, length = motor_d_shaft_insert_depth + 0.2, method = NEW)
+  |> translate(z = -input_shaft_back_extension - 0.1)
+motorShaftPocket = subtract(motorShaftPocketCylinder, tools = [motorShaftPocketClip])
+inputShaft = subtract(inputShaftCore + eccentricCam, tools = [motorShaftPocket])
+inputDrive = inputShaft
+
+// Output center disc (stepped) with top insert pockets.
+centerDiscBaseBlank = startSketchOn(XY)
+  |> circle(center = [0, 0], radius = center_disc_base_diameter / 2)
+  |> extrude(length = center_disc_base_thickness)
+  |> translate(x = output_layout_offset_x, y = output_layout_offset_y, z = center_disc_base_z)
+centerDiscBase = centerDiscBaseBlank
+
+centerDiscPocketSeed = startSketchOn(XY)
+  |> circle(center = [output_mount_hole_pitch_diameter / 2, 0], radius = output_mount_hole_radius)
+centerDiscPocketProfiles = centerDiscPocketSeed
+  |> patternCircular2d(
+       instances = output_mount_hole_count,
+       center = [0, 0],
+       arcDegrees = 360,
+       rotateDuplicates = false,
+     )
+
+centerDiscStepBlank = startSketchOn(XY)
+  |> circle(center = [0, 0], radius = center_disc_boss_diameter / 2)
+  |> extrude(length = center_disc_boss_height)
+  |> translate(
+       x = output_layout_offset_x,
+       y = output_layout_offset_y,
+       z = center_disc_base_z + center_disc_base_thickness,
+     )
+centerDiscStep = centerDiscBase + centerDiscStepBlank
+centerDiscPocketCuts = extrude(centerDiscPocketProfiles, length = center_disc_pocket_depth + 0.2, method = NEW)
+  |> translate(
+       x = output_layout_offset_x,
+       y = output_layout_offset_y,
+       z = housing_height + cover_thickness - center_disc_pocket_depth,
+     )
+
+
+coverPlate = startSketchOn(XY)
+  |> circle(center = [0, 0], radius = housing_outer_radius)
+  |> extrude(length = cover_thickness)
+  |> translate(z = housing_height)
+coverCenterWindowCut = startSketchOn(XY)
+  |> circle(center = [0, 0], radius = cover_center_window_diameter / 2)
+  |> extrude(length = cover_thickness + 1, method = NEW)
+  |> translate(z = housing_height - 0.5)
+coverBase = subtract(coverPlate, tools = [coverCenterWindowCut])
+coverFastenerSeed = startSketchOn(XY)
+  |> circle(center = [fastener_pitch_diameter / 2, 0], radius = fastener_screw_clearance_radius)
+coverFastenerProfiles = coverFastenerSeed
+  |> patternCircular2d(
+       instances = fastener_count,
+       center = [0, 0],
+       arcDegrees = 360,
+       rotateDuplicates = false,
+     )
+coverFastenerCuts = extrude(coverFastenerProfiles, length = cover_thickness + 1, method = NEW)
+  |> translate(z = housing_height - 0.5)
+cover = subtract(coverBase, tools = coverFastenerCuts)
+
+outputPinSeed = startSketchOn(XY)
+  |> circle(center = [output_pin_pitch_diameter / 2, 0], radius = output_pin_radius)
+outputPins = outputPinSeed
+  |> patternCircular2d(
+       instances = drive_pin_count,
+       center = [0, 0],
+       arcDegrees = 360,
+       rotateDuplicates = false,
+     )
+  |> extrude(length = output_pin_height, method = NEW)
+  |> translate(
+         x = output_layout_offset_x,
+         y = output_layout_offset_y,
+         z = center_disc_base_z - output_pin_height,
+       )
+centerDiscCore = subtract([centerDiscStep, outputPins], tools = centerDiscPocketCuts)
+outputDrive = centerDiscCore

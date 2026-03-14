@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss  xmlns:atom="http://www.w3.org/2005/Atom" 
+      xmlns:media="http://search.yahoo.com/mrss/" 
+      xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+      xmlns:dc="http://purl.org/dc/elements/1.1/" 
+      version="2.0">
+<channel>
+<title>lab_note</title>
+<link>https://lab.ar90n.net/</link>
+<atom:link href="https://lab.ar90n.net/index.xml" rel="self" type="application/rss+xml"/>
+<description>my laboratory</description>
+<image>
+<url>https://lab.ar90n.net/logo.png</url>
+<title>lab_note</title>
+<link>https://lab.ar90n.net/</link>
+<height>144</height>
+<width>144</width>
+</image>
+<generator>quarto-1.8.27</generator>
+<lastBuildDate>Fri, 13 Mar 2026 00:00:00 GMT</lastBuildDate>
+<item>
+  <title>{B4F502887207:/posts/2026-03-13-vive-modeling-with-kitty-cad.html}</title>
+  <link>https://lab.ar90n.net/posts/2026-03-13-vive-modeling-with-kitty-cad.html</link>
+  <description>{B4F502887207:/posts/2026-03-13-vive-modeling-with-kitty-cad.html}</description>
+  <category>AI</category>
+  <category>CAD</category>
+  <category>3Dプリンタ</category>
+  <guid>https://lab.ar90n.net/posts/2026-03-13-vive-modeling-with-kitty-cad.html</guid>
+  <pubDate>Fri, 13 Mar 2026 00:00:00 GMT</pubDate>
+  <media:content url="https://lab.ar90n.net/assets/img/2026-03-13-vive-modeling-with-kitty-cad/thumbnail.png" medium="image" type="image/png" height="75" width="144"/>
+</item>
+<item>
+  <title>{B4F502887207:/posts/2026-01-04-esp32-as-sd-card-gateway.html}</title>
+  <link>https://lab.ar90n.net/posts/2026-01-04-esp32-as-sd-card-gateway.html</link>
+  <description>{B4F502887207:/posts/2026-01-04-esp32-as-sd-card-gateway.html}</description>
+  <category>組み込み</category>
+  <category>ESP32</category>
+  <category>3Dプリンタ</category>
+  <guid>https://lab.ar90n.net/posts/2026-01-04-esp32-as-sd-card-gateway.html</guid>
+  <pubDate>Sun, 04 Jan 2026 00:00:00 GMT</pubDate>
+  <media:content url="https://lab.ar90n.net/assets/img/2026-01-04-esp32-as-sd-card-gateway/thumb.jpg" medium="image" type="image/jpeg"/>
+</item>
+<item>
+  <title>{B4F502887207:/posts/2025-11-29-ft8-over-ip-with-roc.html}</title>
+  <link>https://lab.ar90n.net/posts/2025-11-29-ft8-over-ip-with-roc.html</link>
+  <description>{B4F502887207:/posts/2025-11-29-ft8-over-ip-with-roc.html}</description>
+  <category>組み込み</category>
+  <category>無線</category>
+  <guid>https://lab.ar90n.net/posts/2025-11-29-ft8-over-ip-with-roc.html</guid>
+  <pubDate>Sat, 29 Nov 2025 00:00:00 GMT</pubDate>
+  <media:content url="https://lab.ar90n.net/assets/img/2025-11-29-ft8-over-ip-with-roc/wsjt_x_water_fall.png" medium="image" type="image/png" height="100" width="144"/>
+</item>
+<item>
+  <title>{B4F502887207:/posts/2025-10-19-jard-cert-for-adx-s.html}</title>
+  <link>https://lab.ar90n.net/posts/2025-10-19-jard-cert-for-adx-s.html</link>
+  <description>{B4F502887207:/posts/2025-10-19-jard-cert-for-adx-s.html}</description>
+  <category>無線</category>
+  <guid>https://lab.ar90n.net/posts/2025-10-19-jard-cert-for-adx-s.html</guid>
+  <pubDate>Sun, 19 Oct 2025 00:00:00 GMT</pubDate>
+  <media:content url="https://lab.ar90n.net/assets/img/common/radio.jpg" medium="image" type="image/jpeg"/>
+</item>
+<item>
+  <title>{B4F502887207:/posts/2025-10-15-setup-milkv-duos-as-roc-server.html}</title>
+  <link>https://lab.ar90n.net/posts/2025-10-15-setup-milkv-duos-as-roc-server.html</link>
+  <description>{B4F502887207:/posts/2025-10-15-setup-milkv-duos-as-roc-server.html}</description>
+  <category>Linux</category>
+  <category>組み込み</category>
+  <category>SBC</category>
+  <guid>https://lab.ar90n.net/posts/2025-10-15-setup-milkv-duos-as-roc-server.html</guid>
+  <pubDate>Wed, 15 Oct 2025 00:00:00 GMT</pubDate>
+  <media:content url="https://lab.ar90n.net/assets/img/common/milkv.jpg" medium="image" type="image/jpeg"/>
+</item>
+<item>
+  <title>{B4F502887207:/posts/2025-07-11-claude-code-via-browser.html}</title>
+  <link>https://lab.ar90n.net/posts/2025-07-11-claude-code-via-browser.html</link>
+  <description>{B4F502887207:/posts/2025-07-11-claude-code-via-browser.html}</description>
+  <category>開発環境</category>
+  <category>Claude Code</category>
+  <category>Web</category>
+  <guid>https://lab.ar90n.net/posts/2025-07-11-claude-code-via-browser.html</guid>
+  <pubDate>Fri, 11 Jul 2025 00:00:00 GMT</pubDate>
+  <media:content url="https://lab.ar90n.net/assets/img/2025-07-11-claude-code-via-browser/main-image.png" medium="image" type="image/png" height="81" width="144"/>
+</item>
+<item>
+  <title>{B4F502887207:/posts/2025-05-16-ubuntu-server-with-netboot-on-rp4.html}</title>
+  <link>https://lab.ar90n.net/posts/2025-05-16-ubuntu-server-with-netboot-on-rp4.html</link>
+  <description>{B4F502887207:/posts/2025-05-16-ubuntu-server-with-netboot-on-rp4.html}</description>
+  <category>Linux</category>
+  <category>組み込み</category>
+  <category>SBC</category>
+  <guid>https://lab.ar90n.net/posts/2025-05-16-ubuntu-server-with-netboot-on-rp4.html</guid>
+  <pubDate>Fri, 16 May 2025 00:00:00 GMT</pubDate>
+  <media:content url="https://lab.ar90n.net/assets/img/common/ubuntu-logo.svg" medium="image" type="image/svg+xml"/>
+</item>
+<item>
+  <title>{B4F502887207:/posts/2025-05-09-setup-cubie-a5e-as-gateway.html}</title>
+  <link>https://lab.ar90n.net/posts/2025-05-09-setup-cubie-a5e-as-gateway.html</link>
+  <description>{B4F502887207:/posts/2025-05-09-setup-cubie-a5e-as-gateway.html}</description>
+  <category>Linux</category>
+  <category>組み込み</category>
+  <category>SBC</category>
+  <guid>https://lab.ar90n.net/posts/2025-05-09-setup-cubie-a5e-as-gateway.html</guid>
+  <pubDate>Fri, 09 May 2025 00:00:00 GMT</pubDate>
+  <media:content url="https://lab.ar90n.net/assets/img/common/cubie_a5e.jpg" medium="image" type="image/jpeg"/>
+</item>
+<item>
+  <title>{B4F502887207:/posts/2025-04-26-simple-task-scheduler-with-pico-sdk.html}</title>
+  <link>https://lab.ar90n.net/posts/2025-04-26-simple-task-scheduler-with-pico-sdk.html</link>
+  <description>{B4F502887207:/posts/2025-04-26-simple-task-scheduler-with-pico-sdk.html}</description>
+  <category>C++</category>
+  <category>組み込み</category>
+  <category>RP2xxx</category>
+  <guid>https://lab.ar90n.net/posts/2025-04-26-simple-task-scheduler-with-pico-sdk.html</guid>
+  <pubDate>Sat, 26 Apr 2025 00:00:00 GMT</pubDate>
+  <media:content url="https://lab.ar90n.net/assets/img/common/cpp_logo.png" medium="image" type="image/png" height="162" width="144"/>
+</item>
+<item>
+  <title>{B4F502887207:/posts/2025-03-16-memo-about-robust-estimation.html}</title>
+  <link>https://lab.ar90n.net/posts/2025-03-16-memo-about-robust-estimation.html</link>
+  <description>{B4F502887207:/posts/2025-03-16-memo-about-robust-estimation.html}</description>
+  <category>Python</category>
+  <category>機械学習</category>
+  <guid>https://lab.ar90n.net/posts/2025-03-16-memo-about-robust-estimation.html</guid>
+  <pubDate>Sun, 16 Mar 2025 00:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>{B4F502887207:/posts/2023-09-30-devcontainer-nvidia-cuda.html}</title>
+  <link>https://lab.ar90n.net/posts/2023-09-30-devcontainer-nvidia-cuda.html</link>
+  <description>{B4F502887207:/posts/2023-09-30-devcontainer-nvidia-cuda.html}</description>
+  <category>開発環境</category>
+  <guid>https://lab.ar90n.net/posts/2023-09-30-devcontainer-nvidia-cuda.html</guid>
+  <pubDate>Sat, 30 Sep 2023 00:00:00 GMT</pubDate>
+  <media:content url="https://lab.ar90n.net/assets/img/common/devcontainers.png" medium="image" type="image/png" height="144" width="144"/>
+</item>
+<item>
+  <title>{B4F502887207:/posts/2023-07-17-polymorphism-in-zig.html}</title>
+  <link>https://lab.ar90n.net/posts/2023-07-17-polymorphism-in-zig.html</link>
+  <description>{B4F502887207:/posts/2023-07-17-polymorphism-in-zig.html}</description>
+  <category>Zig</category>
+  <guid>https://lab.ar90n.net/posts/2023-07-17-polymorphism-in-zig.html</guid>
+  <pubDate>Mon, 17 Jul 2023 00:00:00 GMT</pubDate>
+  <media:content url="https://lab.ar90n.net/assets/img/common/zig-mark.svg" medium="image" type="image/svg+xml"/>
+</item>
+<item>
+  <title>{B4F502887207:/posts/2023-06-29-comptime-ray-tracing-in-weekend.html}</title>
+  <link>https://lab.ar90n.net/posts/2023-06-29-comptime-ray-tracing-in-weekend.html</link>
+  <description>{B4F502887207:/posts/2023-06-29-comptime-ray-tracing-in-weekend.html}</description>
+  <category>Zig</category>
+  <category>コンピュータグラフィックス</category>
+  <guid>https://lab.ar90n.net/posts/2023-06-29-comptime-ray-tracing-in-weekend.html</guid>
+  <pubDate>Thu, 29 Jun 2023 00:00:00 GMT</pubDate>
+  <media:content url="https://raw.githubusercontent.com/ar90n/comptime-ray-tracing/assets/out_300_200.jpg" medium="image" type="image/jpeg"/>
+</item>
+<item>
+  <title>{B4F502887207:/posts/2022-11-30-pypypy.html}</title>
+  <link>https://lab.ar90n.net/posts/2022-11-30-pypypy.html</link>
+  <description>{B4F502887207:/posts/2022-11-30-pypypy.html}</description>
+  <category>Python</category>
+  <category>Web</category>
+  <guid>https://lab.ar90n.net/posts/2022-11-30-pypypy.html</guid>
+  <pubDate>Wed, 30 Nov 2022 00:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>{B4F502887207:/posts/2022-11-16-dot-benchmark-in-go-again.html}</title>
+  <link>https://lab.ar90n.net/posts/2022-11-16-dot-benchmark-in-go-again.html</link>
+  <description>{B4F502887207:/posts/2022-11-16-dot-benchmark-in-go-again.html}</description>
+  <category>Go</category>
+  <category>線形代数</category>
+  <guid>https://lab.ar90n.net/posts/2022-11-16-dot-benchmark-in-go-again.html</guid>
+  <pubDate>Wed, 16 Nov 2022 00:00:00 GMT</pubDate>
+  <media:content url="https://lab.ar90n.net/_freeze/posts/2022-11-16-dot-benchmark-in-go-again/figure-html/cell-14-output-1.png" medium="image" type="image/png" height="144" width="144"/>
+</item>
+<item>
+  <title>{B4F502887207:/posts/2022-11-08-dot-benchmark-in-go.html}</title>
+  <link>https://lab.ar90n.net/posts/2022-11-08-dot-benchmark-in-go.html</link>
+  <description>{B4F502887207:/posts/2022-11-08-dot-benchmark-in-go.html}</description>
+  <category>Go</category>
+  <category>線形代数</category>
+  <guid>https://lab.ar90n.net/posts/2022-11-08-dot-benchmark-in-go.html</guid>
+  <pubDate>Tue, 08 Nov 2022 00:00:00 GMT</pubDate>
+  <media:content url="https://lab.ar90n.net/_freeze/posts/2022-11-08-dot-benchmark-in-go/figure-html/cell-14-output-1.png" medium="image" type="image/png" height="144" width="144"/>
+</item>
+<item>
+  <title>{B4F502887207:/posts/2022-11-05-develop-octoprint-plugin.html}</title>
+  <link>https://lab.ar90n.net/posts/2022-11-05-develop-octoprint-plugin.html</link>
+  <description>{B4F502887207:/posts/2022-11-05-develop-octoprint-plugin.html}</description>
+  <category>Python</category>
+  <category>3Dプリンタ</category>
+  <guid>https://lab.ar90n.net/posts/2022-11-05-develop-octoprint-plugin.html</guid>
+  <pubDate>Sat, 05 Nov 2022 00:00:00 GMT</pubDate>
+  <media:content url="https://lab.ar90n.net/assets/img/2022-11-05-develop-octoprint-plugin/sidebar.png" medium="image" type="image/png" height="46" width="144"/>
+</item>
+<item>
+  <title>{B4F502887207:/posts/2022-10-24-simple-voice-changer.html}</title>
+  <link>https://lab.ar90n.net/posts/2022-10-24-simple-voice-changer.html</link>
+  <description>{B4F502887207:/posts/2022-10-24-simple-voice-changer.html}</description>
+  <category>Python</category>
+  <category>信号処理</category>
+  <guid>https://lab.ar90n.net/posts/2022-10-24-simple-voice-changer.html</guid>
+  <pubDate>Mon, 24 Oct 2022 00:00:00 GMT</pubDate>
+  <media:content url="https://lab.ar90n.net/_freeze/posts/2022-10-24-simple-voice-changer/figure-html/cell-2-output-1.png" medium="image" type="image/png" height="104" width="144"/>
+</item>
+<item>
+  <title>{B4F502887207:/posts/2022-08-12-xg-c100c-in-ubuntu-server.html}</title>
+  <link>https://lab.ar90n.net/posts/2022-08-12-xg-c100c-in-ubuntu-server.html</link>
+  <description>{B4F502887207:/posts/2022-08-12-xg-c100c-in-ubuntu-server.html}</description>
+  <category>Ubuntu</category>
+  <guid>https://lab.ar90n.net/posts/2022-08-12-xg-c100c-in-ubuntu-server.html</guid>
+  <pubDate>Fri, 12 Aug 2022 00:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>{B4F502887207:/posts/2022-02-16-kdtree-and-curse-of-dimensionality.html}</title>
+  <link>https://lab.ar90n.net/posts/2022-02-16-kdtree-and-curse-of-dimensionality.html</link>
+  <description>{B4F502887207:/posts/2022-02-16-kdtree-and-curse-of-dimensionality.html}</description>
+  <category>機械学習</category>
+  <category>数学</category>
+  <category>Python</category>
+  <guid>https://lab.ar90n.net/posts/2022-02-16-kdtree-and-curse-of-dimensionality.html</guid>
+  <pubDate>Wed, 16 Feb 2022 00:00:00 GMT</pubDate>
+</item>
+</channel>
+</rss>

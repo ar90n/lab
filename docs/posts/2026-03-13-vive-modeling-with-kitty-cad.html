@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2026-01-04">
+<meta name="dcterms.date" content="2026-03-13">
 
-<title>EasyThreed K10にネットワーク経由でファイルを送信する – lab_note</title>
+<title>Vibe Codingでサイクロイド減速機を作る – lab_note</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,62 +21,7 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-/* CSS for citations */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-  margin-bottom: 0em;
-}
-.hanging-indent div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}</style>
+</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -100,8 +45,6 @@ div.csl-indent {
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap-6895bb4329590ca92f2eda68d3be355f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
-<script src="../site_libs/quarto-contrib/videojs/video.min.js"></script>
-<link href="../site_libs/quarto-contrib/videojs/video-js.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -164,14 +107,18 @@ cookieconsent.run({
 
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="EasyThreed K10にネットワーク経由でファイルを送信する – lab_note">
+<meta property="og:title" content="Vibe Codingでサイクロイド減速機を作る – lab_note">
 <meta property="og:description" content="my laboratory">
-<meta property="og:image" content="https://lab.ar90n.net/assets/img/2026-01-04-esp32-as-sd-card-gateway/thumb.jpg">
+<meta property="og:image" content="https://lab.ar90n.net/assets/img/2026-03-13-vive-modeling-with-kitty-cad/thumbnail.png">
 <meta property="og:site_name" content="lab_note">
-<meta name="twitter:title" content="EasyThreed K10にネットワーク経由でファイルを送信する – lab_note">
+<meta property="og:image:height" content="432">
+<meta property="og:image:width" content="835">
+<meta name="twitter:title" content="Vibe Codingでサイクロイド減速機を作る – lab_note">
 <meta name="twitter:description" content="my laboratory">
-<meta name="twitter:image" content="https://lab.ar90n.net/assets/img/2026-01-04-esp32-as-sd-card-gateway/thumb.jpg">
+<meta name="twitter:image" content="https://lab.ar90n.net/assets/img/2026-03-13-vive-modeling-with-kitty-cad/thumbnail.png">
 <meta name="twitter:site" content="@ar90n">
+<meta name="twitter:image-height" content="432">
+<meta name="twitter:image-width" content="835">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
@@ -232,19 +179,10 @@ cookieconsent.run({
    
   <ul>
   <li><a href="#はじめに" id="toc-はじめに" class="nav-link active" data-scroll-target="#はじめに">はじめに</a></li>
+  <li><a href="#結論" id="toc-結論" class="nav-link" data-scroll-target="#結論">結論</a></li>
   <li><a href="#やったこと" id="toc-やったこと" class="nav-link" data-scroll-target="#やったこと">やったこと</a></li>
-  <li><a href="#ハードウェアの準備" id="toc-ハードウェアの準備" class="nav-link" data-scroll-target="#ハードウェアの準備">ハードウェアの準備</a>
-  <ul class="collapse">
-  <li><a href="#microsd-スニッファーボードのパターンカットと抵抗の挿入" id="toc-microsd-スニッファーボードのパターンカットと抵抗の挿入" class="nav-link" data-scroll-target="#microsd-スニッファーボードのパターンカットと抵抗の挿入">microSD スニッファーボードのパターンカットと抵抗の挿入</a></li>
-  <li><a href="#xiao-esp32c3の接続" id="toc-xiao-esp32c3の接続" class="nav-link" data-scroll-target="#xiao-esp32c3の接続">XIAO ESP32C3の接続</a></li>
-  </ul></li>
-  <li><a href="#ソフトウェアの準備" id="toc-ソフトウェアの準備" class="nav-link" data-scroll-target="#ソフトウェアの準備">ソフトウェアの準備</a>
-  <ul class="collapse">
-  <li><a href="#http-putによるファイルの書き込み" id="toc-http-putによるファイルの書き込み" class="nav-link" data-scroll-target="#http-putによるファイルの書き込み">HTTP PUTによるファイルの書き込み</a></li>
-  <li><a href="#webdavの検討と諦め" id="toc-webdavの検討と諦め" class="nav-link" data-scroll-target="#webdavの検討と諦め">WebDAVの検討と諦め</a></li>
-  </ul></li>
+  <li><a href="#つくったもの" id="toc-つくったもの" class="nav-link" data-scroll-target="#つくったもの">つくったもの</a></li>
   <li><a href="#動作確認" id="toc-動作確認" class="nav-link" data-scroll-target="#動作確認">動作確認</a></li>
-  <li><a href="#参考" id="toc-参考" class="nav-link" data-scroll-target="#参考">参考</a></li>
   </ul>
 </nav>
     </div>
@@ -253,10 +191,10 @@ cookieconsent.run({
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">EasyThreed K10にネットワーク経由でファイルを送信する</h1>
+<h1 class="title">Vibe Codingでサイクロイド減速機を作る</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">組み込み</div>
-    <div class="quarto-category">ESP32</div>
+    <div class="quarto-category">AI</div>
+    <div class="quarto-category">CAD</div>
     <div class="quarto-category">3Dプリンタ</div>
   </div>
   </div>
@@ -269,7 +207,7 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 4, 2026</p>
+      <p class="date">March 13, 2026</p>
     </div>
   </div>
   
@@ -283,82 +221,48 @@ cookieconsent.run({
 
 <section id="はじめに" class="level2">
 <h2 class="anchored" data-anchor-id="はじめに">はじめに</h2>
-<p>EasyThreed K10という非常に安価な3Dプリンタがあります。本機はマザーボードの機能が限定的であり、ネットワーク経由で制御することができません。そのため、microSDカードを都度抜き差しする運用が必要でした。そこで、microSDカードにネットワーク経由でファイルを書き込むことで運用の簡易化を試みます。</p>
+<p>サイクロイド減速機の理論を十分に理解していない状態から、Codex と対話しつつ KCL で設計を進めました。<br>
+本記事では、3Dプリントした実機が実際に動作するところまで到達する過程で行った試行錯誤をまとめます。</p>
+</section>
+<section id="結論" class="level2">
+<h2 class="anchored" data-anchor-id="結論">結論</h2>
+<p>理論を先に固めなくても、次の流れで進めることで形にできました。</p>
+<ol type="1">
+<li>まず最小構成を作る</li>
+<li>失敗を現象のまま伝える</li>
+<li>寸法をパラメータ化して回す</li>
+<li>干渉と文法エラーを順に潰す</li>
+</ol>
+<p>この反復を通じて、3Dプリントした実機が動作する状態まで到達できました。</p>
 </section>
 <section id="やったこと" class="level2">
 <h2 class="anchored" data-anchor-id="やったこと">やったこと</h2>
 <ul>
-<li>XIAO ESP32C3を使用してHTTP PUTでmicroSDにファイルを書き込み</li>
-<li>microSD スニッファーボードを使用してmicroSDを共有</li>
-<li>EasyThreed K10に対してネットワーク経由でgcodeファイルを送信</li>
+<li><code>housing</code>, <code>rotor</code>, <code>input_drive</code>, <code>center_disc</code>, <code>cover</code> の 5 部品構成を KCL で実装しました</li>
+<li>KCL / Zoo のエラーをそのまま入力し、構文、形状分割、拘束の問題を順に修正しました</li>
+<li>実機の組み付けで発生した干渉を、クリアランスのパラメータ調整によって解消しました</li>
+<li>各部品を STL 化し、3D プリントと検証を反復しました</li>
 </ul>
 </section>
-<section id="ハードウェアの準備" class="level2">
-<h2 class="anchored" data-anchor-id="ハードウェアの準備">ハードウェアの準備</h2>
-<p>microSDを制御するマイコンにはXIAO ESP32C3を、ターゲットデバイスのmicroSDソケットへのアクセスには<a href="https://www.google.com/search?q=microSD+%E3%82%B9%E3%83%8B%E3%83%83%E3%83%95%E3%82%A1%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89">microSD スニッファーボード</a>を使用しました。</p>
-<section id="microsd-スニッファーボードのパターンカットと抵抗の挿入" class="level3">
-<h3 class="anchored" data-anchor-id="microsd-スニッファーボードのパターンカットと抵抗の挿入">microSD スニッファーボードのパターンカットと抵抗の挿入</h3>
-<p>ターゲットデバイスとのmicroSDの共有方法はESPWebDAVを参考にします。これは、<code>CS</code>、<code>MOSI</code>、<code>SCK</code>に抵抗を挿入するというものです。これにより、デバイス側の状態によらず、これらのピンの制御が可能となるはずです。</p>
-<p>しかしながら、microSD スニッファーボードにはこれらの抵抗を挿入するパターンがありません。したがって、以下のようにレジストの剥離とパターンのカットを行い、そこに抵抗を挿入します。レジストの剥離は超音波カッターにて該当箇所をなぞると簡単にできます。</p>
-<p><img src="../assets/img/2026-01-04-esp32-as-sd-card-gateway/sniffer_board.jpg" class="img-fluid"></p>
-</section>
-<section id="xiao-esp32c3の接続" class="level3">
-<h3 class="anchored" data-anchor-id="xiao-esp32c3の接続">XIAO ESP32C3の接続</h3>
-<p>以下に示すようにmicroSD スニッファーボードと接続を行いました。</p>
-<p><img src="../assets/img/2026-01-04-esp32-as-sd-card-gateway/schematics.png" class="img-fluid"></p>
-<p>また、ESPWebDAVにある回路と異なる点は以下の通りです。</p>
-<ul>
-<li>空いているピンにステータス表示用のLEDを追加</li>
-<li>microSDリセット用のMOS FETを追加</li>
-</ul>
-<p>なお、後者のmicroSDリセット用MOS FETは想定通りに機能しなかったため、本実装では使用していません。</p>
-</section>
-</section>
-<section id="ソフトウェアの準備" class="level2">
-<h2 class="anchored" data-anchor-id="ソフトウェアの準備">ソフトウェアの準備</h2>
-<p>PlatformIOを用いて環境構築を行いました。環境一式は以下の通りです。</p>
-<p><a href="https://github.com/ar90n/lab/tree/main/sandbox/esp_put_store">GitHubリポジトリ</a></p>
-<p><code>secrets.h.template</code>を修正して<code>secrets.h</code>を作成し、以下のコマンドでファームウェアを書き込みます。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> pio run <span class="at">-t</span> upload</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<section id="http-putによるファイルの書き込み" class="level3">
-<h3 class="anchored" data-anchor-id="http-putによるファイルの書き込み">HTTP PUTによるファイルの書き込み</h3>
-<p>上述のハードウェアとソフトウェアの準備が完了したら、<code>curl</code>を用いてファイルをPUTすると以下のような結果が得られます。ここでは、<code>10.0.0.24</code>がESP32-C3のIPアドレスとして割り当てられているものとします。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">❯</span> curl <span class="at">-v</span> <span class="at">--http1.1</span> <span class="at">-T</span> test6.gcode http://10.0.0.24/upload</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span>   Trying 10.0.0.24:80...</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span> Connected to 10.0.0.24 <span class="er">(</span><span class="ex">10.0.0.24</span><span class="kw">)</span> <span class="ex">port</span> 80</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> PUT <span class="ex">/upload</span> HTTP/1.1</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> Host: <span class="ex">10.0.0.24</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> User-Agent: <span class="ex">curl/8.7.1</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> Accept: <span class="ex">*/*</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> Content-Length: <span class="ex">149446</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span> upload completely sent off: 149446 bytes</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span> HTTP/1.1 <span class="ex">200</span> OK</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span> Connection: <span class="ex">close</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span> Content-Type: <span class="ex">text/plain</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span> Content-Length: <span class="ex">22</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="ex">OK</span> saved /model.gcode</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span> Closing connection</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="webdavの検討と諦め" class="level3">
-<h3 class="anchored" data-anchor-id="webdavの検討と諦め">WebDAVの検討と諦め</h3>
-<p>当初、ESPWebDAVをそのまま使用することを想定していました。しかしながら、私の環境ではファイルサイズが1MB程度になるとアップロードに失敗しました。したがって、WebDAVの使用を諦めました。</p>
-</section>
+<section id="つくったもの" class="level2">
+<h2 class="anchored" data-anchor-id="つくったもの">つくったもの</h2>
+<p><img src="../assets/img/2026-03-13-vive-modeling-with-kitty-cad/thumbnail.png" class="img-fluid" alt="KittyCADでレンダリングしたサイクロイド減速機"></p>
+<p>KCL のソースコードは <a href="https://github.com/ar90n/lab/blob/main/sandbox/kittycad_practice/cycloidal_drive/main.kcl">main.kcl</a> に置いてあります。</p>
+<p>部品の STL は、次の 5 つに分けて出力しました。</p>
+<ol type="1">
+<li><code>stl_parts/housing.stl</code></li>
+<li><code>stl_parts/rotor.stl</code></li>
+<li><code>stl_parts/input_drive.stl</code></li>
+<li><code>stl_parts/center_disc.stl</code></li>
+<li><code>stl_parts/cover.stl</code></li>
+</ol>
 </section>
 <section id="動作確認" class="level2">
 <h2 class="anchored" data-anchor-id="動作確認">動作確認</h2>
-<p>ESP32-C3からはSPIモードでmicroSDにファイルを書き込みますが、EasyThreed K10はネイティブモードでmicroSDからファイルを読み込みます。したがって、ファイルのアップロードが完了したら、プリント開始前にmicroSDの電源（EasyThreed K10の電源）をOFFにする必要があります。</p>
-<p>以下はペンプロッタとして動かした例になります。<code>curl</code>にてgcodeを送信したのちにスタートボタンを押下しました。ペンプロッタ用の治具は<a href="https://www.printables.com/model/1285208-easythreed-k10-cute-pen-plotter-head-mod">こちら</a>からお借りしました。</p>
-<div class="quarto-video"><video id="video_shortcode_videojs_video1" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="../assets/video/2026-01-04-esp32-as-sd-card-gateway/k10.mp4"></video></div>
-</section>
-<section id="参考" class="level2">
-<h2 class="anchored" data-anchor-id="参考">参考</h2>
-<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
-<div id="ref-ESPWevDAV" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[1] </div><div class="csl-right-inline">ESPWevDAV. <em>GitHub repository</em>. <a href="https://github.com/ardyesp/ESPWebDAV" class="uri">https://github.com/ardyesp/ESPWebDAV</a>; GitHub.</div>
-</div>
-</div>
+<video controls="" playsinline="" preload="metadata" style="width:auto;max-width:100%;height:auto;">
+<source src="../assets/video/2026-03-13-vive-modeling-with-kitty-cad/cycloid.mp4" type="video/mp4">
+Your browser does not support the video tag.
+</video>
 
 
 </section>
@@ -778,7 +682,6 @@ cookieconsent.run({
     </div>
   </div>
 </footer>
-<script>videojs(video_shortcode_videojs_video1);</script>
 
 
 

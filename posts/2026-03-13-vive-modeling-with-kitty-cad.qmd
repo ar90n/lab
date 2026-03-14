@@ -1,0 +1,56 @@
+---
+title: Vibe Codingでサイクロイド減速機を作る
+date: 2026-03-13
+categories:
+  - AI
+  - CAD
+  - 3Dプリンタ
+image: /assets/img/2026-03-13-vive-modeling-with-kitty-cad/thumbnail.png
+toc: true
+layout: post
+code-annotations: below
+---
+
+## はじめに
+
+サイクロイド減速機の理論を十分に理解していない状態から、Codex と対話しつつ KCL で設計を進めました。  
+本記事では、3Dプリントした実機が実際に動作するところまで到達する過程で行った試行錯誤をまとめます。
+
+## 結論
+
+理論を先に固めなくても、次の流れで進めることで形にできました。
+
+1. まず最小構成を作る
+2. 失敗を現象のまま伝える
+3. 寸法をパラメータ化して回す
+4. 干渉と文法エラーを順に潰す
+
+この反復を通じて、3Dプリントした実機が動作する状態まで到達できました。
+
+## やったこと
+
+- `housing`, `rotor`, `input_drive`, `center_disc`, `cover` の 5 部品構成を KCL で実装しました
+- KCL / Zoo のエラーをそのまま入力し、構文、形状分割、拘束の問題を順に修正しました
+- 実機の組み付けで発生した干渉を、クリアランスのパラメータ調整によって解消しました
+- 各部品を STL 化し、3D プリントと検証を反復しました
+
+## つくったもの
+
+![](/assets/img/2026-03-13-vive-modeling-with-kitty-cad/thumbnail.png){fig-alt="KittyCADでレンダリングしたサイクロイド減速機"}
+
+KCL のソースコードは [main.kcl](https://github.com/ar90n/lab/blob/main/sandbox/kittycad_practice/cycloidal_drive/main.kcl) に置いてあります。
+
+部品の STL は、次の 5 つに分けて出力しました。
+
+1. `stl_parts/housing.stl`
+2. `stl_parts/rotor.stl`
+3. `stl_parts/input_drive.stl`
+4. `stl_parts/center_disc.stl`
+5. `stl_parts/cover.stl`
+
+## 動作確認
+
+<video controls playsinline preload="metadata" style="width:auto;max-width:100%;height:auto;">
+  <source src="/assets/video/2026-03-13-vive-modeling-with-kitty-cad/cycloid.mp4" type="video/mp4" />
+  Your browser does not support the video tag.
+</video>

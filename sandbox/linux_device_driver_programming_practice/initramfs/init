@@ -1,0 +1,17 @@
+#!/bin/sh
+# PID 1 of the QEMU guest.
+mount -t proc     none /proc
+mount -t sysfs    none /sys
+mount -t devtmpfs none /dev
+mount -t 9p -o trans=virtio,version=9p2000.L shared /mnt/shared 2>/dev/null
+
+echo
+echo "===  kernel hacking sandbox  ==="
+uname -a
+echo "shared modules: /mnt/shared"
+echo
+
+# Restart shell on exit so Ctrl-D doesn't panic the kernel
+while true; do
+    setsid -c /bin/sh
+done

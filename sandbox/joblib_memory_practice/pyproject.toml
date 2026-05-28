@@ -6,7 +6,7 @@ authors = ["Masahiro Wada <argon.argon.argon@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-joblib = "^0.16.0"
+joblib = "^1.2.0"
 typer = "^0.3.2"
 
 [tool.poetry.dev-dependencies]

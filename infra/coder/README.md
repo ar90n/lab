@@ -253,6 +253,33 @@ templates/
    実行時にドライバ非対応で失敗するので、変更する場合は `nvidia-smi` の表示と
    `hub.docker.com/r/nvidia/cuda/tags` を突き合わせること
 
+### `workdir` パラメータ — 作業ディレクトリの指定
+
+`coder create` はコンテナを起動するだけで、git clone も IDE 起動も何もしない。
+`~/workspace` 全体を bind mount しているので、SSH した直後の作業ディレクトリは
+何も指定しなければ `/home/coder`（ホーム、プロジェクトのファイルは無い）になる。
+
+`workdir` パラメータ（`coder_parameter`）で `~/workspace` 以下の相対パスを指定すると、
+`docker_container.workspace` の `working_dir` 属性（`docker run -w` 相当）に反映される:
+
+```sh
+coder create myproj --template home-docker --parameter workdir=lab --yes
+coder ssh myproj                          # -> /home/coder/workspace/lab に着地
+docker exec <container> pwd               # -> 同じく /home/coder/workspace/lab
+```
+
+`docker run -w` と同じ仕組みなので、`coder ssh` のような対話シェルに限らず
+`docker exec` などの非対話実行でも一律に効く（`.bashrc` に `cd` を仕込むような
+シェル依存の方式より確実）。Dockerfile 側の `WORKDIR /home/coder` はイメージの
+ビルド時に焼き込まれる別物で、`working_dir` 属性がそれを実行時に上書きする形になる。
+ワークスペース名とプロジェクトディレクトリ名を一致させる必要はなく、1プロジェクトに
+複数ワークスペースを作る場合もそれぞれ独立して指定できる。`mutable = true` なので
+後から `coder update myproj --parameter workdir=other` で変更もできる。
+
+**注意**: `workdir` の値がホスト側の `~/workspace` に実在しないパスを指すと、
+`working_dir` が存在しないディレクトリを指すことになりコンテナの起動に失敗する。
+存在するプロジェクトディレクトリ名を指定すること。
+
 ### 使い方
 
 ```sh
@@ -262,9 +289,8 @@ cd general && coder templates push home-docker --directory . --yes
 cd ../cuda && coder templates push home-docker-cuda --directory . --yes
 
 # プロジェクトごとにワークスペースを作る
-coder create <project-name> --template home-docker --yes
-coder ssh <project-name>
-cd ~/workspace/<project-name>   # bind mount 済みなので clone 不要
+coder create <project-name> --template home-docker --parameter workdir=<lab配下の相対パス> --yes
+coder ssh <project-name>    # workdir を指定していれば自動でそこに cd される
 
 coder list
 coder stop <project-name>

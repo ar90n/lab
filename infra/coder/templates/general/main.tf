@@ -23,6 +23,18 @@ data "coder_provisioner" "me" {}
 data "coder_workspace" "me" {}
 data "coder_workspace_owner" "me" {}
 
+# ワークスペース名とは独立に、~/workspace 以下のどのディレクトリで作業するかを指定する。
+# 1つのプロジェクトに複数ワークスペースを使うこともあるため、ワークスペース名との
+# 一致は前提にしない (Docker の WORKDIR に相当する発想)。
+data "coder_parameter" "workdir" {
+  name         = "workdir"
+  display_name = "Working directory"
+  description  = "~/workspace 以下の相対パス (例: lab)。空なら ~/workspace 直下"
+  type         = "string"
+  default      = ""
+  mutable      = true
+}
+
 resource "coder_agent" "main" {
   arch = data.coder_provisioner.me.arch
   os   = "linux"
@@ -33,6 +45,10 @@ resource "coder_agent" "main" {
     # Dockerfile のビルド時に ~/.bashrc へ mise/starship の activate 行を
     # 追記済みなので、公式サンプルにある /etc/skel コピー処理は入れない
     # (入れると焼き込んだ .bashrc の中身が消えてしまう)。
+
+    # 作業ディレクトリ (workdir パラメータ) は docker_container.workspace の
+    # working_dir 属性 (docker run -w 相当) で設定している。対話シェル限定の
+    # .bashrc ハックより、コンテナのプロセス全体に一律で効くこちらが正しい。
 
     # rust/go/python/node は共有キャッシュ (bind mount) にインストールされるため、
     # このワークスペースが最初に実行した時だけ実質的なダウンロード/ビルドが発生し、
@@ -128,6 +144,12 @@ resource "docker_container" "workspace" {
   name       = "coder-${data.coder_workspace_owner.me.name}-${lower(data.coder_workspace.me.name)}"
   hostname   = data.coder_workspace.me.name
   entrypoint = ["sh", "-c", replace(coder_agent.main.init_script, "/localhost|127\\.0\\.0\\.1/", "host.docker.internal")]
+
+  # docker run -w 相当。workdir パラメータ (~/workspace 以下の相対パス) が空なら
+  # ~/workspace 直下になる。対話シェルに限らずコンテナのプロセス全体に一律で効く。
+  # 値がホスト側に実在しないディレクトリを指す場合、パスが存在せず
+  # コンテナ起動に失敗する点に注意 (workdir パラメータの説明に明記している)。
+  working_dir = "/home/coder/workspace/${data.coder_parameter.workdir.value}"
 
   # GPU (no-cgroups=true 環境での既知の回避策): privileged なしだと
   # nvidia ランタイムの cgroup デバイス許可が入らず NVML 初期化に失敗する。

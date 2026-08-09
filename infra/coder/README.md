@@ -170,3 +170,106 @@ VPN 接続はすべて無償の範囲。
 
 `docker_settings/coder_server_all_in_one/`（2022年）は名前が紛らわしいが中身は
 `codercom/code-server`（ブラウザ版 VS Code）で、この Coder v2 とは別製品。
+
+---
+
+## ワークスペーステンプレート (`templates/`)
+
+`~/workspace` 配下のプロジェクトごとにワークスペースを作っていく運用を想定した
+Docker テンプレートが2つある。
+
+```
+templates/
+├── common/build/Dockerfile   # 単一のソース (直接 push には使わない)
+├── general/                  # 汎用。BASE_IMAGE=ubuntu:24.04
+├── cuda/                     # CUDA 開発用。BASE_IMAGE=nvidia/cuda:12.9.2-devel-ubuntu24.04
+└── sync-dockerfile.sh        # common/build/Dockerfile を general/ と cuda/ に複製する
+```
+
+### なぜ Dockerfile が3箇所にあるのか
+
+`coder templates push --directory <dir>` は指定したディレクトリの中身しか provisioner に
+送らない。`../common/build` のようにディレクトリの外を Terraform から参照すると、
+サーバー側には存在せずビルドに失敗する（`dockerfile not found at path: ...` エラーで
+一度実際にハマった）。そのため `common/build/Dockerfile` を単一のソースとして持ち、
+**push 前に必ず `./sync-dockerfile.sh` を実行**して `general/build/` と `cuda/build/` に
+複製する。Dockerfile を編集したら sync を忘れないこと。
+
+### 特徴
+
+- **ワークスペース = privileged な Docker コンテナ**。ホストの `~/workspace` を
+  `/home/coder/workspace` に bind mount するので、プロジェクトごとに git clone
+  し直す必要がない
+- **GPU**: `no-cgroups = true`（`/etc/nvidia-container-runtime/config.toml`）という
+  ホスト側の設定により、素の `--gpus all` だけでは `Failed to initialize NVML` になる。
+  `privileged = true` + `runtime = "nvidia"` の組み合わせで回避している
+- **mise の共有キャッシュ**: `~/.local/share/mise`・`~/.cache/mise`・`~/.cargo`・
+  `~/.rustup` を `/home/argon/.cache/coder-workspaces/` 配下のホストディレクトリへ
+  bind mount している。rust/go/python/node/gh/pixi は起動時の `startup_script` で
+  `mise use -g` するが、**最初のワークスペースがインストールした時点で以降の
+  全ワークスペースに即座に反映される**（ストレージも1コピーだけ）。cargo 製 CLI
+  ツール（ripgrep 等）も同じ仕組みで共有 `CARGO_HOME` に乗る
+- **イメージに焼き込むもの**: apt パッケージ全般（ネットワーク診断・プロファイリング系
+  含む）、mise 本体、starship/claude/opencode。これらは bind mount 対象と重ならない
+  ので素直に image レイヤーとして全ワークスペースに共有される
+- `coder` ユーザーは **uid 501**（ホストの `argon` と同じ）で作成している。bind mount
+  した共有ディレクトリを権限エラーなく読み書きするため
+
+### ハマった点（実装時に踏んだ罠）
+
+1. **`../common/build` 参照エラー** — 上記の通り。`build/` はテンプレート自身の
+   ディレクトリ配下に置く必要がある
+2. **`.bashrc` が公式サンプルの `/etc/skel` コピー処理で消される** — Coder 公式の
+   docker テンプレート例は `startup_script` の冒頭で
+   ```sh
+   if [ ! -f ~/.init_done ]; then
+     cp -rT /etc/skel ~
+     touch ~/.init_done
+   fi
+   ```
+   をやるが、これは「素の base image を前提に home を初期化する」ためのもの。
+   うちの Dockerfile は image ビルド時に `~/.bashrc` へ `mise activate`/`starship init`
+   を追記済みなので、この処理をそのまま使うと**焼き込んだ内容が上書きされて消える**。
+   このテンプレートでは丸ごと削除している
+3. **`.bashrc` は非対話シェルでは実行されない** — Ubuntu 既定の `~/.bashrc` は冒頭に
+   ```sh
+   case $- in
+       *i*) ;;
+         *) return;;
+   esac
+   ```
+   というガードがあり、`docker exec`/`coder ssh -- <cmd>` のような非対話実行では
+   即座に return して以降の内容（mise activate、starship init、opencode の PATH 追記）
+   が一切実行されない。VS Code Remote-SSH の統合ターミナルのような対話シェルでは
+   問題にならないが、非対話実行に依存する自動化スクリプトは壊れる。
+   このテンプレートでは **PATH を shell rc に頼らず Dockerfile の `ENV PATH` で
+   静的に設定**することで回避している（`~/.local/share/mise/shims` を含める。
+   これは mise の「shims 方式」で、activate 不要でどのコンテキストでも解決できる）
+4. **CUDA イメージのタグ不存在** — `nvidia/cuda:12.4.1-devel-ubuntu24.04` は存在しない
+   （Ubuntu 24.04 ベースは 12.5.1 以降からしか出ていない）。ビルドが
+   `not found` で即座に失敗する。ホストのドライバ（575.64.03、`nvidia-smi` の
+   `CUDA Version` 表示で確認）が対応する上限は CUDA 12.9 なので `12.9.2-devel-ubuntu24.04`
+   を採用した。ドライバを跨いだ新しい CUDA を指定すると `nvcc` はビルドできても
+   実行時にドライバ非対応で失敗するので、変更する場合は `nvidia-smi` の表示と
+   `hub.docker.com/r/nvidia/cuda/tags` を突き合わせること
+
+### 使い方
+
+```sh
+cd ~/workspace/lab/infra/coder/templates
+./sync-dockerfile.sh
+cd general && coder templates push home-docker --directory . --yes
+cd ../cuda && coder templates push home-docker-cuda --directory . --yes
+
+# プロジェクトごとにワークスペースを作る
+coder create <project-name> --template home-docker --yes
+coder ssh <project-name>
+cd ~/workspace/<project-name>   # bind mount 済みなので clone 不要
+
+coder list
+coder stop <project-name>
+coder delete <project-name> --yes
+```
+
+CUDA (`nvcc`) が要る場合だけ `--template home-docker-cuda` を使う。それ以外の
+言語ランタイム・CLI ツールは両テンプレートで共通（共有キャッシュも共通）。

@@ -217,10 +217,10 @@ templates/
 - **X11**: slime では Xpra がバーチャルディスプレイ `:20000` を常時起動している
   （`Xvfb-for-Xpra ... :20000`、`xhost +` 済みで認証不要）。`~/workspace/lab/sandbox/xpra_container`
   と同じ `/tmp/.X11-unix` を bind mount し、`DISPLAY=:20000` を設定しているので、
-  RViz のような GUI アプリをワークスペースから起動して確認できる。X11 クライアント
-  ライブラリ（`x11-utils` 等）はイメージに焼き込んでおらず、必要なプロジェクトで
-  都度 `sudo apt-get install` する想定（GUI を使わないワークスペースまでイメージを
-  太らせないため）
+  RViz のような GUI アプリをワークスペースから起動して確認できる。最小限の X11
+  クライアント（`x11-apps`＝`xeyes` 等、`x11-utils`＝`xdpyinfo` 等、合計 1MB 未満）は
+  イメージに焼き込み済み。RViz や rqt のような重い GUI ライブラリ一式はプロジェクト
+  ごとに `sudo apt-get install` する想定（全ワークスペースのイメージを太らせないため）
 
 ### ハマった点（実装時に踏んだ罠）
 

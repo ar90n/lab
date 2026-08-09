@@ -6,6 +6,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     pkg-config libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev libffi-dev liblzma-dev \
     iproute2 iputils-ping traceroute mtr-tiny dnsutils netcat-openbsd tcpdump socat nmap whois rsync \
     htop strace ltrace gdb valgrind sysstat iotop linux-tools-generic \
+    # 最小限の X11 環境 (xeyes 等の x11-apps、xdpyinfo 等の x11-utils)。
+    # DISPLAY=:20000 (Xpra) への疎通確認・簡単な GUI 表示がすぐ使える。
+    x11-apps x11-utils \
     && rm -rf /var/lib/apt/lists/*
 
 # ホストの argon (uid 501) と揃えることで、bind mount した共有キャッシュディレクトリを

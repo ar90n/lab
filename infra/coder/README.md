@@ -214,6 +214,13 @@ templates/
   ので素直に image レイヤーとして全ワークスペースに共有される
 - `coder` ユーザーは **uid 501**（ホストの `argon` と同じ）で作成している。bind mount
   した共有ディレクトリを権限エラーなく読み書きするため
+- **X11**: slime では Xpra がバーチャルディスプレイ `:20000` を常時起動している
+  （`Xvfb-for-Xpra ... :20000`、`xhost +` 済みで認証不要）。`~/workspace/lab/sandbox/xpra_container`
+  と同じ `/tmp/.X11-unix` を bind mount し、`DISPLAY=:20000` を設定しているので、
+  RViz のような GUI アプリをワークスペースから起動して確認できる。X11 クライアント
+  ライブラリ（`x11-utils` 等）はイメージに焼き込んでおらず、必要なプロジェクトで
+  都度 `sudo apt-get install` する想定（GUI を使わないワークスペースまでイメージを
+  太らせないため）
 
 ### ハマった点（実装時に踏んだ罠）
 
@@ -252,6 +259,15 @@ templates/
    を採用した。ドライバを跨いだ新しい CUDA を指定すると `nvcc` はビルドできても
    実行時にドライバ非対応で失敗するので、変更する場合は `nvidia-smi` の表示と
    `hub.docker.com/r/nvidia/cuda/tags` を突き合わせること
+5. **`docker_container.env` は `coder ssh` セッションに伝播しない** — X11 用に
+   `DISPLAY=:20000` を `docker_container.workspace.env` にだけ設定したところ、
+   `docker exec` では見えるのに `coder ssh` からは空だった。`working_dir`/`dir`
+   と全く同じ split で、Coder agent の SSH セッションは Docker レベルの `env` を
+   引き継がない。`coder_agent.main.env`（`GIT_AUTHOR_NAME` 等と同じブロック）に
+   **も** 設定して解決した。「`docker_container` 側の設定は docker exec と
+   ENTRYPOINT にしか効かず、`coder ssh` に効かせたいものは必ず `coder_agent` 側にも
+   要る」という教訓は `dir` のときと合わせて2回目なので、今後何か新しい変数を
+   ワークスペースに持ち込むときはこの split を最初に疑うこと
 
 ### `workdir` パラメータ — 作業ディレクトリの指定
 

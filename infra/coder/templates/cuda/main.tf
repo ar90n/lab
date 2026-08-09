@@ -40,16 +40,22 @@ resource "coder_agent" "main" {
   arch = data.coder_provisioner.me.arch
   os   = "linux"
 
+  # coder ssh のセッションはこの dir 属性でしか制御できない。
+  # docker_container.workspace.working_dir (docker run -w 相当) は Docker の
+  # ENTRYPOINT / docker exec のデフォルトを決めるだけで、Coder agent 自身の
+  # SSH セッション生成ロジックはこれを見ておらず常に $HOME に落ちる
+  # (docker exec では working_dir が効くように見えたため誤って working_dir
+  # だけで足りると判断していたが、実際に coder ssh で検証したところ
+  # $HOME に固定されることが分かった)。dir は deprecated だが、これ以外に
+  # coder ssh の着地先を制御する手段が無いため使う。
+  dir = data.coder_parameter.workdir.value
+
   startup_script = <<-EOT
     set -e
 
     # Dockerfile のビルド時に ~/.bashrc へ mise/starship の activate 行を
     # 追記済みなので、公式サンプルにある /etc/skel コピー処理は入れない
     # (入れると焼き込んだ .bashrc の中身が消えてしまう)。
-
-    # 作業ディレクトリ (workdir パラメータ) は docker_container.workspace の
-    # working_dir 属性 (docker run -w 相当) で設定している。対話シェル限定の
-    # .bashrc ハックより、コンテナのプロセス全体に一律で効くこちらが正しい。
 
     # rust/go/python/node は共有キャッシュ (bind mount) にインストールされるため、
     # このワークスペースが最初に実行した時だけ実質的なダウンロード/ビルドが発生し、
@@ -67,6 +73,10 @@ resource "coder_agent" "main" {
     GIT_AUTHOR_EMAIL    = "${data.coder_workspace_owner.me.email}"
     GIT_COMMITTER_NAME  = coalesce(data.coder_workspace_owner.me.full_name, data.coder_workspace_owner.me.name)
     GIT_COMMITTER_EMAIL = "${data.coder_workspace_owner.me.email}"
+    # docker_container 側の env は docker exec には効くが coder ssh セッションには
+    # 伝播しない (dir/working_dir と同じ split)。coder ssh からも X11 に繋げるため
+    # ここにも設定する。
+    DISPLAY = ":20000"
   }
 
   metadata {
@@ -154,8 +164,8 @@ resource "docker_container" "workspace" {
   hostname   = data.coder_workspace.me.name
   entrypoint = ["sh", "-c", replace(coder_agent.main.init_script, "/localhost|127\\.0\\.0\\.1/", "host.docker.internal")]
 
-  # docker run -w 相当。workdir パラメータの値をそのまま渡す (絶対パス)。
-  # 対話シェルに限らずコンテナのプロセス全体に一律で効く。
+  # docker run -w 相当。ENTRYPOINT や docker exec のデフォルトになる
+  # (coder ssh の着地先は別 = coder_agent.main.dir で制御している)。
   # 実在しないディレクトリを指すとコンテナ起動に失敗する点に注意
   # (workdir パラメータの説明に明記している)。
   working_dir = data.coder_parameter.workdir.value
@@ -169,6 +179,9 @@ resource "docker_container" "workspace" {
     "CODER_AGENT_TOKEN=${coder_agent.main.token}",
     "NVIDIA_VISIBLE_DEVICES=all",
     "NVIDIA_DRIVER_CAPABILITIES=all",
+    # slime 上で常時稼働している Xpra のバーチャルディスプレイ (Xvfb :20000)。
+    # ~/workspace/lab/sandbox/xpra_container が使っているのと同じディスプレイ番号。
+    "DISPLAY=:20000",
   ]
 
   host {
@@ -208,6 +221,14 @@ resource "docker_container" "workspace" {
   volumes {
     host_path      = "/home/argon/.cache/coder-workspaces/rustup"
     container_path = "/home/coder/.rustup"
+    read_only      = false
+  }
+
+  # GUI アプリを DISPLAY=:20000 (Xpra) に表示するための X11 ソケット。
+  # ~/workspace/lab/sandbox/xpra_container/docker-compose.yml と同じマウント。
+  volumes {
+    host_path      = "/tmp/.X11-unix"
+    container_path = "/tmp/.X11-unix"
     read_only      = false
   }
 

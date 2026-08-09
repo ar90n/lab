@@ -113,6 +113,55 @@ docker exec coder-database pg_dump -U coder coder | gzip > coder-$(date +%F).sql
 
 `~/.config/coderv2/` にはサーバーのローカル状態（鍵など）が入る。DB と併せて保全する。
 
+## 家庭用チューニング
+
+`.env` の後半で、単一ユーザーの家庭利用に不要な既定を切ってある。詳細は `.env.sample`
+のコメントを参照。
+
+| 設定 | 既定 | 変更後 | 理由 |
+|---|---|---|---|
+| `CODER_SESSION_DURATION` | 24h | 720h | 毎日ログインしなくて済む |
+| `CODER_DEFAULT_OAUTH_REFRESH_LIFETIME` | 720h | 1440h | 上と衝突するため引き上げ（下記） |
+| `CODER_TELEMETRY_ENABLE` | true | false | Coder 社への利用データ送信を停止 |
+| `CODER_AI_GATEWAY_ENABLED` | true | false | aibridge は not_entitled、AI キーも未設定 |
+| `CODER_HIDE_AI_TASKS` | false | true | ダッシュボードの整理 |
+| `CODER_OAUTH2_GITHUB_DEFAULT_PROVIDER_ENABLE` | true | false | パスワード認証のみ使うのでサインイン経路を削減 |
+
+**ハマりどころ**: `CODER_SESSION_DURATION` は `CODER_DEFAULT_OAUTH_REFRESH_LIFETIME`
+より**厳密に短く**なければならず、両方の既定が 720h。session duration だけを 720h に
+すると起動時に
+
+```
+error: default OAuth refresh lifetime (720h0m0s) must be strictly greater than
+session duration (720h0m0s)
+```
+
+で失敗し、`Restart=on-failure` により再起動ループに入る。`systemctl --user is-active`
+は瞬間的に `active` を返すので、状態確認は healthz か `NRestarts` を見ること。
+
+**残した既定**:
+
+- `CODER_UPDATE_CHECK` (true) — セキュリティ更新に気づくため残す。バージョン管理自体は mise で行う
+- `CODER_DERP_SERVER_ENABLE` (true) — ワークスペース接続のリレーに**必須**
+- `CODER_EXTERNAL_AUTH_GITHUB_DEFAULT_PROVIDER_ENABLE` (true) — ワークスペースから private repo を clone するのに使う
+- `CODER_NOTIFICATIONS_INBOX_ENABLED` (true) — アプリ内通知。SMTP smarthost 未設定なので外部送信は起きない
+
+テレメトリを切った副作用として、起動時に
+`telemetry disabled, unable to notify of security issues` という warn が毎回出る。
+仕様どおりの挙動で、異常ではない。
+
+## ライセンスについて
+
+ライセンス無し（trial 未開始）で問題ない。`/api/v2/entitlements` で確認したところ
+`user_limit` は `not_entitled` かつ `actual: 0` で、**ユーザー数の上限は課されない**。
+期限切れの概念も無い。
+
+ライセンスで開くのは `audit_log` / `scim` / `template_rbac` / `custom_roles` /
+`multiple_organizations` / `high_availability` / `external_provisioner_daemons` /
+`workspace_proxy` / `appearance` などの組織向け機能のみ。ワークスペース作成、
+テンプレート、`coder ssh`、ポートフォワード、VS Code Remote、Coder Desktop の
+VPN 接続はすべて無償の範囲。
+
 ## 注意
 
 ワークスペースはホストの dockerd が作る Docker コンテナで、ユーザーは docker グループに

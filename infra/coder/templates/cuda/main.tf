@@ -23,15 +23,16 @@ data "coder_provisioner" "me" {}
 data "coder_workspace" "me" {}
 data "coder_workspace_owner" "me" {}
 
-# ワークスペース名とは独立に、~/workspace 以下のどのディレクトリで作業するかを指定する。
+# ワークスペース名とは独立に、コンテナ内のどこで作業するかを指定する
+# (docker run -w 相当。docker_container.workspace.working_dir にそのまま渡す)。
 # 1つのプロジェクトに複数ワークスペースを使うこともあるため、ワークスペース名との
-# 一致は前提にしない (Docker の WORKDIR に相当する発想)。
+# 一致は前提にしない。
 data "coder_parameter" "workdir" {
   name         = "workdir"
   display_name = "Working directory"
-  description  = "~/workspace 以下の相対パス (例: lab)。空なら ~/workspace 直下"
+  description  = "コンテナ内の絶対パス (例: /home/coder/workspace/lab)"
   type         = "string"
-  default      = ""
+  default      = "/home/coder/workspace"
   mutable      = true
 }
 
@@ -153,11 +154,11 @@ resource "docker_container" "workspace" {
   hostname   = data.coder_workspace.me.name
   entrypoint = ["sh", "-c", replace(coder_agent.main.init_script, "/localhost|127\\.0\\.0\\.1/", "host.docker.internal")]
 
-  # docker run -w 相当。workdir パラメータ (~/workspace 以下の相対パス) が空なら
-  # ~/workspace 直下になる。対話シェルに限らずコンテナのプロセス全体に一律で効く。
-  # 値がホスト側に実在しないディレクトリを指す場合、パスが存在せず
-  # コンテナ起動に失敗する点に注意 (workdir パラメータの説明に明記している)。
-  working_dir = "/home/coder/workspace/${data.coder_parameter.workdir.value}"
+  # docker run -w 相当。workdir パラメータの値をそのまま渡す (絶対パス)。
+  # 対話シェルに限らずコンテナのプロセス全体に一律で効く。
+  # 実在しないディレクトリを指すとコンテナ起動に失敗する点に注意
+  # (workdir パラメータの説明に明記している)。
+  working_dir = data.coder_parameter.workdir.value
 
   # GPU (no-cgroups=true 環境での既知の回避策): privileged なしだと
   # nvidia ランタイムの cgroup デバイス許可が入らず NVML 初期化に失敗する。

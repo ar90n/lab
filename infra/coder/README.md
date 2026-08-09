@@ -259,13 +259,19 @@ templates/
 `~/workspace` 全体を bind mount しているので、SSH した直後の作業ディレクトリは
 何も指定しなければ `/home/coder`（ホーム、プロジェクトのファイルは無い）になる。
 
-`workdir` パラメータ（`coder_parameter`）で `~/workspace` 以下の相対パスを指定すると、
-`docker_container.workspace` の `working_dir` 属性（`docker run -w` 相当）に反映される:
+`workdir` パラメータ（`coder_parameter`、**コンテナ内の絶対パス**）を
+`docker_container.workspace` の `working_dir` 属性（`docker run -w` 相当）へ
+そのまま渡している:
 
 ```sh
-coder create myproj --template home-docker --parameter workdir=lab --yes
+coder create myproj --template home-docker --parameter workdir=/home/coder/workspace/lab --yes
 coder ssh myproj                          # -> /home/coder/workspace/lab に着地
 docker exec <container> pwd               # -> 同じく /home/coder/workspace/lab
+
+# 指定を省略してデフォルト (/home/coder/workspace) を使う場合は
+# --use-parameter-defaults が必要 (無いと非対話環境ではプロンプトで
+# 止まってエラーになる。--yes だけでは default 値は自動採用されない)
+coder create myproj --template home-docker --use-parameter-defaults --yes
 ```
 
 `docker run -w` と同じ仕組みなので、`coder ssh` のような対話シェルに限らず
@@ -276,9 +282,13 @@ docker exec <container> pwd               # -> 同じく /home/coder/workspace/l
 複数ワークスペースを作る場合もそれぞれ独立して指定できる。`mutable = true` なので
 後から `coder update myproj --parameter workdir=other` で変更もできる。
 
-**注意**: `workdir` の値がホスト側の `~/workspace` に実在しないパスを指すと、
-`working_dir` が存在しないディレクトリを指すことになりコンテナの起動に失敗する。
-存在するプロジェクトディレクトリ名を指定すること。
+**なぜ相対パスではなくフルパスなのか**: 当初 `~/workspace` からの相対パス
+（`workdir=lab`）にしていたが、`working_dir` という名前自体が `docker run -w`
+そのものの発想である以上、実体も素直に絶対パスにすべきと判断して変更した。
+相対パス方式だと「フルパスっぽい値を渡すと `/home/coder/workspace//home/coder/...`
+のように壊れる」という踏みやすい罠もあった。
+
+**注意**: `workdir` が実在しないディレクトリを指すとコンテナの起動に失敗する。
 
 ### 使い方
 
@@ -289,8 +299,8 @@ cd general && coder templates push home-docker --directory . --yes
 cd ../cuda && coder templates push home-docker-cuda --directory . --yes
 
 # プロジェクトごとにワークスペースを作る
-coder create <project-name> --template home-docker --parameter workdir=<lab配下の相対パス> --yes
-coder ssh <project-name>    # workdir を指定していれば自動でそこに cd される
+coder create <project-name> --template home-docker --parameter workdir=/home/coder/workspace/<プロジェクト名> --yes
+coder ssh <project-name>    # working_dir で指定した場所に着地する
 
 coder list
 coder stop <project-name>

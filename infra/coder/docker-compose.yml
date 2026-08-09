@@ -1,0 +1,22 @@
+services:
+  database:
+    image: postgres:17
+    container_name: coder-database
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      # coder server はホスト常駐なので localhost 経由で接続する。外には出さない。
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - coder_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  coder_pgdata:

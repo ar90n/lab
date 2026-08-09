@@ -1,0 +1,24 @@
+[Unit]
+Description=Coder server
+Documentation=https://coder.com/docs
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/argon
+EnvironmentFile=/home/argon/workspace/lab/infra/coder/.env
+# mise 経由で起動することで、mise use -g coder@X でバージョンを上げても
+# この unit を編集せずに済む。
+ExecStart=/home/argon/.local/bin/mise exec -- coder server
+Restart=on-failure
+RestartSec=5
+
+# このホストの /var/log/journal は adm グループにしか読めず、user journal も
+# 生成されないため journalctl --user では自分のログが読めない。sudo なしで
+# ログを追えるようにファイルへ出す。
+StandardOutput=append:/home/argon/.local/state/coder/coder.log
+StandardError=append:/home/argon/.local/state/coder/coder.log
+
+[Install]
+WantedBy=default.target

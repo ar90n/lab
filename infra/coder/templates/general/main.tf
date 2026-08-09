@@ -53,6 +53,12 @@ resource "coder_agent" "main" {
   startup_script = <<-EOT
     set -e
 
+    # ~/.config/gh を bind mount すると、Docker がマウントポイントの親である
+    # ~/.config を root 所有で自動作成してしまい、coder ユーザーが
+    # ~/.config/mise 等の新規ディレクトリを作れなくなる (mise use -g が
+    # Permission denied で失敗する)。起動のたびに所有者を直す。
+    sudo chown coder:coder ~/.config
+
     # Dockerfile のビルド時に ~/.bashrc へ mise/starship の activate 行を
     # 追記済みなので、公式サンプルにある /etc/skel コピー処理は入れない
     # (入れると焼き込んだ .bashrc の中身が消えてしまう)。
@@ -68,11 +74,11 @@ resource "coder_agent" "main" {
       cargo-edit cargo-watch sccache flamegraph py-spy
   EOT
 
+  # GIT_AUTHOR_NAME 等は意図的に設定しない。~/.ssh・~/.gitconfig・~/.config/gh を
+  # ホストからそのまま bind mount しているので、git はホストと同じ ~/.gitconfig の
+  # [user] セクションを見る。GIT_AUTHOR_NAME 等の環境変数は git の設定ファイルより
+  # 優先されるため、ここで設定すると mount した .gitconfig が無視されてしまう。
   env = {
-    GIT_AUTHOR_NAME     = coalesce(data.coder_workspace_owner.me.full_name, data.coder_workspace_owner.me.name)
-    GIT_AUTHOR_EMAIL    = "${data.coder_workspace_owner.me.email}"
-    GIT_COMMITTER_NAME  = coalesce(data.coder_workspace_owner.me.full_name, data.coder_workspace_owner.me.name)
-    GIT_COMMITTER_EMAIL = "${data.coder_workspace_owner.me.email}"
     # docker_container 側の env は docker exec には効くが coder ssh セッションには
     # 伝播しない (dir/working_dir と同じ split)。coder ssh からも X11 に繋げるため
     # ここにも設定する。
@@ -221,6 +227,26 @@ resource "docker_container" "workspace" {
   volumes {
     host_path      = "/tmp/.X11-unix"
     container_path = "/tmp/.X11-unix"
+    read_only      = false
+  }
+
+  # ホストの git/GitHub 認証情報をそのまま使う。ワークスペースは docker.sock 経由で
+  # 既にホスト root 相当の信頼を持つ構成 (README 参照) なので、実鍵を渡すことによる
+  # 追加のリスクは実質増えない。Coder 独自の SSH 鍵自動生成や external-auth の
+  # OAuth フローを使わずに済む。
+  volumes {
+    host_path      = "/home/argon/.ssh"
+    container_path = "/home/coder/.ssh"
+    read_only      = false
+  }
+  volumes {
+    host_path      = "/home/argon/.gitconfig"
+    container_path = "/home/coder/.gitconfig"
+    read_only      = false
+  }
+  volumes {
+    host_path      = "/home/argon/.config/gh"
+    container_path = "/home/coder/.config/gh"
     read_only      = false
   }
 

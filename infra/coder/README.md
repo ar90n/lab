@@ -221,6 +221,22 @@ templates/
   クライアント（`x11-apps`＝`xeyes` 等、`x11-utils`＝`xdpyinfo` 等、合計 1MB 未満）は
   イメージに焼き込み済み。RViz や rqt のような重い GUI ライブラリ一式はプロジェクト
   ごとに `sudo apt-get install` する想定（全ワークスペースのイメージを太らせないため）
+- **git/GitHub 認証**: ホストの `~/.ssh`・`~/.gitconfig`・`~/.config/gh` をそのまま
+  bind mount している。ワークスペースは docker.sock 経由で既にホスト root 相当の
+  信頼を持つ構成（本 README 冒頭参照）なので、実鍵・実トークンを渡すことによる
+  追加のリスクは実質増えない。この方式にしたことで:
+  - git commit の author/committer はホストと同じ `~/.gitconfig` の `[user]` から
+    決まる。そのため `coder_agent.env` に `GIT_AUTHOR_NAME` 等は設定していない
+    （設定すると git の環境変数は設定ファイルより優先されるため、mount した
+    `.gitconfig` が無視されてしまう）
+  - `gh` CLI・`git push`（SSH/HTTPS どちらも）はワークスペース作成直後から
+    ホストと同じアカウントで使える。Coder 独自の SSH 鍵自動生成や
+    external-auth の GitHub OAuth ログインは不要
+  - **副作用**: `~/.config/gh` を bind mount すると、Docker がマウントポイントの
+    親ディレクトリ `~/.config` を root 所有で自動作成してしまい、`coder`
+    ユーザーが `~/.config/mise` 等の新規ディレクトリを作れなくなる
+    （`mise use -g` が `Permission denied` で失敗する）。`startup_script` の
+    先頭で `sudo chown coder:coder ~/.config` して回避している
 
 ### ハマった点（実装時に踏んだ罠）
 
@@ -263,11 +279,24 @@ templates/
    `DISPLAY=:20000` を `docker_container.workspace.env` にだけ設定したところ、
    `docker exec` では見えるのに `coder ssh` からは空だった。`working_dir`/`dir`
    と全く同じ split で、Coder agent の SSH セッションは Docker レベルの `env` を
-   引き継がない。`coder_agent.main.env`（`GIT_AUTHOR_NAME` 等と同じブロック）に
-   **も** 設定して解決した。「`docker_container` 側の設定は docker exec と
-   ENTRYPOINT にしか効かず、`coder ssh` に効かせたいものは必ず `coder_agent` 側にも
-   要る」という教訓は `dir` のときと合わせて2回目なので、今後何か新しい変数を
-   ワークスペースに持ち込むときはこの split を最初に疑うこと
+   引き継がない。`coder_agent.main.env` に**も**設定して解決した。「`docker_container`
+   側の設定は docker exec と ENTRYPOINT にしか効かず、`coder ssh` に効かせたい
+   ものは必ず `coder_agent` 側にも要る」という教訓は `dir` のときと合わせて2回目
+   なので、今後何か新しい変数をワークスペースに持ち込むときはこの split を
+   最初に疑うこと
+6. **bind mount の親ディレクトリが root 所有で自動作成される** — `~/.config/gh`
+   を bind mount したところ、まだ存在しなかった親ディレクトリ `~/.config` が
+   Docker によって root 所有で自動作成され、`coder` ユーザーが以降
+   `~/.config/mise` 等の新規ディレクトリを作れなくなった（`mise use -g` が
+   `Permission denied` で失敗）。マウント先の親ディレクトリがイメージ内に
+   まだ存在しない場合は毎回この罠を踏む可能性があるので、`startup_script`
+   の先頭で該当ディレクトリを `sudo chown coder:coder` する運用にした
+7. **`coder restart` は最新テンプレートを取得しない** — テンプレートを push した後、
+   既存ワークスペースに反映するには `coder restart <name>` ではなく
+   `coder update <name>` を使うこと。`restart` はビルド済みの現在のバージョンで
+   単にコンテナを再作成するだけで、新しく push したテンプレートバージョンを
+   拾わない（`update` は "Resources: N added, 0 changed, M destroyed" のように
+   `coder_agent` ごと再作成されるが、`restart` はそうならない）
 
 ### `workdir` パラメータ — 作業ディレクトリの指定
 

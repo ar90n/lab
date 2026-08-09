@@ -237,6 +237,21 @@ templates/
     ユーザーが `~/.config/mise` 等の新規ディレクトリを作れなくなる
     （`mise use -g` が `Permission denied` で失敗する）。`startup_script` の
     先頭で `sudo chown coder:coder ~/.config` して回避している
+- **claude / opencode の認証と skills**: 同じ理由（ホストが既に root 相当の
+  信頼を持つ）で、AI コーディングエージェントの設定・認証もホストと共有している:
+  - `claude`: `~/.claude.json`（アカウント/OAuth 状態）・`~/.claude/.credentials.json`
+    （認証）・`~/.claude/settings.json`（有効な plugin 一覧・permissions）・
+    `~/.claude/plugins`（plugin 本体）をマウント。`.claude/projects`（会話履歴、
+    88MB）や `debug`/`cache` 等のホスト固有・容量の大きいディレクトリは対象外。
+    ワークスペースごとに独立した会話履歴が `/home/coder/.claude/projects`
+    （docker_volume 側、共有されない）に作られる
+  - `opencode`: `~/.config/opencode`（`skills/`・`opencode.jsonc`・
+    node_modules 込みで丸ごと。skill が JS ヘルパースクリプトに依存すること
+    があるため分割していない）と `~/.local/share/opencode/auth.json`
+    （認証、DB 本体の `opencode.db` 等は複数ワークスペースでの同時書き込みを
+    避けるため対象外）をマウント
+  - **副作用（同じパターン）**: `~/.local/share/opencode` も `~/.config` と同様
+    root 所有で自動作成されるため、`startup_script` の chown 対象に追加した
 
 ### ハマった点（実装時に踏んだ罠）
 

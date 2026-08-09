@@ -53,11 +53,12 @@ resource "coder_agent" "main" {
   startup_script = <<-EOT
     set -e
 
-    # ~/.config/gh を bind mount すると、Docker がマウントポイントの親である
-    # ~/.config を root 所有で自動作成してしまい、coder ユーザーが
-    # ~/.config/mise 等の新規ディレクトリを作れなくなる (mise use -g が
-    # Permission denied で失敗する)。起動のたびに所有者を直す。
-    sudo chown coder:coder ~/.config
+    # ~/.config/gh・~/.claude/plugins・~/.local/share/opencode/auth.json 等を
+    # bind mount すると、Docker がマウントポイントの親ディレクトリ (~/.config、
+    # ~/.claude、~/.local/share/opencode) を root 所有で自動作成してしまい、
+    # coder ユーザーがそこに新規ファイルを作れなくなる (mise use -g が
+    # Permission denied で失敗する等)。起動のたびに直す。
+    sudo chown coder:coder ~/.config ~/.claude ~/.local/share/opencode
 
     # Dockerfile のビルド時に ~/.bashrc へ mise/starship の activate 行を
     # 追記済みなので、公式サンプルにある /etc/skel コピー処理は入れない
@@ -255,6 +256,45 @@ resource "docker_container" "workspace" {
   volumes {
     host_path      = "/home/argon/.config/gh"
     container_path = "/home/coder/.config/gh"
+    read_only      = false
+  }
+
+  # claude の認証と skills/plugins をホストと共有する。.claude/projects (会話履歴)
+  # や debug/cache 等のホスト固有・容量の大きいディレクトリは対象外
+  # (ワークスペースごとに独立させたいので)。opencode はホスト側で未認証・未設定
+  # (~/.config/opencode が空) のため、共有できる中身が無く対象外にしている。
+  volumes {
+    host_path      = "/home/argon/.claude.json"
+    container_path = "/home/coder/.claude.json"
+    read_only      = false
+  }
+  volumes {
+    host_path      = "/home/argon/.claude/.credentials.json"
+    container_path = "/home/coder/.claude/.credentials.json"
+    read_only      = false
+  }
+  volumes {
+    host_path      = "/home/argon/.claude/settings.json"
+    container_path = "/home/coder/.claude/settings.json"
+    read_only      = false
+  }
+  volumes {
+    host_path      = "/home/argon/.claude/plugins"
+    container_path = "/home/coder/.claude/plugins"
+    read_only      = false
+  }
+
+  # opencode の設定・skills (node_modules 込み) と認証をホストと共有する。
+  # skill が JS ヘルパースクリプトに依存する場合があるため、skills/ だけでなく
+  # ディレクトリ全体を bind mount する (ディスクの二重消費にはならない)。
+  volumes {
+    host_path      = "/home/argon/.config/opencode"
+    container_path = "/home/coder/.config/opencode"
+    read_only      = false
+  }
+  volumes {
+    host_path      = "/home/argon/.local/share/opencode/auth.json"
+    container_path = "/home/coder/.local/share/opencode/auth.json"
     read_only      = false
   }
 

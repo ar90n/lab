@@ -251,20 +251,13 @@ resource "docker_container" "workspace" {
     read_only      = false
   }
 
-  # claude の認証と skills/plugins をホストと共有する。.claude/projects (会話履歴)
-  # や debug/cache 等のホスト固有・容量の大きいディレクトリは対象外
-  # (ワークスペースごとに独立させたいので)。opencode はホスト側で未認証・未設定
-  # (~/.config/opencode が空) のため、共有できる中身が無く対象外にしている。
-  volumes {
-    host_path      = "/home/argon/.claude.json"
-    container_path = "/home/coder/.claude.json"
-    read_only      = false
-  }
-  volumes {
-    host_path      = "/home/argon/.claude/.credentials.json"
-    container_path = "/home/coder/.claude/.credentials.json"
-    read_only      = false
-  }
+  # claude の skills/plugins だけホストと共有する。認証情報 (.claude.json /
+  # .claude/.credentials.json) は意図的に mount しない: claude はトークンを
+  # 定期的に rename で書き換えるため、Docker の単一ファイル bind mount では
+  # 古い inode を掴んだまま同期が壊れる (ホストと inode 番号が一致しないことを
+  # 実機で確認済み)。settings.json/plugins はこの問題が起きる頻度で書き換わる
+  # ものではないので mount を維持する。認証は各ワークスペースで初回だけ
+  # `claude /login` する運用にする。
   volumes {
     host_path      = "/home/argon/.claude/settings.json"
     container_path = "/home/coder/.claude/settings.json"

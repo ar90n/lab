@@ -237,19 +237,23 @@ templates/
     ユーザーが `~/.config/mise` 等の新規ディレクトリを作れなくなる
     （`mise use -g` が `Permission denied` で失敗する）。`startup_script` の
     先頭で `sudo chown coder:coder ~/.config` して回避している
-- **claude / opencode の認証と skills**: 同じ理由（ホストが既に root 相当の
-  信頼を持つ）で、AI コーディングエージェントの設定・認証もホストと共有している:
-  - `claude`: `~/.claude.json`（アカウント/OAuth 状態）・`~/.claude/.credentials.json`
-    （認証）・`~/.claude/settings.json`（有効な plugin 一覧・permissions）・
-    `~/.claude/plugins`（plugin 本体）をマウント。`.claude/projects`（会話履歴、
-    88MB）や `debug`/`cache` 等のホスト固有・容量の大きいディレクトリは対象外。
-    ワークスペースごとに独立した会話履歴が `/home/coder/.claude/projects`
-    （docker_volume 側、共有されない）に作られる
+- **claude / opencode の skills をホストと共有する（認証は共有しない）**:
+  - `claude`: `~/.claude/settings.json`（有効な plugin 一覧・permissions）・
+    `~/.claude/plugins`（plugin 本体）だけをマウント。`~/.claude.json`
+    （アカウント/OAuth 状態）と `~/.claude/.credentials.json`（認証トークン）は
+    **意図的にマウントしない**。理由は下記「ハマった点」参照。認証は各
+    ワークスペースで初回だけ `claude /login` する運用。`.claude/projects`
+    （会話履歴、88MB）や `debug`/`cache` 等のホスト固有・容量の大きい
+    ディレクトリも対象外。ワークスペースごとに独立した会話履歴が
+    `/home/coder/.claude/projects`（docker_volume 側、共有されない）に作られる
   - `opencode`: `~/.config/opencode`（`skills/`・`opencode.jsonc`・
     node_modules 込みで丸ごと。skill が JS ヘルパースクリプトに依存すること
     があるため分割していない）と `~/.local/share/opencode/auth.json`
-    （認証、DB 本体の `opencode.db` 等は複数ワークスペースでの同時書き込みを
-    避けるため対象外）をマウント
+    （認証）をマウント。**`auth.json` は claude の `.credentials.json` と同じ
+    単一ファイル bind mount の inode 問題を抱えている可能性が高い**（未検証。
+    opencode が同様にトークンを rename で書き換える実装なら、いずれ同じ理由で
+    ホストとコンテナで内容が食い違う。壊れた場合は claude と同様に mount を
+    外して各ワークスペースで個別に `opencode auth login` する運用に切り替える）
   - **副作用（同じパターン）**: `~/.local/share/opencode` も `~/.config` と同様
     root 所有で自動作成されるため、`startup_script` の chown 対象に追加した
 
@@ -312,6 +316,26 @@ templates/
    単にコンテナを再作成するだけで、新しく push したテンプレートバージョンを
    拾わない（`update` は "Resources: N added, 0 changed, M destroyed" のように
    `coder_agent` ごと再作成されるが、`restart` はそうならない）
+8. **単一ファイルの bind mount は、ホストがそのファイルを rename で
+   書き換えると同期が壊れる** — Herdr + `claude` の Coder integration を
+   検証中、`claude` セッションがコンテナ内だけ突然 "Not logged in" になる
+   現象が発生した。原因は `~/.claude/.credentials.json` の bind mount。
+   `claude` は OAuth トークンをリフレッシュする際、一時ファイルに書いてから
+   `rename()` で本体に差し替える（クラッシュ時の破損防止のための一般的な
+   実装）。Linux の bind mount は「パス」ではなく「mount 実行時点の inode」に
+   紐づくため、ホスト側で rename が起きると新しい inode ができるが、コンテナ
+   側の bind mount は古い（孤立した）inode を掴んだまま置き去りにされる。
+   `ls -i` でホストとコンテナの inode 番号が別物になっていたことで確定した
+   （`sha256sum` で中身が完全に別物になっていることも確認済み）。
+   ディレクトリ全体の bind mount ならパス解決をやり直すので rename に
+   追従できるが、`~/.claude` 全体を共有するとセッション履歴等まで共有されて
+   しまう副作用がある。今回は **`.claude.json`/`.credentials.json` の
+   mount 自体をやめ、各ワークスペースで個別に `claude /login` する運用に
+   変更**した（`settings.json`/`plugins` は書き換え頻度が低くこの問題が
+   起きないため mount を維持）。`gh`（`~/.config/gh`）や `opencode`
+   （`~/.local/share/opencode/auth.json`）も同種のトークンリフレッシュを
+   行う実装なら、将来同じ理由で壊れる可能性がある。壊れた兆候（コンテナ内だけ
+   認証が切れる）が出たら、まずこの inode 不一致を疑うこと
 
 ### `workdir` パラメータ — 作業ディレクトリの指定
 

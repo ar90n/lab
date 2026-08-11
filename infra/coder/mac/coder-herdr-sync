@@ -25,15 +25,17 @@ import sys
 from pathlib import Path
 
 HOSTS = Path.home() / ".config/herdr-mirror/hosts.toml"
-SSH_HOST = "slime.local"
-# slime 上の coder は mise 管理なので shims を通す (非対話 ssh では PATH に無い)
-CODER = "PATH=$HOME/.local/share/mise/shims:$PATH coder"
+# Mac の coder CLI を直接使う。slime へ ssh して叩くこともできるが、
+# slime.local は mDNS なので同一 LAN でしか解決できず、外出先で失敗する。
+# ミラー自体は Tailscale (coder CLI が知っている
+# http://slime.tail38ea2.ts.net:7080) 経由で動き続けるのに、同期だけ
+# 落ちるのは筋が悪い。coder CLI は認証済みでどこからでもサーバーに届く。
+CODER = str(Path.home() / ".local/share/mise/shims/coder")
 
 
 def workspaces(include_stopped):
-    out = subprocess.run(
-        ["ssh", "-o", "BatchMode=yes", SSH_HOST, f"{CODER} list -o json"],
-        capture_output=True, text=True)
+    out = subprocess.run([CODER, "list", "-o", "json"],
+                         capture_output=True, text=True)
     if out.returncode != 0:
         sys.exit(f"coder list に失敗:\n{out.stderr.strip()}")
     names = []

@@ -102,10 +102,13 @@ resource "coder_agent" "main" {
     # リモートに pane が1つも無いとローカル動作に degrade する (herdr-mirror README:
     # "outside a mirror they degrade to the plain local action")。つまり足場が無いと
     # Mac 側から永久にリモートのタブを作れない。ブートストラップ用に必ず1つ用意する。
+    # ラベルは固定で "main" にする: herdr-mirror はローカル側に
+    # "<hosts.toml の prefix>: <リモートのラベル>" という名前で見せるため、ここに
+    # ワークスペース名を入れると "hpt-sd-mux: hpt-sd-mux" のように重複する。
     if ! herdr workspace list 2>/dev/null | grep -q workspace_id; then
       herdr workspace create \
         --cwd "${data.coder_parameter.workdir.value}" \
-        --label "${data.coder_workspace.me.name}" \
+        --label main \
         --no-focus >/dev/null || echo "herdr: bootstrap workspace create failed" >&2
     fi
 

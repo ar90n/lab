@@ -277,7 +277,38 @@ templates/
     `remote-new-tab` 等の remote アクションはミラー pane 上で呼ぶことが前提で、
     リモートに pane が1つも無いと *黙ってローカル動作に degrade* する
     （README: "outside a mirror they degrade to the plain local action"）。
-    足場が無いと Mac 側から永久にリモートのタブを作れない
+    足場が無いと Mac 側から永久にリモートのタブを作れない。ラベルは固定で `main`
+    にする（herdr-mirror は `<prefix>: <リモートのラベル>` と表示するので、ここに
+    ワークスペース名を入れると `hpt-sd-mux: hpt-sd-mux` と重複する）
+
+#### Mac 側から集約する手順（herdr-mirror）
+
+ワークスペースを作れば herdr は自動で起動するので、Mac 側は `hosts.toml` に
+足すだけでよい。SSH は `~/.ssh/config` の `Host coder.*` ワイルドカードが
+効くため、ホストごとの設定は要らない。
+
+```sh
+# 1. slime で Coder ワークスペースを作る
+coder create <name> --template home-docker --yes \
+  --parameter workdir=/home/coder/workspace/<path>
+
+# 2. Mac の ~/.config/herdr-mirror/hosts.toml に追記
+#    (テーブル名は . を含められないので _ にする)
+[hosts.<name_with_underscores>]
+target = "coder.<name>"
+prefix = "<name>"
+
+# 3. デーモンを入れ直して設定を反映
+herdr-mirror pause && herdr-mirror start
+herdr-mirror status        # host ごとに "N mirror workspaces" が出れば成功
+```
+
+`close_remote_on_local_close` は **設定しない**（デフォルトの `true` のまま
+使う）。`false` にすると `prefix+x` でミラーを閉じてもリモートの pane が
+生き残り、ローカルからは閉じたものとして tombstone されるため、リモートに
+空シェルが溜まり続けて表示がリモートと食い違う。「Mac を閉じてもリモートの
+agent を殺したくない」のは *切断* の話であって、明示的に閉じた場合は
+リモートも閉じるのが正しい。
 
 ### ハマった点（実装時に踏んだ罠）
 

@@ -1,0 +1,106 @@
+#!/usr/bin/env python3
+"""coder-herdr-sync — slime の Coder ワークスペースから herdr-mirror の
+hosts.toml を生成する。
+
+ワークスペースを作るたびに hosts.toml を手で書き足す必要をなくす。Coder 側の
+ワークスペース一覧が唯一のソースになる。
+
+  coder-herdr-sync              # 差分を表示するだけ (何も書かない)
+  coder-herdr-sync --apply      # hosts.toml を書き換えてデーモンを入れ直す
+  coder-herdr-sync --all        # 停止中のワークスペースも含める
+
+停止中を既定で除外するのは、到達できないホストを入れるとデーモンが
+「disconnected — retrying」を延々とログに吐き続けるため。
+
+先頭のグローバル設定 (always_control 等) は既存ファイルからそのまま引き継ぐ。
+close_remote_on_local_close は意図的に書かない: デフォルトの true が正しく、
+false にするとローカルで閉じたミラーが tombstone される一方リモートの pane は
+生き残り、表示がリモートと食い違う。
+"""
+import argparse
+import json
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+HOSTS = Path.home() / ".config/herdr-mirror/hosts.toml"
+SSH_HOST = "slime.local"
+# slime 上の coder は mise 管理なので shims を通す (非対話 ssh では PATH に無い)
+CODER = "PATH=$HOME/.local/share/mise/shims:$PATH coder"
+
+
+def workspaces(include_stopped):
+    out = subprocess.run(
+        ["ssh", "-o", "BatchMode=yes", SSH_HOST, f"{CODER} list -o json"],
+        capture_output=True, text=True)
+    if out.returncode != 0:
+        sys.exit(f"coder list に失敗:\n{out.stderr.strip()}")
+    names = []
+    for w in json.loads(out.stdout):
+        build = w["latest_build"]
+        running = build["transition"] == "start" and build.get("status") == "running"
+        if running or include_stopped:
+            names.append((w["name"], running))
+    return sorted(names)
+
+
+def globals_block():
+    """既存 hosts.toml の [hosts.*] より前 (グローバル設定) を保存する。"""
+    if not HOSTS.exists():
+        return "always_control = true\n"
+    text = HOSTS.read_text()
+    i = text.find("[hosts.")
+    head = text[:i] if i >= 0 else text
+    return head.strip() + "\n" if head.strip() else "always_control = true\n"
+
+
+def render(names):
+    out = [globals_block()]
+    for name, running in names:
+        # TOML のテーブル名にハイフンは使えるが、既存の書式に合わせて _ にする
+        key = re.sub(r"[^A-Za-z0-9_]", "_", name)
+        note = "" if running else "  # 停止中\n"
+        out.append(f'\n[hosts.{key}]\n{note}target = "coder.{name}"\nprefix = "{name}"\n')
+    return "".join(out)
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--apply", action="store_true", help="書き込んでデーモンを入れ直す")
+    ap.add_argument("--all", action="store_true", help="停止中のワークスペースも含める")
+    args = ap.parse_args()
+
+    names = workspaces(args.all)
+    if not names:
+        sys.exit("対象のワークスペースがありません")
+    new = render(names)
+    old = HOSTS.read_text() if HOSTS.exists() else ""
+
+    if new == old:
+        print(f"変更なし ({len(names)} hosts: " + ", ".join(n for n, _ in names) + ")")
+        return
+
+    import difflib
+    diff = difflib.unified_diff(old.splitlines(True), new.splitlines(True),
+                                "hosts.toml (現在)", "hosts.toml (生成)")
+    sys.stdout.writelines(diff)
+
+    if not args.apply:
+        print("\n--apply を付けると書き込みます")
+        return
+
+    if old:
+        bak = HOSTS.with_suffix(".toml.bak")
+        bak.write_text(old)
+        print(f"\nバックアップ: {bak}")
+    HOSTS.write_text(new)
+    print(f"書き込み: {HOSTS}")
+
+    subprocess.run(["herdr-mirror", "pause"], capture_output=True)
+    r = subprocess.run(["herdr-mirror", "start"], capture_output=True, text=True)
+    print(r.stdout.strip() or r.stderr.strip())
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,13 @@
+# ~/.config/herdr/config.toml に足す分だけ。全体を置き換えるものではない。
+#
+# herdr-mirror: ネイティブの new_tab を置き換える。ミラー pane の中では
+# リモートにタブを作り、それ以外の場所では従来通りローカルに作る
+# (プラグイン側が自動で degrade する)。
+#
+# 専用キー (prefix+alt+c 等) を別に用意する構成は破綻する: macOS のターミナルは
+# 既定で Option を Meta として送らないため alt が剥がれ、prefix+c に化けて
+# ネイティブの new_tab が動き、「リモートに作ったつもりがローカルにできる」となる。
+[[keys.command]]
+key = "prefix+c"
+type = "plugin_action"
+command = "mirror.remote-new-tab"

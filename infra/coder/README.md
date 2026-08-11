@@ -283,9 +283,12 @@ templates/
 
 #### Mac 側から集約する手順（herdr-mirror）
 
+Mac 側のセットアップ・スクリプト・既知の制約は **[`mac/README.md`](mac/README.md)**
+にまとめてある。以下は要点だけ。
+
 ワークスペースを作れば herdr は自動で起動するので、Mac 側は `hosts.toml` に
-足すだけでよい。SSH は `~/.ssh/config` の `Host coder.*` ワイルドカードが
-効くため、ホストごとの設定は要らない。
+足すだけでよい（`mac/coder-herdr-sync` が `coder list` から生成する）。SSH は
+`~/.ssh/config` の `Host coder.*` ワイルドカードが効くため、ホストごとの設定は要らない。
 
 ```sh
 # 1. slime で Coder ワークスペースを作る

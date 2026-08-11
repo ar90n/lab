@@ -20,6 +20,7 @@ false にするとローカルで閉じたミラーが tombstone される一方
 import argparse
 import json
 import re
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -30,7 +31,7 @@ HOSTS = Path.home() / ".config/herdr-mirror/hosts.toml"
 # ミラー自体は Tailscale (coder CLI が知っている
 # http://slime.tail38ea2.ts.net:7080) 経由で動き続けるのに、同期だけ
 # 落ちるのは筋が悪い。coder CLI は認証済みでどこからでもサーバーに届く。
-CODER = str(Path.home() / ".local/share/mise/shims/coder")
+CODER = shutil.which("coder") or str(Path.home() / ".local/share/mise/shims/coder")
 
 
 def workspaces(include_stopped):
@@ -47,23 +48,49 @@ def workspaces(include_stopped):
     return sorted(names)
 
 
-def globals_block():
-    """既存 hosts.toml の [hosts.*] より前 (グローバル設定) を保存する。"""
+MANAGED = "# --- ここから下は coder-herdr-sync が生成する (Coder ワークスペース) ---"
+KEPT = "# --- 以下は手書き。coder-herdr-sync は書き換えない ---"
+
+
+def parse_existing():
+    """既存 hosts.toml を (グローバル設定, 手書きホストのブロック) に分ける。
+
+    herdr-mirror の target は ssh が受け付けるものなら何でもよく、Coder と
+    無関係なホスト (別の開発機、ラズパイ等) を手で足すことができる。生成時に
+    それらを巻き込んで消さないよう、target が coder.* でないブロックは
+    そのまま持ち越す。
+    """
     if not HOSTS.exists():
-        return "always_control = true\n"
+        return "always_control = true\n", []
     text = HOSTS.read_text()
-    i = text.find("[hosts.")
-    head = text[:i] if i >= 0 else text
-    return head.strip() + "\n" if head.strip() else "always_control = true\n"
+    # マーカーより前だけがグローバル設定 (2回目以降の実行)
+    head = text.split(MANAGED)[0]
+    i = head.find("[hosts.")
+    if i >= 0:
+        head = head[:i]
+    head = head.replace(KEPT, "").strip()
+
+    kept = []
+    for chunk in text.split("[hosts.")[1:]:
+        block = "[hosts." + chunk
+        block = block.split(MANAGED)[0].replace(KEPT, "").rstrip()
+        m = re.search(r'^\s*target\s*=\s*"([^"]*)"', block, re.M)
+        if m and not m.group(1).startswith("coder."):
+            kept.append(block)
+    return (head + "\n" if head else "always_control = true\n"), kept
 
 
 def render(names):
-    out = [globals_block()]
+    head, kept = parse_existing()
+    out = [head, "\n", MANAGED, "\n"]
     for name, running in names:
         # TOML のテーブル名にハイフンは使えるが、既存の書式に合わせて _ にする
         key = re.sub(r"[^A-Za-z0-9_]", "_", name)
         note = "" if running else "  # 停止中\n"
         out.append(f'\n[hosts.{key}]\n{note}target = "coder.{name}"\nprefix = "{name}"\n')
+    if kept:
+        out.append("\n" + KEPT + "\n\n")
+        out.append("\n\n".join(kept) + "\n")
     return "".join(out)
 
 

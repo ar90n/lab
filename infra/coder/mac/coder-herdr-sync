@@ -1,134 +1,163 @@
 #!/usr/bin/env python3
-"""coder-herdr-sync — slime の Coder ワークスペースから herdr-mirror の
-hosts.toml を生成する。
+"""coder-herdr-sync — Coder のワークスペース一覧から herdr-mirror の hosts.toml を生成する。
 
-ワークスペースを作るたびに hosts.toml を手で書き足す必要をなくす。Coder 側の
-ワークスペース一覧が唯一のソースになる。
+hosts.toml は設定ファイルではなく生成物として扱う。人が編集する箇所は無い。
 
-  coder-herdr-sync              # 差分を表示するだけ (何も書かない)
-  coder-herdr-sync --apply      # hosts.toml を書き換えてデーモンを入れ直す
-  coder-herdr-sync --all        # 停止中のワークスペースも含める
+ワークスペースの一覧を持っているのは Coder サーバーだけで、取得手段は
+`coder list` の1つしかない。~/.ssh/config は `Host coder.*` のワイルドカードで、
+名前を1つも含まないため列挙には使えない (接頭辞の取得にだけ使う)。
 
-停止中を既定で除外するのは、到達できないホストを入れるとデーモンが
-「disconnected — retrying」を延々とログに吐き続けるため。
-
-先頭のグローバル設定 (always_control 等) は既存ファイルからそのまま引き継ぐ。
-close_remote_on_local_close は意図的に書かない: デフォルトの true が正しく、
-false にするとローカルで閉じたミラーが tombstone される一方リモートの pane は
-生き残り、表示がリモートと食い違う。
+  coder-herdr-sync            差分を表示するだけ
+  coder-herdr-sync --apply    書き込んでデーモンを入れ替える
+  coder-herdr-sync --all      停止中のワークスペースも含める
 """
 import argparse
+import difflib
+import fcntl
 import json
+import os
 import re
 import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
-HOSTS = Path.home() / ".config/herdr-mirror/hosts.toml"
-# Mac の coder CLI を直接使う。slime へ ssh して叩くこともできるが、
-# slime.local は mDNS なので同一 LAN でしか解決できず、外出先で失敗する。
-# ミラー自体は Tailscale (coder CLI が知っている
-# http://slime.tail38ea2.ts.net:7080) 経由で動き続けるのに、同期だけ
-# 落ちるのは筋が悪い。coder CLI は認証済みでどこからでもサーバーに届く。
-CODER = shutil.which("coder") or str(Path.home() / ".local/share/mise/shims/coder")
+STATE = Path.home() / ".local/state/herdr-mirror"
+SSH_CONFIG = Path.home() / ".ssh/config"
+FALLBACK_DEST = Path.home() / ".config/herdr-mirror/hosts.toml"
+
+
+def run(cmd, **kw):
+    return subprocess.run(cmd, capture_output=True, text=True, **kw)
+
+
+def coder_bin():
+    return shutil.which("coder") or str(Path.home() / ".local/share/mise/shims/coder")
 
 
 def workspaces(include_stopped):
-    out = subprocess.run([CODER, "list", "-o", "json"],
-                         capture_output=True, text=True)
+    """running なワークスペース名。取得に失敗したら例外を投げる (既存を壊さないため)。"""
+    out = run([coder_bin(), "list", "-o", "json"])
     if out.returncode != 0:
-        sys.exit(f"coder list に失敗:\n{out.stderr.strip()}")
+        raise RuntimeError(f"coder list に失敗:\n{out.stderr.strip()}")
     names = []
     for w in json.loads(out.stdout):
-        build = w["latest_build"]
-        running = build["transition"] == "start" and build.get("status") == "running"
+        b = w["latest_build"]
+        running = b["transition"] == "start" and b.get("status") == "running"
         if running or include_stopped:
-            names.append((w["name"], running))
+            names.append(w["name"])
     return sorted(names)
 
 
-MANAGED = "# --- ここから下は coder-herdr-sync が生成する (Coder ワークスペース) ---"
-KEPT = "# --- 以下は手書き。coder-herdr-sync は書き換えない ---"
+def ssh_prefix():
+    """coder config-ssh が書いた --ssh-host-prefix の値。決め打ちしない。
 
-
-def parse_existing():
-    """既存 hosts.toml を (グローバル設定, 手書きホストのブロック) に分ける。
-
-    herdr-mirror の target は ssh が受け付けるものなら何でもよく、Coder と
-    無関係なホスト (別の開発機、ラズパイ等) を手で足すことができる。生成時に
-    それらを巻き込んで消さないよう、target が coder.* でないブロックは
-    そのまま持ち越す。
+    既定は "coder." だが coder config-ssh のオプションで変えられる。変えられた時に
+    target が食い違って静かに壊れるのを避ける。
     """
-    if not HOSTS.exists():
-        return "always_control = true\n", []
-    text = HOSTS.read_text()
-    # マーカーより前だけがグローバル設定 (2回目以降の実行)
-    head = text.split(MANAGED)[0]
-    i = head.find("[hosts.")
-    if i >= 0:
-        head = head[:i]
-    head = head.replace(KEPT, "").strip()
-
-    kept = []
-    for chunk in text.split("[hosts.")[1:]:
-        block = "[hosts." + chunk
-        block = block.split(MANAGED)[0].replace(KEPT, "").rstrip()
-        m = re.search(r'^\s*target\s*=\s*"([^"]*)"', block, re.M)
-        if m and not m.group(1).startswith("coder."):
-            kept.append(block)
-    return (head + "\n" if head else "always_control = true\n"), kept
+    try:
+        text = SSH_CONFIG.read_text()
+    except OSError:
+        return "coder."
+    m = re.search(r"--ssh-host-prefix\s+(\S+)", text)
+    return m.group(1) if m else "coder."
 
 
-def render(names):
-    head, kept = parse_existing()
-    out = [head, "\n", MANAGED, "\n"]
-    for name, running in names:
-        # TOML のテーブル名にハイフンは使えるが、既存の書式に合わせて _ にする
-        key = re.sub(r"[^A-Za-z0-9_]", "_", name)
-        note = "" if running else "  # 停止中\n"
-        out.append(f'\n[hosts.{key}]\n{note}target = "coder.{name}"\nprefix = "{name}"\n')
-    if kept:
-        out.append("\n" + KEPT + "\n\n")
-        out.append("\n\n".join(kept) + "\n")
+def destination():
+    """デーモンが実際に読むパス。決め打ちしない。
+
+    設定はディレクトリ3箇所を順に探して先に見つかったものが勝つ。決め打ちすると、
+    探索順で先のディレクトリに hosts.toml が置かれた瞬間、読まれないファイルを
+    更新し続けることになる (しかもエラーは出ない)。
+    """
+    out = run(["herdr-mirror", "status"])
+    m = re.search(r"^config:\s*(.+)$", out.stdout, re.M)
+    return Path(m.group(1).strip()) if m else FALLBACK_DEST
+
+
+def render(names, prefix):
+    """生成物。同じ入力からは必ず同じバイト列を出す (差分判定が意味を持つように)。
+
+    キーはワークスペース名そのまま。TOML の bare key は - を許す。
+    サイドバーの表示名 (prefix) は既定値がキーなので書かない。
+    """
+    out = ["# generated by coder-herdr-sync — edit は上書きされる\n",
+           "always_control = true\n"]
+    for name in names:
+        out.append(f'\n[hosts.{name}]\ntarget = "{prefix}{name}"\n')
     return "".join(out)
+
+
+def write_atomic(dest, text):
+    """一時ファイル + rename。デーモンの起動と重なっても切れたファイルを読ませない。"""
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp = tempfile.mkstemp(dir=dest.parent, prefix=".hosts.toml.")
+    try:
+        with os.fdopen(fd, "w") as f:
+            f.write(text)
+        os.replace(tmp, dest)
+    except BaseException:
+        Path(tmp).unlink(missing_ok=True)
+        raise
+
+
+def restart_daemon():
+    """設定を読ませる唯一の手段。herdr-mirror にリロードは無い。
+
+    pause は使わない: マーカー (daemon.paused) を立ててから消す順序になるため、
+    途中で失敗すると停止状態で取り残される。kill して ensure に任せる。
+    """
+    if (STATE / "daemon.paused").exists():
+        print("daemon.paused があるので入れ替えを見送る（意図的な停止と判断）")
+        return
+    try:
+        pid = int((STATE / "daemon.pid").read_text().strip())
+        os.kill(pid, 15)
+    except (OSError, ValueError):
+        pass
+    r = run(["herdr-mirror", "ensure"])
+    print(r.stdout.strip() or "daemon を入れ替えた")
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--apply", action="store_true", help="書き込んでデーモンを入れ直す")
-    ap.add_argument("--all", action="store_true", help="停止中のワークスペースも含める")
+    ap.add_argument("--apply", action="store_true")
+    ap.add_argument("--all", action="store_true")
     args = ap.parse_args()
 
-    names = workspaces(args.all)
-    if not names:
-        sys.exit("対象のワークスペースがありません")
-    new = render(names)
-    old = HOSTS.read_text() if HOSTS.exists() else ""
+    STATE.mkdir(parents=True, exist_ok=True)
+    lock = open(STATE / "sync.lock", "w")
+    try:
+        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError:
+        sys.exit("別の coder-herdr-sync が実行中")
+
+    try:
+        names = workspaces(args.all)
+    except RuntimeError as e:
+        # 取得に失敗した場合は既存の hosts.toml に触れない。
+        # 「0件だった」とは区別する: 全部停止していれば 0 件で正しく書く。
+        sys.exit(str(e))
+
+    dest = destination()
+    new = render(names, ssh_prefix())
+    old = dest.read_text() if dest.exists() else ""
 
     if new == old:
-        print(f"変更なし ({len(names)} hosts: " + ", ".join(n for n, _ in names) + ")")
+        print(f"変更なし ({len(names)} hosts) — {dest}")
         return
 
-    import difflib
-    diff = difflib.unified_diff(old.splitlines(True), new.splitlines(True),
-                                "hosts.toml (現在)", "hosts.toml (生成)")
-    sys.stdout.writelines(diff)
+    sys.stdout.writelines(difflib.unified_diff(
+        old.splitlines(True), new.splitlines(True), f"{dest} (現在)", "(生成)"))
 
     if not args.apply:
-        print("\n--apply を付けると書き込みます")
+        print("\n--apply で書き込みます")
         return
 
-    if old:
-        bak = HOSTS.with_suffix(".toml.bak")
-        bak.write_text(old)
-        print(f"\nバックアップ: {bak}")
-    HOSTS.write_text(new)
-    print(f"書き込み: {HOSTS}")
-
-    subprocess.run(["herdr-mirror", "pause"], capture_output=True)
-    r = subprocess.run(["herdr-mirror", "start"], capture_output=True, text=True)
-    print(r.stdout.strip() or r.stderr.strip())
+    write_atomic(dest, new)
+    print(f"\n書き込み: {dest}")
+    restart_daemon()
 
 
 if __name__ == "__main__":

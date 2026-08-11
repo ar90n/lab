@@ -237,12 +237,17 @@ templates/
     ユーザーが `~/.config/mise` 等の新規ディレクトリを作れなくなる
     （`mise use -g` が `Permission denied` で失敗する）。`startup_script` の
     先頭で `sudo chown coder:coder ~/.config` して回避している
-- **claude / opencode の skills をホストと共有する（認証は共有しない）**:
-  - `claude`: `~/.claude/settings.json`（有効な plugin 一覧・permissions）・
-    `~/.claude/plugins`（plugin 本体）だけをマウント。`~/.claude.json`
-    （アカウント/OAuth 状態）と `~/.claude/.credentials.json`（認証トークン）は
-    **意図的にマウントしない**。理由は下記「ハマった点」参照。認証は各
-    ワークスペースで初回だけ `claude /login` する運用。`.claude/projects`
+- **claude / opencode の skills をホストと共有する（認証・settings は共有しない）**:
+  - `claude`: 実体を共有するのは `~/.claude/plugins`（plugin 本体）だけ。
+    `~/.claude.json`（アカウント/OAuth 状態）と `~/.claude/.credentials.json`
+    （認証トークン）は **意図的にマウントしない**。理由は下記「ハマった点」8 参照。
+    認証は各ワークスペースで初回だけ `claude /login` する運用。
+    `~/.claude/settings.json` は **seed 方式**（下記「ハマった点」9）で、
+    ホストのものを読み取り専用で `/opt/claude-host/settings.json` に見せ、
+    `startup_script` が初回だけ `~/.claude/settings.json` にコピーする。
+    これで permissions・enabledPlugins はホストから引き継ぎつつ、
+    `herdr integration install claude` が書き込むコンテナ固有パスが
+    ホストに漏れない。`.claude/projects`
     （会話履歴、88MB）や `debug`/`cache` 等のホスト固有・容量の大きい
     ディレクトリも対象外。ワークスペースごとに独立した会話履歴が
     `/home/coder/.claude/projects`（docker_volume 側、共有されない）に作られる
@@ -256,6 +261,23 @@ templates/
     外して各ワークスペースで個別に `opencode auth login` する運用に切り替える）
   - **副作用（同じパターン）**: `~/.local/share/opencode` も `~/.config` と同様
     root 所有で自動作成されるため、`startup_script` の chown 対象に追加した
+- **herdr（Mac 側 herdr-mirror でワークスペースを集約するため）**: イメージに
+  `herdr` を焼き込み、`startup_script` でヘッドレスサーバーを常駐させ、
+  ミラー用の足場となるワークスペースを1つ自動生成する。これにより Coder
+  ワークスペースを再起動・`coder update` してもコンテナ再作成のたびに Mac 側から
+  見えなくなる、という問題が起きない（実際にこれで一度壊れたのが実装の動機）。
+  設計上の要点は3つ:
+  - **`/usr/local/bin` に入れる**（`/home/coder` ではない）。理由は下記
+    「ハマった点」10 — 既存ワークスペースには `/home/coder` 配下のイメージ変更が
+    一切届かないため
+  - **`herdr integration install claude`** で claude の状態（working / blocked /
+    idle）を herdr に報告する SessionStart フックを入れる。フック本体は
+    `~/.claude/hooks/`（マウントしていないのでコンテナ内に閉じている）
+  - **ブートストラップ用ワークスペースを必ず1つ作る**。herdr-mirror の
+    `remote-new-tab` 等の remote アクションはミラー pane 上で呼ぶことが前提で、
+    リモートに pane が1つも無いと *黙ってローカル動作に degrade* する
+    （README: "outside a mirror they degrade to the plain local action"）。
+    足場が無いと Mac 側から永久にリモートのタブを作れない
 
 ### ハマった点（実装時に踏んだ罠）
 
@@ -331,11 +353,60 @@ templates/
    追従できるが、`~/.claude` 全体を共有するとセッション履歴等まで共有されて
    しまう副作用がある。今回は **`.claude.json`/`.credentials.json` の
    mount 自体をやめ、各ワークスペースで個別に `claude /login` する運用に
-   変更**した（`settings.json`/`plugins` は書き換え頻度が低くこの問題が
-   起きないため mount を維持）。`gh`（`~/.config/gh`）や `opencode`
+   変更**した（`plugins` はディレクトリ mount なのでこの問題が起きない。
+   `settings.json` は別の理由で後に seed 方式へ移行した = 次項）。
+   `gh`（`~/.config/gh`）や `opencode`
    （`~/.local/share/opencode/auth.json`）も同種のトークンリフレッシュを
    行う実装なら、将来同じ理由で壊れる可能性がある。壊れた兆候（コンテナ内だけ
    認証が切れる）が出たら、まずこの inode 不一致を疑うこと
+9. **共有した設定ファイルにコンテナ固有の絶対パスが書き込まれ、ホストが壊れる**
+   — `settings.json` を bind mount で共有していた状態でコンテナ内の
+   `herdr integration install claude` を実行したところ、ホストの
+   `~/.claude/settings.json` に
+   `bash '/home/coder/.claude/hooks/herdr-agent-state.sh' session` という
+   **コンテナ内のパス**を指す SessionStart フックが書き込まれていた。slime ホストには
+   `~/.claude/hooks/` も `herdr` も存在しないので、ホストで `claude` を起動するたびに
+   存在しないスクリプトを叩いていた（発見時に除去済み。バックアップは
+   `~/.claude/settings.json.bak-*`）。前項と根は同じ「host/container で共有した
+   可変ファイル」問題だが、こちらは *内容がパス依存* であることが原因なので、
+   mount 方式を変えても直らない。対策は **seed 方式**:
+   ホストの `settings.json` を読み取り専用で `/opt/claude-host/settings.json` に
+   見せ、`startup_script` が初回だけ `~/.claude/settings.json` へコピーする。
+   共有をやめつつ permissions・enabledPlugins の初期値だけ引き継げる。
+   トレードオフとして、ホスト側の設定変更は既存ワークスペースには伝播しない
+10. **`docker_volume` は同じパスのイメージ側の中身を完全に隠す** —
+    `/home/coder` は `docker_volume` でマウントしているため、Dockerfile で
+    `/home/coder` 配下に何かを足しても **volume が既に存在する既存ワークスペースには
+    一切届かない**（Docker がイメージの中身を volume にコピーするのは volume が空の
+    初回だけ）。イメージにマーカーファイルを仕込んで実機検証した:
+    `/home/coder/SHADOW_TEST_MARKER` は既存 volume をマウントすると見えず、
+    `/opt/SHADOW_TEST_MARKER` は見えた。そのため `herdr` は `/usr/local/bin` に
+    インストールしている。既存の `claude`/`starship`/`mise`/`opencode` が
+    `/home/coder/.local/bin` にあるのは、それらの行が存在する前に作られた
+    ワークスペースが無かったから動いているだけで、**今後 `/home/coder` 配下に
+    ツールを足すと既存ワークスペースだけ壊れる**点に注意
+11. **`herdr status server` はサーバーが止まっていても exit 0 を返す** —
+    `startup_script` に `if ! herdr status server >/dev/null 2>&1; then ... fi` と
+    書いたところ、サーバー起動処理が丸ごとスキップされ続けた。稼働中・停止中の
+    どちらでも終了コードが 0 で（停止時は `status: not running` と出力するだけ）、
+    条件が常に偽になっていた。**出力を `grep -q "^status: running"` で判定**する
+    必要がある。CLI の終了コードを条件に使う前に、両方の状態で実際に確認すること
+12. **bind mount をやめると 0 バイトのマウントポイントが残骸として残る** —
+    `settings.json` の mount を外した後、`/home/coder/.claude/settings.json` に
+    Docker が作った **root 所有・0 バイト**のファイルが volume 上に残っていた。
+    そのため `[ ! -f ... ]` による seed 判定が「既にある」と誤判定してコピーを
+    スキップし、空 JSON を掴んだ `claude`/`herdr` がパースエラーで落ちた
+    （`set -e` により `startup_script` 全体が中断し、mise/cargo のセットアップも
+    行われなかった）。判定は `-f`（存在）ではなく **`-s`（存在かつ非空）** で行い、
+    さらに root 所有ファイルは上書き `cp` が `Permission denied` になるので
+    **`rm -f` してから `cp`** する（`~/.claude` 自体は chown 済みなので削除は通る）
+13. **`coder update` は stop と start の間で自分のビルドと競合することがある** —
+    起動中のワークスペースに `coder update` をかけると、stop ビルド完了直後の
+    start ビルド作成が `A workspace build is already active` で失敗し、
+    ワークスペースが **古いバージョンのまま**再起動されることがある
+    （`coder list` の `OUTDATED` が `true` のままなので気付ける）。確実にやるなら
+    `coder stop <name> --yes` → `Stopped` になるまで待つ → `coder update <name>`
+    の順に分けること
 
 ### `workdir` パラメータ — 作業ディレクトリの指定
 

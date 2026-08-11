@@ -60,6 +60,55 @@ resource "coder_agent" "main" {
     # Permission denied で失敗する等)。起動のたびに直す。
     sudo chown coder:coder ~/.config ~/.claude ~/.local/share/opencode
 
+    # --- herdr (Mac 側の herdr-mirror からこのワークスペースを見るために常駐させる) ---
+    # 重い mise/cargo のインストールより先に済ませる。初回作成時は下の cargo install が
+    # 数分かかるため、後ろに置くとその間ずっとサイドバーに現れない。
+
+    # settings.json は seed (初回コピー) 方式。理由は下の volumes のコメント参照。
+    # 判定は -f (存在) ではなく -s (存在かつ非空) で行う: 以前 bind mount していた
+    # パスには mount を外した後も Docker が作った 0 バイトのマウントポイントが
+    # 残るため、-f だと「既にある」と誤判定して seed をスキップし、空 JSON を
+    # 掴んだ claude/herdr がパースエラーで落ちる (実際に踏んだ)。
+    if [ ! -s ~/.claude/settings.json ] && [ -s /opt/claude-host/settings.json ]; then
+      # 残骸は root 所有の 0 バイトファイルなので、上書き cp は Permission denied に
+      # なる。先に消してから置く (~/.claude 自体は直前の chown で coder 所有なので
+      # ファイルの削除・再作成は通る)。
+      rm -f ~/.claude/settings.json \
+        && cp /opt/claude-host/settings.json ~/.claude/settings.json \
+        || echo "herdr: settings.json seed failed" >&2
+    fi
+
+    # claude の状態 (working / blocked / idle) を herdr に報告する SessionStart フック。
+    # ~/.claude/hooks/ は mount していないのでコンテナ内に閉じている。
+    # 以降 herdr 関連は失敗しても mise/cargo のセットアップを巻き添えにしないよう
+    # 非致命化する (set -e の下で素通しにすると開発環境ごと構築されなくなる)。
+    herdr integration install claude || echo "herdr: integration install failed" >&2
+
+    # ヘッドレスサーバーを常駐させる。setsid で startup_script のプロセスグループから
+    # 切り離さないと、startup_script の終了に巻き込まれてサーバーごと落ちる。
+    # 稼働判定は終了コードではなく出力で行う: `herdr status server` はサーバーが
+    # 止まっていても "status: not running" を出して exit 0 を返すため、
+    # `if ! herdr status server` は常に偽になり起動処理が丸ごとスキップされる
+    # (実機で両方の状態の exit code が 0 であることを確認済み)。
+    if ! herdr status server 2>/dev/null | grep -q "^status: running"; then
+      setsid nohup herdr server >~/.herdr-server.log 2>&1 &
+      for _ in $(seq 30); do
+        herdr status server 2>/dev/null | grep -q "^status: running" && break
+        sleep 1
+      done
+    fi
+
+    # mirror の remote-new-tab / remote-split-* 等は「ミラー pane 上で呼ぶ」ことが前提で、
+    # リモートに pane が1つも無いとローカル動作に degrade する (herdr-mirror README:
+    # "outside a mirror they degrade to the plain local action")。つまり足場が無いと
+    # Mac 側から永久にリモートのタブを作れない。ブートストラップ用に必ず1つ用意する。
+    if ! herdr workspace list 2>/dev/null | grep -q workspace_id; then
+      herdr workspace create \
+        --cwd "${data.coder_parameter.workdir.value}" \
+        --label "${data.coder_workspace.me.name}" \
+        --no-focus >/dev/null || echo "herdr: bootstrap workspace create failed" >&2
+    fi
+
     # Dockerfile のビルド時に ~/.bashrc へ mise/starship の activate 行を
     # 追記済みなので、公式サンプルにある /etc/skel コピー処理は入れない
     # (入れると焼き込んだ .bashrc の中身が消えてしまう)。
@@ -251,17 +300,23 @@ resource "docker_container" "workspace" {
     read_only      = false
   }
 
-  # claude の skills/plugins だけホストと共有する。認証情報 (.claude.json /
-  # .claude/.credentials.json) は意図的に mount しない: claude はトークンを
-  # 定期的に rename で書き換えるため、Docker の単一ファイル bind mount では
-  # 古い inode を掴んだまま同期が壊れる (ホストと inode 番号が一致しないことを
-  # 実機で確認済み)。settings.json/plugins はこの問題が起きる頻度で書き換わる
-  # ものではないので mount を維持する。認証は各ワークスペースで初回だけ
-  # `claude /login` する運用にする。
+  # claude の plugins だけホストと実体共有する。可変ファイル (.claude.json /
+  # .claude/.credentials.json / settings.json) は意図的に共有しない:
+  #   - 認証情報は claude がトークン更新のたびに rename で書き換えるため、
+  #     Docker の単一ファイル bind mount では古い inode を掴んだまま同期が壊れる
+  #     (ホストとコンテナで inode 番号が一致しないことを実機で確認済み)。
+  #   - settings.json は `herdr integration install claude` が
+  #     /home/coder/.claude/hooks/... というコンテナ固有の絶対パスを書き込むため、
+  #     共有するとホスト側の settings.json にそのパスが漏れ、ホストの claude が
+  #     存在しないフックを毎回叩くようになる (実際に汚染していたのを修復済み)。
+  # settings.json は「共有」ではなく「初回コピーの種 (seed)」として読み取り専用で
+  # 別パスに見せ、startup_script が初回だけ ~/.claude/settings.json へコピーする。
+  # これで permissions/enabledPlugins 等はホストから引き継ぎつつ、以降の書き換えは
+  # ワークスペース内に閉じる。認証は各ワークスペースで初回だけ `claude /login` する。
   volumes {
     host_path      = "/home/argon/.claude/settings.json"
-    container_path = "/home/coder/.claude/settings.json"
-    read_only      = false
+    container_path = "/opt/claude-host/settings.json"
+    read_only      = true
   }
   volumes {
     host_path      = "/home/argon/.claude/plugins"

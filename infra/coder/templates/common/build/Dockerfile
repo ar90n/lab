@@ -39,3 +39,14 @@ RUN curl -sS https://starship.rs/install.sh | sh -s -- -y -b ~/.local/bin \
     && echo 'eval "$(~/.local/bin/starship init bash)"' >> ~/.bashrc
 RUN curl -fsSL https://claude.ai/install.sh | bash
 RUN curl -fsSL https://opencode.ai/install | bash
+
+# herdr (herdr-mirror でこのワークスペースを Mac 側サイドバーに集約するために使う)。
+# 意図的に /home/coder ではなく /usr/local/bin に入れている: /home/coder は
+# docker_volume でマウントされるため、volume が既に存在する既存ワークスペースでは
+# イメージ側の /home/coder 配下が完全にシャドウされ、Dockerfile への追加が届かない
+# (マーカーファイルを仕込んで実機検証済み。/opt や /usr/local は届く)。
+# 公式インストーラは stable を取得する。stable 0.8.0 は protocol 19 で Mac 側の
+# preview 版と同一プロトコルのため mirror は問題なく通る。
+USER root
+RUN curl -fsSL https://herdr.dev/install | HERDR_INSTALL_DIR=/usr/local/bin sh
+USER coder

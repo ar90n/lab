@@ -47,6 +47,16 @@ herdr-mirror status        # host ごとに "N mirror workspaces" が出れば�
 
 ワークスペースを作ったら `coder-herdr-sync --apply` を叩く。リモート側の作業は無い。
 
+**自動追従はしない。** `coder-herdr-sync` は人が叩いたときだけ動く。Coder の変化を
+検知する仕組みは無く、CLI にイベントを購読する手段も無い (`coder notifications` は
+通知の送信・停止のみで、`watch` / `events` に相当するサブコマンドは存在しない)。
+自動化するなら定期実行するか、サーバー側の webhook を設定して Mac に受け口を立てる
+ことになる。どちらも未実装。
+
+`hosts.toml` は生成物なので手で編集しない。`coder list` の結果から丸ごと作り直される。
+ssh 接頭辞は `~/.ssh/config` から、書き込み先は `herdr-mirror status` の `config:` から
+取るので、どちらも決め打ちしていない。
+
 ## 分かっている制約
 
 - **新しく作ったリモートのタブに自動遷移しない。** mirror プラグインが

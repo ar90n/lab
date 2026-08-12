@@ -32,6 +32,25 @@ herdr server reload-config
 coder-herdr-sync --apply
 ```
 
+### SSH は起動操作を兼ねさせない
+
+`coder config-ssh` は既定で「SSH 接続したらワークスペースを起動する」設定を書く。
+この構成ではミラーが常時 SSH で再接続を試みるため、`coder stop` しても
+`reason: ssh_connection` で数秒後に起こされてしまい、**停止状態を維持できない**。
+
+```sh
+coder config-ssh --disable-autostart
+```
+
+を一度実行して抑止する (ProxyCommand に `--disable-autostart=true` が入るだけ)。
+start/stop は coder コマンドの責務とし、SSH は純粋な接続にする。
+
+これで次が成立する (実測で確認済み):
+
+- `coder stop` したワークスペースは停止したまま
+- ミラーの pane と表示は残ってよい。30 秒間隔で再接続を試み続ける
+- `coder start` すると、手動操作なしで繋ぎ直る
+
 `coder.<workspace>` への SSH は `~/.ssh/config` の `Host coder.*`
 （`coder config-ssh` が書く ProxyCommand）で通るので、ホストごとの設定は要らない。
 mirror は非対話の鍵認証を要求するため `ssh -o BatchMode=yes coder.<name> true`

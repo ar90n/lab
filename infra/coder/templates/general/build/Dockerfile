@@ -9,6 +9,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     # 最小限の X11 環境 (xeyes 等の x11-apps、xdpyinfo 等の x11-utils)。
     # DISPLAY=:20000 (Xpra) への疎通確認・簡単な GUI 表示がすぐ使える。
     x11-apps x11-utils \
+    # Chrome / Electron 系 (Playwright, Puppeteer, Electron アプリ) が要求する
+    # 共有ライブラリ。これが無いと ldd で 14 個の soname が欠落して起動しない。
+    # パッケージ数が 12 なのは libnss3 が libnss3.so / libnssutil3.so /
+    # libsmime3.so の 3 つを供給するため。t64 接尾辞は Ubuntu 24.04 の
+    # time_t 64bit 移行によるもので、24.04 以外のベースでは名前が変わる。
+    libnss3 libnspr4 libatk1.0-0t64 libatk-bridge2.0-0t64 libatspi2.0-0t64 \
+    libcups2t64 libgtk-3-0t64 libpango-1.0-0 libcairo2 libasound2t64 \
+    libxdamage1 libxkbcommon0 \
     && rm -rf /var/lib/apt/lists/*
 
 # ホストの argon (uid 501) と揃えることで、bind mount した共有キャッシュディレクトリを

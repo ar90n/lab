@@ -29,7 +29,7 @@ cat herdr-config-snippet.toml >> ~/.config/herdr/config.toml
 herdr server reload-config
 
 # hosts.toml を生成
-coder-herdr-sync --apply
+coder-herdr-sync
 ```
 
 ### SSH は起動操作を兼ねさせない
@@ -59,12 +59,25 @@ mirror は非対話の鍵認証を要求するため `ssh -o BatchMode=yes coder
 ## 運用
 
 ```sh
-coder-herdr-sync           # 差分を見るだけ
-coder-herdr-sync --apply   # 反映してデーモンを入れ直す
+coder-herdr-sync           # 実行する
+coder-herdr-sync --all     # 停止中も hosts.toml に含める
 herdr-mirror status        # host ごとに "N mirror workspaces" が出れば繋がっている
 ```
 
-ワークスペースを作ったら `coder-herdr-sync --apply` を叩く。リモート側の作業は無い。
+ワークスペースを作ったら `coder-herdr-sync` を叩く。リモート側の作業は無い。
+
+このコマンドは2つのことをする。
+
+1. **`hosts.toml` の生成** — `coder list` から丸ごと作り直す。差分が無ければデーモンには
+   触らない (無駄にミラーを数秒凍結させないため)
+2. **リモートの herdr workspace の確保** — 0 個になっているリモートに作り直す。
+   herdr の workspace は最後の pane が終了すると消えるので (シェルと寿命を共にする、
+   herdr として正しい挙動)、シェルで `exit` するとサイドバーから項目が消えたまま戻らない。
+   作り直しているのはテンプレートの `startup_script` だけで、それはコンテナ起動時にしか
+   走らないため。1 は毎回走るので、消えたら叩けば戻る
+
+到達できないホスト (停止中、コンテナ起動直後で herdr がまだ上がっていない等) は
+スキップして続行する。1 台の失敗で全体を止めない。
 
 **自動追従はしない。** `coder-herdr-sync` は人が叩いたときだけ動く。Coder の変化を
 検知する仕組みは無く、CLI にイベントを購読する手段も無い (`coder notifications` は
